@@ -1,0 +1,313 @@
+import React, { useEffect, useState, useRef } from "react";
+import { Button, Form, Card, Row, Col } from "react-bootstrap";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { API } from "../../../context/Api";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import DataRequest from "../../../context/DataRequest";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "../../../redux/alertSlice";
+
+export default function Teachers() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+    const { uniqueId } = useParams();
+    const { User } = DataRequest();
+    const [teachers, setTeachers] = useState([]);
+    const [property, setProperty] = useState("");
+    const [previewProfile, setPreviewProfile] = useState("");
+    const [showTeacherForm, setShowTeacherForm] = useState(true);
+    const [showTeacherNameInInput, setShowTeacherNameInInput] = useState(false);
+    const [editTeacherName, setEditTeacherName] = useState("");
+
+    useEffect(() => {
+        getTeachers();
+        getProperty();
+    }, [])
+
+    const getTeachers = () => {
+        dispatch(showLoading());
+        API.get("/teacher").then(({ data }) => {
+            dispatch(hideLoading());
+            // setTeachers(data)
+            setTeachers(data.filter(teachers => teachers.property_id == uniqueId))
+        })
+    }
+
+    const getProperty = () => {
+        dispatch(showLoading());
+        API.get(`/property/${uniqueId}`).then(({ data }) => {
+            dispatch(hideLoading());
+            setProperty(data)
+        })
+    }
+
+    const handleEditTeacherName = () => {
+        setShowTeacherNameInInput(true)
+    };
+    const handleUpdateTeacherName = () => {
+        setShowTeacherNameInInput(false)
+    };
+
+    const handleAddTeacher = () => {
+        setShowTeacherForm(!showTeacherForm)
+    };
+
+    const handleHideTeacherForm = () => {
+        setShowTeacherForm(true)
+    };
+
+    const initialValues = {
+        teacher_name: "",
+        profile: "",
+        designation: "",
+        experience: ""
+    }
+
+    const validationSchema = Yup.object({
+        teacher_name: Yup.string()
+            .required('Name is required.')
+            .matches(/^[a-zA-Z\s]+$/, "Name must be alphabets only!"),
+        profile: Yup.string()
+            .required('Profile is required.'),
+        designation: Yup.string()
+            .required('Designation is required.'),
+        experience: Yup.string()
+            .required('Experience is required.'),
+    })
+
+    const onSubmit = async (values, { resetForm }) => {
+        try {
+            values = { ...values, "userId": User.uniqueId, "property_id": property.uniqueId, "property_name": property.property_name }
+            if (typeof values.profile == 'object' || typeof values.profile != 'object') {
+                let formData = new FormData();
+                for (let value in values) {
+                    formData.append(value, values[value]);
+                }
+                dispatch(showLoading());
+                API.post("/teacher", formData).then((response) => {
+                    dispatch(hideLoading());
+                    if (response.data.message) {
+                        toast.success(response.data.message)
+                        resetForm();
+                    } else if (response.data.error) {
+                        toast.error(response.data.message)
+                    }
+                })
+            }
+        } catch (err) {
+            dispatch(hideLoading());
+            toast.error(err.message);
+        }
+    };
+
+    const { values, errors, touched, setFieldValue, handleChange, handleBlur, handleSubmit } = useFormik({
+        initialValues: initialValues,
+        validationSchema: validationSchema,
+        onSubmit: onSubmit
+    });
+
+    return (
+        <>
+            {showTeacherForm
+                ?
+                <>
+                    {teachers != null
+                        ?
+                        <>
+                            <div className="tab-pane " id="tab-61">
+                                <span className="widget-users row profiletab  mb-5">
+                                    <li className="col-lg-4 col-md-6 col-sm-12 col-12">
+                                        <Card className="border p-0">
+                                            <Button onClick={handleAddTeacher} variant="default">
+                                                <Card.Body className="text-center">
+                                                    <img
+                                                        className="avatar avatar-xxl brround cover-image mt-2"
+                                                        src="data:image/png;base64,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"
+                                                        alt=""
+                                                    />
+                                                    <h4 className="fs-16 mb-5 mt-5 text-dark fw-semibold">
+                                                        Add a New Teacher
+                                                    </h4>
+                                                </Card.Body>
+                                            </Button>
+                                        </Card>
+                                    </li>
+                                    {
+                                        teachers.map((items, key) => (
+                                            <>
+                                                <li className="col-lg-4  col-md-6 col-sm-12 col-12">
+                                                    <Link key={key} to={`/dashboard/view/teacher/${items.property_name}/${items.uniqueId}`}>
+                                                        <Card className=" border p-0">
+                                                            <Card.Body className=" text-center">
+                                                                <img
+                                                                    className="avatar avatar-xxl brround cover-image"
+                                                                    src={`http://localhost:5000/images/${items.profile}`}
+                                                                    alt=""
+                                                                />
+                                                                {showTeacherNameInInput
+                                                                    ?
+                                                                    <>
+                                                                        <form className="d-flex">
+                                                                            <input
+                                                                                type="text"
+                                                                                name={key}
+                                                                                id={key}
+                                                                                className="form-control"
+                                                                                value={editTeacherName}
+                                                                                onChange={handleChange}
+                                                                                onBlur={handleBlur}
+                                                                            />
+                                                                            <span className="mx-3 py-2"><i className="fe fe-x"></i></span>
+                                                                            <span onClick={handleUpdateTeacherName} className="mx-3 py-2"><i className="fe fe-check"></i></span>
+                                                                        </form>
+                                                                    </>
+
+                                                                    :
+                                                                    <>
+                                                                        <h4 className="fs-16 mb-2 mt-3 text-dark fw-semibold">
+                                                                            {items.teacher_name}
+                                                                            {/* <span onClick={(key) => handleEditTeacherName(key)} className="mx-2"><i className="fe fe-edit"></i></span> */}
+                                                                        </h4>
+                                                                    </>
+                                                                }
+                                                                <p className="text-muted mb-2">
+                                                                    {items.designation}
+                                                                    {/* <span className="mx-2"><i className="fe fe-edit"></i></span> */}
+                                                                </p>
+                                                                <p className="text-muted mb-0">
+                                                                    <strong>{items.experience} </strong>Years Experience
+                                                                    {/* <span className="mx-2"><i className="fe fe-edit"></i></span> */}
+                                                                </p>
+                                                            </Card.Body>
+                                                        </Card>
+                                                    </Link>
+                                                </li>
+                                            </>
+                                        ))}
+                                </span>
+                            </div>
+                        </>
+                        :
+                        <>
+                            <div className="tab-pane " id="tab-61">
+                                <span className="widget-users row profiletab  mb-5">
+                                    <li className="col-lg-4 col-md-6 col-sm-12 col-12">
+                                        <Card className="border p-0">
+                                            <Button onClick={handleAddTeacher} variant="default">
+                                                <Card.Body className="text-center">
+                                                    <img
+                                                        className="avatar avatar-xxl brround cover-image mt-2"
+                                                        src="data:image/png;base64,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"
+                                                        alt=""
+                                                    />
+                                                    <h4 className="fs-16 mb-5 mt-5 text-dark fw-semibold">
+                                                        Add a New Teacher
+                                                    </h4>
+                                                </Card.Body>
+                                            </Button>
+                                        </Card>
+                                    </li>
+                                </span>
+                            </div>
+                        </>
+                    }
+                </>
+
+                :
+                <>
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                        <Card className="border p-0">
+                            <Card.Header>
+                                <h4 className="fs-16 text-dark fw-semibold">
+                                    Add a New Teacher
+                                </h4>
+                            </Card.Header>
+                            <Card.Body className="">
+                                <Row>
+                                    <Col md="6">
+                                        <div className="mb-3">
+                                            <Form.Label>Name</Form.Label>
+                                            <input
+                                                type="text"
+                                                name="teacher_name"
+                                                className="form-control"
+                                                placeholder="Enter Teacher Name..."
+                                                value={values.teacher_name}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                            />
+                                            {errors.teacher_name && touched.teacher_name ? <span className='text-danger'>{errors.teacher_name}</span> : <span />}
+                                        </div>
+                                    </Col>
+                                    <Col md="6">
+                                        <div className="mb-3">
+                                            <Form.Label>Designation</Form.Label>
+                                            <input
+                                                type="text"
+                                                name="designation"
+                                                className="form-control"
+                                                placeholder="Enter Teacher Designation..."
+                                                value={values.designation}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                            />
+                                            {errors.designation && touched.designation ? <span className='text-danger'>{errors.designation}</span> : <span />}
+                                        </div>
+                                    </Col>
+                                    <Col md="6">
+                                        <div className="mb-3">
+                                            <Form.Label>Experience</Form.Label>
+                                            <input
+                                                type="number"
+                                                name="experience"
+                                                className="form-control"
+                                                placeholder="Enter Teacher Experience..."
+                                                value={values.experience}
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                            />
+                                            {errors.experience && touched.experience ? <span className='text-danger'>{errors.experience}</span> : <span />}
+                                        </div>
+                                    </Col>
+                                    <Col md="12">
+                                        <div className="mb-3">
+                                            <Form.Label>Profile</Form.Label>
+                                            <input
+                                                type="file"
+                                                name="profile"
+                                                className="form-control"
+                                                onChange={(e) => {
+                                                    let reader = new FileReader();
+                                                    reader.onload = () => {
+                                                        if (reader.readyState === 2) {
+                                                            setFieldValue("profile", e.target.files[0]);
+                                                            setPreviewProfile(reader.result);
+                                                        }
+                                                    }
+                                                    reader.readAsDataURL(e.target.files[0])
+                                                }}
+                                                onBlur={handleBlur}
+                                            />
+                                            <img src={previewProfile} className="mt-1" width="100" alt="" />
+                                            {errors.profile && touched.profile ? <span className='text-danger'>{errors.profile}</span> : <span />}
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Card.Body>
+                            <Card.Footer>
+                                <Button type="submit" variant="primary">
+                                    Add
+                                </Button>
+                                <Button onClick={handleHideTeacherForm} variant="danger" className="ms-1">
+                                    Cancel
+                                </Button>
+                            </Card.Footer>
+                        </Card>
+                    </form>
+                </>
+            }
+        </>
+    )
+}

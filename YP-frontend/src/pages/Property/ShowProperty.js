@@ -1,0 +1,209 @@
+import React, { useEffect, useState } from "react";
+import { Tabs, Tab, Breadcrumb, Card, Row, Col } from "react-bootstrap";
+import { Link, useParams } from "react-router-dom";
+import { API } from "../../context/Api";
+import Teachers from "./PropertyComponents/Teachers";
+import Gallery from "./PropertyComponents/Gallery";
+import Hostel from "./PropertyComponents/Hostel";
+import Reviews from "./PropertyComponents/Reviews";
+import Faqs from "./PropertyComponents/Faqs";
+import Courses from "./PropertyComponents/Courses";
+import Achievements from "./PropertyComponents/Achievements";
+import Seo from "./PropertyComponents/Seo";
+import Location from "./PropertyComponents/Location";
+import BasicDetails from "./PropertyComponents/BasicDetails";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "../../redux/alertSlice";
+import { toast } from "react-toastify";
+import OtherDetails from "./PropertyComponents/OtherDetails";
+
+export default function ShowProperty() {
+  const dispatch = useDispatch();
+  const { uniqueId } = useParams();
+  const [property, setProperty] = useState("");
+
+  useEffect(() => {
+    getProperty();
+  }, [])
+
+  const getProperty = async () => {
+    try {
+      dispatch(showLoading());
+      const { data } = await API.get(`/property/${uniqueId}`);
+      setProperty(data);
+    } catch (err) {
+      toast.error(err.message);
+    } finally {
+      dispatch(hideLoading());
+    }
+  };
+
+  return (
+    <div>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Property</h1>
+          <Breadcrumb className="breadcrumb">
+            <Breadcrumb.Item className="breadcrumb-item">
+              <Link to="/dashboard/">
+                Dashboard
+              </Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
+              <Link to="/dashboard/property/">
+                Property
+              </Link>
+            </Breadcrumb.Item>
+            <Breadcrumb.Item className="breadcrumb-item active" aria-current="page">
+              View
+            </Breadcrumb.Item>
+            <Breadcrumb.Item className="breadcrumb-item active breadcrumds" aria-current="page"            >
+              {property.uniqueId}
+            </Breadcrumb.Item>
+          </Breadcrumb>
+        </div>
+      </div>
+
+      <Row id="user-profile">
+        <Col lg={12}>
+          <Card className=" bg-transparent shadow-none border-0">
+            {/* <Card.Body className="bg-white">
+              <div className="wideget-user-img">
+                <img className="" src={`http://localhost:5000/images/${property.featured_image}`} width={1019} height={180} alt="img" />
+              </div>
+            </Card.Body> */}
+            <br />
+            <Card.Body className=" bg-white">
+              <div className="wideget-user">
+                <Row>
+                  <Col lg={12} md={12} xl={6}>
+                    <div className="wideget-user-desc d-sm-flex">
+                      <div className="wideget-user-img">
+                        <img className="" src={`http://localhost:5000/images/${property.property_icon}`} width={120} height={120} alt="img" />
+                      </div>
+                      <div className="user-wrap">
+                        <h4>{property.property_name}</h4>
+                        <h6 className="text-muted mb-3">
+                          Member Since: November 2017
+                        </h6>
+                        <a href={`tel:${property.property_mobile_no}`}>
+                          <button className="btn btn-primary">
+                            <i className="fa fa-phone"></i> call
+                          </button>
+                        </a>
+                        <a href={`mailto:${property.property_email}`}>
+                          <button className="btn btn-secondary mt-1 mb-1 ms-1">
+                            <i className="fa fa-envelope"></i> E-mail
+                          </button>
+                        </a>
+                      </div>
+                    </div>
+                  </Col>
+                  <Col lg={12} md={12} xl={6}>
+                    <div className="text-xl-right mt-4 mt-xl-0">
+                      <Link
+                        to="/dashboard/property"
+                        className="btn btn-primary me-1"
+                      >
+                        <span>
+                          <i className="fe fe-arrow-left"></i>&nbsp;
+                        </span>
+                        Back
+                      </Link>
+                    </div>
+                    <div className="mt-5">
+                      <div className="main-profile-contact-list float-md-end d-md-flex">
+                        <div className="me-5">
+                          <div className="media">
+                            <div className="media-icon bg-primary  me-3 mt-1">
+                              <i className="fe fe-file-plus fs-20 text-white"></i>
+                            </div>
+                            <div className="media-body">
+                              <span className="text-muted">Enquiry</span>
+                              <div className="fw-semibold fs-25">328</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="me-5 mt-5 mt-md-0">
+                          <div className="media">
+                            <div className="media-icon bg-success me-3 mt-1">
+                              <i className="fe fe-users  fs-20 text-white"></i>
+                            </div>
+                            <div className="media-body">
+                              <span className="text-muted">SEO Rank</span>
+                              <div className="fw-semibold fs-25">937k</div>
+                            </div>
+                          </div>
+                        </div>
+                        <div className="me-0 mt-5 mt-md-0">
+                          <div className="media">
+                            <div className="media-icon bg-orange me-3 mt-1">
+                              <i className="fe fe-wifi fs-20 text-white"></i>
+                            </div>
+                            <div className="media-body">
+                              <span className="text-muted">Following</span>
+                              <div className="fw-semibold fs-25">2,876</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </Col>
+                </Row>
+              </div>
+            </Card.Body>
+
+            <div className="border-top ">
+              <div className="wideget-user-tab">
+                <div className="tab-menu-heading">
+                  <div className="tabs-menu1 profiletabs">
+                    <Tabs
+                      variant="Tabs"
+                      defaultActiveKey="Profile"
+                      id=" tab-51"
+                      className="tab-content tabesbody "
+                    >
+                      <Tab eventKey="Profile" title="Basic Details">
+                        <BasicDetails />
+                      </Tab>
+                      <Tab eventKey="Other Details" title="Other Details">
+                        <OtherDetails />
+                      </Tab>
+                      <Tab eventKey="Location" title="Location">
+                        <Location />
+                      </Tab>
+                      <Tab eventKey="Teachers" title="Teachers">
+                        <Teachers />
+                      </Tab>
+                      <Tab eventKey="Gallery" title="Gallery">
+                        <Gallery />
+                      </Tab>
+                      <Tab eventKey="Hostel" title="Hostel">
+                        <Hostel />
+                      </Tab>
+                      <Tab eventKey="Reviews" title="Reviews ">
+                        <Reviews />
+                      </Tab>
+                      <Tab eventKey="FAQ'S" title="FAQ'S">
+                        <Faqs />
+                      </Tab>
+                      <Tab eventKey="Courses" title="Courses">
+                        <Courses />
+                      </Tab>
+                      <Tab eventKey="Achievements" title="Achievements">
+                        <Achievements />
+                      </Tab>
+                      <Tab eventKey="Seo" title="Seo">
+                        <Seo />
+                      </Tab>
+                    </Tabs>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Card>
+        </Col>
+      </Row>
+    </div >
+  );
+};

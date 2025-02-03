@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1,
+    "property_id": 1,
+    "course_name": "100 Hour Teacher training",
+    "course_status": "Active"
+  },
+  {
+    "id": 2,
+    "property_id": 1,
+    "course_name": "200 Hour Teacher training",
+    "course_status": "Pending"
+  },
+  {
+    "id": 3,
+    "property_id": 1,
+    "course_name": "300 Hour Teacher training",
+    "course_status": "Active"
+  },
+  {
+    "id": 4,
+    "property_id": 2,
+    "course_name": "100 Hour Teacher training",
+    "course_status": "Active"
+  },
+  {
+    "id": 5,
+    "property_id": 2,
+    "course_name": "300 Hour Teacher training",
+    "course_status": "Active"
+  }
+]
