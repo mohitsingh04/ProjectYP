@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Col, Form, Row } from "react-bootstrap";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import * as rating from "../../../data/Rating/rating";
@@ -8,17 +8,71 @@ import * as Yup from "yup";
 import { API } from "../../../context/Api";
 import StarIcon from "@mui/icons-material/Star";
 import { Rating } from "@mui/material";
+import DataRequest from "../../../context/DataRequest";
+import { toast } from "react-toastify";
 
 export default function Reviews() {
   const { uniqueId } = useParams();
   const [reviews, setReviews] = useState([]);
-  const [searchParams, setSearchParams] = useSearchParams();
+  // const [searchParams, setSearchParams] = useSearchParams();
+  const [property, setProperty] = useState("");
+  const { User } = DataRequest();
 
-  useEffect(() => {
-    API.get("/review").then(({ data }) => {
-      setReviews(data.filter((reviews) => reviews.property_id === uniqueId));
+  const getReviews = useCallback(async () => {
+    const get = await API.get(`/review`);
+    setReviews(get.data);
+  }, []);
+
+  const getProperty = useCallback(() => {
+    API.get(`/property/${uniqueId}`).then(({ data }) => {
+      setProperty(data);
     });
   }, [uniqueId]);
+
+  useEffect(() => {
+    getProperty();
+    getReviews();
+  }, [getProperty, getReviews]);
+
+  const initialValues = {
+    name: "",
+    email: "",
+    phone_number: "",
+    gender: "",
+    rating: "",
+    review: "",
+  };
+
+  const validationSchema = Yup.object({
+    name: Yup.string().required("Name is Required"),
+    email: Yup.string().required("Email is Required"),
+    phone_number: Yup.number().required("Phone Number is Required"),
+    gender: Yup.string().required("Gender is Required"),
+    rating: Yup.number().required("Rating is Required"),
+    review: Yup.string().required("Review is Required"),
+  });
+
+  const onSubmit = async (values) => {
+    try {
+      values = {
+        ...values,
+        property_id: property.uniqueId,
+        property_name: property.property_name,
+        userId: User.uniqueId,
+      };
+
+      const response = await API.post("/review", values);
+      toast.success(response.data.message);
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
+  };
+
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
 
   return (
     <>
@@ -45,7 +99,7 @@ export default function Reviews() {
                         </Link>
                       </div>
                       <div className="media-body">
-                        <h5 className="mt-0 mb-0 ">{items.user_name}</h5>
+                        <h5 className="mt-0 mb-0 ">{items.name}</h5>
                         <div>
                           <span className="mx-2 float-end">
                             <i className="fe fe-trash"></i>
@@ -62,7 +116,7 @@ export default function Reviews() {
                             <i className="me-1 fa fa-star-o"></i>
                           </div>
                           <p className="font-13 text-muted mb-0">
-                            {items.description}
+                            {items.review}
                           </p>
                         </div>
                       </div>
@@ -78,17 +132,28 @@ export default function Reviews() {
                   <strong>Add a New Question</strong>
                 </h5>
                 <hr />
-                <form onSubmit={() => console.log("hello")}>
+                <form onSubmit={formik.handleSubmit}>
                   <div className="row">
                     <div className="col-md-6">
                       <Form.Label>Name</Form.Label>
                       <Form.Group className="form-group">
                         <Form.Control
                           type="text"
-                          name="question"
+                          name="name"
                           className="form-control"
-                          placeholder="Your Question..."
+                          placeholder="Enter Name"
+                          value={formik.values.name}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          autoComplete="name"
                         />
+                        {formik.errors.name && formik.touched.name ? (
+                          <span className="text-danger">
+                            {formik.errors.name}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
                       </Form.Group>
                     </div>
                     <div className="col-md-6">
@@ -96,23 +161,46 @@ export default function Reviews() {
                       <Form.Group className="form-group">
                         <Form.Control
                           type="text"
-                          name="question"
+                          name="email"
                           className="form-control"
-                          placeholder="Your Question..."
+                          placeholder="Enter Email"
+                          value={formik.values.email}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          autoComplete="email"
                         />
+                        {formik.errors.email && formik.touched.email ? (
+                          <span className="text-danger">
+                            {formik.errors.email}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
                       </Form.Group>
                     </div>
                   </div>
                   <div className="row">
                     <div className="col-md-6">
-                      <Form.Label>Phone</Form.Label>
+                      <Form.Label htmlFor="phone_number">Phone</Form.Label>
                       <Form.Group className="form-group">
                         <Form.Control
-                          type="text"
-                          name="question"
+                          type="number"
+                          id="phone_number"
+                          name="phone_number"
                           className="form-control"
-                          placeholder="Your Question..."
+                          placeholder="Enter Phone Number"
+                          value={formik.values.phone_number}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
+                        {formik.errors.phone_number &&
+                        formik.touched.phone_number ? (
+                          <span className="text-danger">
+                            {formik.errors.phone_number}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
                       </Form.Group>
                     </div>
                     <div className="col-md-6">
@@ -124,6 +212,8 @@ export default function Reviews() {
                           name="gender"
                           value="male"
                           id="male"
+                          onChange={formik.handleChange}
+                          checked={formik.values.gender === "male"}
                         />
                         <Form.Check
                           type="radio"
@@ -131,6 +221,8 @@ export default function Reviews() {
                           name="gender"
                           value="female"
                           id="female"
+                          onChange={formik.handleChange}
+                          checked={formik.values.gender === "female"}
                         />
                         <Form.Check
                           type="radio"
@@ -138,7 +230,16 @@ export default function Reviews() {
                           name="gender"
                           value="others"
                           id="others"
+                          onChange={formik.handleChange}
+                          checked={formik.values.gender === "others"}
                         />
+                        {formik.errors.gender && formik.touched.gender ? (
+                          <span className="text-danger">
+                            {formik.errors.gender}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
                       </Form.Group>
                     </div>
                   </div>
@@ -147,6 +248,10 @@ export default function Reviews() {
                       <Form.Label>Rating</Form.Label>
                       <Rating
                         name="simple-controlled"
+                        value={formik.values.rating}
+                        onChange={(_event, newValue) => {
+                          formik.setFieldValue("rating", newValue);
+                        }}
                         emptyIcon={
                           <StarIcon
                             style={{ opacity: "0.55" }}
@@ -155,6 +260,13 @@ export default function Reviews() {
                         }
                       />
                     </Form.Group>
+                    {formik.errors.rating && formik.touched.rating ? (
+                      <span className="text-danger">
+                        {formik.errors.rating}
+                      </span>
+                    ) : (
+                      <span />
+                    )}
                   </div>
                   <div>
                     <Form.Group className="mb-3">
@@ -162,8 +274,19 @@ export default function Reviews() {
                       <Form.Control
                         as="textarea"
                         rows={4}
+                        name="review"
                         placeholder="Review"
+                        value={formik.values.review}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
+                      {formik.errors.review && formik.touched.review ? (
+                        <span className="text-danger">
+                          {formik.errors.review}
+                        </span>
+                      ) : (
+                        <span />
+                      )}
                     </Form.Group>
                   </div>
                   <button type="submit" className="btn btn-primary">
