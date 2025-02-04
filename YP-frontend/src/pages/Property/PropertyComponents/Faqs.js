@@ -131,9 +131,8 @@ export default function Faqs() {
                 ) : (
                   <>
                     {faqs.map((item, key) => (
-                      <>
+                      <div key={key}>
                         <div
-                          key={key}
                           aria-multiselectable="true"
                           className="accordion propertyFaqs"
                           id="accordion"
@@ -167,7 +166,7 @@ export default function Faqs() {
                             <i className="fe fe-trash text-primary"></i>
                           </button>
                         </span>
-                      </>
+                      </div>
                     ))}
                   </>
                 )}

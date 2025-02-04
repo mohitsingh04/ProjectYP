@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Breadcrumb, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
@@ -14,11 +14,7 @@ export default function StatusList() {
   const navigate = useNavigate();
   const [status, setStatus] = useState([]);
 
-  useEffect(() => {
-    getStatus();
-  }, []);
-
-  const getStatus = async () => {
+  const getStatus = useCallback(async () => {
     try {
       dispatch(showLoading());
       const { data } = await API.get("/status");
@@ -28,7 +24,11 @@ export default function StatusList() {
     } finally {
       dispatch(hideLoading());
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    getStatus();
+  }, [getStatus]);
 
   const viewStatus = (uniqueId) => {
     navigate("/dashboard/status/view/" + uniqueId);
@@ -76,22 +76,32 @@ export default function StatusList() {
     },
     {
       name: "COLOR",
-      selector: (row) => (
-        <input type="color" value={row.color} disabled />
-      ),
+      selector: (row) => <input type="color" value={row.color} disabled />,
       sortable: true,
     },
     {
       name: "ACTION",
       selector: (row) => (
         <>
-          <button data-bs-toggle="tooltip" title="View" onClick={() => viewStatus(row.uniqueId)}>
+          <button
+            data-bs-toggle="tooltip"
+            title="View"
+            onClick={() => viewStatus(row.uniqueId)}
+          >
             <i className="fe fe-eye"></i>
           </button>
-          <button data-bs-toggle="tooltip" title="Edit" onClick={() => editStatus(row.uniqueId)}>
+          <button
+            data-bs-toggle="tooltip"
+            title="Edit"
+            onClick={() => editStatus(row.uniqueId)}
+          >
             <i className="fe fe-edit"></i>
           </button>
-          <button data-bs-toggle="tooltip" title="Delete" onClick={() => deleteStatus(row.uniqueId)}>
+          <button
+            data-bs-toggle="tooltip"
+            title="Delete"
+            onClick={() => deleteStatus(row.uniqueId)}
+          >
             <i className="fe fe-trash-2"></i>
           </button>
         </>
@@ -116,13 +126,19 @@ export default function StatusList() {
               <Breadcrumb.Item className="breadcrumb-item">
                 <Link to="/dashboard">Dashboard</Link>
               </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item active breadcrumds" aria-current="page">
+              <Breadcrumb.Item
+                className="breadcrumb-item active breadcrumds"
+                aria-current="page"
+              >
                 Status List
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="ms-auto pageheader-btn">
-            <Link to="/dashboard/status/add/" className="btn btn-primary btn-icon text-white me-3">
+            <Link
+              to="/dashboard/status/add/"
+              className="btn btn-primary btn-icon text-white me-3"
+            >
               <span>
                 <i className="fe fe-plus"></i>&nbsp;
               </span>

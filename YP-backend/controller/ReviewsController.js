@@ -64,14 +64,16 @@ export const addReview = async (req, res) => {
 export const updateReview = async (req, res) => {
   try {
     const uniqueId = req.params.uniqueId;
-    const { review, description, status } = req.body;
+    const { name, gender, phone_number, rating, review } = req.body;
     const updateReview = await Review.findOneAndUpdate(
       { uniqueId: uniqueId },
       {
         $set: {
           review,
-          description,
-          status,
+          name,
+          gender,
+          phone_number,
+          rating,
         },
       },
       { new: true }
@@ -95,5 +97,17 @@ export const deleteReview = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
+  }
+};
+
+export const getReviewByPropertyId = async (req, res) => {
+  try {
+    const { property_id } = req.params;
+
+    const review = await Review.find({ property_id: property_id });
+
+    return res.status(200).json(review);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };

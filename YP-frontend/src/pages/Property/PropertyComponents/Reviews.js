@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Card, Col, Form, Row } from "react-bootstrap";
-import { Link, useParams, useSearchParams } from "react-router-dom";
-import * as rating from "../../../data/Rating/rating";
+import { Link, useParams } from "react-router-dom";
+// import * as rating from "../../../data/Rating/rating";
 import user4 from "../../../assets/images/logo.png";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -10,6 +10,10 @@ import StarIcon from "@mui/icons-material/Star";
 import { Rating } from "@mui/material";
 import DataRequest from "../../../context/DataRequest";
 import { toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { hideLoading, showLoading } from "../../../redux/alertSlice";
+import Swal from "sweetalert2";
+import EditReview from "./ReviewComponents/EditReview";
 
 export default function Reviews() {
   const { uniqueId } = useParams();
@@ -17,22 +21,40 @@ export default function Reviews() {
   // const [searchParams, setSearchParams] = useSearchParams();
   const [property, setProperty] = useState("");
   const { User } = DataRequest();
-
-  const getReviews = useCallback(async () => {
-    const get = await API.get(`/review`);
-    setReviews(get.data);
-  }, []);
+  const dispatch = useDispatch();
+  const [isUpdating, setIsUpdating] = useState(null);
 
   const getProperty = useCallback(() => {
+    dispatch(showLoading());
     API.get(`/property/${uniqueId}`).then(({ data }) => {
+      dispatch(hideLoading());
       setProperty(data);
     });
-  }, [uniqueId]);
+  }, [uniqueId, dispatch]);
 
   useEffect(() => {
     getProperty();
+  }, [getProperty]);
+
+  const getReviews = useCallback(async () => {
+    if (property.uniqueId) {
+      dispatch(showLoading());
+      const get = await API.get(`/review/property/${property.uniqueId}`);
+      dispatch(hideLoading());
+      setReviews(get.data);
+    }
+  }, [dispatch, property]);
+
+  useEffect(() => {
     getReviews();
-  }, [getProperty, getReviews]);
+  }, [getReviews]);
+
+  const handleIsUpdating = () => {
+    if (isUpdating) {
+      setIsUpdating(null);
+      getReviews();
+    }
+  };
 
   const initialValues = {
     name: "",
@@ -63,6 +85,8 @@ export default function Reviews() {
 
       const response = await API.post("/review", values);
       toast.success(response.data.message);
+      getReviews();
+      formik.resetForm();
     } catch (error) {
       toast.error(error.response.data.error);
     }
@@ -74,229 +98,276 @@ export default function Reviews() {
     onSubmit: onSubmit,
   });
 
+  const handleDeleteReview = (uniqueId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes delete it!",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(showLoading());
+          API.delete(`/review/${uniqueId}`).then((response) => {
+            dispatch(hideLoading());
+            if (response.data.message) {
+              toast.success(response.data.message);
+            } else if (response.data.error) {
+              toast.success(response.data.error);
+            }
+          });
+        }
+        getReviews();
+      })
+      .catch((error) => {
+        dispatch(hideLoading());
+        toast.error(error.message);
+      });
+  };
+
   return (
     <>
       <div className="tab-pane" id="tab-81">
-        <Row>
-          <Col md={12}>
-            <Card>
-              <Card.Header>
-                <h5>
-                  <strong>Reviews</strong>
-                </h5>
-              </Card.Header>
-              <Card.Body>
-                {reviews.map((items, key) => (
-                  <div className="tab-pane" id="tab3" key={key}>
-                    <div className="media mb-5">
-                      <div className=" me-3">
-                        <Link to="#">
-                          <img
-                            className="media-object rounded-circle thumb-sm"
-                            alt="64x64"
-                            src={user4}
-                          />
-                        </Link>
-                      </div>
-                      <div className="media-body">
-                        <h5 className="mt-0 mb-0 ">{items.name}</h5>
-                        <div>
-                          <span className="mx-2 float-end">
-                            <i className="fe fe-trash"></i>
-                          </span>
-                          <span className="mx-2 float-end">
-                            <i className="fe fe-edit"></i>
-                          </span>
-                          <div className="text-warning mb-0">
-                            {items.review}
-                            <i className="me-1 fa fa-star"></i>
-                            <i className="me-1 fa fa-star"></i>
-                            <i className="me-1 fa fa-star"></i>
-                            <i className="me-1 fa fa-star"></i>
-                            <i className="me-1 fa fa-star-o"></i>
+        {!isUpdating ? (
+          <Row>
+            <Col md={12}>
+              <Card>
+                <Card.Header>
+                  <h5>
+                    <strong>Reviews</strong>
+                  </h5>
+                </Card.Header>
+                <Card.Body>
+                  {reviews.map((items, key) => (
+                    <div className="tab-pane" id="tab3" key={key}>
+                      <div className="media mb-5">
+                        <div className=" me-3">
+                          <Link to="#">
+                            <img
+                              className="media-object rounded-circle thumb-sm"
+                              alt="64x64"
+                              src={user4}
+                            />
+                          </Link>
+                        </div>
+                        <div className="media-body">
+                          <h5 className="mt-0 mb-0 ">{items.name}</h5>
+                          <div>
+                            <span
+                              className="mx-2 float-end"
+                              onClick={() => handleDeleteReview(items.uniqueId)}
+                            >
+                              <i className="fe fe-trash"></i>
+                            </span>
+                            <span
+                              className="mx-2 float-end"
+                              onClick={() => setIsUpdating(items.uniqueId)}
+                            >
+                              <i className="fe fe-edit"></i>
+                            </span>
+                            <div className="text-warning mb-0">
+                              <span className="me-2">{items.rating}</span>
+                              {[...Array(items.rating)].map((_, index) => (
+                                <i key={index} className="me-1 fa fa-star"></i>
+                              ))}
+                              {[...Array(5 - items.rating)].map((_, index) => (
+                                <i
+                                  key={index}
+                                  className="me-1 fa fa-star-o"
+                                ></i>
+                              ))}
+                            </div>
+                            <p className="font-13 text-muted mb-0">
+                              {items.review}
+                            </p>
                           </div>
-                          <p className="font-13 text-muted mb-0">
-                            {items.review}
-                          </p>
                         </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </Card.Body>
-            </Card>
+                  ))}
+                </Card.Body>
+              </Card>
 
-            <Card>
-              <Card.Body>
-                <h5 className="mb-3">
-                  <strong>Add a New Question</strong>
-                </h5>
-                <hr />
-                <form onSubmit={formik.handleSubmit}>
-                  <div className="row">
-                    <div className="col-md-6">
-                      <Form.Label>Name</Form.Label>
-                      <Form.Group className="form-group">
-                        <Form.Control
-                          type="text"
-                          name="name"
-                          className="form-control"
-                          placeholder="Enter Name"
-                          value={formik.values.name}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          autoComplete="name"
-                        />
-                        {formik.errors.name && formik.touched.name ? (
-                          <span className="text-danger">
-                            {formik.errors.name}
-                          </span>
-                        ) : (
-                          <span />
-                        )}
-                      </Form.Group>
-                    </div>
-                    <div className="col-md-6">
-                      <Form.Label>Email</Form.Label>
-                      <Form.Group className="form-group">
-                        <Form.Control
-                          type="text"
-                          name="email"
-                          className="form-control"
-                          placeholder="Enter Email"
-                          value={formik.values.email}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                          autoComplete="email"
-                        />
-                        {formik.errors.email && formik.touched.email ? (
-                          <span className="text-danger">
-                            {formik.errors.email}
-                          </span>
-                        ) : (
-                          <span />
-                        )}
-                      </Form.Group>
-                    </div>
-                  </div>
-                  <div className="row">
-                    <div className="col-md-6">
-                      <Form.Label htmlFor="phone_number">Phone</Form.Label>
-                      <Form.Group className="form-group">
-                        <Form.Control
-                          type="number"
-                          id="phone_number"
-                          name="phone_number"
-                          className="form-control"
-                          placeholder="Enter Phone Number"
-                          value={formik.values.phone_number}
-                          onChange={formik.handleChange}
-                          onBlur={formik.handleBlur}
-                        />
-                        {formik.errors.phone_number &&
-                        formik.touched.phone_number ? (
-                          <span className="text-danger">
-                            {formik.errors.phone_number}
-                          </span>
-                        ) : (
-                          <span />
-                        )}
-                      </Form.Group>
-                    </div>
-                    <div className="col-md-6">
-                      <Form.Label>Gender</Form.Label>
-                      <Form.Group className="form-group d-flex gap-3">
-                        <Form.Check
-                          type="radio"
-                          label="Male"
-                          name="gender"
-                          value="male"
-                          id="male"
-                          onChange={formik.handleChange}
-                          checked={formik.values.gender === "male"}
-                        />
-                        <Form.Check
-                          type="radio"
-                          label="Female"
-                          name="gender"
-                          value="female"
-                          id="female"
-                          onChange={formik.handleChange}
-                          checked={formik.values.gender === "female"}
-                        />
-                        <Form.Check
-                          type="radio"
-                          label="Others"
-                          name="gender"
-                          value="others"
-                          id="others"
-                          onChange={formik.handleChange}
-                          checked={formik.values.gender === "others"}
-                        />
-                        {formik.errors.gender && formik.touched.gender ? (
-                          <span className="text-danger">
-                            {formik.errors.gender}
-                          </span>
-                        ) : (
-                          <span />
-                        )}
-                      </Form.Group>
-                    </div>
-                  </div>
-                  <div>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Rating</Form.Label>
-                      <Rating
-                        name="simple-controlled"
-                        value={formik.values.rating}
-                        onChange={(_event, newValue) => {
-                          formik.setFieldValue("rating", newValue);
-                        }}
-                        emptyIcon={
-                          <StarIcon
-                            style={{ opacity: "0.55" }}
-                            fontSize="inherit"
+              <Card>
+                <Card.Body>
+                  <h5 className="mb-3">
+                    <strong>Add a New Review</strong>
+                  </h5>
+                  <hr />
+                  <form onSubmit={formik.handleSubmit}>
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form.Label>Name</Form.Label>
+                        <Form.Group className="form-group">
+                          <Form.Control
+                            type="text"
+                            name="name"
+                            className="form-control"
+                            placeholder="Enter Name"
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            autoComplete="name"
                           />
-                        }
-                      />
-                    </Form.Group>
-                    {formik.errors.rating && formik.touched.rating ? (
-                      <span className="text-danger">
-                        {formik.errors.rating}
-                      </span>
-                    ) : (
-                      <span />
-                    )}
-                  </div>
-                  <div>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Review</Form.Label>
-                      <Form.Control
-                        as="textarea"
-                        rows={4}
-                        name="review"
-                        placeholder="Review"
-                        value={formik.values.review}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                      />
-                      {formik.errors.review && formik.touched.review ? (
+                          {formik.errors.name && formik.touched.name ? (
+                            <span className="text-danger">
+                              {formik.errors.name}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                        <Form.Label>Email</Form.Label>
+                        <Form.Group className="form-group">
+                          <Form.Control
+                            type="text"
+                            name="email"
+                            className="form-control"
+                            placeholder="Enter Email"
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            autoComplete="email"
+                          />
+                          {formik.errors.email && formik.touched.email ? (
+                            <span className="text-danger">
+                              {formik.errors.email}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+                        </Form.Group>
+                      </div>
+                    </div>
+                    <div className="row">
+                      <div className="col-md-6">
+                        <Form.Label htmlFor="phone_number">Phone</Form.Label>
+                        <Form.Group className="form-group">
+                          <Form.Control
+                            type="number"
+                            id="phone_number"
+                            name="phone_number"
+                            className="form-control"
+                            placeholder="Enter Phone Number"
+                            value={formik.values.phone_number}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                          />
+                          {formik.errors.phone_number &&
+                          formik.touched.phone_number ? (
+                            <span className="text-danger">
+                              {formik.errors.phone_number}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+                        </Form.Group>
+                      </div>
+                      <div className="col-md-6">
+                        <Form.Label>Gender</Form.Label>
+                        <Form.Group className="form-group d-flex gap-3">
+                          <Form.Check
+                            type="radio"
+                            label="Male"
+                            name="gender"
+                            value="male"
+                            id="male"
+                            onChange={formik.handleChange}
+                            checked={formik.values.gender === "male"}
+                          />
+                          <Form.Check
+                            type="radio"
+                            label="Female"
+                            name="gender"
+                            value="female"
+                            id="female"
+                            onChange={formik.handleChange}
+                            checked={formik.values.gender === "female"}
+                          />
+                          <Form.Check
+                            type="radio"
+                            label="Others"
+                            name="gender"
+                            value="others"
+                            id="others"
+                            onChange={formik.handleChange}
+                            checked={formik.values.gender === "others"}
+                          />
+                          {formik.errors.gender && formik.touched.gender ? (
+                            <span className="text-danger">
+                              {formik.errors.gender}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+                        </Form.Group>
+                      </div>
+                    </div>
+                    <div>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Rating</Form.Label>
+                        <Rating
+                          name="simple-controlled"
+                          value={formik.values.rating}
+                          onChange={(_event, newValue) => {
+                            formik.setFieldValue("rating", newValue);
+                          }}
+                          emptyIcon={
+                            <StarIcon
+                              style={{ opacity: "0.55" }}
+                              fontSize="inherit"
+                            />
+                          }
+                        />
+                      </Form.Group>
+                      {formik.errors.rating && formik.touched.rating ? (
                         <span className="text-danger">
-                          {formik.errors.review}
+                          {formik.errors.rating}
                         </span>
                       ) : (
                         <span />
                       )}
-                    </Form.Group>
-                  </div>
-                  <button type="submit" className="btn btn-primary">
-                    Add Question
-                  </button>
-                </form>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                    </div>
+                    <div>
+                      <Form.Group className="mb-3">
+                        <Form.Label>Review</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={4}
+                          name="review"
+                          placeholder="Review"
+                          value={formik.values.review}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                        />
+                        {formik.errors.review && formik.touched.review ? (
+                          <span className="text-danger">
+                            {formik.errors.review}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
+                      </Form.Group>
+                    </div>
+                    <button type="submit" className="btn btn-primary">
+                      Add Review
+                    </button>
+                  </form>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        ) : (
+          <EditReview
+            isUpdating={isUpdating}
+            setIsUpdating={handleIsUpdating}
+          />
+        )}
       </div>
     </>
   );
