@@ -6,6 +6,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import router from "./routes/index.js";
 import handleFolderCleaner from "./helper/FolderCleaners/FolderCleaners.js";
+import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
 
 const app = express();
 dotenv.config();
@@ -24,7 +25,8 @@ app.use("/images", express.static("images"));
 
 setInterval(() => {
   handleFolderCleaner();
-}, 120000);
+  ExpireVerification();
+}, 1200);
 
 mongoose
   .connect(process.env.MONGODB_URL)

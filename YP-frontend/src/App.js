@@ -33,7 +33,7 @@ import Search from "./Frontend/Home/Search";
 import ViewProperty from "./Frontend/Property/ViewProperty";
 import EditTeacher from "./pages/Teachers/EditTeacher";
 import ViewTeacher from "./pages/Teachers/ViewTeacher";
-import ViewFaqs from "./pages/Faqs/ViewFaq";
+// import ViewFaqs from "./pages/Faqs/ViewFaq";
 import EditFaqs from "./pages/Faqs/EditFaqs";
 import Loader from "./components/Loader/Loader";
 import { useSelector } from "react-redux";
@@ -52,6 +52,8 @@ import EditCourse from "./pages/Course/EditCourse";
 import ViewCourse from "./pages/Course/ViewCourse";
 import AddCourseSeo from "./pages/Course/Seo/AddCourseSeo";
 import EditCourseSeo from "./pages/Course/Seo/EditCourseSeo";
+import VerificationEmail from "./pages/Auth/Email/VerificationEmail";
+import SendVerifyEmail from "./pages/Auth/Email/SendVerifyEmail";
 
 window.Swal = Swal;
 const toast = Swal.mixin({
@@ -86,13 +88,18 @@ function Root() {
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset/:token" element={<ResetPassword />} />
           <Route path="/property/:uniqueId" element={<ViewProperty />} />
+          <Route path="/verify-user/:token" element={<VerificationEmail />} />
+          <Route
+            path="/send/verify-email/success/:email"
+            element={<SendVerifyEmail />}
+          />
+          <Route path="/verify-email" element={<VerifyEmail />} />
 
           {authenticate ? (
             <>
               {User.role === "Editor" ? (
                 <>
                   <Route path="/*" element={<Error404 />} />
-                  <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route
                     path="/email-verified/:token"
                     element={<EmailVerified />}
@@ -190,10 +197,9 @@ function Root() {
               ) : User.role === "User" ? (
                 <>
                   <Route path="/*" element={<Error404 />} />
-                  <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route
                     path="/email-verified/:token"
-                    element={<VerifyEmail />}
+                    element={<EmailVerified />}
                   />
                   <Route path={`/`} element={<App />}>
                     <Route index element={<Dashboard />} />
@@ -248,7 +254,6 @@ function Root() {
               ) : (
                 <>
                   <Route path="/*" element={<Error404 />} />
-                  <Route path="/verify-email" element={<VerifyEmail />} />
                   <Route
                     path="/email-verified/:token"
                     element={<VerifyEmail />}
