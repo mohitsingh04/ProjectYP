@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Button, Form, Card, Row, Col } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -22,14 +22,6 @@ export default function Teachers() {
   const [previewProfile, setPreviewProfile] = useState("");
   const [showTeacherForm, setShowTeacherForm] = useState(true);
 
-  const getTeachers = useCallback(() => {
-    dispatch(showLoading());
-    API.get("/teacher").then(({ data }) => {
-      dispatch(hideLoading());
-      setTeachers(data.filter((teachers) => teachers.property_id === uniqueId));
-    });
-  }, [dispatch, uniqueId]);
-
   const getProperty = useCallback(() => {
     dispatch(showLoading());
     API.get(`/property/${uniqueId}`).then(({ data }) => {
@@ -38,9 +30,20 @@ export default function Teachers() {
     });
   }, [dispatch, uniqueId]);
 
+  const getTeachers = useCallback(() => {
+    dispatch(showLoading());
+    API.get("/teacher").then(({ data }) => {
+      dispatch(hideLoading());
+      setTeachers(data);
+      setTeachers(
+        data.filter((teachers) => teachers.property_id === parseInt(uniqueId))
+      );
+    });
+  }, [dispatch, uniqueId]);
+
   useEffect(() => {
-    getTeachers();
     getProperty();
+    getTeachers();
   }, [getTeachers, getProperty]);
 
   const handleAddTeacher = () => {
@@ -89,11 +92,12 @@ export default function Teachers() {
           if (response.data.message) {
             toast.success(response.data.message);
             resetForm();
+            setShowTeacherForm(true);
+            getTeachers();
+            setPreviewProfile("");
           } else if (response.data.error) {
             toast.error(response.data.message);
           }
-          setShowTeacherForm(true);
-          getTeachers();
         });
       }
     } catch (err) {

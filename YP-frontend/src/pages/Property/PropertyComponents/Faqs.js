@@ -63,6 +63,9 @@ export default function Faqs() {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
+          resetForm();
+          getFaqs();
+          setAnswer("");
         } else if (response.data.error) {
           toast.error(response.data.error);
         }
@@ -73,16 +76,19 @@ export default function Faqs() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-    });
-
-  // const handleEditFaq = (uniqueId) => {
-  //     navigate("/dashboard/edit/faqs/" + uniqueId);
-  // }
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    resetForm,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
 
   const handleDeleteFaqs = (uniqueId) => {
     Swal.fire({
@@ -101,6 +107,7 @@ export default function Faqs() {
             dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
+              getFaqs();
             } else if (response.data.error) {
               toast.success(response.data.error);
             }
@@ -131,7 +138,7 @@ export default function Faqs() {
                 ) : (
                   <>
                     {faqs.map((item, key) => (
-                      <div key={key}>
+                      <div key={key} className="d-flex gap-4">
                         <div
                           aria-multiselectable="true"
                           className="accordion propertyFaqs"
@@ -149,23 +156,25 @@ export default function Faqs() {
                             </Accordion.Item>
                           </Accordion>
                         </div>
-                        <span>
-                          <Link
-                            to={`/dashboard/edit/faqs/${item.property_name}/${item.uniqueId}`}
-                          >
-                            <button className="btn">
-                              <i className="fe fe-edit text-primary"></i>
+                        <div>
+                          <span>
+                            <Link
+                              to={`/dashboard/edit/faqs/${item.property_name}/${item.uniqueId}`}
+                            >
+                              <button className="btn">
+                                <i className="fe fe-edit text-primary"></i>
+                              </button>
+                            </Link>
+                          </span>
+                          <span>
+                            <button
+                              onClick={() => handleDeleteFaqs(item.uniqueId)}
+                              className="btn"
+                            >
+                              <i className="fe fe-trash text-primary"></i>
                             </button>
-                          </Link>
-                        </span>
-                        <span>
-                          <button
-                            onClick={() => handleDeleteFaqs(item.uniqueId)}
-                            className="btn"
-                          >
-                            <i className="fe fe-trash text-primary"></i>
-                          </button>
-                        </span>
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </>
