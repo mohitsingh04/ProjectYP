@@ -112,7 +112,6 @@ export const updateProperty = async (req, res) => {
         ...times,
       })),
     });
-    console.log(businessHours);
     const property = await Property.findOne({ property_name: property_name });
     if (property) {
       await Property.findOneAndUpdate(

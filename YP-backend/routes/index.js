@@ -255,6 +255,7 @@ router.delete(
 
 // Business Hours
 router.get("/business-hours", Authentication, getBusinessHours);
+router.get("/business-hours/:property_id", Authentication, getBusinessHours);
 router.post("/business-hours", Authentication, addBusinessHours);
 
 // Country
