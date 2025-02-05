@@ -26,19 +26,13 @@ export const updateUser = async (req, res) => {
       role,
       status,
     } = req.body;
-    const profileFile = req.files["profile"];
-    let userProfile = req.body.profile; // Default to existing profile
-
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
-    if (profileFile) {
-      userProfile = req.files["profile"][0].filename;
-    }
 
     const user = await User.findOne({ uniqueId: uniqueId });
+    const profileFile = req.files
+      ? req.files.profile[0].filename
+      : user?.profile;
 
-    await User.findOneAndUpdate(
+    const updatedUser = await User.findOneAndUpdate(
       { uniqueId: uniqueId },
       {
         $set: {
@@ -49,26 +43,16 @@ export const updateUser = async (req, res) => {
           address,
           city,
           state,
-          profile: userProfile,
           role,
           status,
+          profile: profileFile,
         },
-      }
-    )
-      .then(async (result) => {
-        if (user.profile && userProfile !== user.profile) {
-          const delFile = path.join(__dirname, "../images");
-          const DelFilePath = path.join(delFile, user.profile);
-          if (fs.existsSync(DelFilePath)) {
-            fs.unlinkSync(DelFilePath);
-          }
-        }
-        return res.send({ message: "Profile updated." });
-      })
-      .catch((err) => {
-        console.log(err.message);
-        return res.status(500).send({ error: "Internal Server Error." });
-      });
+      },
+      { new: true }
+    );
+    if (updateUser) {
+      return res.status(200).json({ message: "User Updated Successfully" });
+    }
   } catch (err) {
     console.log(err.message);
     return res.status(500).send({ error: "Internal Server Error." });

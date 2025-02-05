@@ -1,12 +1,11 @@
-import React, { useEffect, useState, useRef, useCallback } from "react";
-import { Card, Row, Col, Table } from "react-bootstrap";
+import React, { useEffect, useState, useCallback } from "react";
+import { Card, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
-import PropertyImages from "./PropertyImages";
 import DataRequest from "../../../context/DataRequest";
 
 export default function OtherDetails() {
@@ -33,7 +32,7 @@ export default function OtherDetails() {
       dispatch(hideLoading());
       setCategory(data);
     });
-  }, []);
+  }, [dispatch]);
 
   const getStatus = useCallback(async () => {
     dispatch(showLoading());
@@ -41,7 +40,7 @@ export default function OtherDetails() {
       dispatch(hideLoading());
       setStatus(data);
     });
-  }, []);
+  }, [dispatch]);
 
   const getBussinessHours = useCallback(async () => {
     const response = await API.get(`/business-hours/${property.uniqueId}`);
@@ -103,13 +102,9 @@ export default function OtherDetails() {
   const [showCategoryInInput, setShowCategoryInInput] = useState(false);
   const [showStatusInInput, setShowStatusInInput] = useState(false);
   const [showEstDateInInput, setShowEstDateInInput] = useState(false);
-  const [showBusinessTimeInInput, setShowBusinessTimeInInput] = useState(false);
 
   const handleEditCategory = () => {
     setShowCategoryInInput(true);
-  };
-  const handleUpdateCategory = () => {
-    setShowCategoryInInput(false);
   };
   const handleCancelEditCategory = () => {
     setShowCategoryInInput(false);
@@ -117,17 +112,11 @@ export default function OtherDetails() {
   const handleEditStatus = () => {
     setShowStatusInInput(true);
   };
-  const handleUpdateStatus = () => {
-    setShowStatusInInput(false);
-  };
   const handleCancelEditStatus = () => {
     setShowStatusInInput(false);
   };
   const handleEditEstDate = () => {
     setShowEstDateInInput(true);
-  };
-  const handleUpdateEstDate = () => {
-    setShowEstDateInInput(false);
   };
   const handleCancelEditEstDate = () => {
     setShowEstDateInInput(false);
@@ -166,15 +155,7 @@ export default function OtherDetails() {
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
+  const { values, handleChange, handleBlur, handleSubmit } = useFormik({
     initialValues: initialValues,
     // validationSchema: validationSchema,
     onSubmit: onSubmit,

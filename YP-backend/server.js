@@ -26,7 +26,7 @@ app.use("/images", express.static("images"));
 setInterval(() => {
   handleFolderCleaner();
   ExpireVerification();
-}, 1200);
+}, 120000);
 
 mongoose
   .connect(process.env.MONGODB_URL)
