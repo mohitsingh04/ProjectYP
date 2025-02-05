@@ -31,7 +31,7 @@ import ViewStatus from "./pages/Status/ViewStatus";
 import EditUser from "./pages/Users/EditUser";
 import Search from "./Frontend/Home/Search";
 import ViewProperty from "./Frontend/Property/ViewProperty";
-import EditTeacher from "./pages/Teachers/EditTeacher";
+import EditTeacher from "./pages/Teachers/EditTeacher"
 import ViewTeacher from "./pages/Teachers/ViewTeacher";
 // import ViewFaqs from "./pages/Faqs/ViewFaq";
 import EditFaqs from "./pages/Faqs/EditFaqs";
