@@ -49,7 +49,7 @@ export const addGallery = async (req, res) => {
 
     const newGallery = new Gallery({
       uniqueId: x,
-    //   userId: userUniqueId,
+      //   userId: userUniqueId,
       propertyId,
       title,
       gallery,
@@ -76,35 +76,36 @@ export const updateGallery = async (req, res) => {
     }
 
     // Parse incoming fields
-    const { title } = req.body;
+    let { title, gallery } = req.body;
 
-    let existingGallery = [];
-    if (req.body.existingGallery) {
-      // Ensure it's parsed as an array
-      existingGallery = Array.isArray(req.body.existingGallery)
-        ? req.body.existingGallery
-        : [req.body.existingGallery];
+    gallery = Array.isArray(gallery) ? gallery : [];
+
+    console.log(req.body);
+    const newGallery = [];
+
+    newGallery.push(gallery);
+    if (req?.files?.newImages && req.files.newImages.length > 0) {
+      for (let i = 0; i < req.files.newImages.length; i++) {
+        gallery.push(req.files.newImages[i]?.path);
+      }
     }
 
-    const newGallery = [];
-    if (req.files && req.files.length > 0) {
-      req.files.forEach((file) => {
-        newGallery.push(file.path);
+    const updateGallery = await Gallery.findOneAndUpdate(
+      { uniqueId: uniqueId },
+      {
+        $set: {
+          title: title,
+          gallery: gallery,
+        },
+      },
+      { new: true }
+    );
+
+    if (updateGallery) {
+      return res.status(200).json({
+        message: "Gallery updated successfully.",
       });
     }
-
-    // Merge existing and new gallery images
-    const updatedImages = [...existingGallery, ...newGallery];
-
-    existGallery.title = title;
-    existGallery.gallery = updatedImages;
-
-    await existGallery.save();
-
-    return res.status(200).json({
-      message: "Gallery updated successfully.",
-      updatedGallery: existGallery,
-    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal server error." });

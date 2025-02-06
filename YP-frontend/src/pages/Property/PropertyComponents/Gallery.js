@@ -3,6 +3,9 @@ import { Card, Row, Col } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { API } from "../../../context/Api";
 import AddGallery from "./GalleryComponents/AddGalleryComponents";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
+import EditGallery from "./GalleryComponents/EditGallery";
 
 export default function Gallery() {
   const [open, setOpen] = useState(false);
@@ -36,6 +39,28 @@ export default function Gallery() {
     setGalleryUniqueId(id);
   };
 
+  const handleDeleteGallery = (id) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const deleteResponse = await API.delete(`/gallery/${id}`);
+          toast.success(deleteResponse.data.message);
+          fetchGallery();
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <Fragment>
       {toggleGalleryPage ? (
@@ -53,6 +78,11 @@ export default function Gallery() {
                     <div className="ms-auto">
                       <button onClick={() => handleEditGallery(item.uniqueId)}>
                         <i className="fe fe-edit"></i>
+                      </button>
+                      <button
+                        onClick={() => handleDeleteGallery(item.uniqueId)}
+                      >
+                        <i className="fe fe-trash-2"></i>
                       </button>
                     </div>
                   </Card.Header>
@@ -121,7 +151,13 @@ export default function Gallery() {
                 ) : null}
               </div>
             </Card.Header>
-            <Card.Body></Card.Body>
+            <Card.Body>
+              <EditGallery
+                gallleryId={galleryUniqueId}
+                getGallery={fetchGallery}
+                setToggleGalleryPage={setToggleGalleryPage}
+              />
+            </Card.Body>
           </Card>
         </>
       )}

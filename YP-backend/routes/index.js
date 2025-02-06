@@ -215,11 +215,17 @@ router.get("/course/:uniqueId", Authentication, getCourseById);
 
 // Gallery Route
 const gallery = upload.fields([{ name: "gallery", maxCount: 4 }]);
+const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 4 }]);
 router.get("/gallery", Authentication, getGallery);
 router.post("/gallery", Authentication, gallery, addGallery);
-router.patch("/gallery/:uniqueId", Authentication, updateGallery);
+router.patch(
+  "/gallery/:uniqueId",
+  Authentication,
+  galleryUpdate,
+  updateGallery
+);
 router.delete("/gallery/:uniqueId", Authentication, deleteGallery);
-router.get("/gallery/:uniqueId", Authentication, getGalleryById);
+router.get("/gallery/:uniqueId", Authentication, gallery, getGalleryById);
 
 // Seo Route
 router.get("/seo", Authentication, getSeo);
