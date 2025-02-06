@@ -35,9 +35,14 @@ const handleFolderCleaner = async (req, res) => {
     AllTeachers.map((file) => {
       files.push(file.profile);
     });
+
     AllGallery.map((file) => {
-      files.push(file.images);
+      file.gallery.map((img) => {
+        const x = img.split(`\\`);
+        files.push(x[1]);
+      });
     });
+
     AllProperties.map((file) => {
       files.push(file.property_icon);
       files.push(file.featured_image);

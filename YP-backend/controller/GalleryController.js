@@ -1,115 +1,134 @@
 import Gallery from "../models/Gallery.js";
 
 export const getGallery = async (req, res) => {
-    try {
-        const gallery = await Gallery.find();
-        return res.status(200).json(gallery);
-    } catch (err) {
-        console.log(err.message)
-        return res.send({ error: "Internal Server Error!" });
-    }
+  try {
+    const gallery = await Gallery.find();
+    return res.status(200).json(gallery);
+  } catch (err) {
+    console.log(err.message);
+    return res.send({ error: "Internal Server Error!" });
+  }
 };
 
 export const getGalleryById = async (req, res) => {
-    try {
-        const uniqueId = req.params.uniqueId;
-        const gallery = await Gallery.findOne({ uniqueId: uniqueId });
-        return res.status(200).json(gallery);
-    } catch (err) {
-        console.log(err.message)
-        return res.send({ error: "Internal Server Error!" });
-    }
+  try {
+    const uniqueId = req.params.uniqueId;
+    const gallery = await Gallery.findOne({ uniqueId: uniqueId });
+    return res.status(200).json(gallery);
+  } catch (err) {
+    console.log(err.message);
+    return res.send({ error: "Internal Server Error!" });
+  }
 };
 
 export const addGallery = async (req, res) => {
-    let request = req.body, images = [];
-    const gallery = await Gallery.findOne().sort({ _id: -1 }).limit(1);
-    if (req?.files != undefined && req?.files?.images?.length > 0) {
-        for (let i = 0; i < req?.files?.images?.length; i++) {
-            images?.push(req?.files?.images[i]?.filename)
-        }
-        request.images = images;
+  try {
+    const { propertyId, title } = req.body;
+    const gallery = [];
+
+    if (req?.files?.gallery && req.files.gallery.length > 0) {
+      for (let i = 0; i < req.files.gallery.length; i++) {
+        gallery.push(req.files.gallery[i]?.path);
+      }
     }
-    try {
-        let exist = await Gallery.findOne({ "title": request.title, "property_id": request.property_id });
-        if (exist) {
-            return res.status(200).send({ message: 'This title is already exists!' });
-        }
-        const slug = request.title.replace(/ /g, "-").toLowerCase();
-        const kebabCase = request.property_name.replace(/ /g, "-").toLowerCase();
-        const x = gallery ? gallery.uniqueId + 1 : 1;
-        const newGallery = new Gallery({
-            uniqueId: x,
-            title: request.title,
-            images: request.images,
-            property_name: kebabCase,
-            gallerySlug: slug,
-            property_id: request.property_id
-        });
-        if (await newGallery.save()) {
-            return res.send({ message: "Gallery added." });
-        }
-    } catch (err) {
-        return res.send({ error: "Internal server error!" })
+
+    const existGallery = await Gallery.findOne({ propertyId, title });
+    if (existGallery) {
+      return res.status(400).json({ error: "Gallery is already exist." });
     }
+
+    const lastGallery = await Gallery.findOne().sort({ _id: -1 }).limit(1);
+    const x = lastGallery ? lastGallery.uniqueId + 1 : 1;
+
+    // const user = await User.findOne({ _id: userId }).select("-password");
+    // if (!user) {
+    //   return res.status(404).json({ error: "User not found" });
+    // }
+
+    // const userUniqueId = user.uniqueId;
+
+    const newGallery = new Gallery({
+      uniqueId: x,
+    //   userId: userUniqueId,
+      propertyId,
+      title,
+      gallery,
+    });
+
+    const savedGallery = await newGallery.save();
+    return res.json({ message: "Added Successfully.", savedGallery });
+  } catch (error) {
+    return res.json({ error: error.message });
+  }
 };
 
 export const updateGallery = async (req, res) => {
-    try {
-        const uniqueId = req.params.uniqueId;
-        const { title } = req.body;
-        const gallery = await Gallery.findOne({ uniqueId: uniqueId });
-        if (!gallery) {
-            return res.send({ error: "Gallery not found!" });
-        }
-        console.log(title)
+  try {
+    const { uniqueId } = req.params;
 
-        let images = [];
-        let exist_gallery_img;
-        if (req?.files != undefined && req?.files?.images?.length > 0) {
-            for (let i = 0; i < req?.files?.images?.length; i++) {
-                images?.push(req?.files?.images[i]?.filename)
-            }
-        }
-        const exist = await Gallery.findOne({ uniqueId: uniqueId })
-        if (exist) {
-            exist_gallery_img = exist.images
-            if (images.length > 0) {
-                exist_gallery_img = exist_gallery_img.concat(images)
-            }
-            const updatedGallery = await Gallery.findOneAndUpdate({ uniqueId: uniqueId }, {
-                "$set": {
-                    "title": title,
-                    "images": exist_gallery_img
-                },
-            },
-                { new: true }
-            )
-            return res.status(200).send({ status_code: 200, "gallery": updatedGallery, message: "Gallery updated successfully." });
-        }
-    } catch (error) {
-        return res.send({ error: error.message })
+    if (!uniqueId) {
+      return res.status(400).json({ error: "Gallery ID is required!" });
     }
+
+    const existGallery = await Gallery.findOne({ uniqueId });
+    if (!existGallery) {
+      return res.status(404).json({ error: "Gallery not found!" });
+    }
+
+    // Parse incoming fields
+    const { title } = req.body;
+
+    let existingGallery = [];
+    if (req.body.existingGallery) {
+      // Ensure it's parsed as an array
+      existingGallery = Array.isArray(req.body.existingGallery)
+        ? req.body.existingGallery
+        : [req.body.existingGallery];
+    }
+
+    const newGallery = [];
+    if (req.files && req.files.length > 0) {
+      req.files.forEach((file) => {
+        newGallery.push(file.path);
+      });
+    }
+
+    // Merge existing and new gallery images
+    const updatedImages = [...existingGallery, ...newGallery];
+
+    existGallery.title = title;
+    existGallery.gallery = updatedImages;
+
+    await existGallery.save();
+
+    return res.status(200).json({
+      message: "Gallery updated successfully.",
+      updatedGallery: existGallery,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal server error." });
+  }
 };
 
 export const deleteGallery = async (req, res) => {
-    try {
-        const uniqueId = req.params.uniqueId;
-        const images = await Gallery.findOne({ uniqueId: uniqueId });
-        if (images) {
-            await Gallery.findOneAndDelete({ uniqueId: uniqueId })
-                .then(result => {
-                    return res.send({ message: "Gallery Deleted." });
-                })
-                .catch(err => {
-                    console.log(err.message)
-                    return res.send({ error: "Internal Server Error." });
-                });
-        } else {
-            return res.send({ error: "Gallery not found!" })
-        }
-    } catch (err) {
-        console.log(err.message)
-        return res.send({ error: "Internal Server Error!" });
+  try {
+    const uniqueId = req.params.uniqueId;
+    const images = await Gallery.findOne({ uniqueId: uniqueId });
+    if (images) {
+      await Gallery.findOneAndDelete({ uniqueId: uniqueId })
+        .then((result) => {
+          return res.send({ message: "Gallery Deleted." });
+        })
+        .catch((err) => {
+          console.log(err.message);
+          return res.send({ error: "Internal Server Error." });
+        });
+    } else {
+      return res.send({ error: "Gallery not found!" });
     }
+  } catch (err) {
+    console.log(err.message);
+    return res.send({ error: "Internal Server Error!" });
+  }
 };

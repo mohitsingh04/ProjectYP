@@ -214,7 +214,7 @@ router.delete("/course/:uniqueId", Authentication, deleteCourse);
 router.get("/course/:uniqueId", Authentication, getCourseById);
 
 // Gallery Route
-const gallery = upload.fields([{ name: "images", maxCount: 4 }]);
+const gallery = upload.fields([{ name: "gallery", maxCount: 4 }]);
 router.get("/gallery", Authentication, getGallery);
 router.post("/gallery", Authentication, gallery, addGallery);
 router.patch("/gallery/:uniqueId", Authentication, updateGallery);
