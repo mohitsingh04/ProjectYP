@@ -1,3 +1,5 @@
+import Achievements from "../models/Achievements.js";
+import BusinessHour from "../models/BusinessHour.js";
 import Faqs from "../models/Faqs.js";
 import Gallery from "../models/Gallery.js";
 import Property from "../models/Property.js";
@@ -5,6 +7,9 @@ import PropertyCourse from "../models/PropertyCourse.js";
 import Review from "../models/Reviews.js";
 import Seo from "../models/Seo.js";
 import Teachers from "../models/Teachers.js";
+import fs from "fs/promises";
+import path from "path";
+import { fileURLToPath } from "url";
 
 export const getProperty = async (req, res) => {
   try {
@@ -40,6 +45,13 @@ export const getPropertyBySlug = async (req, res) => {
 
 export const addProperty = async (req, res) => {
   try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const baseFolder = path.join(__dirname, "../Folders");
+
+    const allFolders = await fs.readdir(baseFolder);
+
     const {
       userId,
       property_name,
@@ -48,15 +60,40 @@ export const addProperty = async (req, res) => {
       category,
       property_description,
     } = req.body;
+
     const slug = property_name.replace(/ /g, "-").toLowerCase();
+
     const property_icon = req?.files["property_icon"]?.[0]?.filename;
     const featured_image = req?.files["featured_image"]?.[0]?.filename;
+
     const property = await Property.findOne().sort({ _id: -1 }).limit(1);
     const existProperty = await Property.findOne({
       property_name: property_name,
     });
+
+    const x = property ? property.uniqueId + 1 : 1;
+    const folderPath = path.join(__dirname, `../Folders/${x}`);
+    try {
+      await fs.promises.access(folderPath, fs.constants.F_OK);
+      console.log(`Folder ${x} exists.`);
+    } catch (err) {
+      console.log(`Folder ${x} does not exist.`);
+      fs.mkdir(folderPath, { recursive: true }, (err) => {
+        if (err) throw err;
+        console.log("Folder created successfully");
+      });
+
+      const allSubFolders = ["main", "teachers", "gallery", "achievements"];
+      allSubFolders.map((item) => {
+        const subFolder = path.join(folderPath, item);
+        fs.mkdir(subFolder, { recursive: true }, (err) => {
+          if (err) throw err;
+          console.log("Folder created successfully");
+        });
+      });
+    }
+
     if (!existProperty) {
-      const x = property ? property.uniqueId + 1 : 1;
       const newProperty = new Property({
         uniqueId: x,
         userId,
@@ -165,11 +202,14 @@ export const deleteProperty = async (req, res) => {
     if (property) {
       await Property.findOneAndDelete({ uniqueId: uniqueId });
       await Teachers.deleteMany({ property_id: uniqueId });
-      await Gallery.deleteMany({ property_id: uniqueId });
+      await Gallery.deleteMany({ propertyId: uniqueId });
       await Review.deleteMany({ property_id: uniqueId });
       await PropertyCourse.deleteMany({ property_id: uniqueId });
       await Seo.deleteMany({ property_id: uniqueId });
       await Faqs.deleteMany({ property_id: uniqueId });
+      await Achievements.deleteMany({ property_id: uniqueId });
+      await BusinessHour.deleteMany({ property_id: uniqueId });
+
       res.send({ message: "Property Deleted." });
     }
   } catch (err) {

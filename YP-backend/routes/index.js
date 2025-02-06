@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { upload } from "../multer/index.js";
+import { storage, upload } from "../multer/index.js";
 import {
   changePassword,
   forgotPassword,
@@ -105,6 +105,7 @@ import {
   addAchievements,
   getAchievementsByPropertyId,
 } from "../controller/AchievementsController.js";
+import multer from "multer";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -155,6 +156,7 @@ router.delete("/category/:uniqueId", Authentication, deleteCategory);
 router.get("/category/:uniqueId", Authentication, getCategoryById);
 
 // Property Route
+
 const propertyUpload = upload.fields([
   { name: "property_icon", maxCount: 1 },
   { name: "featured_image", maxCount: 1 },
@@ -178,7 +180,25 @@ router.get("/property/:uniqueId", Authentication, getPropertyById);
 router.get("/property/:property_slug", Authentication, getPropertyBySlug);
 
 // Teacher Route
-const teacherProfile = upload.fields([{ name: "profile", maxCount: 1 }]);
+const teacherStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const property_id = req.body.property_id;
+    console.log(property_id);
+    cb(null, `./Folders/${property_id}/teachers`);
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      "IMG" + "-" + Date.now() + "-" + file.originalname + "-" + ".webp"
+    );
+  },
+});
+
+const teachersUpload = multer({ storage: teacherStorage });
+
+const teacherProfile = teachersUpload.fields([
+  { name: "profile", maxCount: 1 },
+]);
 router.get("/teacher", Authentication, getTeacher);
 router.post("/teacher", Authentication, teacherProfile, addTeacher);
 router.patch(
@@ -218,7 +238,23 @@ router.delete("/course/:uniqueId", Authentication, deleteCourse);
 router.get("/course/:uniqueId", Authentication, getCourseById);
 
 // Gallery Route
-const gallery = upload.fields([{ name: "gallery", maxCount: 4 }]);
+
+const galleryStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const property_id = req.body.propertyId;
+    console.log(property_id);
+    cb(null, `./Folders/${property_id}/gallery`);
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      "IMG" + "-" + Date.now() + "-" + file.originalname + "-" + ".webp"
+    );
+  },
+});
+
+const galleryUploads = multer({ storage: galleryStorage });
+const gallery = galleryUploads.fields([{ name: "gallery", maxCount: 4 }]);
 const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 4 }]);
 router.get("/gallery", Authentication, getGallery);
 router.post("/gallery", Authentication, gallery, addGallery);
@@ -278,7 +314,24 @@ router.get("/states", Authentication, getState);
 router.get("/cities", Authentication, getCity);
 
 //achievements
-const achievements = upload.fields([{ name: "achievements", maxCount: 4 }]);
+const achievementsStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const property_id = req.body.property_id;
+    cb(null, `./Folders/${property_id}/achievements`);
+  },
+  filename: function (req, file, cb) {
+    cb(
+      null,
+      "IMG" + "-" + Date.now() + "-" + file.originalname + "-" + ".webp"
+    );
+  },
+});
+
+const achievementsUploads = multer({ storage: achievementsStorage });
+
+const achievements = achievementsUploads.fields([
+  { name: "achievements", maxCount: 4 },
+]);
 router.post("/achievements", Authentication, achievements, addAchievements);
 router.get(
   "/achievements/:property_id",

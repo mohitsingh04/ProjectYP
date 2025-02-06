@@ -33,7 +33,7 @@ export const addTeacher = async (req, res) => {
     } = req.body;
     const slug = teacher_name.replace(/ /g, "-").toLowerCase();
     const kebabCase = property_name.replace(/ /g, "-").toLowerCase();
-    const profile = req?.files["profile"]?.[0]?.filename;
+    const profile = req?.files["profile"]?.[0]?.path;
     const teachers = await Teachers.findOne().sort({ _id: -1 }).limit(1);
     // const existTeachers = await Teachers.findOne({ teacher_name: teacher_name });
     // if (!existTeachers) {
@@ -52,7 +52,6 @@ export const addTeacher = async (req, res) => {
     if (await newTeacher.save()) {
       return res.send({ message: "Teacher added." });
     }
-    // }
   } catch (err) {
     console.log(err.message);
     return res.send({ error: "Internal server error!" });
@@ -65,7 +64,7 @@ export const updateTeacher = async (req, res) => {
     const { teacher_name, designation, experience, status } = req.body;
     const profileFile = req.files["profile"];
     const teacherProfile = profileFile
-      ? req?.files["profile"][0]?.filename
+      ? req?.files["profile"][0]?.path
       : req.body.profile;
     const teacher = await Teachers.findOne({ uniqueId: uniqueId });
     if (!teacher) {

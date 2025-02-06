@@ -1,7 +1,7 @@
-import Course from "../../models/Courses.js";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import Course from "../../models/Courses.js";
 import User from "../../models/Users.js";
 import Category from "../../models/Category.js";
 import Property from "../../models/Property.js";

@@ -78,14 +78,19 @@ export default function Teachers() {
         property_id: property.uniqueId,
         property_name: property.property_name,
       };
+      console.log(values);
+      let formData = new FormData();
+      formData.append("teacher_name", values.teacher_name);
+      formData.append("property_id", values.property_id);
+      formData.append("property_name", values.property_name);
+      formData.append("userId", values.userId);
+      formData.append("designation", values.designation);
+      formData.append("experience", values.experience);
       if (
         typeof values.profile == "object" ||
         typeof values.profile != "object"
       ) {
-        let formData = new FormData();
-        for (let value in values) {
-          formData.append(value, values[value]);
-        }
+        formData.append("profile", values.profile);
         dispatch(showLoading());
         API.post("/teacher", formData).then((response) => {
           dispatch(hideLoading());
@@ -152,7 +157,7 @@ export default function Teachers() {
       name: "Teacher Name",
       selector: (row) => (
         <img
-          src={`http://localhost:5000/images/${row.profile}`}
+          src={`http://localhost:5000/${row.profile}`}
           width={53}
           alt={row.profile}
         />

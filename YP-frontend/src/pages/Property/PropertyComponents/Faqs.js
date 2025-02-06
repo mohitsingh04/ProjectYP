@@ -108,6 +108,7 @@ export default function Faqs() {
             if (response.data.message) {
               toast.success(response.data.message);
               getFaqs();
+              setAnswer("");
             } else if (response.data.error) {
               toast.success(response.data.error);
             }

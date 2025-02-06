@@ -23,12 +23,12 @@ export default function Achievements() {
   }, [uniqueId]);
 
   useEffect(() => {
-    getAchievements();
-  }, [getAchievements]);
-
-  useEffect(() => {
     getProperty();
   }, [getProperty]);
+
+  useEffect(() => {
+    getAchievements();
+  }, [getAchievements]);
 
   const onDrop = useCallback((acceptedFiles) => {
     const filePreviews = acceptedFiles.map((file) =>
@@ -69,8 +69,9 @@ export default function Achievements() {
 
       const response = await API.post(`/achievements`, formData);
       toast.success(response.data.message);
-      getAchievements();
       setIsUpdating(false);
+      getAchievements();
+      setImages([]);
     } catch (error) {
       console.log(error);
     }
@@ -115,7 +116,7 @@ export default function Achievements() {
                     oldAchievements.map((item, index) => (
                       <div
                         key={index}
-                        className="col-md-3 p-0 px-2 position-relative"
+                        className="col-md-3 p-0 px-2 position-relative cc"
                       >
                         <img
                           src={item.preview || `http://localhost:5000/${item}`}
@@ -133,21 +134,23 @@ export default function Achievements() {
                       </div>
                     ))}
                   {images.length > 0 &&
-                    images.map((item, index) => (
+                    images.map((image, i) => (
                       <div
-                        key={index}
-                        className="col-md-3 p-0 px-2 position-relative"
+                        key={i}
+                        className="col-md-3 p-0 px-2 bc position-relative"
                       >
                         <img
-                          src={item.preview || `http://localhost:5000/${item}`}
-                          alt={item.preview}
+                          src={
+                            image.preview || `http://localhost:5000/${image}`
+                          }
+                          alt={image.preview}
                           className="img-fluid"
                           style={{ aspectRatio: "2/2", objectFit: "cover" }}
                         />
                         <button
                           type="button"
                           className="btn btn-danger btn-sm position-absolute top-0 end-0"
-                          onClick={() => removeImage(index)}
+                          onClick={() => removeImage(i)}
                         >
                           Remove
                         </button>
@@ -178,17 +181,19 @@ export default function Achievements() {
               </Card.Header>
               <Card.Body className="bg-white">
                 <div className="row mt-4">
-                  {oldAchievements.length > 0
-                    ? oldAchievements.map((item, index) => (
-                        <div className="col-md-3 p-1" key={index}>
-                          <img
-                            src={`http://localhost:5000/${item}`}
-                            style={{ aspectRatio: "2/2", objectFit: "cover" }}
-                            alt={item}
-                          />
-                        </div>
-                      ))
-                    : <p>There are No Achievements</p>}
+                  {oldAchievements.length > 0 ? (
+                    oldAchievements.map((item, index) => (
+                      <div className="col-md-3 p-1" key={index}>
+                        <img
+                          src={`http://localhost:5000/${item}`}
+                          style={{ aspectRatio: "2/2", objectFit: "cover" }}
+                          alt={item}
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <p>There are No Achievements</p>
+                  )}
                 </div>
               </Card.Body>
             </Card>
