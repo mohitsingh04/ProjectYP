@@ -101,6 +101,10 @@ import {
 import { getState } from "../controller/StateController.js";
 import { getCity } from "../controller/CityController.js";
 import { getCountry } from "../controller/CountryController.js";
+import {
+  addAchievements,
+  getAchievementsByPropertyId,
+} from "../controller/AchievementsController.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -272,5 +276,14 @@ router.get("/states", Authentication, getState);
 
 // City
 router.get("/cities", Authentication, getCity);
+
+//achievements
+const achievements = upload.fields([{ name: "achievements", maxCount: 4 }]);
+router.post("/achievements", Authentication, achievements, addAchievements);
+router.get(
+  "/achievements/:property_id",
+  Authentication,
+  getAchievementsByPropertyId
+);
 
 export default router;

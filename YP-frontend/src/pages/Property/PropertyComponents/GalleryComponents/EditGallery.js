@@ -127,7 +127,7 @@ export default function EditGallery({
         ))}
         {newImages.length > 0 &&
           newImages.map((item, index) => (
-            <div key={index} className="col-md-3 p-0 mx-1 position-relative">
+            <div key={index} className="col-md-3 p-0 px-1 position-relative">
               <img
                 src={item.preview || `http://localhost:5000/${item}`}
                 alt="Preview"

@@ -7,6 +7,7 @@ import Category from "../../models/Category.js";
 import Property from "../../models/Property.js";
 import Teachers from "../../models/Teachers.js";
 import Gallery from "../../models/Gallery.js";
+import Achievements from "../../models/Achievements.js";
 
 const handleFolderCleaner = async (req, res) => {
   try {
@@ -20,6 +21,7 @@ const handleFolderCleaner = async (req, res) => {
     const AllProperties = await Property.find();
     const AllTeachers = await Teachers.find();
     const AllGallery = await Gallery.find();
+    const AllAchievements = await Achievements.find();
 
     const files = AllCourse.map((file) => path.basename(file.image));
     AllCategories.map((file) => {
@@ -46,6 +48,12 @@ const handleFolderCleaner = async (req, res) => {
     AllProperties.map((file) => {
       files.push(file.property_icon);
       files.push(file.featured_image);
+    });
+    AllAchievements.map((file) => {
+      file.achievements.map((item) => {
+        const x = item.split(`\\`);
+        files.push(x[1]);
+      });
     });
 
     const filesInFolder = await fs.readdir(unKnownFiles);
