@@ -7,6 +7,7 @@ import helmet from "helmet";
 import router from "./routes/index.js";
 import handleFolderCleaner from "./helper/FolderCleaners/FolderCleaners.js";
 import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
+import GalleryFolderCleaner from "./helper/FolderCleaners/GalleryFolderCleaner.js";
 
 const app = express();
 dotenv.config();
@@ -27,6 +28,7 @@ app.use("/Folders", express.static("Folders"));
 setInterval(() => {
   handleFolderCleaner();
   ExpireVerification();
+  GalleryFolderCleaner();
 }, 120000);
 
 mongoose

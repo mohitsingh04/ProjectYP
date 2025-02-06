@@ -50,8 +50,6 @@ export const addProperty = async (req, res) => {
 
     const baseFolder = path.join(__dirname, "../Folders");
 
-    const allFolders = await fs.readdir(baseFolder);
-
     const {
       userId,
       property_name,
