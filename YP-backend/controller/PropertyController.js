@@ -48,7 +48,7 @@ export const addProperty = async (req, res) => {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
 
-    const baseFolder = path.join(__dirname, "../Folders");
+    // const baseFolder = path.join(__dirname, "../Folders");
 
     const {
       userId,

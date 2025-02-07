@@ -8,6 +8,9 @@ import router from "./routes/index.js";
 import handleFolderCleaner from "./helper/FolderCleaners/FolderCleaners.js";
 import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
 import GalleryFolderCleaner from "./helper/FolderCleaners/GalleryFolderCleaner.js";
+import AchievementsFolderCleaner from "./helper/FolderCleaners/AchievementsFolderCleaner.js";
+import PropertyImageMover from "./helper/FolderCleaners/PropertyImageMover.js";
+import TeacherFolderCleaner from "./helper/FolderCleaners/TeachersFolderCleaner.js";
 
 const app = express();
 dotenv.config();
@@ -29,7 +32,13 @@ setInterval(() => {
   handleFolderCleaner();
   ExpireVerification();
   GalleryFolderCleaner();
+  AchievementsFolderCleaner();
 }, 120000);
+
+setInterval(() => {
+  PropertyImageMover();
+  TeacherFolderCleaner();
+}, 5000);
 
 mongoose
   .connect(process.env.MONGODB_URL)

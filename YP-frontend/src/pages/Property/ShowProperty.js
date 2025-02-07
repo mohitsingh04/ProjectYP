@@ -79,7 +79,7 @@ export default function ShowProperty() {
                   <Col lg={12} md={12} xl={6}>
                     <div className="wideget-user-desc d-sm-flex">
                       <div className="wideget-user-img">
-                        <img className="" src={`http://localhost:5000/images/${property.property_icon}`} width={120} height={120} alt="img" />
+                        <img className="" src={`http://localhost:5000/${property.property_icon}`} width={120} height={120} alt="img" />
                       </div>
                       <div className="user-wrap">
                         <h4>{property.property_name}</h4>

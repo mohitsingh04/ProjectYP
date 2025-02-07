@@ -183,7 +183,6 @@ router.get("/property/:property_slug", Authentication, getPropertyBySlug);
 const teacherStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     const property_id = req.body.property_id;
-    console.log(property_id);
     cb(null, `./Folders/${property_id}/teachers`);
   },
   filename: function (req, file, cb) {
@@ -242,7 +241,6 @@ router.get("/course/:uniqueId", Authentication, getCourseById);
 const galleryStorage = multer.diskStorage({
   destination: function (req, file, cb) {
     const property_id = req.body.propertyId;
-    console.log(property_id);
     cb(null, `./Folders/${property_id}/gallery`);
   },
   filename: function (req, file, cb) {
@@ -255,7 +253,9 @@ const galleryStorage = multer.diskStorage({
 
 const galleryUploads = multer({ storage: galleryStorage });
 const gallery = galleryUploads.fields([{ name: "gallery", maxCount: 4 }]);
-const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 4 }]);
+const galleryUpdate = galleryUploads.fields([
+  { name: "newImages", maxCount: 4 },
+]);
 router.get("/gallery", Authentication, getGallery);
 router.post("/gallery", Authentication, gallery, addGallery);
 router.patch(

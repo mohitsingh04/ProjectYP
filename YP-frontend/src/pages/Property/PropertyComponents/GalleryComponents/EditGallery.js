@@ -12,6 +12,7 @@ export default function EditGallery({
   const [galleryImages, setGalleryImages] = useState([]);
   const [title, setTitle] = useState("");
   const [newImages, setNewImages] = useState("");
+  const [propertyId, setPropertyId] = useState("");
 
   const fetchGallery = useCallback(async () => {
     try {
@@ -19,6 +20,7 @@ export default function EditGallery({
       setGallery(response.data);
       setGalleryImages(response.data.gallery || []);
       setTitle(response.data.title || "");
+      setPropertyId(response.data.propertyId);
     } catch (error) {
       console.error("Error fetching gallery:", error);
     }
@@ -39,6 +41,7 @@ export default function EditGallery({
   const handleUpdateGallery = async () => {
     const formData = new FormData();
     formData.append("title", title);
+    formData.append("propertyId", propertyId);
 
     if (Array.isArray(galleryImages) && galleryImages.length > 0) {
       galleryImages.forEach((item) => {
@@ -113,7 +116,7 @@ export default function EditGallery({
             <img
               src={item.preview || `http://localhost:5000/${item}`}
               alt="Preview"
-              className="img-fluid"
+              className="img-fluid w-100 h-100"
               style={{ aspectRatio: "2/2", objectFit: "cover" }}
             />
             <button
@@ -131,7 +134,7 @@ export default function EditGallery({
               <img
                 src={item.preview || `http://localhost:5000/${item}`}
                 alt="Preview"
-                className="img-fluid"
+                className="img-fluid w-100 h-100"
                 style={{ aspectRatio: "2/2", objectFit: "cover" }}
               />
               <button

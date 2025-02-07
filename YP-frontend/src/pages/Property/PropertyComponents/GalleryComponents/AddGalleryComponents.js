@@ -141,12 +141,12 @@ export default function AddGallery({ getGallery }) {
 
       <div className="row mt-4 px-4">
         {images.map((file, index) => (
-          <div key={index} className="col-md-3 p-0 mx-1 position-relative">
+          <div key={index} className="col-md-3 p-2 mx-1 position-relative">
             <img
               src={file.preview}
               alt="Preview"
               className="img-fluid"
-              style={{ aspectRatio: "2/2", objectFit: "cover" }}
+              style={{ aspectRatio: "2/2", objectFit: "cover",width:"100%",height:"100%" }}
             />
             <button
               type="button"

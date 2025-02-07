@@ -60,7 +60,7 @@ const PropertySchema = new mongoose.Schema(
         },
         property_description: {
             type: String,
-            required: true,
+            // required: true,
         },
         property_hostel_type: {
             type: Array,
