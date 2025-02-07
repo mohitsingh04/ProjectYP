@@ -61,6 +61,13 @@ export const addProperty = async (req, res) => {
 
     const slug = property_name.replace(/ /g, "-").toLowerCase();
 
+    console.log(req.files);
+
+    const orignal_property_icon =
+      req?.files["property_icon"]?.[0]?.originalFilename;
+    const orignal_feature_image =
+      req?.files["featured_image"]?.[0]?.originalFilename;
+
     const property_icon = req?.files["property_icon"]?.[0]?.filename;
     const featured_image = req?.files["featured_image"]?.[0]?.filename;
 
@@ -103,6 +110,10 @@ export const addProperty = async (req, res) => {
         featured_image,
         property_description,
         property_slug: slug,
+        orignalFiles: {
+          property_icon: orignal_property_icon,
+          featured_image: orignal_feature_image,
+        },
       });
       if (await newProperty.save()) {
         return res.send({ message: "Property added." });

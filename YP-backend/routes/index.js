@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { storage, upload } from "../multer/index.js";
+import { processImage, storage, upload } from "../multer/index.js";
 import {
   changePassword,
   forgotPassword,
@@ -162,7 +162,13 @@ const propertyUpload = upload.fields([
   { name: "featured_image", maxCount: 1 },
 ]);
 router.get("/property", Authentication, getProperty);
-router.post("/property", Authentication, propertyUpload, addProperty);
+router.post(
+  "/property",
+  Authentication,
+  propertyUpload,
+  processImage,
+  addProperty
+);
 router.patch(
   "/property/:uniqueId",
   Authentication,
@@ -186,10 +192,7 @@ const teacherStorage = multer.diskStorage({
     cb(null, `./Folders/${property_id}/teachers`);
   },
   filename: function (req, file, cb) {
-    cb(
-      null,
-      "IMG" + "-" + Date.now() + "-" + file.originalname + "-" + ".webp"
-    );
+    cb(null, "IMG" + "-" + Date.now() + "-" + file.originalname);
   },
 });
 
@@ -199,7 +202,13 @@ const teacherProfile = teachersUpload.fields([
   { name: "profile", maxCount: 1 },
 ]);
 router.get("/teacher", Authentication, getTeacher);
-router.post("/teacher", Authentication, teacherProfile, addTeacher);
+router.post(
+  "/teacher",
+  Authentication,
+  teacherProfile,
+  processImage,
+  addTeacher
+);
 router.patch(
   "/teacher/:uniqueId",
   Authentication,
