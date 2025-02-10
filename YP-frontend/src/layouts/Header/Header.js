@@ -21,10 +21,10 @@ export function Header() {
         API.get("/profile").then(({ data }) => {
           dispatch(hideLoading());
           setUser(data.user);
-        }, [])
+        }, []);
       } catch (err) {
         dispatch(hideLoading());
-        console.log(err.message)
+        console.log(err.message);
       }
     };
     const getProperty = async () => {
@@ -33,22 +33,22 @@ export function Header() {
         API.get("property").then(({ data }) => {
           dispatch(hideLoading());
           setProperty(data);
-          setFilterData(data)
+          setFilterData(data);
         });
       } catch (err) {
         dispatch(hideLoading());
-        console.log(err.message)
+        console.log(err.message);
       }
     };
     getProfile();
     getProperty();
-  }, [])
+  }, []);
 
   useEffect(() => {
     const result = property.filter((property) => {
-      return property.property_name.toLowerCase().match(search.toLowerCase())
+      return property.property_name.toLowerCase().match(search.toLowerCase());
     });
-    setFilterData(result)
+    setFilterData(result);
   }, [search]);
 
   //full screen
@@ -100,9 +100,10 @@ export function Header() {
   };
 
   const handleLogout = () => {
-    localStorage.clear()
+    API.get("/logout");
+    localStorage.clear();
     toast.success("Logged out.");
-    navigate('/login');
+    navigate("/login");
     window.location.reload();
   };
 
@@ -150,8 +151,7 @@ export function Header() {
             />
           </Link>
           {/* Search */}
-          {user.role === "Admin"
-            ?
+          {user.role === "Admin" ? (
             <>
               <div className="main-header-center ms-3 d-none d-lg-block">
                 <input
@@ -165,30 +165,26 @@ export function Header() {
                   <i className="fa fa-search" aria-hidden="true"></i>
                 </Button>
                 <div>
-                  {search.length === 0
-                    ?
-                    null
-                    :
+                  {search.length === 0 ? null : (
                     <>
                       <div className="search-list-container">
                         <ul className="search-list">
                           {filterData.map((item) => (
-                            <a className="text-dark" href={`/dashboard/property/view/${item.uniqueId}`}>
-                              <li>
-                                {item.property_name}
-                              </li>
+                            <a
+                              className="text-dark"
+                              href={`/dashboard/property/view/${item.uniqueId}`}
+                            >
+                              <li>{item.property_name}</li>
                             </a>
                           ))}
                         </ul>
                       </div>
                     </>
-                  }
+                  )}
                 </div>
               </div>
             </>
-            :
-            null
-          }
+          ) : null}
           <div className="d-flex order-lg-2 ms-auto header-right-icons">
             <Navbar.Toggle
               aria-controls="navbarScroll"
@@ -199,11 +195,13 @@ export function Header() {
             </Navbar.Toggle>
 
             <div className="navbar navbar-collapse responsive-navbar p-0">
-              <Navbar.Collapse className="navbar-collapse" id="navbarSupportedContent-4">
+              <Navbar.Collapse
+                className="navbar-collapse"
+                id="navbarSupportedContent-4"
+              >
                 <div className="d-flex order-lg-2">
                   {/* Responsive Search */}
-                  {user.role === "Admin"
-                    ?
+                  {user.role === "Admin" ? (
                     <>
                       <div className="dropdown d-block d-lg-none">
                         <Link
@@ -222,16 +220,16 @@ export function Header() {
                               value={search}
                               onChange={(e) => setSearch(e.target.value)}
                             />
-                            {search.length === 0
-                              ?
-                              null
-                              :
+                            {search.length === 0 ? null : (
                               <>
                                 <div className="search-list-container">
                                   <ul className="search-list">
                                     {filterData.map((item) => (
                                       <li>
-                                        <a className="text-dark" href={`/dashboard/property/view/${item.uniqueId}`}>
+                                        <a
+                                          className="text-dark"
+                                          href={`/dashboard/property/view/${item.uniqueId}`}
+                                        >
                                           {item.property_name}
                                         </a>
                                       </li>
@@ -239,13 +237,12 @@ export function Header() {
                                   </ul>
                                 </div>
                               </>
-                            }
+                            )}
                           </div>
                         </div>
                       </div>
                     </>
-                    :
-                    null}
+                  ) : null}
                   <div className="dropdown d-md-flex">
                     <Link
                       to="#"
@@ -341,20 +338,19 @@ export function Header() {
                       variant=""
                     >
                       <span>
-                        {user.profile == null
-                          ?
+                        {user.profile == null ? (
                           <img
                             src={require("../../assets/images/users/8.jpg")}
                             alt="profile-user"
                             className="avatar  profile-user brround cover-image"
                           />
-                          :
+                        ) : (
                           <img
                             src={`http://localhost:5000/images/${user.profile}`}
                             alt="profile-user"
                             className="avatar  profile-user brround cover-image"
                           />
-                        }
+                        )}
                       </span>
                     </Dropdown.Toggle>
                     <Dropdown.Menu
@@ -372,9 +368,7 @@ export function Header() {
                         <i className="dropdown-icon fe fe-user"></i>
                         Profile
                       </Dropdown.Item>
-                      <Dropdown.Item
-                        href={`/dashboard/change-password`}
-                      >
+                      <Dropdown.Item href={`/dashboard/change-password`}>
                         <i className="dropdown-icon fe fe-settings"></i>
                         Change Password
                       </Dropdown.Item>

@@ -61,8 +61,6 @@ export const addProperty = async (req, res) => {
 
     const slug = property_name.replace(/ /g, "-").toLowerCase();
 
-    console.log(req.files);
-
     const orignal_property_icon =
       req?.files["property_icon"]?.[0]?.originalFilename;
     const orignal_feature_image =
@@ -88,7 +86,12 @@ export const addProperty = async (req, res) => {
         console.log("Folder created successfully");
       });
 
-      const allSubFolders = ["main", "teachers", "gallery", "achievements"];
+      const allSubFolders = [
+        "main",
+        "teachers",
+        "gallery/compressed",
+        "achievements",
+      ];
       allSubFolders.map((item) => {
         const subFolder = path.join(folderPath, item);
         fs.mkdir(subFolder, { recursive: true }, (err) => {
@@ -106,14 +109,10 @@ export const addProperty = async (req, res) => {
         property_email,
         property_mobile_no,
         category,
-        property_icon,
-        featured_image,
+        property_icon: [property_icon, orignal_property_icon],
+        featured_image: [featured_image, orignal_feature_image],
         property_description,
         property_slug: slug,
-        orignalFiles: {
-          property_icon: orignal_property_icon,
-          featured_image: orignal_feature_image,
-        },
       });
       if (await newProperty.save()) {
         return res.send({ message: "Property added." });

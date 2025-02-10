@@ -24,10 +24,10 @@ const PropertySchema = new mongoose.Schema({
     type: String,
   },
   property_icon: {
-    type: String,
+    type: Array,
   },
   featured_image: {
-    type: String,
+    type: Array,
   },
   property_address: {
     type: String,
@@ -91,9 +91,6 @@ const PropertySchema = new mongoose.Schema({
   status: {
     type: String,
     default: "Pending",
-  },
-  orignalFiles: {
-    type: Array,
   },
   createdAt: {
     type: Date,

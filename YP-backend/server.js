@@ -7,8 +7,8 @@ import helmet from "helmet";
 import router from "./routes/index.js";
 import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
 import {
-  OriginalPropertyImageMover,
   PropertyImageMover,
+  TeacherImageMover,
 } from "./helper/FolderCleaners/PropertyImageMover.js";
 
 const app = express();
@@ -33,8 +33,8 @@ setInterval(() => {
 
 setInterval(() => {
   PropertyImageMover();
-  OriginalPropertyImageMover();
-}, 5000);
+  TeacherImageMover();
+}, 2000);
 
 mongoose
   .connect(process.env.MONGODB_URL)

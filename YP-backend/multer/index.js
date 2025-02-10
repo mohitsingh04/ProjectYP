@@ -8,7 +8,7 @@ export const storage = multer.diskStorage({
     cb(null, "./images");
   },
   filename: function (req, file, cb) {
-    cb(null, "IMG" + "-" + Date.now() + "-" + file.originalname);
+    cb(null, "img" + "-" + Date.now() + "-" + file.originalname);
   },
 });
 
@@ -26,12 +26,12 @@ export const processImage = async (req, res, next) => {
       for (const file of files[field]) {
         const inputPath = file.path;
 
-        const orignalName = file.originalname.split(".");
-        const originalFilename = file.filename;
+        const originalNameParts = file.originalname.toLowerCase().split(".");
+        const originalFilename = file.filename.toLowerCase();
         const originalPath = path.join("./images", originalFilename);
 
-        const outputFilename = `IMG-${Date.now()}-${
-          orignalName[0]
+        const outputFilename = `img-${Date.now()}-${
+          originalNameParts[0]
         }-compressed.webp`;
         const outputPath = path.join("./images", outputFilename);
 

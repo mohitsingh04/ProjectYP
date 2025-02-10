@@ -2,6 +2,7 @@ import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
 import Property from "../../models/Property.js";
+import Teachers from "../../models/Teachers.js";
 
 const fileExists = async (filePath) => {
   try {
@@ -20,58 +21,88 @@ export const PropertyImageMover = async (req, res) => {
     const allProperties = await Property.find();
 
     for (const item of allProperties) {
-      const iconPath = path.resolve(`./images/${item.property_icon}`);
-      const featuredImagePath = path.resolve(`./images/${item.featured_image}`);
-
-      let iconMoved = false;
-      let featured_imageMoved = false;
-
-      const destinationDir = path.resolve(
-        `./Folders/${item.uniqueId}/main/compressed`
+      const iconPathCompressed = path.resolve(
+        `./images/${item.property_icon[0]}`
+      );
+      const featuredImagePathCompressed = path.resolve(
+        `./images/${item.featured_image[0]}`
+      );
+      const iconPathOriginal = path.resolve(
+        `./images/${item.property_icon[1]}`
+      );
+      const featuredImagePathOriginal = path.resolve(
+        `./images/${item.featured_image[1]}`
       );
 
+      const destinationDir = path.resolve(`./folders/${item.uniqueId}/main/`);
       try {
         await fs.mkdir(destinationDir, { recursive: true });
 
-        if (await fileExists(iconPath)) {
+        const iconPathMoved = [];
+        const featuredPathMoved = [];
+
+        if (await fileExists(iconPathCompressed)) {
           await fs.rename(
-            iconPath,
-            path.join(destinationDir, item.property_icon)
+            iconPathCompressed,
+            path.join(destinationDir, item.property_icon[0])
           );
-          iconMoved = true;
-          if (iconMoved) {
-            await Property.findOneAndUpdate(
-              { uniqueId: item.uniqueId },
-              {
-                $set: {
-                  property_icon: `Folders/${item.uniqueId}/main/compressed/${item.property_icon}`,
-                },
-              },
-              { new: true }
-            );
-          }
+
+          iconPathMoved.push(
+            `folders/${item.uniqueId}/main/${item.property_icon[0]}`
+          );
+        }
+        if (await fileExists(featuredImagePathCompressed)) {
+          await fs.rename(
+            featuredImagePathCompressed,
+            path.join(destinationDir, item.featured_image[0])
+          );
+          featuredPathMoved.push(
+            `folders/${item.uniqueId}/main/${item.featured_image[0]}`
+          );
+        }
+        if (await fileExists(iconPathOriginal)) {
+          await fs.rename(
+            iconPathOriginal,
+            path.join(destinationDir, item.property_icon[1])
+          );
+          iconPathMoved.push(
+            `folders/${item.uniqueId}/main/${item.property_icon[1]}`
+          );
+        }
+        if (await fileExists(featuredImagePathOriginal)) {
+          await fs.rename(
+            featuredImagePathOriginal,
+            path.join(destinationDir, item.featured_image[1])
+          );
+          featuredPathMoved.push(
+            `folders/${item.uniqueId}/main/${item.featured_image[1]}`
+          );
         }
 
-        if (await fileExists(featuredImagePath)) {
-          await fs.rename(
-            featuredImagePath,
-            path.join(destinationDir, item.featured_image)
-          );
-          featured_imageMoved = true;
-          if (featured_imageMoved) {
-            await Property.findOneAndUpdate(
-              { uniqueId: item.uniqueId },
-              {
-                $set: {
-                  featured_image: `Folders/${item.uniqueId}/main/compressed/${item.featured_image}`,
-                },
+        if (iconPathMoved && iconPathMoved.length === 2) {
+          await Property.findOneAndUpdate(
+            { uniqueId: item.uniqueId },
+            {
+              $set: {
+                property_icon: iconPathMoved,
               },
-              { new: true }
-            );
-          }
+            },
+            { new: true }
+          );
         }
-      } catch (fileError) {
-        console.error(`Error moving files for ${item.uniqueId}:`, fileError);
+        if (featuredPathMoved && featuredPathMoved.length === 2) {
+          await Property.findOneAndUpdate(
+            { uniqueId: item.uniqueId },
+            {
+              $set: {
+                featured_image: featuredPathMoved,
+              },
+            },
+            { new: true }
+          );
+        }
+      } catch (error) {
+        console.error(`Error moving files for ${item.uniqueId}:`, error);
       }
     }
   } catch (error) {
@@ -79,7 +110,7 @@ export const PropertyImageMover = async (req, res) => {
   }
 };
 
-export const OriginalPropertyImageMover = async (req, res) => {
+export const TeacherImageMover = async (req, res) => {
   try {
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
@@ -87,66 +118,47 @@ export const OriginalPropertyImageMover = async (req, res) => {
     const allProperties = await Property.find();
 
     for (const item of allProperties) {
-      const iconPath = path.resolve(
-        `./images/${item.orignalFiles[0].property_icon}`
-      );
-      const featuredImagePath = path.resolve(
-        `./images/${item.orignalFiles[0].featured_image}`
-      );
+      const teachers = await Teachers.find({ property_id: item.uniqueId });
 
-      let iconMoved = false;
-      let featured_imageMoved = false;
+      teachers.map(async (teacher) => {
+        const profilePath = teacher.profile.split("\\");
+        const profile = profilePath[profilePath.length - 1];
 
-      const destinationDir = path.resolve(
-        `./Folders/${item.uniqueId}/main/original`
-      );
+        const teacherProfilePath = path.resolve(`./images/${profile}`);
 
-      try {
-        await fs.mkdir(destinationDir, { recursive: true });
+        let teacherMoved = false;
 
-        if (await fileExists(iconPath)) {
-          await fs.rename(
-            iconPath,
-            path.join(destinationDir, item.orignalFiles[0].property_icon)
-          );
-          iconMoved = true;
-          if (iconMoved) {
-            const x = await Property.findOneAndUpdate(
-              { uniqueId: item.uniqueId },
-              {
-                $set: {
-                  "orignalFiles.0.property_icon": `Folders/${item.uniqueId}/main/original/${item.property_icon}`,
-                },
-              },
-              { new: true }
+        const destinationDir = path.resolve(
+          `./folders/${item.uniqueId}/teachers/`
+        );
+
+        try {
+          await fs.mkdir(destinationDir, { recursive: true });
+
+          if (await fileExists(teacherProfilePath)) {
+            await fs.rename(
+              teacherProfilePath,
+              path.join(destinationDir, profile)
             );
-            console.log(x);
-          }
-        }
 
-        if (await fileExists(featuredImagePath)) {
-          await fs.rename(
-            featuredImagePath,
-            path.join(destinationDir, item.orignalFiles[0].featured_image)
-          );
-          featured_imageMoved = true;
-          if (featured_imageMoved) {
-            await Property.findOneAndUpdate(
-              { uniqueId: item.uniqueId },
-              {
-                $set: {
-                  "orignalFiles.0.featured_image": `Folders/${item.uniqueId}/main/original/${item.featured_image}`,
+            teacherMoved = true;
+
+            if (teacherMoved) {
+              await Teachers.findOneAndUpdate(
+                { uniqueId: teacher.uniqueId },
+                {
+                  $set: {
+                    profile: `folders/${item.uniqueId}/teachers/${profile}`,
+                  },
                 },
-              },
-              { new: true }
-            );
+                { new: true }
+              );
+            }
           }
+        } catch (error) {
+          console.error(`Error moving files for ${teacher.uniqueId}:`, error);
         }
-      } catch (fileError) {
-        console.error(`Error moving files for ${item.uniqueId}:`, fileError);
-      }
+      });
     }
-  } catch (error) {
-    console.log(error);
-  }
+  } catch (error) {}
 };

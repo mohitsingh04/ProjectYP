@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Breadcrumb, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
@@ -24,13 +24,6 @@ export default function PropertyList() {
       API.get("/property").then(({ data }) => {
         dispatch(hideLoading());
         setProperty(data);
-        // if (User.role === "Admin") {
-        //     setProperty(data);
-        // } else if (User.role === "Editor") {
-        //     setProperty(data);
-        // } else if (User.role === "User") {
-        //     setProperty(data.filter(property => property.userId == User.uniqueId));
-        // }
       });
     } catch (err) {
       dispatch(hideLoading());
@@ -72,6 +65,17 @@ export default function PropertyList() {
       });
   };
 
+  const handleLoadImage = useCallback((img) => {
+    const x = img.split("/");
+    if (x.length > 2) {
+      return [<img src={`http://localhost:5000/${img}`} width={53} alt="" />];
+    } else if (x.length < 2) {
+      return [
+        <img src={`http://localhost:5000/images/${img}`} width={53} alt="" />,
+      ];
+    }
+  }, []);
+
   const columns = [
     {
       name: "S.NO",
@@ -80,13 +84,7 @@ export default function PropertyList() {
     },
     {
       name: "ICON",
-      selector: (row) => [
-        <img
-          src={`http://localhost:5000/${row.property_icon}`}
-          width={53}
-          alt=""
-        />,
-      ],
+      selector: (row) => handleLoadImage(row.property_icon[0]),
       sortable: true,
     },
     {

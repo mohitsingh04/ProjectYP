@@ -198,9 +198,7 @@ const teacherStorage = multer.diskStorage({
 
 const teachersUpload = multer({ storage: teacherStorage });
 
-const teacherProfile = teachersUpload.fields([
-  { name: "profile", maxCount: 1 },
-]);
+const teacherProfile = upload.fields([{ name: "profile", maxCount: 1 }]);
 router.get("/teacher", Authentication, getTeacher);
 router.post(
   "/teacher",
@@ -253,6 +251,7 @@ const galleryStorage = multer.diskStorage({
     cb(null, `./Folders/${property_id}/gallery`);
   },
   filename: function (req, file, cb) {
+    console.log(file);
     cb(
       null,
       "IMG" + "-" + Date.now() + "-" + file.originalname + "-" + ".webp"
@@ -266,7 +265,7 @@ const galleryUpdate = galleryUploads.fields([
   { name: "newImages", maxCount: 4 },
 ]);
 router.get("/gallery", Authentication, getGallery);
-router.post("/gallery", Authentication, gallery, addGallery);
+router.post("/gallery", Authentication, gallery, processImage, addGallery);
 router.patch(
   "/gallery/:uniqueId",
   Authentication,
