@@ -3,6 +3,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import Property from "../../models/Property.js";
 import Teachers from "../../models/Teachers.js";
+import Gallery from "../../models/Gallery.js";
+import { profile } from "../../controller/AuthController.js";
 
 const fileExists = async (filePath) => {
   try {
@@ -121,12 +123,12 @@ export const TeacherImageMover = async (req, res) => {
       const teachers = await Teachers.find({ property_id: item.uniqueId });
 
       teachers.map(async (teacher) => {
-        const profilePath = teacher.profile.split("\\");
-        const profile = profilePath[profilePath.length - 1];
+        const teacherProfilePath = path.resolve(`./${teacher.profile[0]}`);
+        const teacherProfilePathOriginal = path.resolve(
+          `./${teacher.profile[1]}`
+        );
 
-        const teacherProfilePath = path.resolve(`./images/${profile}`);
-
-        let teacherMoved = false;
+        let teacherMoved = [];
 
         const destinationDir = path.resolve(
           `./folders/${item.uniqueId}/teachers/`
@@ -136,24 +138,38 @@ export const TeacherImageMover = async (req, res) => {
           await fs.mkdir(destinationDir, { recursive: true });
 
           if (await fileExists(teacherProfilePath)) {
+            const image = teacherProfilePath.split("\\");
+            const profile = image[image.length - 1];
+
             await fs.rename(
               teacherProfilePath,
               path.join(destinationDir, profile)
             );
 
-            teacherMoved = true;
+            teacherMoved.push(`folders/${item.uniqueId}/teachers/${profile}`);
+          }
+          if (await fileExists(teacherProfilePathOriginal)) {
+            const image = teacherProfilePathOriginal.split("\\");
+            const profile = image[image.length - 1];
 
-            if (teacherMoved) {
-              await Teachers.findOneAndUpdate(
-                { uniqueId: teacher.uniqueId },
-                {
-                  $set: {
-                    profile: `folders/${item.uniqueId}/teachers/${profile}`,
-                  },
+            await fs.rename(
+              teacherProfilePathOriginal,
+              path.join(destinationDir, profile)
+            );
+
+            teacherMoved.push(`folders/${item.uniqueId}/teachers/${profile}`);
+          }
+
+          if (teacherMoved && teacherMoved.length === 2) {
+            await Teachers.findOneAndUpdate(
+              { uniqueId: teacher.uniqueId },
+              {
+                $set: {
+                  profile: teacherMoved,
                 },
-                { new: true }
-              );
-            }
+              },
+              { new: true }
+            );
           }
         } catch (error) {
           console.error(`Error moving files for ${teacher.uniqueId}:`, error);
@@ -161,4 +177,51 @@ export const TeacherImageMover = async (req, res) => {
       });
     }
   } catch (error) {}
+};
+
+export const GalleryImageMover = async (req, res) => {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const allProperties = await Property.find();
+
+    for (const item of allProperties) {
+      const galleryImages = await Gallery.find({ propertyId: item.uniqueId });
+      let movedImages = [];
+
+      const destinationDir = path.resolve(
+        `./folders/${item.uniqueId}/gallery/`
+      );
+
+      galleryImages.map((info) => {
+        info.gallery.map(async (img) => {
+          const image = img.split(`\\`);
+          const profile = image[image.length - 1];
+          const GalleryImagePath = path.resolve(`./images/${profile}`);
+
+          if (await fileExists(GalleryImagePath)) {
+            await fs.rename(
+              GalleryImagePath,
+              path.join(destinationDir, profile)
+            );
+            movedImages.push(`folders/${item.uniqueId}/gallery/${profile}`);
+          }
+          if (movedImages && movedImages.length === info.gallery.length) {
+            await Gallery.findOneAndUpdate(
+              { uniqueId: info.uniqueId },
+              {
+                $set: {
+                  gallery: movedImages,
+                },
+              },
+              { new: true }
+            );
+          }
+        });
+      });
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };

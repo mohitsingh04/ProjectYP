@@ -61,6 +61,25 @@ export default function Gallery() {
     }
   };
 
+  const handleImage = (img, index) => {
+    const splitImage = img.split(".");
+    const extension = splitImage.pop();
+    if (extension === "webp") {
+      return (
+        <Col key={index} lg={3} md={3} sm={6} className="col-12">
+          <Link to="#" onClick={() => setOpen(true)} className="glightbox card">
+            <img
+              src={`http://localhost:5000/${img}`}
+              alt={img}
+              style={{ aspectRatio: "2/2", objectFit: "cover" }}
+            />
+          </Link>
+        </Col>
+      );
+    }
+
+    return;
+  };
   return (
     <Fragment>
       {toggleGalleryPage ? (
@@ -88,27 +107,9 @@ export default function Gallery() {
                   </Card.Header>
                   <Card.Body>
                     <Row className="mb-4 img-gallery">
-                      {item?.gallery.map((items, index) => (
-                        <Col
-                          key={index}
-                          lg={3}
-                          md={3}
-                          sm={6}
-                          className="col-12"
-                        >
-                          <Link
-                            to="#"
-                            onClick={() => setOpen(true)}
-                            className="glightbox card"
-                          >
-                            <img
-                              src={`http://localhost:5000/${items}`}
-                              alt={items + 1}
-                              style={{ aspectRatio: "2/2", objectFit: "cover" }}
-                            />
-                          </Link>
-                        </Col>
-                      ))}
+                      {item?.gallery.map((items, index) =>
+                        handleImage(items, index)
+                      )}
                     </Row>
                   </Card.Body>
                 </Card>

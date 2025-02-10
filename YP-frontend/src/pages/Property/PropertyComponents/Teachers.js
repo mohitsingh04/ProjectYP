@@ -157,7 +157,7 @@ export default function Teachers() {
       name: "Teacher Name",
       selector: (row) => (
         <img
-          src={`http://localhost:5000/${row.profile}`}
+          src={`http://localhost:5000/${row.profile[0]}`}
           width={53}
           alt={row.profile}
         />

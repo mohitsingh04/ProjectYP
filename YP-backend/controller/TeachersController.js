@@ -34,15 +34,15 @@ export const addTeacher = async (req, res) => {
     const slug = teacher_name.replace(/ /g, "-").toLowerCase();
     const kebabCase = property_name.replace(/ /g, "-").toLowerCase();
     const profile = req?.files["profile"]?.[0]?.path;
+    const originalProfile = req?.files["profile"]?.[0]?.originalPath;
     const teachers = await Teachers.findOne().sort({ _id: -1 }).limit(1);
-    // const existTeachers = await Teachers.findOne({ teacher_name: teacher_name });
-    // if (!existTeachers) {
+
     const x = teachers ? teachers.uniqueId + 1 : 1;
     const newTeacher = new Teachers({
       userId,
       uniqueId: x,
       teacher_name,
-      profile,
+      profile: [profile, originalProfile],
       designation,
       experience,
       property_id,

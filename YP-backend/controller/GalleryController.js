@@ -30,6 +30,9 @@ export const addGallery = async (req, res) => {
       for (let i = 0; i < req.files.gallery.length; i++) {
         gallery.push(req.files.gallery[i]?.path);
       }
+      for (let j = 0; j < req.files.gallery.length; j++) {
+        gallery.push(req.files.gallery[j]?.originalPath);
+      }
     }
 
     const existGallery = await Gallery.findOne({ propertyId, title });

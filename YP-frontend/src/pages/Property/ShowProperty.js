@@ -21,10 +21,11 @@ export default function ShowProperty() {
   const dispatch = useDispatch();
   const { uniqueId } = useParams();
   const [property, setProperty] = useState("");
+  const [icon, setIcon] = useState("");
 
   useEffect(() => {
     getProperty();
-  }, [])
+  }, []);
 
   const getProperty = async () => {
     try {
@@ -33,10 +34,17 @@ export default function ShowProperty() {
       setProperty(data);
     } catch (err) {
       toast.error(err.message);
+      console.log(err.message);
     } finally {
       dispatch(hideLoading());
     }
   };
+
+  useEffect(() => {
+    if (property?.property_icon?.length) {
+      setIcon(property.property_icon[0]);
+    }
+  }, [property]);
 
   return (
     <div>
@@ -45,20 +53,22 @@ export default function ShowProperty() {
           <h1 className="page-title">Property</h1>
           <Breadcrumb className="breadcrumb">
             <Breadcrumb.Item className="breadcrumb-item">
-              <Link to="/dashboard/">
-                Dashboard
-              </Link>
+              <Link to="/dashboard/">Dashboard</Link>
             </Breadcrumb.Item>
             <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-              <Link to="/dashboard/property/">
-                Property
-              </Link>
+              <Link to="/dashboard/property/">Property</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item active" aria-current="page">
+            <Breadcrumb.Item
+              className="breadcrumb-item active"
+              aria-current="page"
+            >
               View
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item active breadcrumds" aria-current="page"            >
-              {property.uniqueId}
+            <Breadcrumb.Item
+              className="breadcrumb-item active breadcrumds"
+              aria-current="page"
+            >
+              {property.property_name}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
@@ -79,7 +89,13 @@ export default function ShowProperty() {
                   <Col lg={12} md={12} xl={6}>
                     <div className="wideget-user-desc d-sm-flex">
                       <div className="wideget-user-img">
-                        <img className="" src={`http://localhost:5000/${property.property_icon}`} width={120} height={120} alt="img" />
+                        <img
+                          className=""
+                          src={`http://localhost:5000/${icon}`}
+                          width={120}
+                          height={120}
+                          alt="img"
+                        />
                       </div>
                       <div className="user-wrap">
                         <h4>{property.property_name}</h4>
@@ -204,6 +220,6 @@ export default function ShowProperty() {
           </Card>
         </Col>
       </Row>
-    </div >
+    </div>
   );
-};
+}

@@ -5,8 +5,10 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import helmet from "helmet";
 import router from "./routes/index.js";
+import handleFolderCleaner from "./helper/FolderCleaners/FolderCleaners.js";
 import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
 import {
+  GalleryImageMover,
   PropertyImageMover,
   TeacherImageMover,
 } from "./helper/FolderCleaners/PropertyImageMover.js";
@@ -34,6 +36,8 @@ setInterval(() => {
 setInterval(() => {
   PropertyImageMover();
   TeacherImageMover();
+  GalleryImageMover();
+  // handleFolderCleaner()
 }, 2000);
 
 mongoose
