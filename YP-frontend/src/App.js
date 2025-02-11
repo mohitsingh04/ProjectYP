@@ -1,9 +1,8 @@
 import React from "react";
 import "./index.scss";
 import Swal from "sweetalert2";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import { accessToken } from "./context/Api";
 import App from "./components/app";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Login from "./pages/Auth/Login";
@@ -37,7 +36,6 @@ import ViewTeacher from "./pages/Teachers/ViewTeacher";
 import EditFaqs from "./pages/Faqs/EditFaqs";
 import Loader from "./components/Loader/Loader";
 import { useSelector } from "react-redux";
-import DataRequest from "./context/DataRequest";
 import VerifyEmail from "./pages/Auth/Email/VerifyEmail";
 import EmailVerified from "./pages/Auth/Email/EmailVerified";
 import EditSeo from "./pages/Seo/EditSeo";
@@ -54,6 +52,7 @@ import AddCourseSeo from "./pages/Course/Seo/AddCourseSeo";
 import EditCourseSeo from "./pages/Course/Seo/EditCourseSeo";
 import VerificationEmail from "./pages/Auth/Email/VerificationEmail";
 import SendVerifyEmail from "./pages/Auth/Email/SendVerifyEmail";
+import ProtectedRoutes from "./helper/ProtectedRoutes/ProtectedRoutes";
 
 window.Swal = Swal;
 const toast = Swal.mixin({
@@ -66,9 +65,7 @@ const toast = Swal.mixin({
 window.toast = toast;
 
 function Root() {
-  const { User } = DataRequest();
   const { loading } = useSelector((state) => state.alerts);
-  const authenticate = accessToken;
 
   return (
     <>
@@ -83,310 +80,60 @@ function Root() {
             element={<FrontPropertyList />}
           />
           <Route path="/courses-in-india" element={<Home />} />
+
+          {/* non Login Paths */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset/:token" element={<ResetPassword />} />
-          <Route path="/property/:uniqueId" element={<ViewProperty />} />
-          <Route path="/verify-user/:token" element={<VerificationEmail />} />
           <Route
             path="/send/verify-email/success/:email"
             element={<SendVerifyEmail />}
           />
           <Route path="/verify-email" element={<VerifyEmail />} />
+          <Route path="/verify-user/:token" element={<VerificationEmail />} />
 
-          {authenticate ? (
-            <>
-              {User.role === "Editor" ? (
-                <>
-                  <Route path="/*" element={<Error404 />} />
-                  <Route
-                    path="/email-verified/:token"
-                    element={<EmailVerified />}
-                  />
-                  <Route path={`/`} element={<App />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path={`/dashboard`} element={<Dashboard />} />
-                    <Route
-                      path={`/dashboard/status`}
-                      element={<StatusList />}
-                    />
-                    <Route
-                      path={`/dashboard/status/add`}
-                      element={<CreateStatus />}
-                    />
-                    <Route
-                      path={`/dashboard/status/edit/:uniqueId`}
-                      element={<EditStatus />}
-                    />
-                    <Route
-                      path={`/dashboard/status/view/:uniqueId`}
-                      element={<ViewStatus />}
-                    />
-                    <Route
-                      path={`/dashboard/category`}
-                      element={<CategoryList />}
-                    />
-                    <Route
-                      path={`/dashboard/category/add`}
-                      element={<CreateCategory />}
-                    />
-                    <Route
-                      path={`/dashboard/category/edit/:uniqueId`}
-                      element={<EditCategory />}
-                    />
-                    <Route
-                      path={`/dashboard/category/view/:uniqueId`}
-                      element={<ViewCategory />}
-                    />
-                    <Route
-                      path={`/dashboard/property`}
-                      element={<PropertyList />}
-                    />
-                    <Route
-                      path={`/dashboard/property/add`}
-                      element={<CreateProperty />}
-                    />
-                    <Route
-                      path={`/dashboard/property/view/:uniqueId`}
-                      element={<ShowProperty />}
-                    />
-                    <Route
-                      path={`/dashboard/test/:id`}
-                      element={<YourComponent />}
-                    />
-                    <Route path={`/dashboard/enquiry`} element={<Enquiry />} />
-                    <Route
-                      path={`/dashboard/my-profile`}
-                      element={<Profile />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/my-profile`}
-                      element={<EditProfile />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/course/:uniqueId`}
-                      element={<EditCourse />}
-                    />
-                    <Route
-                      path={`/dashboard/view/course/:uniqueId`}
-                      element={<ViewCourse />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/teacher/:property_name/:uniqueId`}
-                      element={<EditTeacher />}
-                    />
-                    <Route
-                      path={`/dashboard/view/teacher/:property_name/:uniqueId`}
-                      element={<ViewTeacher />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/faqs/:property_name/:uniqueId`}
-                      element={<EditFaqs />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/seo/:property_name/:uniqueId`}
-                      element={<EditSeo />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/gallery/:property_name/:uniqueId`}
-                      element={<EditGallery />}
-                    />
-                  </Route>
-                </>
-              ) : User.role === "User" ? (
-                <>
-                  <Route path="/*" element={<Error404 />} />
-                  <Route
-                    path="/email-verified/:token"
-                    element={<EmailVerified />}
-                  />
-                  <Route path={`/`} element={<App />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path={`/dashboard`} element={<Dashboard />} />
-                    <Route
-                      path={`/dashboard/property`}
-                      element={<PropertyList />}
-                    />
-                    <Route
-                      path={`/dashboard/property/add`}
-                      element={<CreateProperty />}
-                    />
-                    <Route
-                      path={`/dashboard/property/view/:uniqueId`}
-                      element={<ShowProperty />}
-                    />
-                    <Route
-                      path={`/dashboard/test/:id`}
-                      element={<YourComponent />}
-                    />
-                    <Route path={`/dashboard/enquiry`} element={<Enquiry />} />
-                    <Route
-                      path={`/dashboard/edit/teacher/:property_name/:uniqueId`}
-                      element={<EditTeacher />}
-                    />
-                    <Route
-                      path={`/dashboard/view/teacher/:property_name/:uniqueId`}
-                      element={<ViewTeacher />}
-                    />
-                    <Route
-                      path={`/dashboard/my-profile`}
-                      element={<Profile />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/my-profile`}
-                      element={<EditProfile />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/seo/:property_name/:uniqueId`}
-                      element={<EditSeo />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/faqs/:property_name/:uniqueId`}
-                      element={<EditFaqs />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/gallery/:property_name/:uniqueId`}
-                      element={<EditGallery />}
-                    />
-                  </Route>
-                </>
-              ) : (
-                <>
-                  <Route path="/*" element={<Error404 />} />
-                  <Route
-                    path="/email-verified/:token"
-                    element={<VerifyEmail />}
-                  />
-                  <Route path={`/dashboard/search`} element={<Search />} />
-                  <Route path={`/`} element={<App />}>
-                    <Route index element={<Dashboard />} />
-                    <Route path={`/dashboard`} element={<Dashboard />} />
-                    <Route
-                      path={`/dashboard/status`}
-                      element={<StatusList />}
-                    />
-                    <Route
-                      path={`/dashboard/status/add`}
-                      element={<CreateStatus />}
-                    />
-                    <Route
-                      path={`/dashboard/status/edit/:uniqueId`}
-                      element={<EditStatus />}
-                    />
-                    <Route
-                      path={`/dashboard/status/view/:uniqueId`}
-                      element={<ViewStatus />}
-                    />
-                    <Route
-                      path={`/dashboard/category`}
-                      element={<CategoryList />}
-                    />
-                    <Route
-                      path={`/dashboard/category/add`}
-                      element={<CreateCategory />}
-                    />
-                    <Route
-                      path={`/dashboard/category/edit/:uniqueId`}
-                      element={<EditCategory />}
-                    />
-                    <Route
-                      path={`/dashboard/category/view/:uniqueId`}
-                      element={<ViewCategory />}
-                    />
-                    <Route
-                      path={`/dashboard/property`}
-                      element={<PropertyList />}
-                    />
-                    <Route
-                      path={`/dashboard/property/add`}
-                      element={<CreateProperty />}
-                    />
-                    <Route
-                      path={`/dashboard/property/view/:uniqueId`}
-                      element={<ShowProperty />}
-                    />
-                    <Route
-                      path={`/dashboard/test/:id`}
-                      element={<YourComponent />}
-                    />
-                    <Route path={`/dashboard/enquiry`} element={<Enquiry />} />
-                    <Route
-                      path={`/dashboard/my-profile`}
-                      element={<Profile />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/my-profile`}
-                      element={<EditProfile />}
-                    />
-                    <Route path={`/dashboard/user`} element={<UserList />} />
-                    <Route
-                      path={`/dashboard/user/view/:uniqueId`}
-                      element={<ViewUser />}
-                    />
-                    <Route
-                      path={`/dashboard/user/edit/:uniqueId`}
-                      element={<EditUser />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/course/:property_name/:uniqueId`}
-                      element={<EditPropertyCourse />}
-                    />
-                    <Route
-                      path={`/dashboard/view/course/:property_name/:uniqueId`}
-                      element={<ViewPropertyCourse />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/teacher/:property_name/:uniqueId`}
-                      element={<EditTeacher />}
-                    />
-                    <Route
-                      path={`/dashboard/view/teacher/:property_name/:uniqueId`}
-                      element={<ViewTeacher />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/faqs/:property_name/:uniqueId`}
-                      element={<EditFaqs />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/seo/:property_name/:uniqueId`}
-                      element={<EditSeo />}
-                    />
-                    <Route
-                      path={`/dashboard/edit/gallery/:property_name/:uniqueId`}
-                      element={<EditGallery />}
-                    />
-                    <Route
-                      path={`/dashboard/course`}
-                      element={<CourseList />}
-                    />
-                    <Route
-                      path={`/dashboard/course/add`}
-                      element={<AddCourse />}
-                    />
-                    <Route
-                      path={`/dashboard/course/edit/:uniqueId`}
-                      element={<EditCourse />}
-                    />
-                    <Route
-                      path={`/dashboard/course/view/:uniqueId`}
-                      element={<ViewCourse />}
-                    />
-                    <Route
-                      path={`/dashboard/course-seo/add/:uniqueId`}
-                      element={<AddCourseSeo />}
-                    />
-                    <Route
-                      path={`/dashboard/course-seo/edit/:uniqueId`}
-                      element={<EditCourseSeo />}
-                    />
-                  </Route>
-                </>
-              )}
-            </>
-          ) : (
-            <Route path="*" element={<Navigate to="/login" replace="true" />} />
-          )}
+          {/* Unkown */}
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset/:token" element={<ResetPassword />} />
+          <Route path="/property/:uniqueId" element={<ViewProperty />} />
+          <Route path="/email-verified/:token" element={<EmailVerified />} />
+
+          <Route path="/" element={<App />}>
+            <Route index element={<Dashboard />} />
+            <Route path={`/dashboard`}element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/status`}element={<ProtectedRoutes><StatusList /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/status/add`}element={<ProtectedRoutes><CreateStatus /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/status/edit/:uniqueId`}element={<ProtectedRoutes><EditStatus /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/status/view/:uniqueId`}element={<ProtectedRoutes><ViewStatus /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/category`}element={<ProtectedRoutes><CategoryList /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/category/add`}element={<ProtectedRoutes><CreateCategory /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/category/edit/:uniqueId`}element={<ProtectedRoutes><EditCategory /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/category/view/:uniqueId`}element={<ProtectedRoutes><ViewCategory /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/property`} element={<ProtectedRoutes><PropertyList /></ProtectedRoutes>} />
+            <Route path={`/dashboard/property/add`}element={<ProtectedRoutes><CreateProperty /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/property/view/:uniqueId`}element={<ProtectedRoutes><ShowProperty /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/test/:id`} element={<ProtectedRoutes><YourComponent /></ProtectedRoutes>} />
+            <Route path={`/dashboard/enquiry`} element={<ProtectedRoutes><Enquiry /></ProtectedRoutes>} />
+            <Route path={`/dashboard/my-profile`} element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
+            <Route path={`/dashboard/edit/my-profile`}element={<ProtectedRoutes><EditProfile /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/course/:uniqueId`}element={<ProtectedRoutes><EditCourse /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/view/course/:uniqueId`}element={<ProtectedRoutes><ViewCourse /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/teacher/:property_name/:uniqueId`}element={<ProtectedRoutes><EditTeacher /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/view/teacher/:property_name/:uniqueId`}element={<ProtectedRoutes><ViewTeacher /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/faqs/:property_name/:uniqueId`}element={<ProtectedRoutes><EditFaqs /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/seo/:property_name/:uniqueId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/gallery/:property_name/:uniqueId`}element={<ProtectedRoutes><EditGallery /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/user`} element={<ProtectedRoutes><UserList /></ProtectedRoutes>} />
+            <Route path={`/dashboard/user/view/:uniqueId`}element={<ProtectedRoutes><ViewUser /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/user/edit/:uniqueId`}element={<ProtectedRoutes><EditUser /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/course/:property_name/:uniqueId`}element={<ProtectedRoutes><EditPropertyCourse /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/view/course/:property_name/:uniqueId`}element={<ProtectedRoutes><ViewPropertyCourse /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/course`}element={<ProtectedRoutes><CourseList /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/course/add`}element={<ProtectedRoutes><AddCourse /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/course-seo/add/:uniqueId`} element={<ProtectedRoutes><AddCourseSeo /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/course-seo/edit/:uniqueId`} element={<ProtectedRoutes><EditCourseSeo /></ProtectedRoutes>}/>
+          </Route>
+            <Route path={`/dashboard/search`} element={<ProtectedRoutes><Search /></ProtectedRoutes>} />
+            <Route path="/*" element={<Error404 />} />
         </Routes>
       </BrowserRouter>
     </>
