@@ -6,10 +6,6 @@ import sendResetEmail from "../email/resetPasswordEmail.js";
 import sendEmailVerification from "../email/emailVerification.js";
 const Salt = 10;
 
-function generateToken() {
-  return crypto.randomBytes(20).toString("hex");
-}
-
 export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -138,7 +134,7 @@ export const forgotPassword = async (req, res) => {
       return res.send({ error: "User not found. Please check your email." });
     }
 
-    const token = generateToken();
+    const token = jwt.sign({ email }, process.env.JWT_SECRET_VALUE);
     await User.findOneAndUpdate(
       { email: email },
       {
@@ -235,16 +231,6 @@ export const verifyEmail = async (req, res) => {
     if (!user) {
       return res.send({ error: "User not found. Please check your email." });
     }
-
-    const token = generateToken();
-    await User.findOneAndUpdate(
-      { email: email },
-      {
-        $set: {
-          resetToken: token,
-        },
-      }
-    );
 
     await sendEmailVerification({
       uniqueId: user.uniqueId,

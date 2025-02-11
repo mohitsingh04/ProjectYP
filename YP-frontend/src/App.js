@@ -28,8 +28,8 @@ import UserList from "./pages/Users/UserList";
 import ViewUser from "./pages/Users/ViewUser";
 import ViewStatus from "./pages/Status/ViewStatus";
 import EditUser from "./pages/Users/EditUser";
-import Search from "./Frontend/Home/Search";
-import ViewProperty from "./Frontend/Property/ViewProperty";
+// import Search from "./Frontend/Home/Search";
+// import ViewProperty from "./Frontend/Property/ViewProperty";
 import EditTeacher from "./pages/Teachers/EditTeacher";
 import ViewTeacher from "./pages/Teachers/ViewTeacher";
 // import ViewFaqs from "./pages/Faqs/ViewFaq";
@@ -40,8 +40,8 @@ import VerifyEmail from "./pages/Auth/Email/VerifyEmail";
 import EmailVerified from "./pages/Auth/Email/EmailVerified";
 import EditSeo from "./pages/Seo/EditSeo";
 import EditGallery from "./pages/Gallery/EditGallery";
-import Home from "./Frontend/Home/Home";
-import FrontPropertyList from "./Frontend/Property/PropertyList";
+// import Home from "./Frontend/Home/Home";
+// import FrontPropertyList from "./Frontend/Property/PropertyList";
 import CourseList from "./pages/Course/CourseList";
 import AddCourse from "./pages/Course/AddCourse";
 import EditPropertyCourse from "./pages/Course/Property/EditCourse";
@@ -73,29 +73,23 @@ function Root() {
         {loading && <Loader />}
         <ToastContainer autoClose={3000} />
         <Routes>
-          <Route path="/search" element={<Search />} />
-          <Route path="/home" element={<Home />} />
-          <Route
-            path="/search/institute-in-india"
-            element={<FrontPropertyList />}
-          />
-          <Route path="/courses-in-india" element={<Home />} />
+          {/* <Route path="/search" element={<Search />} /> */}
+          {/* <Route path="/home" element={<Home />} /> */}
+          {/* <Route path="/search/institute-in-india"element={<FrontPropertyList />}/> */}
+          {/* <Route path="/courses-in-india" element={<Home />} /> */}
 
           {/* non Login Paths */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route
-            path="/send/verify-email/success/:email"
-            element={<SendVerifyEmail />}
-          />
-          <Route path="/verify-email" element={<VerifyEmail />} />
-          <Route path="/verify-user/:token" element={<VerificationEmail />} />
+          <Route path="/login" element={<ProtectedRoutes><Login /></ProtectedRoutes>} />
+          <Route path="/register" element={<ProtectedRoutes><Register /></ProtectedRoutes>} />
+          <Route path="/send/verify-email/success/:email"element={<SendVerifyEmail />}/>
+          <Route path="/verify-email" element={<ProtectedRoutes><VerifyEmail /></ProtectedRoutes>} />
+          <Route path="/verify-user/:token" element={<ProtectedRoutes><VerificationEmail /></ProtectedRoutes>} />
+          <Route path="/forgot-password" element={<ProtectedRoutes><ForgotPassword /></ProtectedRoutes>} />
+          <Route path="/reset/:token" element={<ProtectedRoutes><ResetPassword /></ProtectedRoutes>} />
+          <Route path="/email-verified/:token" element={<ProtectedRoutes><EmailVerified /></ProtectedRoutes>} />
 
           {/* Unkown */}
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset/:token" element={<ResetPassword />} />
-          <Route path="/property/:uniqueId" element={<ViewProperty />} />
-          <Route path="/email-verified/:token" element={<EmailVerified />} />
+          {/* <Route path="/property/:uniqueId" element={<ViewProperty />} /> */}
 
           <Route path="/" element={<App />}>
             <Route index element={<Dashboard />} />
@@ -132,7 +126,6 @@ function Root() {
             <Route path={`/dashboard/course-seo/add/:uniqueId`} element={<ProtectedRoutes><AddCourseSeo /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course-seo/edit/:uniqueId`} element={<ProtectedRoutes><EditCourseSeo /></ProtectedRoutes>}/>
           </Route>
-            <Route path={`/dashboard/search`} element={<ProtectedRoutes><Search /></ProtectedRoutes>} />
             <Route path="/*" element={<Error404 />} />
         </Routes>
       </BrowserRouter>

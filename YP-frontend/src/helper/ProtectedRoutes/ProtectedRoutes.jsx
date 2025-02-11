@@ -16,6 +16,9 @@ export default function ProtectedRoutes({ children }) {
     "/send/verify-email/success/:email",
     "/verify-email",
     "/verify-user/:token",
+    "/forgot-password",
+    "/reset/:token",
+    "/email-verified/:token",
   ];
 
   // Role-based protected routes
@@ -93,11 +96,11 @@ export default function ProtectedRoutes({ children }) {
       "/dashboard/course/view/:uniqueId",
       "/dashboard/course-seo/add/:uniqueId",
       "/dashboard/course-seo/edit/:uniqueId",
-      "/dashboard/search"
     ],
   };
 
-  const isPathMatching = (paths) => paths.some((route) => matchPath(route, path));
+  const isPathMatching = (paths) =>
+    paths.some((route) => matchPath(route, path));
 
   if (authenticate && isPathMatching(nonLoginPaths)) {
     return <Navigate to="/dashboard" replace />;
