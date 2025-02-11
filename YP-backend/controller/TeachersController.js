@@ -63,9 +63,9 @@ export const updateTeacher = async (req, res) => {
     const uniqueId = req.params.uniqueId;
     const { teacher_name, designation, experience, status } = req.body;
     const profileFile = req.files["profile"];
-    const teacherProfile = profileFile
-      ? req?.files["profile"][0]?.path
-      : req.body.profile;
+    const profile = req?.files["profile"]?.[0]?.path;
+    const originalProfile = req?.files["profile"]?.[0]?.originalPath;
+
     const teacher = await Teachers.findOne({ uniqueId: uniqueId });
     if (!teacher) {
       return res.send({ error: "Teacher not found!" });
@@ -77,7 +77,7 @@ export const updateTeacher = async (req, res) => {
             teacher_name,
             designation,
             experience,
-            profile: teacherProfile,
+            profile: [profile, originalProfile],
             status,
           },
         }

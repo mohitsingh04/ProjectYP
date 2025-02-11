@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Card } from "react-bootstrap";
+import { Card, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useDropzone } from "react-dropzone";
 import { API } from "../../../context/Api";
@@ -77,6 +77,48 @@ export default function Achievements() {
     }
   };
 
+  const handleImage = (img, index) => {
+    const splitImage = img.split(".");
+    const extension = splitImage.pop();
+    if (extension === "webp") {
+      return (
+        <Col key={index} lg={3} md={3} sm={6} className="col-12">
+          <img
+            src={`http://localhost:5000/${img}`}
+            alt={img}
+            style={{ aspectRatio: "2/2", objectFit: "cover" }}
+          />
+        </Col>
+      );
+    }
+
+    return;
+  };
+  const handleImageInUpdate = (img, index) => {
+    const splitImage = img.split(".");
+    const extension = splitImage.pop();
+    if (extension === "webp") {
+      return (
+        <Col key={index} lg={3} md={3} sm={6} className="col-12">
+          <img
+            src={`http://localhost:5000/${img}`}
+            alt={img}
+            style={{ aspectRatio: "2/2", objectFit: "cover" }}
+          />
+          <button
+            type="button"
+            className="btn btn-danger btn-sm position-absolute top-0 end-0"
+            onClick={() => removeOldImage(index)}
+          >
+            Remove
+          </button>
+        </Col>
+      );
+    }
+
+    return;
+  };
+
   return (
     <>
       <div className="tab-pane profiletab show">
@@ -113,26 +155,9 @@ export default function Achievements() {
                 </div>
                 <div className="row mt-4">
                   {oldAchievements.length > 0 &&
-                    oldAchievements.map((item, index) => (
-                      <div
-                        key={index}
-                        className="col-md-3 p-0 px-2 position-relative cc"
-                      >
-                        <img
-                          src={item.preview || `http://localhost:5000/${item}`}
-                          alt={item.preview}
-                          className="img-fluid"
-                          style={{ aspectRatio: "2/2", objectFit: "cover" }}
-                        />
-                        <button
-                          type="button"
-                          className="btn btn-danger btn-sm position-absolute top-0 end-0"
-                          onClick={() => removeOldImage(index)}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    ))}
+                    oldAchievements.map((item, index) =>
+                      handleImageInUpdate(item, index)
+                    )}
                   {images.length > 0 &&
                     images.map((image, i) => (
                       <div
@@ -182,15 +207,9 @@ export default function Achievements() {
               <Card.Body className="bg-white">
                 <div className="row mt-4">
                   {oldAchievements.length > 0 ? (
-                    oldAchievements.map((item, index) => (
-                      <div className="col-md-3 p-1" key={index}>
-                        <img
-                          src={`http://localhost:5000/${item}`}
-                          style={{ aspectRatio: "2/2", objectFit: "cover" }}
-                          alt={item}
-                        />
-                      </div>
-                    ))
+                    oldAchievements.map((item, index) =>
+                      handleImage(item, index)
+                    )
                   ) : (
                     <p>There are No Achievements</p>
                   )}

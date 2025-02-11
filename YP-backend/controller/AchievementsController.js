@@ -9,6 +9,7 @@ export const addAchievements = async (req, res) => {
     if (req?.files?.achievements && req.files.achievements.length > 0) {
       for (let i = 0; i < req.files.achievements.length; i++) {
         achievements.push(req.files.achievements[i]?.path);
+        achievements.push(req.files.achievements[i]?.originalPath);
       }
     }
 

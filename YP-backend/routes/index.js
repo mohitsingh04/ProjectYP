@@ -173,12 +173,14 @@ router.patch(
   "/property/:uniqueId",
   Authentication,
   propertyUpload,
+  processImage,
   updateProperty
 );
 router.patch(
   "/property/images/:uniqueId",
   Authentication,
   propertyUpload,
+  processImage,
   updatePropertyImages
 );
 router.delete("/property/:uniqueId", Authentication, deleteProperty);
@@ -186,18 +188,6 @@ router.get("/property/:uniqueId", Authentication, getPropertyById);
 router.get("/property/:property_slug", Authentication, getPropertyBySlug);
 
 // Teacher Route
-const teacherStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const property_id = req.body.property_id;
-    cb(null, `./Folders/${property_id}/teachers`);
-  },
-  filename: function (req, file, cb) {
-    cb(null, "IMG" + "-" + Date.now() + "-" + file.originalname);
-  },
-});
-
-const teachersUpload = multer({ storage: teacherStorage });
-
 const teacherProfile = upload.fields([{ name: "profile", maxCount: 1 }]);
 router.get("/teacher", Authentication, getTeacher);
 router.post(
@@ -211,6 +201,7 @@ router.patch(
   "/teacher/:uniqueId",
   Authentication,
   teacherProfile,
+  processImage,
   updateTeacher
 );
 router.delete("/teacher/:uniqueId", Authentication, deleteTeacher);
@@ -244,22 +235,6 @@ router.delete("/course/:uniqueId", Authentication, deleteCourse);
 router.get("/course/:uniqueId", Authentication, getCourseById);
 
 // Gallery Route
-
-const galleryStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const property_id = req.body.propertyId;
-    cb(null, `./Folders/${property_id}/gallery`);
-  },
-  filename: function (req, file, cb) {
-    console.log(file);
-    cb(
-      null,
-      "IMG" + "-" + Date.now() + "-" + file.originalname + "-" + ".webp"
-    );
-  },
-});
-
-const galleryUploads = multer({ storage: galleryStorage });
 const gallery = upload.fields([{ name: "gallery", maxCount: 4 }]);
 const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 4 }]);
 router.get("/gallery", Authentication, getGallery);
@@ -268,6 +243,7 @@ router.patch(
   "/gallery/:uniqueId",
   Authentication,
   galleryUpdate,
+  processImage,
   updateGallery
 );
 router.delete("/gallery/:uniqueId", Authentication, deleteGallery);
@@ -320,25 +296,14 @@ router.get("/states", Authentication, getState);
 router.get("/cities", Authentication, getCity);
 
 //achievements
-const achievementsStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    const property_id = req.body.property_id;
-    cb(null, `./Folders/${property_id}/achievements`);
-  },
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      "IMG" + "-" + Date.now() + "-" + file.originalname + "-" + ".webp"
-    );
-  },
-});
-
-const achievementsUploads = multer({ storage: achievementsStorage });
-
-const achievements = achievementsUploads.fields([
-  { name: "achievements", maxCount: 4 },
-]);
-router.post("/achievements", Authentication, achievements, addAchievements);
+const achievements = upload.fields([{ name: "achievements", maxCount: 4 }]);
+router.post(
+  "/achievements",
+  Authentication,
+  achievements,
+  processImage,
+  addAchievements
+);
 router.get(
   "/achievements/:property_id",
   Authentication,

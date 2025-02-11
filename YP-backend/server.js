@@ -8,6 +8,7 @@ import router from "./routes/index.js";
 import handleFolderCleaner from "./helper/FolderCleaners/FolderCleaners.js";
 import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
 import {
+  AchievementImageMover,
   GalleryImageMover,
   PropertyImageMover,
   TeacherImageMover,
@@ -37,6 +38,7 @@ setInterval(() => {
   PropertyImageMover();
   TeacherImageMover();
   GalleryImageMover();
+  AchievementImageMover();
   // handleFolderCleaner()
 }, 2000);
 

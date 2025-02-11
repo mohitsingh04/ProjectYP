@@ -67,6 +67,7 @@ export const addGallery = async (req, res) => {
 
 export const updateGallery = async (req, res) => {
   try {
+    console.log(req.body);
     const { uniqueId } = req.params;
 
     if (!uniqueId) {
@@ -83,13 +84,15 @@ export const updateGallery = async (req, res) => {
 
     gallery = Array.isArray(gallery) ? gallery : [];
 
-    console.log(req.body);
     const newGallery = [];
 
     newGallery.push(gallery);
     if (req?.files?.newImages && req.files.newImages.length > 0) {
       for (let i = 0; i < req.files.newImages.length; i++) {
         gallery.push(req.files.newImages[i]?.path);
+      }
+      for (let j = 0; j < req.files.newImages.length; j++) {
+        gallery.push(req.files.newImages[j]?.originalPath);
       }
     }
 
@@ -111,7 +114,7 @@ export const updateGallery = async (req, res) => {
     }
   } catch (error) {
     console.error(error);
-    return res.status(500).json({ error: "Internal server error." });
+    return res.status(500).json({ error: error.message });
   }
 };
 

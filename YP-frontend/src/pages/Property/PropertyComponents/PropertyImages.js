@@ -13,6 +13,8 @@ export default function PropertyImages() {
   const [property, setProperty] = useState("");
   const [previewIcon, setPreviewIcon] = useState("");
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
+  const [iconImage, setIconImage] = useState("");
+  const [featureImage, setFeatureImage] = useState("");
 
   useEffect(() => {
     const getProperty = () => {
@@ -24,6 +26,13 @@ export default function PropertyImages() {
     };
     getProperty();
   }, []);
+
+  useEffect(() => {
+    if (property) {
+      setIconImage(property.property_icon[0]);
+      setFeatureImage(property.featured_image[0]);
+    }
+  });
 
   {
     /*Files Information */
@@ -135,7 +144,7 @@ export default function PropertyImages() {
                     />
                     {previewIcon == "" ? (
                       <img
-                        src={`http://localhost:5000/${property.property_icon}`}
+                        src={`http://localhost:5000/${iconImage}`}
                         width={100}
                         height={100}
                         className="rounded-circle"
@@ -180,7 +189,7 @@ export default function PropertyImages() {
                     />
                     {previewIcon == "" ? (
                       <img
-                        src={`http://localhost:5000/${property.property_icon}`}
+                        src={`http://localhost:5000/${iconImage}`}
                         width={100}
                         height={100}
                         className="rounded-circle"
@@ -209,7 +218,7 @@ export default function PropertyImages() {
                   <>
                     <br />
                     <img
-                      src={`http://localhost:5000/${property.property_icon}`}
+                      src={`http://localhost:5000/${iconImage}`}
                       width={100}
                       height={100}
                       className="rounded-circle"
@@ -246,7 +255,7 @@ export default function PropertyImages() {
                     />
                     {previewFeaturedImage == "" ? (
                       <img
-                        src={`http://localhost:5000/${property.featured_image}`}
+                        src={`http://localhost:5000/${featureImage}`}
                         width={350}
                         className="mt-1"
                         alt=""
@@ -292,7 +301,7 @@ export default function PropertyImages() {
                     />
                     {previewFeaturedImage == "" ? (
                       <img
-                        src={`http://localhost:5000/${property.featured_image}`}
+                        src={`http://localhost:5000/${featureImage}`}
                         width={350}
                         className="mt-1"
                         alt=""
@@ -322,7 +331,7 @@ export default function PropertyImages() {
                   <>
                     <br />
                     <img
-                      src={`http://localhost:5000/${property.featured_image}`}
+                      src={`http://localhost:5000/${featureImage}`}
                       width={350}
                       alt=""
                     />

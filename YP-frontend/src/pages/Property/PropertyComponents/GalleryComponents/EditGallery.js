@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { API } from "../../../../context/Api";
 import { toast } from "react-toastify";
 import { useDropzone } from "react-dropzone";
+import { Col } from "react-bootstrap";
 
 export default function EditGallery({
   gallleryId,
@@ -82,6 +83,31 @@ export default function EditGallery({
     accept: "image/jpeg, image/png, image/gif",
   });
 
+  const handleImageInUpdate = (img, index) => {
+    const splitImage = img.split(".");
+    const extension = splitImage.pop();
+    if (extension === "webp") {
+      return (
+        <Col key={index} lg={3} md={3} sm={6} className="col-12">
+          <img
+            src={`http://localhost:5000/${img}`}
+            alt={img}
+            style={{ aspectRatio: "2/2", objectFit: "cover" }}
+          />
+          <button
+            type="button"
+            className="btn btn-danger btn-sm position-absolute top-0 end-0"
+            onClick={() => removeImage(index)}
+          >
+            Remove
+          </button>
+        </Col>
+      );
+    }
+
+    return;
+  };
+
   return (
     <div className="container mt-4">
       <div className="mb-3">
@@ -111,23 +137,7 @@ export default function EditGallery({
         </p>
       </div>
       <div className="row mt-4 px-4">
-        {galleryImages.map((item, index) => (
-          <div key={index} className="col-md-3 p-0 mx-1 position-relative">
-            <img
-              src={item.preview || `http://localhost:5000/${item}`}
-              alt="Preview"
-              className="img-fluid w-100 h-100"
-              style={{ aspectRatio: "2/2", objectFit: "cover" }}
-            />
-            <button
-              type="button"
-              className="btn btn-danger btn-sm position-absolute top-0 end-0"
-              onClick={() => removeImage(index)}
-            >
-              Remove
-            </button>
-          </div>
-        ))}
+        {galleryImages.map((item, index) => handleImageInUpdate(item, index))}
         {newImages.length > 0 &&
           newImages.map((item, index) => (
             <div key={index} className="col-md-3 p-0 px-1 position-relative">

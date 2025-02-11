@@ -4,7 +4,7 @@ import { fileURLToPath } from "url";
 import Property from "../../models/Property.js";
 import Teachers from "../../models/Teachers.js";
 import Gallery from "../../models/Gallery.js";
-import { profile } from "../../controller/AuthController.js";
+import Achievements from "../../models/Achievements.js";
 
 const fileExists = async (filePath) => {
   try {
@@ -178,7 +178,6 @@ export const TeacherImageMover = async (req, res) => {
     }
   } catch (error) {}
 };
-
 export const GalleryImageMover = async (req, res) => {
   try {
     const __filename = fileURLToPath(import.meta.url);
@@ -188,40 +187,113 @@ export const GalleryImageMover = async (req, res) => {
 
     for (const item of allProperties) {
       const galleryImages = await Gallery.find({ propertyId: item.uniqueId });
-      let movedImages = [];
-
       const destinationDir = path.resolve(
         `./folders/${item.uniqueId}/gallery/`
       );
 
-      galleryImages.map((info) => {
-        info.gallery.map(async (img) => {
+      // Ensure the destination directory exists
+      await fs.mkdir(destinationDir, { recursive: true });
+
+      for (const info of galleryImages) {
+        let movedImages = [];
+        let oldImages = [];
+
+        for (const img of info.gallery) {
           const image = img.split(`\\`);
           const profile = image[image.length - 1];
           const GalleryImagePath = path.resolve(`./images/${profile}`);
+          const newImagePath = path.join(destinationDir, profile);
+
+          if (img.startsWith(`folders/${item.uniqueId}/gallery/`)) {
+            oldImages.push(img);
+          }
 
           if (await fileExists(GalleryImagePath)) {
-            await fs.rename(
-              GalleryImagePath,
-              path.join(destinationDir, profile)
-            );
+            await fs.rename(GalleryImagePath, newImagePath);
             movedImages.push(`folders/${item.uniqueId}/gallery/${profile}`);
           }
-          if (movedImages && movedImages.length === info.gallery.length) {
-            await Gallery.findOneAndUpdate(
-              { uniqueId: info.uniqueId },
-              {
-                $set: {
-                  gallery: movedImages,
-                },
-              },
-              { new: true }
-            );
-          }
+        }
+
+        oldImages.map((i) => {
+          movedImages.push(i);
         });
-      });
+
+        // console.log(movedImages);
+
+        // Update the gallery only if all images are moved
+        if (movedImages.length === info.gallery.length) {
+          await Gallery.findOneAndUpdate(
+            { uniqueId: info.uniqueId },
+            { $set: { gallery: movedImages } },
+            { new: true }
+          );
+        }
+      }
     }
   } catch (error) {
-    console.log(error);
+    console.error("Error moving gallery images:", error);
+  }
+};
+
+export const AchievementImageMover = async (req, res) => {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
+    const allProperties = await Property.find();
+
+    for (const item of allProperties) {
+      const achievementsImages = await Achievements.find({
+        property_id: item.uniqueId,
+      });
+
+      for (const info of achievementsImages) {
+        let movedImages = [];
+        let oldImages = [];
+
+        const destinationDir = path.resolve(
+          `./folders/${item.uniqueId}/achievements/`
+        );
+
+        await fs.mkdir(destinationDir, { recursive: true });
+
+        for (const img of info.achievements) {
+          const image = img.split(`\\`);
+          const profile = image[image.length - 1];
+          const AchievementImagePath = path.resolve(`./images/${profile}`);
+
+          if (img.startsWith(`folders/${item.uniqueId}/achievements/`)) {
+            oldImages.push(img);
+          }
+
+          if (await fileExists(AchievementImagePath)) {
+            console.log("Moving file:", AchievementImagePath);
+
+            await fs.rename(
+              AchievementImagePath,
+              path.join(destinationDir, profile)
+            );
+
+            movedImages.push(
+              `folders/${item.uniqueId}/achievements/${profile}`
+            );
+          }
+        }
+
+        oldImages.map((i) => {
+          movedImages.push(i);
+        });
+
+        if (movedImages.length === info.achievements.length) {
+          await Achievements.findOneAndUpdate(
+            { uniqueId: info.uniqueId },
+            { $set: { achievements: movedImages } },
+            { new: true }
+          );
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Error moving achievement images:", error);
   }
 };

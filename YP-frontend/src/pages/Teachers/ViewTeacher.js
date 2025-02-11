@@ -83,7 +83,7 @@ export default function ViewTeacher() {
                             />
                           ) : (
                             <img
-                              src={`http://localhost:5000/images/${teacher.profile}`}
+                              src={`http://localhost:5000/${teacher?.profile[0]}`}
                               alt="profile-user"
                               width={128}
                               height={128}
