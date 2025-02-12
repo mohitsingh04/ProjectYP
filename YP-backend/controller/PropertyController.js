@@ -75,7 +75,7 @@ export const addProperty = async (req, res) => {
     });
 
     const x = property ? property.uniqueId + 1 : 1;
-    const folderPath = path.join(__dirname, `../Folders/${x}`);
+    const folderPath = path.join(__dirname, `../media/${x}`);
     try {
       await fs.promises.access(folderPath, fs.constants.F_OK);
       console.log(`Folder ${x} exists.`);
@@ -86,12 +86,7 @@ export const addProperty = async (req, res) => {
         console.log("Folder created successfully");
       });
 
-      const allSubFolders = [
-        "main",
-        "teachers",
-        "gallery/compressed",
-        "achievements",
-      ];
+      const allSubFolders = ["main", "teachers", "gallery", "achievements"];
       allSubFolders.map((item) => {
         const subFolder = path.join(folderPath, item);
         fs.mkdir(subFolder, { recursive: true }, (err) => {
@@ -151,12 +146,7 @@ export const updateProperty = async (req, res) => {
       status,
       property_courses,
     } = req.body;
-    const businessHours = new Property({
-      businessHours: Object.entries(req.body).map(([day, times]) => ({
-        day,
-        ...times,
-      })),
-    });
+
     const property = await Property.findOne({ property_name: property_name });
     if (property) {
       await Property.findOneAndUpdate(
@@ -183,7 +173,6 @@ export const updateProperty = async (req, res) => {
             category,
             status,
             property_courses,
-            businessHours,
           },
         }
       )

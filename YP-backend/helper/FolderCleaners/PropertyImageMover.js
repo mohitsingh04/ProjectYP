@@ -36,7 +36,7 @@ export const PropertyImageMover = async (req, res) => {
         `./images/${item.featured_image[1]}`
       );
 
-      const destinationDir = path.resolve(`./folders/${item.uniqueId}/main/`);
+      const destinationDir = path.resolve(`./media/${item.uniqueId}/main/`);
       try {
         await fs.mkdir(destinationDir, { recursive: true });
 
@@ -50,7 +50,7 @@ export const PropertyImageMover = async (req, res) => {
           );
 
           iconPathMoved.push(
-            `folders/${item.uniqueId}/main/${item.property_icon[0]}`
+            `media/${item.uniqueId}/main/${item.property_icon[0]}`
           );
         }
         if (await fileExists(featuredImagePathCompressed)) {
@@ -59,7 +59,7 @@ export const PropertyImageMover = async (req, res) => {
             path.join(destinationDir, item.featured_image[0])
           );
           featuredPathMoved.push(
-            `folders/${item.uniqueId}/main/${item.featured_image[0]}`
+            `media/${item.uniqueId}/main/${item.featured_image[0]}`
           );
         }
         if (await fileExists(iconPathOriginal)) {
@@ -68,7 +68,7 @@ export const PropertyImageMover = async (req, res) => {
             path.join(destinationDir, item.property_icon[1])
           );
           iconPathMoved.push(
-            `folders/${item.uniqueId}/main/${item.property_icon[1]}`
+            `media/${item.uniqueId}/main/${item.property_icon[1]}`
           );
         }
         if (await fileExists(featuredImagePathOriginal)) {
@@ -77,7 +77,7 @@ export const PropertyImageMover = async (req, res) => {
             path.join(destinationDir, item.featured_image[1])
           );
           featuredPathMoved.push(
-            `folders/${item.uniqueId}/main/${item.featured_image[1]}`
+            `media/${item.uniqueId}/main/${item.featured_image[1]}`
           );
         }
 
@@ -131,7 +131,7 @@ export const TeacherImageMover = async (req, res) => {
         let teacherMoved = [];
 
         const destinationDir = path.resolve(
-          `./folders/${item.uniqueId}/teachers/`
+          `./media/${item.uniqueId}/teachers/`
         );
 
         try {
@@ -146,7 +146,7 @@ export const TeacherImageMover = async (req, res) => {
               path.join(destinationDir, profile)
             );
 
-            teacherMoved.push(`folders/${item.uniqueId}/teachers/${profile}`);
+            teacherMoved.push(`media/${item.uniqueId}/teachers/${profile}`);
           }
           if (await fileExists(teacherProfilePathOriginal)) {
             const image = teacherProfilePathOriginal.split("\\");
@@ -157,7 +157,7 @@ export const TeacherImageMover = async (req, res) => {
               path.join(destinationDir, profile)
             );
 
-            teacherMoved.push(`folders/${item.uniqueId}/teachers/${profile}`);
+            teacherMoved.push(`media/${item.uniqueId}/teachers/${profile}`);
           }
 
           if (teacherMoved && teacherMoved.length === 2) {
@@ -188,7 +188,7 @@ export const GalleryImageMover = async (req, res) => {
     for (const item of allProperties) {
       const galleryImages = await Gallery.find({ propertyId: item.uniqueId });
       const destinationDir = path.resolve(
-        `./folders/${item.uniqueId}/gallery/`
+        `./media/${item.uniqueId}/gallery/`
       );
 
       // Ensure the destination directory exists
@@ -204,13 +204,13 @@ export const GalleryImageMover = async (req, res) => {
           const GalleryImagePath = path.resolve(`./images/${profile}`);
           const newImagePath = path.join(destinationDir, profile);
 
-          if (img.startsWith(`folders/${item.uniqueId}/gallery/`)) {
+          if (img.startsWith(`media/${item.uniqueId}/gallery/`)) {
             oldImages.push(img);
           }
 
           if (await fileExists(GalleryImagePath)) {
             await fs.rename(GalleryImagePath, newImagePath);
-            movedImages.push(`folders/${item.uniqueId}/gallery/${profile}`);
+            movedImages.push(`media/${item.uniqueId}/gallery/${profile}`);
           }
         }
 
@@ -252,7 +252,7 @@ export const AchievementImageMover = async (req, res) => {
         let oldImages = [];
 
         const destinationDir = path.resolve(
-          `./folders/${item.uniqueId}/achievements/`
+          `./media/${item.uniqueId}/achievements/`
         );
 
         await fs.mkdir(destinationDir, { recursive: true });
@@ -262,7 +262,7 @@ export const AchievementImageMover = async (req, res) => {
           const profile = image[image.length - 1];
           const AchievementImagePath = path.resolve(`./images/${profile}`);
 
-          if (img.startsWith(`folders/${item.uniqueId}/achievements/`)) {
+          if (img.startsWith(`media/${item.uniqueId}/achievements/`)) {
             oldImages.push(img);
           }
 
@@ -275,7 +275,7 @@ export const AchievementImageMover = async (req, res) => {
             );
 
             movedImages.push(
-              `folders/${item.uniqueId}/achievements/${profile}`
+              `media/${item.uniqueId}/achievements/${profile}`
             );
           }
         }

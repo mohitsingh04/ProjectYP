@@ -19,7 +19,9 @@ export default function Achievements() {
 
   const getAchievements = useCallback(async () => {
     const response = await API.get(`/achievements/${uniqueId}`);
-    setOldAchievements(response.data.achievements);
+    if (response.data.achievements) {
+      setOldAchievements(response.data.achievements);
+    }
   }, [uniqueId]);
 
   useEffect(() => {

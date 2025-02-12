@@ -1,4 +1,5 @@
 import BusinessHour from "../models/BusinessHour.js";
+import Property from "../models/Property.js";
 
 export const getBusinessHours = async (req, res) => {
   try {
@@ -74,6 +75,33 @@ export const getBusinessHoursByPropertyId = async (req, res) => {
     const { property_id } = req.params;
     const businessHours = await BusinessHour.find({ property_id: property_id });
     return res.status(200).json(businessHours);
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export const changePropertyCategory = async (req, res) => {
+  try {
+    const { property_id, activeCategory } = req.body;
+
+    if (!activeCategory) {
+      return res.status(400).json({ error: "Please Select Category" });
+    }
+
+    const changeCategory = await Property.findOneAndUpdate(
+      { uniqueId: property_id },
+      {
+        $set: {
+          category: activeCategory,
+        },
+      }
+    );
+
+    if (changeCategory) {
+      return res
+        .status(200)
+        .json({ message: "Catergory Changed Successfully" });
+    }
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

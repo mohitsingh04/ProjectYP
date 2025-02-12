@@ -28,7 +28,7 @@ app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(express.static("public"));
 app.use("/images", express.static("images"));
-app.use("/Folders", express.static("Folders"));
+app.use("/media", express.static("media"));
 
 setInterval(() => {
   ExpireVerification();

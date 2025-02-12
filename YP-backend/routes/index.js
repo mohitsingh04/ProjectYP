@@ -96,6 +96,7 @@ import {
 } from "../controller/PropertyCourseController.js";
 import {
   addBusinessHours,
+  changePropertyCategory,
   getBusinessHours,
 } from "../controller/BusinessHourController.js";
 import { getState } from "../controller/StateController.js";
@@ -285,6 +286,7 @@ router.delete(
 router.get("/business-hours", Authentication, getBusinessHours);
 router.get("/business-hours/:property_id", Authentication, getBusinessHours);
 router.post("/business-hours", Authentication, addBusinessHours);
+router.patch("/business-hours/category", changePropertyCategory);
 
 // Country
 router.get("/countries", Authentication, getCountry);

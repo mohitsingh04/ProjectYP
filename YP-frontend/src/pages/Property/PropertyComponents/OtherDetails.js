@@ -155,7 +155,7 @@ export default function OtherDetails() {
     }
   };
 
-  const { values, handleChange, handleBlur, handleSubmit } = useFormik({
+  const { values, handleSubmit } = useFormik({
     initialValues: initialValues,
     // validationSchema: validationSchema,
     onSubmit: onSubmit,
@@ -167,6 +167,47 @@ export default function OtherDetails() {
       ...formState,
       [day]: { ...formState[day], [time]: value },
     });
+  };
+
+  const [activeCategory, setActiveCategory] = useState("");
+  const [activeStatus, setActiveStatus] = useState("");
+  const [establishmentYear, setEstablishmentYear] = useState("");
+  const handleCateogory = async (e) => {
+    e.preventDefault();
+    let data = {};
+    if (activeCategory) {
+      data = {
+        ...initialValues,
+        category: activeCategory,
+      };
+    }
+
+    if (activeStatus) {
+      data = {
+        ...initialValues,
+        status: activeStatus,
+      };
+    }
+
+    if (establishmentYear) {
+      data = {
+        ...initialValues,
+        est_year: establishmentYear,
+      };
+    }
+    try {
+      const response = await API.patch(
+        `/property/${initialValues?.property_id}`,
+        data
+      );
+      toast.success(response.data.message);
+      setActiveCategory("");
+      await getProperty();
+      handleCancelEditCategory();
+    } catch (error) {
+      toast.error(error.response.data.error);
+      console.log(error);
+    }
   };
 
   return (
@@ -185,14 +226,13 @@ export default function OtherDetails() {
                   <strong>Category :</strong>
                   {!property.category ? (
                     <>
-                      <form onSubmit={handleSubmit} className="d-flex">
+                      <form onSubmit={handleCateogory} className="d-flex">
                         <select
                           name="category"
                           id="category"
                           className="form-control"
                           value={values.category}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          onChange={(e) => setActiveCategory(e.target.value)}
                         >
                           <option value="">--Select Category--</option>
                           {category.map((item, key) => (
@@ -209,14 +249,13 @@ export default function OtherDetails() {
                     </>
                   ) : showCategoryInInput ? (
                     <>
-                      <form onSubmit={handleSubmit} className="d-flex">
+                      <form onSubmit={handleCateogory} className="d-flex">
                         <select
                           name="category"
                           id="category"
                           className="form-control"
                           value={values.category}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          onChange={(e) => setActiveCategory(e.target.value)}
                         >
                           <option value="">--Select Category--</option>
                           {category.map((item, key) => (
@@ -257,14 +296,13 @@ export default function OtherDetails() {
                       <strong>Status :</strong>
                       {!property.status ? (
                         <>
-                          <form onSubmit={handleSubmit} className="d-flex">
+                          <form onSubmit={handleCateogory} className="d-flex">
                             <select
                               name="status"
                               id="status"
                               className="form-control"
                               value={values.status}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
+                              onChange={(e) => setActiveStatus(e.target.value)}
                             >
                               <option value="">--Select Status--</option>
                               {status.map((item, key) => (
@@ -281,14 +319,13 @@ export default function OtherDetails() {
                         </>
                       ) : showStatusInInput ? (
                         <>
-                          <form onSubmit={handleSubmit} className="d-flex">
+                          <form onSubmit={handleCateogory} className="d-flex">
                             <select
                               name="status"
                               id="status"
                               className="form-control"
                               value={values.status}
-                              onChange={handleChange}
-                              onBlur={handleBlur}
+                              onChange={(e) => setActiveStatus(e.target.value)}
                             >
                               <option value="">--Select Status--</option>
                               {status.map((item, key) => (
@@ -329,15 +366,14 @@ export default function OtherDetails() {
                   <strong>Established Year :</strong>
                   {!property.est_year ? (
                     <>
-                      <form onSubmit={handleSubmit} className="d-flex">
+                      <form onSubmit={handleCateogory} className="d-flex">
                         <input
                           type="number"
                           name="est_year"
                           className="form-control"
                           placeholder="Enter established year..."
                           value={values.est_year}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          onChange={(e) => setEstablishmentYear(e.target.value)}
                         />
                         {/* <span onClick={handleCancelEditEstDate} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
                         <button type="submit" className="btn">
@@ -347,15 +383,14 @@ export default function OtherDetails() {
                     </>
                   ) : showEstDateInInput ? (
                     <>
-                      <form onSubmit={handleSubmit} className="d-flex">
+                      <form onSubmit={handleCateogory} className="d-flex">
                         <input
                           type="number"
                           name="est_year"
                           className="form-control"
                           placeholder="Enter established year..."
                           value={values.est_year}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          onChange={(e) => setEstablishmentYear(e.target.value)}
                         />
                         <span
                           onClick={handleCancelEditEstDate}

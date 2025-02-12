@@ -77,13 +77,6 @@ const PropertySchema = new mongoose.Schema({
     type: String,
     default: "Uncategorized",
   },
-  businessHours: [
-    {
-      day: String,
-      open: String,
-      close: String,
-    },
-  ],
   property_slug: {
     type: String,
     unique: true,
