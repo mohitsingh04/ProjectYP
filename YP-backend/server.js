@@ -13,13 +13,16 @@ import {
   PropertyImageMover,
   TeacherImageMover,
 } from "./helper/FolderCleaners/PropertyImageMover.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 dotenv.config();
 
+app.use(cookieParser());
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:3000",
+    credentials: true,
   })
 );
 app.use(router);

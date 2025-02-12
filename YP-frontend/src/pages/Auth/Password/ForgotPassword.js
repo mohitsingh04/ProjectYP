@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Row, Col, Card } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from 'yup';
-import { accessToken, API } from "../../../context/Api";
+import {  API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
@@ -12,11 +12,11 @@ export default function ForgotPassword() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        if (accessToken) {
-            navigate("/dashboard");
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (accessToken) {
+    //         navigate("/dashboard");
+    //     }
+    // }, []);
 
     const initialValues = {
         email: ""

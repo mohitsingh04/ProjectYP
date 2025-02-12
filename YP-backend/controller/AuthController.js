@@ -27,6 +27,8 @@ export const login = async (req, res) => {
     }
 
     const accessToken = jwt.sign(user.toJSON(), process.env.JWT_SECRET_VALUE);
+
+    res.cookie("token", accessToken, { httpOnly: true, maxAge: 3600000 });
     delete user.password;
     return res.send({ message: "Logged in successfully.", accessToken, user });
   } catch (err) {
@@ -75,8 +77,23 @@ export const register = async (req, res) => {
   }
 };
 
+export const userData = async (req) => {
+  try {
+    let token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ error: "Access Denied" });
+    }
+
+    const decoded = await jwt.verify(token, process.env.JWT_SECRET_VALUE);
+    return decoded;
+  } catch (err) {
+    console.log(err);
+  }
+};
+
 export const profile = async (req, res) => {
-  const user = req.userData;
+  const user = await userData(req);
   return res.status(200).json({ user });
 };
 
@@ -268,5 +285,19 @@ export const getEmailVerification = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.send({ error: error });
+  }
+};
+
+export const getToken = async (req, res) => {
+  try {
+    const token = req.cookies.token;
+
+    if (!token) {
+      return res.status(401).json({ error: "Please Login" });
+    }
+
+    return res.status(200).json({ token });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };

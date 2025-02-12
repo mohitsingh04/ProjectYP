@@ -1,13 +1,31 @@
-import React from "react";
-import { accessToken } from "../../context/Api";
+import React, { useEffect, useMemo, useState } from "react";
+import { accessToken, API } from "../../context/Api";
 import { matchPath, Navigate, useLocation } from "react-router-dom";
 import DataRequest from "../../context/DataRequest";
 
 export default function ProtectedRoutes({ children }) {
-  const authenticate = accessToken;
+  // let authenticate = accessToken;
   const { User } = DataRequest();
   const location = useLocation();
   const path = location.pathname;
+  const memoizedUser = useMemo(() => User, [User]);
+  const [token, setToken] = useState(null); // Initializing as null
+  const [loading, setLoading] = useState(true); // Start with loading state
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const response = await API.get("/get-token");
+        setToken(response.data.token); // Update token
+      } catch (error) {
+        console.error(error);
+      } finally {
+        setLoading(false); // End loading after request
+      }
+    };
+
+    getToken();
+  }, []); // Only runs on mount
 
   // Paths that do not require authentication
   const nonLoginPaths = [
@@ -102,18 +120,20 @@ export default function ProtectedRoutes({ children }) {
   const isPathMatching = (paths) =>
     paths.some((route) => matchPath(route, path));
 
-  if (authenticate && isPathMatching(nonLoginPaths)) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
-  if (!authenticate && !isPathMatching(nonLoginPaths)) {
-    return <Navigate to="/login" replace />;
-  }
-
-  if (User?.role) {
-    const allowedRoutes = roleRoutes[User.role] || [];
-    if (!isPathMatching(allowedRoutes)) {
+  if (!loading) {
+    if (token && isPathMatching(nonLoginPaths)) {
       return <Navigate to="/dashboard" replace />;
+    }
+
+    if (!token && !isPathMatching(nonLoginPaths)) {
+      return <Navigate to="/login" replace />;
+    }
+
+    if (memoizedUser?.role) {
+      const allowedRoutes = roleRoutes[memoizedUser.role] || [];
+      if (!isPathMatching(allowedRoutes)) {
+        return <Navigate to="/dashboard" replace />;
+      }
     }
   }
 

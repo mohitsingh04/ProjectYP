@@ -4,7 +4,7 @@ import { Card } from "react-bootstrap";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import { API, accessToken } from "../../context/Api";
+import { API } from "../../context/Api";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 
@@ -14,11 +14,11 @@ export default function Login() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  useEffect(() => {
-    if (accessToken) {
-      navigate("/dashboard");
-    }
-  }, [navigate]);
+  // useEffect(() => {
+  //   if (accessToken) {
+  //     navigate("/dashboard");
+  //   }
+  // }, [navigate]);
 
   const initialValues = {
     email: "",
@@ -35,16 +35,19 @@ export default function Login() {
   const onSubmit = async (values) => {
     try {
       dispatch(showLoading());
-      const response = await API.post("/login", values);
-      const accessToken = response.data.accessToken;
-      if (accessToken) {
-        localStorage.setItem("accessToken", accessToken);
+      const response = await API.post("/login", values, {
+        withCredentials: true,
+      });
+      // const accessToken = response.data.accessToken;
+    
+        // localStorage.setItem("accessToken", accessToken);
         toast.success(response.data.message);
         navigate("/dashboard");
         window.location.reload();
-      }
+      
       dispatch(hideLoading());
     } catch (error) {
+      console.log(error);
       dispatch(hideLoading());
       setError(error.response.data.error);
       if (error.response.data.error === "You are Not Verified.") {

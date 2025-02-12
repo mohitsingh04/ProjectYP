@@ -6,13 +6,14 @@ import {
   forgotPassword,
   getEmailVerification,
   getResetToken,
+  getToken,
   login,
   postResetToken,
   profile,
   register,
   verifyEmail,
 } from "../controller/AuthController.js";
-import { Authentication, userData } from "../middleware/index.js";
+// import { userData } from "../middleware/index.js";
 import {
   deleteUser,
   deleteUserProfile,
@@ -121,40 +122,36 @@ router.get("/reset/:token", getResetToken);
 router.post("/reset", postResetToken);
 router.post("/verify-email", verifyEmail);
 router.get("/verify-email/:token", getEmailVerification);
+router.get("/get-token", getToken);
 
 // Profile Route
-router.get("/profile", userData, profile);
+router.get("/profile", profile);
 
 // User Route
 const profileUpload = upload.fields([{ name: "profile", maxCount: 1 }]);
-router.get("/users", Authentication, getUser);
+router.get("/users", getUser);
 router.patch("/user/:uniqueId", profileUpload, updateUser);
 router.delete("/user/:uniqueId", deleteUser);
 router.delete("/user/profile/:uniqueId", deleteUserProfile);
-router.get("/user/:uniqueId", Authentication, getUserById);
+router.get("/user/:uniqueId", getUserById);
 
 // Status Route
-router.get("/status", Authentication, getStatus);
-router.post("/status", Authentication, addStatus);
-router.patch("/status/:uniqueId", Authentication, updateStatus);
-router.delete("/status/:uniqueId", Authentication, deleteStatus);
-router.get("/status/:uniqueId", Authentication, getStatusById);
+router.get("/status", getStatus);
+router.post("/status", addStatus);
+router.patch("/status/:uniqueId", updateStatus);
+router.delete("/status/:uniqueId", deleteStatus);
+router.get("/status/:uniqueId", getStatusById);
 
 // Category Route
 const categoryUpload = upload.fields([
   { name: "category_icon", maxCount: 1 },
   { name: "featured_image", maxCount: 1 },
 ]);
-router.get("/category", Authentication, getCategory);
-router.post("/category", Authentication, categoryUpload, addCategory);
-router.patch(
-  "/category/:uniqueId",
-  Authentication,
-  categoryUpload,
-  updateCategory
-);
-router.delete("/category/:uniqueId", Authentication, deleteCategory);
-router.get("/category/:uniqueId", Authentication, getCategoryById);
+router.get("/category", getCategory);
+router.post("/category", categoryUpload, addCategory);
+router.patch("/category/:uniqueId", categoryUpload, updateCategory);
+router.delete("/category/:uniqueId", deleteCategory);
+router.get("/category/:uniqueId", getCategoryById);
 
 // Property Route
 
@@ -162,154 +159,100 @@ const propertyUpload = upload.fields([
   { name: "property_icon", maxCount: 1 },
   { name: "featured_image", maxCount: 1 },
 ]);
-router.get("/property", Authentication, getProperty);
-router.post(
-  "/property",
-  Authentication,
-  propertyUpload,
-  processImage,
-  addProperty
-);
+router.get("/property", getProperty);
+router.post("/property", propertyUpload, processImage, addProperty);
 router.patch(
   "/property/:uniqueId",
-  Authentication,
   propertyUpload,
   processImage,
   updateProperty
 );
 router.patch(
   "/property/images/:uniqueId",
-  Authentication,
   propertyUpload,
   processImage,
   updatePropertyImages
 );
-router.delete("/property/:uniqueId", Authentication, deleteProperty);
-router.get("/property/:uniqueId", Authentication, getPropertyById);
-router.get("/property/:property_slug", Authentication, getPropertyBySlug);
+router.delete("/property/:uniqueId", deleteProperty);
+router.get("/property/:uniqueId", getPropertyById);
+router.get("/property/:property_slug", getPropertyBySlug);
 
 // Teacher Route
 const teacherProfile = upload.fields([{ name: "profile", maxCount: 1 }]);
-router.get("/teacher", Authentication, getTeacher);
-router.post(
-  "/teacher",
-  Authentication,
-  teacherProfile,
-  processImage,
-  addTeacher
-);
-router.patch(
-  "/teacher/:uniqueId",
-  Authentication,
-  teacherProfile,
-  processImage,
-  updateTeacher
-);
-router.delete("/teacher/:uniqueId", Authentication, deleteTeacher);
-router.get("/teacher/:uniqueId", Authentication, getTeacherById);
+router.get("/teacher", getTeacher);
+router.post("/teacher", teacherProfile, processImage, addTeacher);
+router.patch("/teacher/:uniqueId", teacherProfile, processImage, updateTeacher);
+router.delete("/teacher/:uniqueId", deleteTeacher);
+router.get("/teacher/:uniqueId", getTeacherById);
 
 // Review Route
-router.get("/review", Authentication, getReview);
-router.post("/review", Authentication, addReview);
-router.patch("/review/:uniqueId", Authentication, updateReview);
-router.delete("/review/:uniqueId", Authentication, deleteReview);
-router.get("/review/:uniqueId", Authentication, getReviewById);
-router.get(
-  "/review/property/:property_id",
-  Authentication,
-  getReviewByPropertyId
-);
+router.get("/review", getReview);
+router.post("/review", addReview);
+router.patch("/review/:uniqueId", updateReview);
+router.delete("/review/:uniqueId", deleteReview);
+router.get("/review/:uniqueId", getReviewById);
+router.get("/review/property/:property_id", getReviewByPropertyId);
 
 // Faqs Route
-router.get("/faqs", Authentication, getFaq);
-router.post("/faqs", Authentication, addFaq);
-router.patch("/faqs/:uniqueId", Authentication, updateFaq);
-router.delete("/faqs/:uniqueId", Authentication, deleteFaq);
-router.get("/faqs/:uniqueId", Authentication, getFaqById);
+router.get("/faqs", getFaq);
+router.post("/faqs", addFaq);
+router.patch("/faqs/:uniqueId", updateFaq);
+router.delete("/faqs/:uniqueId", deleteFaq);
+router.get("/faqs/:uniqueId", getFaqById);
 
 // Course Route
 const courseUpload = upload.fields([{ name: "image", maxCount: 1 }]);
-router.get("/course", Authentication, getCourse);
-router.post("/course", Authentication, courseUpload, addCourse);
-router.patch("/course/:uniqueId", Authentication, courseUpload, updateCourse);
-router.delete("/course/:uniqueId", Authentication, deleteCourse);
-router.get("/course/:uniqueId", Authentication, getCourseById);
+router.get("/course", getCourse);
+router.post("/course", courseUpload, addCourse);
+router.patch("/course/:uniqueId", courseUpload, updateCourse);
+router.delete("/course/:uniqueId", deleteCourse);
+router.get("/course/:uniqueId", getCourseById);
 
 // Gallery Route
 const gallery = upload.fields([{ name: "gallery", maxCount: 4 }]);
 const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 4 }]);
-router.get("/gallery", Authentication, getGallery);
-router.post("/gallery", Authentication, gallery, processImage, addGallery);
-router.patch(
-  "/gallery/:uniqueId",
-  Authentication,
-  galleryUpdate,
-  processImage,
-  updateGallery
-);
-router.delete("/gallery/:uniqueId", Authentication, deleteGallery);
-router.get("/gallery/:uniqueId", Authentication, gallery, getGalleryById);
+router.get("/gallery", getGallery);
+router.post("/gallery", gallery, processImage, addGallery);
+router.patch("/gallery/:uniqueId", galleryUpdate, processImage, updateGallery);
+router.delete("/gallery/:uniqueId", deleteGallery);
+router.get("/gallery/:uniqueId", gallery, getGalleryById);
 
 // Seo Route
-router.get("/seo", Authentication, getSeo);
-router.post("/seo", Authentication, addSeo);
-router.patch("/seo/:uniqueId", Authentication, updateSeo);
-router.delete("/seo/:uniqueId", Authentication, deleteSeo);
-router.get("/seo/:uniqueId", Authentication, getSeoById);
+router.get("/seo", getSeo);
+router.post("/seo", addSeo);
+router.patch("/seo/:uniqueId", updateSeo);
+router.delete("/seo/:uniqueId", deleteSeo);
+router.get("/seo/:uniqueId", getSeoById);
 
 // Search
-router.get("/search", Authentication, getSearch);
-router.post("/search", Authentication, addSearch);
+router.get("/search", getSearch);
+router.post("/search", addSearch);
 
 // Property Course
-router.get("/property-course", Authentication, getPropertyCourse);
-router.post(
-  "/property-course",
-  Authentication,
-  courseUpload,
-  addPropertyCourse
-);
-router.patch(
-  "/property-course/:uniqueId",
-  Authentication,
-  courseUpload,
-  updatePropertyCourse
-);
-router.get("/property-course/:uniqueId", Authentication, getPropertyCourseById);
-router.delete(
-  "/property-course/:uniqueId",
-  Authentication,
-  deletePropertyCourse
-);
+router.get("/property-course", getPropertyCourse);
+router.post("/property-course", courseUpload, addPropertyCourse);
+router.patch("/property-course/:uniqueId", courseUpload, updatePropertyCourse);
+router.get("/property-course/:uniqueId", getPropertyCourseById);
+router.delete("/property-course/:uniqueId", deletePropertyCourse);
 
 // Business Hours
-router.get("/business-hours", Authentication, getBusinessHours);
-router.get("/business-hours/:property_id", Authentication, getBusinessHours);
-router.post("/business-hours", Authentication, addBusinessHours);
+router.get("/business-hours", getBusinessHours);
+router.get("/business-hours/:property_id", getBusinessHours);
+router.post("/business-hours", addBusinessHours);
 router.patch("/business-hours/category", changePropertyCategory);
 
 // Country
-router.get("/countries", Authentication, getCountry);
+router.get("/countries", getCountry);
 
 // Statee
-router.get("/states", Authentication, getState);
+router.get("/states", getState);
 
 // City
-router.get("/cities", Authentication, getCity);
+router.get("/cities", getCity);
 
 //achievements
 const achievements = upload.fields([{ name: "achievements", maxCount: 4 }]);
-router.post(
-  "/achievements",
-  Authentication,
-  achievements,
-  processImage,
-  addAchievements
-);
-router.get(
-  "/achievements/:property_id",
-  Authentication,
-  getAchievementsByPropertyId
-);
+router.post("/achievements", achievements, processImage, addAchievements);
+router.get("/achievements/:property_id", getAchievementsByPropertyId);
 
 export default router;
