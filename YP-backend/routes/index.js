@@ -20,6 +20,7 @@ import {
   getUser,
   getUserById,
   updateUser,
+  UpdateUserProfile,
 } from "../controller/UserController.js";
 import {
   addStatus,
@@ -107,7 +108,7 @@ import {
   addAchievements,
   getAchievementsByPropertyId,
 } from "../controller/AchievementsController.js";
-import multer from "multer";
+import { getPermissions } from "../controller/PermissionsControllers.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -131,10 +132,11 @@ router.get("/profile", profile);
 const profileUpload = upload.fields([{ name: "profile", maxCount: 1 }]);
 router.get("/users", getUser);
 router.patch("/user/:uniqueId", profileUpload, updateUser);
+router.patch("/user/profile/:uniqueId", profileUpload, UpdateUserProfile);
 router.delete("/user/:uniqueId", deleteUser);
 router.delete("/user/profile/:uniqueId", deleteUserProfile);
 router.get("/user/:uniqueId", getUserById);
-
+router.get("/permissions", getPermissions);
 // Status Route
 router.get("/status", getStatus);
 router.post("/status", addStatus);

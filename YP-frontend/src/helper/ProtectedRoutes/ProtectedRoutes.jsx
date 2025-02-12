@@ -82,6 +82,7 @@ export default function ProtectedRoutes({ children }) {
       "/dashboard/edit/gallery/:property_name/:uniqueId",
     ],
     Admin: [
+      "/",
       "/dashboard",
       "/dashboard/status",
       "/dashboard/status/add",

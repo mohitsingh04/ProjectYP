@@ -7,6 +7,7 @@ import DataRequest from "../../context/DataRequest";
 const Sidebar = () => {
   const { User } = DataRequest();
   const [mainmenu, setMainMenu] = useState(ADMINMENU);
+
   useEffect(() => {
     const currentUrl = window.location.pathname.slice(0, -1);
     if (User.role === "Admin") {
@@ -89,7 +90,10 @@ const Sidebar = () => {
           }
           if (Items.children) {
             Items.children.filter((submenuItems) => {
-              if (submenuItems.children && submenuItems.children.includes(item)) {
+              if (
+                submenuItems.children &&
+                submenuItems.children.includes(item)
+              ) {
                 Items.active = true;
                 submenuItems.active = true;
                 return true;
@@ -113,7 +117,10 @@ const Sidebar = () => {
           }
           if (Items.children) {
             Items.children.filter((submenuItems) => {
-              if (submenuItems.children && submenuItems.children.includes(item)) {
+              if (
+                submenuItems.children &&
+                submenuItems.children.includes(item)
+              ) {
                 Items.active = true;
                 submenuItems.active = true;
                 return true;
@@ -137,7 +144,10 @@ const Sidebar = () => {
           }
           if (Items.children) {
             Items.children.filter((submenuItems) => {
-              if (submenuItems.children && submenuItems.children.includes(item)) {
+              if (
+                submenuItems.children &&
+                submenuItems.children.includes(item)
+              ) {
                 Items.active = true;
                 submenuItems.active = true;
                 return true;
@@ -160,7 +170,6 @@ const Sidebar = () => {
     } else {
       setMainMenu({ mainmenu: USERMENU });
     }
-
   };
 
   const toggletNavActive = (item) => {
@@ -246,7 +255,6 @@ const Sidebar = () => {
   function Onhover() {
     if (document.querySelector(".app").classList.contains("sidenav-toggled"))
       document.querySelector(".app").classList.add("sidenav-toggled-open");
-
   }
   function Outhover() {
     document.querySelector(".app").classList.remove("sidenav-toggled-open");
@@ -260,7 +268,7 @@ const Sidebar = () => {
         onMouseOver={() => Onhover()}
         onMouseOut={() => Outhover()}
       >
-        <Scrollbars >
+        <Scrollbars>
           <div className="header side-header">
             <Link
               to={`${process.env.PUBLIC_URL}/dashboard/`}
@@ -307,512 +315,538 @@ const Sidebar = () => {
               </svg>
             </div>
             <ul className="side-menu" id="sidebar-main">
-              {
-                User.role === "Admin"
-                  ?
-                  <>
-                    {ADMINMENU.map((Item, i) => (
-                      <Fragment key={i}>
-                        <li className="sub-category">
-                          <h3>{Item.menutitle}</h3>
-                        </li>
-                        {Item.Items.map((menuItem, i) => (
-                          <li
-                            className={`slide ${menuItem.active ? "is-expanded" : ""
+              {User?.role === "Admin" ? (
+                <>
+                  {ADMINMENU.map((Item, i) => (
+                    <Fragment key={i}>
+                      <li className="sub-category">
+                        <h3>{Item.menutitle}</h3>
+                      </li>
+                      {Item.Items.map((menuItem, i) => (
+                        <li
+                          className={`slide ${
+                            menuItem.active ? "is-expanded" : ""
+                          }`}
+                          key={i}
+                        >
+                          {menuItem.type === "link" ? (
+                            <NavLink
+                              to={menuItem.path + "/"}
+                              className={`side-menu__item ${
+                                menuItem.active ? "active" : ""
                               }`}
-                            key={i}
-                          >
-                            {menuItem.type === "link" ? (
-                              <NavLink
-                                to={menuItem.path + "/"}
-                                className={`side-menu__item ${menuItem.active ? "active" : ""
-                                  }`}
-                                onClick={() => {
-                                  setNavActive(menuItem);
-                                  toggletNavActive(menuItem);
-                                }}
-                              >
-                                <i
-                                  className={`side-menu__icon fe fe-${menuItem.icon}`}
-                                ></i>
-                                <span className="side-menu__label">
-                                  {menuItem.title}
-                                </span>
-                                {menuItem.badge ? (
-                                  <label className={`${menuItem.badge} side-badge`}>
-                                    {menuItem.badgetxt}
-                                  </label>
-                                ) : (
-                                  ""
-                                )}
-                              </NavLink>
-                            ) : (
-                              ""
-                            )}
+                              onClick={() => {
+                                setNavActive(menuItem);
+                                toggletNavActive(menuItem);
+                              }}
+                            >
+                              <i
+                                className={`side-menu__icon fe fe-${menuItem.icon}`}
+                              ></i>
+                              <span className="side-menu__label">
+                                {menuItem.title}
+                              </span>
+                              {menuItem.badge ? (
+                                <label
+                                  className={`${menuItem.badge} side-badge`}
+                                >
+                                  {menuItem.badgetxt}
+                                </label>
+                              ) : (
+                                ""
+                              )}
+                            </NavLink>
+                          ) : (
+                            ""
+                          )}
 
-                            {menuItem.type === "sub" ? (
-                              <NavLink
-                                to={menuItem.path + "/"}
-                                className={`side-menu__item ${menuItem.active ? "active" : ""
-                                  }`}
-                                onClick={(event) => {
-                                  event.preventDefault();
-                                  setNavActive(menuItem);
-                                }}
-                              >
-                                <i
-                                  className={`side-menu__icon fe fe-${menuItem.icon}`}
-                                ></i>
-                                <span className="side-menu__label">
-                                  {menuItem.title}
-                                </span>
-                                {menuItem.badge ? (
-                                  <label className={`${menuItem.badge} side-badge`}>
-                                    {menuItem.badgetxt}
-                                  </label>
-                                ) : (
-                                  ""
-                                )}
-                                <i
-                                  className={`${menuItem.background} fa angle fa-angle-right `}
-                                ></i>
-                              </NavLink>
-                            ) : (
-                              ""
-                            )}
-                            {menuItem.children ? (
-                              <ul
-                                className="slide-menu"
-                                style={
-                                  menuItem.active
-                                    ? {
+                          {menuItem.type === "sub" ? (
+                            <NavLink
+                              to={menuItem.path + "/"}
+                              className={`side-menu__item ${
+                                menuItem.active ? "active" : ""
+                              }`}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                setNavActive(menuItem);
+                              }}
+                            >
+                              <i
+                                className={`side-menu__icon fe fe-${menuItem.icon}`}
+                              ></i>
+                              <span className="side-menu__label">
+                                {menuItem.title}
+                              </span>
+                              {menuItem.badge ? (
+                                <label
+                                  className={`${menuItem.badge} side-badge`}
+                                >
+                                  {menuItem.badgetxt}
+                                </label>
+                              ) : (
+                                ""
+                              )}
+                              <i
+                                className={`${menuItem.background} fa angle fa-angle-right `}
+                              ></i>
+                            </NavLink>
+                          ) : (
+                            ""
+                          )}
+                          {menuItem.children ? (
+                            <ul
+                              className="slide-menu"
+                              style={
+                                menuItem.active
+                                  ? {
                                       opacity: 1,
                                       transition: "opacity 500ms ease-in",
                                       display: "block",
                                     }
-                                    : { display: "none" }
-                                }
-                              >
-                                {menuItem.children.map((childrenItem, index) => {
-                                  return (
-                                    <li key={index}>
-                                      {childrenItem.type === "sub" ? (
-                                        <a
-                                          href="javascript"
-                                          className="sub-side-menu__item"
-                                          onClick={(event) => {
-                                            event.preventDefault();
-                                            toggletNavActive(childrenItem);
-                                          }}
-                                        >
-                                          <span className="sub-side-menu__label">
-                                            {childrenItem.title}
-                                          </span>
-                                          {childrenItem.active ? (
-                                            <i className="sub-angle  fa fa-angle-down"></i>
-                                          ) : (
-                                            <i className="sub-angle fa fa-angle-right"></i>
-                                          )}
-                                        </a>
-                                      ) : (
-                                        ""
-                                      )}
-                                      {childrenItem.type === "link" ? (
-                                        <NavLink
-                                          to={childrenItem.path + "/"}
-                                          className="slide-item"
-                                          onClick={() =>
-                                            toggletNavActive(childrenItem)
-                                          }
-                                        >
+                                  : { display: "none" }
+                              }
+                            >
+                              {menuItem.children.map((childrenItem, index) => {
+                                return (
+                                  <li key={index}>
+                                    {childrenItem.type === "sub" ? (
+                                      <a
+                                        href="javascript"
+                                        className="sub-side-menu__item"
+                                        onClick={(event) => {
+                                          event.preventDefault();
+                                          toggletNavActive(childrenItem);
+                                        }}
+                                      >
+                                        <span className="sub-side-menu__label">
                                           {childrenItem.title}
-                                        </NavLink>
-                                      ) : (
-                                        ""
-                                      )}
-                                      {childrenItem.children ? (
-                                        <ul
-                                          className="sub-slide-menu"
-                                          style={
-                                            childrenItem.active
-                                              ? { display: "block" }
-                                              : { display: "none" }
-                                          }
-                                        >
-                                          {childrenItem.children.map(
-                                            (childrenSubItem, key) => (
-                                              <li key={key}>
-                                                {childrenSubItem.type === "link" ? (
-                                                  <NavLink
-                                                    to={childrenSubItem.path + "/"}
-                                                    className={`${"sub-slide-item"}`}
-                                                    onClick={() =>
-                                                      toggletNavActive(
-                                                        childrenSubItem
-                                                      )
-                                                    }
-                                                  >
-                                                    {childrenSubItem.title}
-                                                  </NavLink>
-                                                ) : (
-                                                  ""
-                                                )}
-                                              </li>
-                                            )
-                                          )}
-                                        </ul>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </li>
-                                  );
-                                })}
-                              </ul>
-                            ) : (
-                              ""
-                            )}
-                          </li>
-                        ))}
-                      </Fragment>
-                    ))}
-                  </>
-                  :
-                  User.role === "Editor"
-                    ?
-                    <>
-                      {EDITORMENU.map((Item, i) => (
-                        <Fragment key={i}>
-                          <li className="sub-category">
-                            <h3>{Item.menutitle}</h3>
-                          </li>
-                          {Item.Items.map((menuItem, i) => (
-                            <li
-                              className={`slide ${menuItem.active ? "is-expanded" : ""
-                                }`}
-                              key={i}
-                            >
-                              {menuItem.type === "link" ? (
-                                <NavLink
-                                  to={menuItem.path + "/"}
-                                  className={`side-menu__item ${menuItem.active ? "active" : ""
-                                    }`}
-                                  onClick={() => {
-                                    setNavActive(menuItem);
-                                    toggletNavActive(menuItem);
-                                  }}
-                                >
-                                  <i
-                                    className={`side-menu__icon fe fe-${menuItem.icon}`}
-                                  ></i>
-                                  <span className="side-menu__label">
-                                    {menuItem.title}
-                                  </span>
-                                  {menuItem.badge ? (
-                                    <label className={`${menuItem.badge} side-badge`}>
-                                      {menuItem.badgetxt}
-                                    </label>
-                                  ) : (
-                                    ""
-                                  )}
-                                </NavLink>
-                              ) : (
-                                ""
-                              )}
-
-                              {menuItem.type === "sub" ? (
-                                <NavLink
-                                  to={menuItem.path + "/"}
-                                  className={`side-menu__item ${menuItem.active ? "active" : ""
-                                    }`}
-                                  onClick={(event) => {
-                                    event.preventDefault();
-                                    setNavActive(menuItem);
-                                  }}
-                                >
-                                  <i
-                                    className={`side-menu__icon fe fe-${menuItem.icon}`}
-                                  ></i>
-                                  <span className="side-menu__label">
-                                    {menuItem.title}
-                                  </span>
-                                  {menuItem.badge ? (
-                                    <label className={`${menuItem.badge} side-badge`}>
-                                      {menuItem.badgetxt}
-                                    </label>
-                                  ) : (
-                                    ""
-                                  )}
-                                  <i
-                                    className={`${menuItem.background} fa angle fa-angle-right `}
-                                  ></i>
-                                </NavLink>
-                              ) : (
-                                ""
-                              )}
-                              {menuItem.children ? (
-                                <ul
-                                  className="slide-menu"
-                                  style={
-                                    menuItem.active
-                                      ? {
-                                        opacity: 1,
-                                        transition: "opacity 500ms ease-in",
-                                        display: "block",
-                                      }
-                                      : { display: "none" }
-                                  }
-                                >
-                                  {menuItem.children.map((childrenItem, index) => {
-                                    return (
-                                      <li key={index}>
-                                        {childrenItem.type === "sub" ? (
-                                          <a
-                                            href="javascript"
-                                            className="sub-side-menu__item"
-                                            onClick={(event) => {
-                                              event.preventDefault();
-                                              toggletNavActive(childrenItem);
-                                            }}
-                                          >
-                                            <span className="sub-side-menu__label">
-                                              {childrenItem.title}
-                                            </span>
-                                            {childrenItem.active ? (
-                                              <i className="sub-angle  fa fa-angle-down"></i>
-                                            ) : (
-                                              <i className="sub-angle fa fa-angle-right"></i>
-                                            )}
-                                          </a>
+                                        </span>
+                                        {childrenItem.active ? (
+                                          <i className="sub-angle  fa fa-angle-down"></i>
                                         ) : (
-                                          ""
+                                          <i className="sub-angle fa fa-angle-right"></i>
                                         )}
-                                        {childrenItem.type === "link" ? (
-                                          <NavLink
-                                            to={childrenItem.path + "/"}
-                                            className="slide-item"
-                                            onClick={() =>
-                                              toggletNavActive(childrenItem)
-                                            }
-                                          >
-                                            {childrenItem.title}
-                                          </NavLink>
-                                        ) : (
-                                          ""
+                                      </a>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {childrenItem.type === "link" ? (
+                                      <NavLink
+                                        to={childrenItem.path + "/"}
+                                        className="slide-item"
+                                        onClick={() =>
+                                          toggletNavActive(childrenItem)
+                                        }
+                                      >
+                                        {childrenItem.title}
+                                      </NavLink>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {childrenItem.children ? (
+                                      <ul
+                                        className="sub-slide-menu"
+                                        style={
+                                          childrenItem.active
+                                            ? { display: "block" }
+                                            : { display: "none" }
+                                        }
+                                      >
+                                        {childrenItem.children.map(
+                                          (childrenSubItem, key) => (
+                                            <li key={key}>
+                                              {childrenSubItem.type ===
+                                              "link" ? (
+                                                <NavLink
+                                                  to={
+                                                    childrenSubItem.path + "/"
+                                                  }
+                                                  className={`${"sub-slide-item"}`}
+                                                  onClick={() =>
+                                                    toggletNavActive(
+                                                      childrenSubItem
+                                                    )
+                                                  }
+                                                >
+                                                  {childrenSubItem.title}
+                                                </NavLink>
+                                              ) : (
+                                                ""
+                                              )}
+                                            </li>
+                                          )
                                         )}
-                                        {childrenItem.children ? (
-                                          <ul
-                                            className="sub-slide-menu"
-                                            style={
-                                              childrenItem.active
-                                                ? { display: "block" }
-                                                : { display: "none" }
-                                            }
-                                          >
-                                            {childrenItem.children.map(
-                                              (childrenSubItem, key) => (
-                                                <li key={key}>
-                                                  {childrenSubItem.type === "link" ? (
-                                                    <NavLink
-                                                      to={childrenSubItem.path + "/"}
-                                                      className={`${"sub-slide-item"}`}
-                                                      onClick={() =>
-                                                        toggletNavActive(
-                                                          childrenSubItem
-                                                        )
-                                                      }
-                                                    >
-                                                      {childrenSubItem.title}
-                                                    </NavLink>
-                                                  ) : (
-                                                    ""
-                                                  )}
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-                              ) : (
-                                ""
-                              )}
-                            </li>
-                          ))}
-                        </Fragment>
+                                      </ul>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          ) : (
+                            ""
+                          )}
+                        </li>
                       ))}
-                    </>
-                    :
-                    <>
-                      {USERMENU.map((Item, i) => (
-                        <Fragment key={i}>
-                          <li className="sub-category">
-                            <h3>{Item.menutitle}</h3>
-                          </li>
-                          {Item.Items.map((menuItem, i) => (
-                            <li
-                              className={`slide ${menuItem.active ? "is-expanded" : ""
-                                }`}
-                              key={i}
+                    </Fragment>
+                  ))}
+                </>
+              ) : User.role === "Editor" ? (
+                <>
+                  {EDITORMENU.map((Item, i) => (
+                    <Fragment key={i}>
+                      <li className="sub-category">
+                        <h3>{Item.menutitle}</h3>
+                      </li>
+                      {Item.Items.map((menuItem, i) => (
+                        <li
+                          className={`slide ${
+                            menuItem.active ? "is-expanded" : ""
+                          }`}
+                          key={i}
+                        >
+                          {menuItem.type === "link" ? (
+                            <NavLink
+                              to={menuItem.path + "/"}
+                              className={`side-menu__item ${
+                                menuItem.active ? "active" : ""
+                              }`}
+                              onClick={() => {
+                                setNavActive(menuItem);
+                                toggletNavActive(menuItem);
+                              }}
                             >
-                              {menuItem.type === "link" ? (
-                                <NavLink
-                                  to={menuItem.path + "/"}
-                                  className={`side-menu__item ${menuItem.active ? "active" : ""
-                                    }`}
-                                  onClick={() => {
-                                    setNavActive(menuItem);
-                                    toggletNavActive(menuItem);
-                                  }}
+                              <i
+                                className={`side-menu__icon fe fe-${menuItem.icon}`}
+                              ></i>
+                              <span className="side-menu__label">
+                                {menuItem.title}
+                              </span>
+                              {menuItem.badge ? (
+                                <label
+                                  className={`${menuItem.badge} side-badge`}
                                 >
-                                  <i
-                                    className={`side-menu__icon fe fe-${menuItem.icon}`}
-                                  ></i>
-                                  <span className="side-menu__label">
-                                    {menuItem.title}
-                                  </span>
-                                  {menuItem.badge ? (
-                                    <label className={`${menuItem.badge} side-badge`}>
-                                      {menuItem.badgetxt}
-                                    </label>
-                                  ) : (
-                                    ""
-                                  )}
-                                </NavLink>
+                                  {menuItem.badgetxt}
+                                </label>
                               ) : (
                                 ""
                               )}
+                            </NavLink>
+                          ) : (
+                            ""
+                          )}
 
-                              {menuItem.type === "sub" ? (
-                                <NavLink
-                                  to={menuItem.path + "/"}
-                                  className={`side-menu__item ${menuItem.active ? "active" : ""
-                                    }`}
-                                  onClick={(event) => {
-                                    event.preventDefault();
-                                    setNavActive(menuItem);
-                                  }}
+                          {menuItem.type === "sub" ? (
+                            <NavLink
+                              to={menuItem.path + "/"}
+                              className={`side-menu__item ${
+                                menuItem.active ? "active" : ""
+                              }`}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                setNavActive(menuItem);
+                              }}
+                            >
+                              <i
+                                className={`side-menu__icon fe fe-${menuItem.icon}`}
+                              ></i>
+                              <span className="side-menu__label">
+                                {menuItem.title}
+                              </span>
+                              {menuItem.badge ? (
+                                <label
+                                  className={`${menuItem.badge} side-badge`}
                                 >
-                                  <i
-                                    className={`side-menu__icon fe fe-${menuItem.icon}`}
-                                  ></i>
-                                  <span className="side-menu__label">
-                                    {menuItem.title}
-                                  </span>
-                                  {menuItem.badge ? (
-                                    <label className={`${menuItem.badge} side-badge`}>
-                                      {menuItem.badgetxt}
-                                    </label>
-                                  ) : (
-                                    ""
-                                  )}
-                                  <i
-                                    className={`${menuItem.background} fa angle fa-angle-right `}
-                                  ></i>
-                                </NavLink>
+                                  {menuItem.badgetxt}
+                                </label>
                               ) : (
                                 ""
                               )}
-                              {menuItem.children ? (
-                                <ul
-                                  className="slide-menu"
-                                  style={
-                                    menuItem.active
-                                      ? {
-                                        opacity: 1,
-                                        transition: "opacity 500ms ease-in",
-                                        display: "block",
-                                      }
-                                      : { display: "none" }
-                                  }
-                                >
-                                  {menuItem.children.map((childrenItem, index) => {
-                                    return (
-                                      <li key={index}>
-                                        {childrenItem.type === "sub" ? (
-                                          <a
-                                            href="javascript"
-                                            className="sub-side-menu__item"
-                                            onClick={(event) => {
-                                              event.preventDefault();
-                                              toggletNavActive(childrenItem);
-                                            }}
-                                          >
-                                            <span className="sub-side-menu__label">
-                                              {childrenItem.title}
-                                            </span>
-                                            {childrenItem.active ? (
-                                              <i className="sub-angle  fa fa-angle-down"></i>
-                                            ) : (
-                                              <i className="sub-angle fa fa-angle-right"></i>
-                                            )}
-                                          </a>
+                              <i
+                                className={`${menuItem.background} fa angle fa-angle-right `}
+                              ></i>
+                            </NavLink>
+                          ) : (
+                            ""
+                          )}
+                          {menuItem.children ? (
+                            <ul
+                              className="slide-menu"
+                              style={
+                                menuItem.active
+                                  ? {
+                                      opacity: 1,
+                                      transition: "opacity 500ms ease-in",
+                                      display: "block",
+                                    }
+                                  : { display: "none" }
+                              }
+                            >
+                              {menuItem.children.map((childrenItem, index) => {
+                                return (
+                                  <li key={index}>
+                                    {childrenItem.type === "sub" ? (
+                                      <a
+                                        href="javascript"
+                                        className="sub-side-menu__item"
+                                        onClick={(event) => {
+                                          event.preventDefault();
+                                          toggletNavActive(childrenItem);
+                                        }}
+                                      >
+                                        <span className="sub-side-menu__label">
+                                          {childrenItem.title}
+                                        </span>
+                                        {childrenItem.active ? (
+                                          <i className="sub-angle  fa fa-angle-down"></i>
                                         ) : (
-                                          ""
+                                          <i className="sub-angle fa fa-angle-right"></i>
                                         )}
-                                        {childrenItem.type === "link" ? (
-                                          <NavLink
-                                            to={childrenItem.path + "/"}
-                                            className="slide-item"
-                                            onClick={() =>
-                                              toggletNavActive(childrenItem)
-                                            }
-                                          >
-                                            {childrenItem.title}
-                                          </NavLink>
-                                        ) : (
-                                          ""
+                                      </a>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {childrenItem.type === "link" ? (
+                                      <NavLink
+                                        to={childrenItem.path + "/"}
+                                        className="slide-item"
+                                        onClick={() =>
+                                          toggletNavActive(childrenItem)
+                                        }
+                                      >
+                                        {childrenItem.title}
+                                      </NavLink>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {childrenItem.children ? (
+                                      <ul
+                                        className="sub-slide-menu"
+                                        style={
+                                          childrenItem.active
+                                            ? { display: "block" }
+                                            : { display: "none" }
+                                        }
+                                      >
+                                        {childrenItem.children.map(
+                                          (childrenSubItem, key) => (
+                                            <li key={key}>
+                                              {childrenSubItem.type ===
+                                              "link" ? (
+                                                <NavLink
+                                                  to={
+                                                    childrenSubItem.path + "/"
+                                                  }
+                                                  className={`${"sub-slide-item"}`}
+                                                  onClick={() =>
+                                                    toggletNavActive(
+                                                      childrenSubItem
+                                                    )
+                                                  }
+                                                >
+                                                  {childrenSubItem.title}
+                                                </NavLink>
+                                              ) : (
+                                                ""
+                                              )}
+                                            </li>
+                                          )
                                         )}
-                                        {childrenItem.children ? (
-                                          <ul
-                                            className="sub-slide-menu"
-                                            style={
-                                              childrenItem.active
-                                                ? { display: "block" }
-                                                : { display: "none" }
-                                            }
-                                          >
-                                            {childrenItem.children.map(
-                                              (childrenSubItem, key) => (
-                                                <li key={key}>
-                                                  {childrenSubItem.type === "link" ? (
-                                                    <NavLink
-                                                      to={childrenSubItem.path + "/"}
-                                                      className={`${"sub-slide-item"}`}
-                                                      onClick={() =>
-                                                        toggletNavActive(
-                                                          childrenSubItem
-                                                        )
-                                                      }
-                                                    >
-                                                      {childrenSubItem.title}
-                                                    </NavLink>
-                                                  ) : (
-                                                    ""
-                                                  )}
-                                                </li>
-                                              )
-                                            )}
-                                          </ul>
-                                        ) : (
-                                          ""
-                                        )}
-                                      </li>
-                                    );
-                                  })}
-                                </ul>
-                              ) : (
-                                ""
-                              )}
-                            </li>
-                          ))}
-                        </Fragment>
+                                      </ul>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          ) : (
+                            ""
+                          )}
+                        </li>
                       ))}
-                    </>
-              }
+                    </Fragment>
+                  ))}
+                </>
+              ) : (
+                <>
+                  {USERMENU.map((Item, i) => (
+                    <Fragment key={i}>
+                      <li className="sub-category">
+                        <h3>{Item.menutitle}</h3>
+                      </li>
+                      {Item.Items.map((menuItem, i) => (
+                        <li
+                          className={`slide ${
+                            menuItem.active ? "is-expanded" : ""
+                          }`}
+                          key={i}
+                        >
+                          {menuItem.type === "link" ? (
+                            <NavLink
+                              to={menuItem.path + "/"}
+                              className={`side-menu__item ${
+                                menuItem.active ? "active" : ""
+                              }`}
+                              onClick={() => {
+                                setNavActive(menuItem);
+                                toggletNavActive(menuItem);
+                              }}
+                            >
+                              <i
+                                className={`side-menu__icon fe fe-${menuItem.icon}`}
+                              ></i>
+                              <span className="side-menu__label">
+                                {menuItem.title}
+                              </span>
+                              {menuItem.badge ? (
+                                <label
+                                  className={`${menuItem.badge} side-badge`}
+                                >
+                                  {menuItem.badgetxt}
+                                </label>
+                              ) : (
+                                ""
+                              )}
+                            </NavLink>
+                          ) : (
+                            ""
+                          )}
+
+                          {menuItem.type === "sub" ? (
+                            <NavLink
+                              to={menuItem.path + "/"}
+                              className={`side-menu__item ${
+                                menuItem.active ? "active" : ""
+                              }`}
+                              onClick={(event) => {
+                                event.preventDefault();
+                                setNavActive(menuItem);
+                              }}
+                            >
+                              <i
+                                className={`side-menu__icon fe fe-${menuItem.icon}`}
+                              ></i>
+                              <span className="side-menu__label">
+                                {menuItem.title}
+                              </span>
+                              {menuItem.badge ? (
+                                <label
+                                  className={`${menuItem.badge} side-badge`}
+                                >
+                                  {menuItem.badgetxt}
+                                </label>
+                              ) : (
+                                ""
+                              )}
+                              <i
+                                className={`${menuItem.background} fa angle fa-angle-right `}
+                              ></i>
+                            </NavLink>
+                          ) : (
+                            ""
+                          )}
+                          {menuItem.children ? (
+                            <ul
+                              className="slide-menu"
+                              style={
+                                menuItem.active
+                                  ? {
+                                      opacity: 1,
+                                      transition: "opacity 500ms ease-in",
+                                      display: "block",
+                                    }
+                                  : { display: "none" }
+                              }
+                            >
+                              {menuItem.children.map((childrenItem, index) => {
+                                return (
+                                  <li key={index}>
+                                    {childrenItem.type === "sub" ? (
+                                      <a
+                                        href="javascript"
+                                        className="sub-side-menu__item"
+                                        onClick={(event) => {
+                                          event.preventDefault();
+                                          toggletNavActive(childrenItem);
+                                        }}
+                                      >
+                                        <span className="sub-side-menu__label">
+                                          {childrenItem.title}
+                                        </span>
+                                        {childrenItem.active ? (
+                                          <i className="sub-angle  fa fa-angle-down"></i>
+                                        ) : (
+                                          <i className="sub-angle fa fa-angle-right"></i>
+                                        )}
+                                      </a>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {childrenItem.type === "link" ? (
+                                      <NavLink
+                                        to={childrenItem.path + "/"}
+                                        className="slide-item"
+                                        onClick={() =>
+                                          toggletNavActive(childrenItem)
+                                        }
+                                      >
+                                        {childrenItem.title}
+                                      </NavLink>
+                                    ) : (
+                                      ""
+                                    )}
+                                    {childrenItem.children ? (
+                                      <ul
+                                        className="sub-slide-menu"
+                                        style={
+                                          childrenItem.active
+                                            ? { display: "block" }
+                                            : { display: "none" }
+                                        }
+                                      >
+                                        {childrenItem.children.map(
+                                          (childrenSubItem, key) => (
+                                            <li key={key}>
+                                              {childrenSubItem.type ===
+                                              "link" ? (
+                                                <NavLink
+                                                  to={
+                                                    childrenSubItem.path + "/"
+                                                  }
+                                                  className={`${"sub-slide-item"}`}
+                                                  onClick={() =>
+                                                    toggletNavActive(
+                                                      childrenSubItem
+                                                    )
+                                                  }
+                                                >
+                                                  {childrenSubItem.title}
+                                                </NavLink>
+                                              ) : (
+                                                ""
+                                              )}
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                    ) : (
+                                      ""
+                                    )}
+                                  </li>
+                                );
+                              })}
+                            </ul>
+                          ) : (
+                            ""
+                          )}
+                        </li>
+                      ))}
+                    </Fragment>
+                  ))}
+                </>
+              )}
             </ul>
             <div className="slide-right" id="slide-right">
               <svg

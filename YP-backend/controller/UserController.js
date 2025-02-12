@@ -2,6 +2,7 @@ import User from "../models/Users.js";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+
 export const getUser = async (req, res) => {
   try {
     const user = await User.find();
@@ -25,14 +26,10 @@ export const updateUser = async (req, res) => {
       state,
       role,
       status,
+      permission,
     } = req.body;
 
-    const user = await User.findOne({ uniqueId: uniqueId });
-    const profileFile = req.files
-      ? req.files.profile[0].filename
-      : user?.profile;
-
-    const updatedUser = await User.findOneAndUpdate(
+    await User.findOneAndUpdate(
       { uniqueId: uniqueId },
       {
         $set: {
@@ -45,7 +42,7 @@ export const updateUser = async (req, res) => {
           state,
           role,
           status,
-          profile: profileFile,
+          permissions: permission,
         },
       },
       { new: true }
@@ -135,5 +132,31 @@ export const deleteUserProfile = async (req, res) => {
   } catch (err) {
     console.log(err.message);
     return res.send({ error: "Internal Server Error." });
+  }
+};
+
+export const UpdateUserProfile = async (req, res) => {
+  try {
+    const { uniqueId } = req.params;
+    let profile = req.files.profile[0].filename;
+    const user = await User.findOne({ uniqueId: uniqueId });
+
+    if (!profile) {
+      profile = user.profile;
+    }
+
+    await User.findOneAndUpdate(
+      { uniqueId: uniqueId },
+      {
+        $set: {
+          profile: profile,
+        },
+      }
+    );
+    return res
+      .status(200)
+      .json({ message: "User Profile Updated Successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };

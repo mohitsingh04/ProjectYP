@@ -5,20 +5,27 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
+import Dropdown from "react-dropdown-select";
+import EditUserProfile from "./EditUserProfile";
 
 export default function EditUser() {
   const navigate = useNavigate();
   const [user, setUser] = useState("");
   const [status, setStatus] = useState([]);
-  const [previewProfile, setPreviewProfile] = useState("");
+
   const { uniqueId } = useParams();
+  const [permissionData, setPermissionData] = useState([]);
 
   useEffect(() => {
     API.get(`/user/${uniqueId}`).then(({ data }) => {
       setUser(data);
+      console.log(user);
     }, []);
     API.get(`/status/`).then(({ data }) => {
       setStatus(data);
+    }, []);
+    API.get("/permissions").then(({ data }) => {
+      setPermissionData(data);
     }, []);
   }, []);
 
@@ -31,9 +38,9 @@ export default function EditUser() {
     address: user.address || "",
     city: user.city || "",
     state: user.state || "",
-    profile: user.profile || "",
     role: user.role || "",
     status: user.status || "",
+    permission: user.permissions || [],
   };
 
   const validationSchema = Yup.object({
@@ -46,27 +53,17 @@ export default function EditUser() {
       .required("Mobile number is required."),
     status: Yup.string().required("Status is required."),
     role: Yup.string().required("Role is required."),
-    profile: Yup.string().required("Profile is required."),
   });
 
   const onSubmit = async (values) => {
-    if (
-      typeof values.profile == "object" ||
-      typeof values.profile != "object"
-    ) {
-      let formData = new FormData();
-      for (let value in values) {
-        formData.append(value, values[value]);
+    await API.patch(`/user/${user.uniqueId}`, values).then((response) => {
+      if (response.data.message) {
+        toast.success(response.data.message);
+        navigate("/dashboard/users");
+      } else if (response.data.error) {
+        toast.error(response.data.error);
       }
-      await API.patch(`/user/${user.uniqueId}`, formData).then((response) => {
-        if (response.data.message) {
-          toast.success(response.data.message);
-          navigate("/dashboard/users");
-        } else if (response.data.error) {
-          toast.error(response.data.error);
-        }
-      });
-    }
+    });
   };
 
   const {
@@ -121,52 +118,13 @@ export default function EditUser() {
         <Row>
           <Col lg={12} xl={12} md={12} sm={12}>
             <Card>
-              <form onSubmit={handleSubmit}>
-                <Card.Header>
-                  <Card.Title as="h3">Edit User</Card.Title>
-                </Card.Header>
-                <Card.Body>
-                  <div className="d-flex mb-3">
-                    {previewProfile == "" ? (
-                      <img
-                        src={`http://localhost:5000/images/${user.profile}`}
-                        className="rounded-circle avatar-lg me-2"
-                        alt="user avatar"
-                      />
-                    ) : (
-                      <img
-                        src={previewProfile}
-                        className="rounded-circle avatar-lg me-2"
-                        alt="user avatar"
-                      />
-                    )}
-                    <div className="ms-auto mt-xl-2 mt-lg-0 me-lg-2">
-                      <input
-                        type="file"
-                        name="profile"
-                        onChange={(e) => {
-                          let reader = new FileReader();
-                          reader.onload = () => {
-                            if (reader.readyState === 2) {
-                              setFieldValue("profile", e.target.files[0]);
-                              setPreviewProfile(reader.result);
-                            }
-                          };
-                          reader.readAsDataURL(e.target.files[0]);
-                        }}
-                        onBlur={handleBlur}
-                      />
-                      {errors.profile && touched.profile ? (
-                        <small className="text-danger">{errors.profile}</small>
-                      ) : (
-                        <span />
-                      )}
-                      {/* <Link to="#" className="btn btn-danger btn-sm mt-1 mb-1 me-2">
-                                                <i className="fe fe-camera-off me-1"></i>Delete profile
-                                            </Link> */}
-                    </div>
-                  </div>
-                  <br />
+              <Card.Header>
+                <Card.Title as="h3">Edit User</Card.Title>
+              </Card.Header>
+              <Card.Body>
+                <EditUserProfile />
+                <br />
+                <form onSubmit={handleSubmit}>
                   <Row>
                     <Col lg={12} md={12}>
                       <FormGroup>
@@ -342,13 +300,42 @@ export default function EditUser() {
                       </FormGroup>
                     </Col>
                   </Row>
-                </Card.Body>
-                <Card.Footer className="">
-                  <button type="submit" className="btn btn-success mt-1 me-2">
-                    Update
-                  </button>
-                </Card.Footer>
-              </form>
+                  <Row>
+                    <Col md={6}>
+                      <Form.Group className="mb-3">
+                        <Form.Label htmlFor="userPermission">
+                          Permission
+                        </Form.Label>
+                        <Dropdown
+                          options={permissionData.map((group) => ({
+                            label: group.name,
+                            value: group.name,
+                          }))}
+                          keepSelectedInList={false}
+                          multi={true}
+                          placeholder="Choose Permissions   "
+                          value={values.permission}
+                          values={user?.permissions}
+                          onChange={(value) =>
+                            setFieldValue("permission", value)
+                          }
+                          onBlur={handleBlur}
+                        />
+                      </Form.Group>
+                    </Col>
+                  </Row>
+                  <Row className="mt-3 border-top">
+                    <div>
+                      <button
+                        type="submit"
+                        className="btn btn-success mt-3 me-2"
+                      >
+                        Update
+                      </button>
+                    </div>
+                  </Row>
+                </form>
+              </Card.Body>
             </Card>
           </Col>
         </Row>

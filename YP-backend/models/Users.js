@@ -63,6 +63,9 @@ const UserSchema = new mongoose.Schema({
   verifyTokenExpiry: {
     type: Date,
   },
+  permissions: {
+    type: Array,
+  },
 });
 
 const User = mongoose.model("User", UserSchema);

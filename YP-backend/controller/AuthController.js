@@ -4,6 +4,8 @@ import bcrypt from "bcrypt";
 import crypto from "crypto";
 import sendResetEmail from "../email/resetPasswordEmail.js";
 import sendEmailVerification from "../email/emailVerification.js";
+import Permissions from "../models/Permissions.js";
+
 const Salt = 10;
 
 export const login = async (req, res) => {
@@ -28,7 +30,10 @@ export const login = async (req, res) => {
 
     const accessToken = jwt.sign(user.toJSON(), process.env.JWT_SECRET_VALUE);
 
-    res.cookie("token", accessToken, { httpOnly: true, maxAge: 3600000 });
+    res.cookie("token", accessToken, {
+      httpOnly: true,
+      maxAge: 10 * 24 * 60 * 60 * 1000,
+    });
     delete user.password;
     return res.send({ message: "Logged in successfully.", accessToken, user });
   } catch (err) {
