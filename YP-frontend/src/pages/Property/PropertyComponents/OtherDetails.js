@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { useFormik } from "formik";
+import { Formik, useFormik } from "formik";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
@@ -23,6 +23,8 @@ export default function OtherDetails() {
     await API.get(`/property/${uniqueId}`).then(({ data }) => {
       dispatch(hideLoading());
       setProperty(data);
+      setActiveCategory(data?.category);
+      setEstablishmentYear(data?.est_year);
     });
   }, [dispatch, uniqueId]);
 
@@ -155,7 +157,7 @@ export default function OtherDetails() {
     }
   };
 
-  const { values, handleSubmit } = useFormik({
+  const { values, handleSubmit, handleChange } = useFormik({
     initialValues: initialValues,
     // validationSchema: validationSchema,
     onSubmit: onSubmit,
@@ -232,11 +234,17 @@ export default function OtherDetails() {
                           id="category"
                           className="form-control"
                           value={values.category}
-                          onChange={(e) => setActiveCategory(e.target.value)}
+                          onChange={(e) => {
+                            setActiveCategory(e.target.value);
+                          }}
                         >
                           <option value="">--Select Category--</option>
                           {category.map((item, key) => (
-                            <option key={key} value={item.category_name}>
+                            <option
+                              key={key}
+                              value={item.category_name}
+                              selected={property?.category === item.category}
+                            >
                               {item.category_name}
                             </option>
                           ))}
@@ -254,7 +262,7 @@ export default function OtherDetails() {
                           name="category"
                           id="category"
                           className="form-control"
-                          value={values.category}
+                          value={activeCategory}
                           onChange={(e) => setActiveCategory(e.target.value)}
                         >
                           <option value="">--Select Category--</option>
@@ -389,7 +397,7 @@ export default function OtherDetails() {
                           name="est_year"
                           className="form-control"
                           placeholder="Enter established year..."
-                          value={values.est_year}
+                          value={establishmentYear}
                           onChange={(e) => setEstablishmentYear(e.target.value)}
                         />
                         <span

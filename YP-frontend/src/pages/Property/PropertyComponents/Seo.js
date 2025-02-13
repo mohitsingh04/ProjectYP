@@ -203,9 +203,9 @@ export default function Seo() {
                         <td>
                           <strong>Description: </strong>
                           <br />
-                          {seo[0].description && (
+                          {seo[0]?.description && (
                             <span>
-                              {property.property_hostel_description.length >=
+                              {property?.property_hostel_description?.length >=
                               1500 ? (
                                 <>
                                   <p
