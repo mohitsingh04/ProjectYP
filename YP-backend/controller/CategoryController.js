@@ -25,8 +25,12 @@ export const addCategory = async (req, res) => {
   try {
     const { userId, category_name, parent_category, category_description } =
       req.body;
-    const category_icon = req?.files["category_icon"]?.[0]?.filename;
-    const featured_image = req?.files["featured_image"]?.[0]?.filename;
+    const category_icon = req?.files["category_icon"]?.[0]?.path;
+    const category_original_icon =
+      req?.files["category_icon"]?.[0]?.originalPath;
+    const featured_image = req?.files["featured_image"]?.[0]?.path;
+    const featured_original_image =
+      req?.files["featured_image"]?.[0]?.originalPath;
     const category = await Category.findOne().sort({ _id: -1 }).limit(1);
     const existCategory = await Category.findOne({
       category_name: category_name,
@@ -38,8 +42,8 @@ export const addCategory = async (req, res) => {
         userId,
         category_name,
         parent_category,
-        category_icon,
-        featured_image,
+        category_icon: [category_icon, category_original_icon],
+        featured_image: [featured_image, featured_original_image],
         description: category_description,
       });
       if (await newCategory.save()) {
@@ -64,15 +68,27 @@ export const updateCategory = async (req, res) => {
       category_description,
       status,
     } = req.body;
+
+    const category = await Category.findOne({ category_name: category_name });
+
     const iconFile = req.files["category_icon"];
     const category_icon = iconFile
-      ? req?.files["category_icon"][0]?.filename
-      : req.body.category_icon;
+      ? req?.files["category_icon"][0]?.path
+      : category.category_icon[0];
+
+    const category_original_icon = iconFile
+      ? req?.files["category_icon"][0]?.originalPath
+      : category.category_icon[1];
+
     const featuredFile = req.files["featured_image"];
     const featured_image = featuredFile
-      ? req?.files["featured_image"][0]?.filename
-      : req.body.featured_image;
-    const category = await Category.findOne({ category_name: category_name });
+      ? req?.files["featured_image"][0]?.path
+      : category.featured_image[0];
+
+    const featured_original_image = featuredFile
+      ? req?.files["featured_image"][0]?.originalPath
+      : category.featured_image[1];
+
     if (!category) {
       return res.send({ error: "Category not found." });
     }
@@ -83,8 +99,8 @@ export const updateCategory = async (req, res) => {
           userId,
           category_name,
           parent_category,
-          category_icon,
-          featured_image,
+          category_icon: [category_icon, category_original_icon],
+          featured_image: [featured_image, featured_original_image],
           description: category_description,
           status: status,
         },

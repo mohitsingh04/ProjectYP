@@ -155,8 +155,13 @@ const categoryUpload = upload.fields([
   { name: "featured_image", maxCount: 1 },
 ]);
 router.get("/category", getCategory);
-router.post("/category", categoryUpload, addCategory);
-router.patch("/category/:uniqueId", categoryUpload, updateCategory);
+router.post("/category", categoryUpload, processImage, addCategory);
+router.patch(
+  "/category/:uniqueId",
+  categoryUpload,
+  processImage,
+  updateCategory
+);
 router.delete("/category/:uniqueId", deleteCategory);
 router.get("/category/:uniqueId", getCategoryById);
 
