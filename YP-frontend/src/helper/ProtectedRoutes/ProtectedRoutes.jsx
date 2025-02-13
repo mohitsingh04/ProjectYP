@@ -43,6 +43,13 @@ export default function ProtectedRoutes({ children }) {
     User: [
       "/",
       "/dashboard",
+      "/dashboard/my-profile",
+      "/dashboard/edit/my-profile",
+      "/dashboard/enquiry",
+    ],
+    "Property Manager": [
+      "/",
+      "/dashboard",
       "/dashboard/property",
       "/dashboard/property/add",
       "/dashboard/property/view/:uniqueId",
@@ -82,7 +89,7 @@ export default function ProtectedRoutes({ children }) {
       "/dashboard/edit/seo/:property_name/:uniqueId",
       "/dashboard/edit/gallery/:property_name/:uniqueId",
     ],
-    Admin: [
+    "Super Admin": [
       "/",
       "/dashboard",
       "/dashboard/status",

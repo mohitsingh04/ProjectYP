@@ -362,19 +362,19 @@ export const CategoryImageMover = async (req, res) => {
       if (await fileExists(iconPath)) {
         const profile = path.basename(iconPath);
         await fs.rename(iconPath, path.join(destinationDir, profile));
-        iconMoved.push(`media/course/${profile}`);
+        iconMoved.push(`media/category/${profile}`);
       }
 
       if (await fileExists(iconPathOriginal)) {
         const profile = path.basename(iconPathOriginal);
         await fs.rename(iconPathOriginal, path.join(destinationDir, profile));
-        iconMoved.push(`media/course/${profile}`);
+        iconMoved.push(`media/category/${profile}`);
       }
 
       if (await fileExists(featurePath)) {
         const profile = path.basename(featurePath);
         await fs.rename(featurePath, path.join(destinationDir, profile));
-        featureMoved.push(`media/course/${profile}`);
+        featureMoved.push(`media/category/${profile}`);
       }
 
       if (await fileExists(featurePathOriginal)) {
@@ -383,7 +383,7 @@ export const CategoryImageMover = async (req, res) => {
           featurePathOriginal,
           path.join(destinationDir, profile)
         );
-        featureMoved.push(`media/course/${profile}`);
+        featureMoved.push(`media/category/${profile}`);
       }
 
       if (iconMoved.length > 0) {

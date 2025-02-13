@@ -99,12 +99,16 @@ export function Header() {
   //   document.querySelector(".demo_changer").style.right = "0px";
   // };
 
-  const handleLogout = () => {
-    API.get("/logout");
-    localStorage.clear();
-    toast.success("Logged out.");
-    navigate("/login");
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      const response = await API.get("/logout");
+      localStorage.clear();
+      toast.success(response.data.message);
+      navigate("/login");
+      window.location.reload();
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
   };
 
   // const viewProperty = (uniqueId) => {

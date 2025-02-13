@@ -8,6 +8,7 @@ import {
   getResetToken,
   getToken,
   login,
+  logout,
   postResetToken,
   profile,
   register,
@@ -124,6 +125,7 @@ router.post("/reset", postResetToken);
 router.post("/verify-email", verifyEmail);
 router.get("/verify-email/:token", getEmailVerification);
 router.get("/get-token", getToken);
+router.get("/logout", logout);
 
 // Profile Route
 router.get("/profile", profile);

@@ -288,8 +288,11 @@ export default function EditUser() {
                           onBlur={handleBlur}
                         >
                           <option value="">--Select Role--</option>
-                          <option value="Admin">Admin</option>
+                          <option value="Super Admin">Super Admin</option>
                           <option value="Editor">Editor</option>
+                          <option value="Property Manager">
+                            Property Manager
+                          </option>
                           <option value="User">User</option>
                         </select>
                         {errors.role && touched.role ? (
