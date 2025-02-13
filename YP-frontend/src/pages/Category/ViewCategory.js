@@ -26,6 +26,11 @@ export default function ViewCategory() {
     getCategory();
   }, [dispatch, uniqueId]);
 
+  const [isExpanded, setIsExpended] = useState(false);
+  const toggleReadMore = () => {
+    setIsExpended(!isExpanded);
+  };
+
   return (
     <>
       <div>
@@ -106,7 +111,32 @@ export default function ViewCategory() {
                   )}
 
                   {category.description && (
-                    <span>{category.description.replace(/<[^>]+>/g, "")}</span>
+                    <span>
+                      {category.description.length >= 1500 ? (
+                        <>
+                          <p
+                            dangerouslySetInnerHTML={{
+                              __html: isExpanded
+                                ? category.description
+                                : category.description.substring(0, 1200) +
+                                  "...",
+                            }}
+                          />
+                          <button
+                            onClick={toggleReadMore}
+                            className="text-primary m-0 p-0 text-decoration-underline"
+                          >
+                            {isExpanded ? "Read Less" : "Read More"}
+                          </button>
+                        </>
+                      ) : (
+                        <p
+                          dangerouslySetInnerHTML={{
+                            __html: category.description,
+                          }}
+                        />
+                      )}
+                    </span>
                   )}
                 </div>
               </Card.Body>

@@ -25,6 +25,11 @@ export default function ViewUser() {
     }
   }, [dispatch, uniqueId]);
 
+  const [isExpanded, setIsExpended] = useState(false);
+  const toggleReadMore = () => {
+    setIsExpended(!isExpanded);
+  };
+
   return (
     <>
       <div>
@@ -204,30 +209,6 @@ export default function ViewUser() {
                     </tbody>
                   </Table>
                 </div>
-                <Row className="row profie-img">
-                  <Col md={12}>
-                    <div className="media-heading">
-                      <h5>
-                        <strong>Biography</strong>
-                      </h5>
-                    </div>
-                    <p>
-                      Nam libero tempore, cum soluta nobis est eligendi optio
-                      cumque nihil impedit quo minus id quod maxime placeat
-                      facere possimus, omnis voluptas assumenda est, omnis dolor
-                      repellendus
-                    </p>
-                    <p className="mb-0">
-                      because it is pleasure, but because those who do not know
-                      how to pursue pleasure rationally encounter but because
-                      those who do not know how to pursue consequences that are
-                      extremely painful. Nor again is there anyone who loves or
-                      pursues or desires to obtain pain of itself, because it is
-                      pain, but because occasionally circumstances occur in
-                      which toil and pain can procure him some great pleasure.
-                    </p>
-                  </Col>
-                </Row>
               </Card.Body>
             </Card>
           </Col>

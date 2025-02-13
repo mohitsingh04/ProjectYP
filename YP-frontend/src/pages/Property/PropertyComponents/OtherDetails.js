@@ -177,12 +177,6 @@ export default function OtherDetails() {
   const handleCateogory = async (e) => {
     e.preventDefault();
     let data = {};
-    if (activeCategory) {
-      data = {
-        ...initialValues,
-        category: activeCategory,
-      };
-    }
 
     if (activeStatus) {
       data = {
@@ -191,12 +185,12 @@ export default function OtherDetails() {
       };
     }
 
-    if (establishmentYear) {
-      data = {
-        ...initialValues,
-        est_year: establishmentYear,
-      };
-    }
+    data = {
+      ...initialValues,
+      category: activeCategory,
+      est_year: establishmentYear,
+    };
+
     try {
       const response = await API.patch(
         `/property/${initialValues?.property_id}`,
