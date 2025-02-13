@@ -12,18 +12,17 @@ export default function ProtectedRoutes({ children }) {
   const [token, setToken] = useState(null); // Initializing as null
   const [loading, setLoading] = useState(true); // Start with loading state
 
+  const getToken = async () => {
+    try {
+      const response = await API.get("/get-token");
+      setToken(response.data.token); // Update token
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false); // End loading after request
+    }
+  };
   useEffect(() => {
-    const getToken = async () => {
-      try {
-        const response = await API.get("/get-token");
-        setToken(response.data.token); // Update token
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setLoading(false); // End loading after request
-      }
-    };
-
     getToken();
   }, []); // Only runs on mount
 
@@ -42,6 +41,7 @@ export default function ProtectedRoutes({ children }) {
   // Role-based protected routes
   const roleRoutes = {
     User: [
+      "/",
       "/dashboard",
       "/dashboard/property",
       "/dashboard/property/add",
@@ -57,6 +57,7 @@ export default function ProtectedRoutes({ children }) {
       "/dashboard/edit/gallery/:property_name/:uniqueId",
     ],
     Editor: [
+      "/",
       "/dashboard",
       "/dashboard/status",
       "/dashboard/status/add",

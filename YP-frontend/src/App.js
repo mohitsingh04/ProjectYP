@@ -40,7 +40,7 @@ import VerifyEmail from "./pages/Auth/Email/VerifyEmail";
 import EmailVerified from "./pages/Auth/Email/EmailVerified";
 import EditSeo from "./pages/Seo/EditSeo";
 import EditGallery from "./pages/Gallery/EditGallery";
-// import Home from "./Frontend/Home/Home";
+import Home from "./Frontend/Home/Home";
 // import FrontPropertyList from "./Frontend/Property/PropertyList";
 import CourseList from "./pages/Course/CourseList";
 import AddCourse from "./pages/Course/AddCourse";
@@ -91,9 +91,9 @@ function Root() {
           {/* Unkown */}
           {/* <Route path="/property/:uniqueId" element={<ViewProperty />} /> */}
 
-          <Route path="/" element={<App />}>
-            <Route index element={<Dashboard />} />
-            <Route path={`/dashboard`}element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>}/>
+            <Route path="/" element={<Home />} />
+          <Route path="/dashboard" element={<App />}>
+            <Route index element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>}/>
             <Route path={`/dashboard/status`}element={<ProtectedRoutes><StatusList /></ProtectedRoutes>}/>
             <Route path={`/dashboard/status/add`}element={<ProtectedRoutes><CreateStatus /></ProtectedRoutes>}/>
             <Route path={`/dashboard/status/edit/:uniqueId`}element={<ProtectedRoutes><EditStatus /></ProtectedRoutes>}/>

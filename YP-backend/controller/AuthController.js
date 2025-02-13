@@ -82,12 +82,12 @@ export const register = async (req, res) => {
   }
 };
 
-export const userData = async (req) => {
+export const userData = async (req, res) => {
   try {
     let token = req.cookies.token;
 
     if (!token) {
-      return res.status(401).json({ error: "Access Denied" });
+      return "Access Denited";
     }
 
     const decoded = await jwt.verify(token, process.env.JWT_SECRET_VALUE);
