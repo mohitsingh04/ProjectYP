@@ -19,6 +19,7 @@ export default function EditCourse() {
     const [course, setCourse] = useState([]);
     const [status, setStatus] = useState([]);
     const [previewImage, setPreviewImage] = useState("");
+    const [courseImage,setCourseImage]=useState("")
 
     useEffect(() => {
         const fetchCourse = async () => {
@@ -26,6 +27,7 @@ export default function EditCourse() {
                 const { data } = await API.get(`/course/${uniqueId}`);
                 setCourse(data);
                 setDescription(data.description);
+                setCourseImage(data.image[0])
             } catch (err) {
                 setError("Failed to fetch course data");
             }
@@ -294,7 +296,7 @@ export default function EditCourse() {
                                             {previewImage ? (
                                                 <img src={previewImage} className="mt-1" width="100" alt="Preview" />
                                             ) : (
-                                                <img src={`http://localhost:5000/images/${course.image}`} className="mt-1" width="100" alt="Course" />
+                                                <img src={`http://localhost:5000/${courseImage}`} className="mt-1" width="100" alt="Course" />
                                             )}
                                             {errors.image && touched.image && <span className='text-danger'>{errors.image}</span>}
                                         </Form.Group>

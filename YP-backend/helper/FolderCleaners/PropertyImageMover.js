@@ -5,6 +5,9 @@ import Property from "../../models/Property.js";
 import Teachers from "../../models/Teachers.js";
 import Gallery from "../../models/Gallery.js";
 import Achievements from "../../models/Achievements.js";
+import Course from "../../models/Courses.js";
+import Category from "../../models/Category.js";
+import User from "../../models/Users.js";
 
 const fileExists = async (filePath) => {
   try {
@@ -187,9 +190,7 @@ export const GalleryImageMover = async (req, res) => {
 
     for (const item of allProperties) {
       const galleryImages = await Gallery.find({ propertyId: item.uniqueId });
-      const destinationDir = path.resolve(
-        `./media/${item.uniqueId}/gallery/`
-      );
+      const destinationDir = path.resolve(`./media/${item.uniqueId}/gallery/`);
 
       // Ensure the destination directory exists
       await fs.mkdir(destinationDir, { recursive: true });
@@ -274,9 +275,7 @@ export const AchievementImageMover = async (req, res) => {
               path.join(destinationDir, profile)
             );
 
-            movedImages.push(
-              `media/${item.uniqueId}/achievements/${profile}`
-            );
+            movedImages.push(`media/${item.uniqueId}/achievements/${profile}`);
           }
         }
 
@@ -295,5 +294,155 @@ export const AchievementImageMover = async (req, res) => {
     }
   } catch (error) {
     console.error("Error moving achievement images:", error);
+  }
+};
+export const CourseImageMover = async (req, res) => {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const destinationDir = path.resolve("./media/course/");
+
+    const allCourses = await Course.find();
+
+    for (const course of allCourses) {
+      let movedImages = [];
+
+      const imagePath = path.resolve(`./${course.image[0]}`);
+      const imagePathOriginal = path.resolve(`./${course.image[1]}`);
+
+      await fs.mkdir(destinationDir, { recursive: true });
+
+      if (await fileExists(imagePath)) {
+        const profile = path.basename(imagePath);
+        await fs.rename(imagePath, path.join(destinationDir, profile));
+        movedImages.push(`media/course/${profile}`);
+      }
+
+      if (await fileExists(imagePathOriginal)) {
+        const profile = path.basename(imagePathOriginal);
+        await fs.rename(imagePathOriginal, path.join(destinationDir, profile));
+        movedImages.push(`media/course/${profile}`);
+      }
+
+      if (movedImages.length > 0) {
+        await Course.findOneAndUpdate(
+          { uniqueId: course.uniqueId },
+          { $set: { image: movedImages } },
+          { new: true }
+        );
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const CategoryImageMover = async (req, res) => {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const destinationDir = path.resolve("./media/category/");
+
+    const allCategory = await Category.find();
+
+    for (const category of allCategory) {
+      let iconMoved = [];
+      let featureMoved = [];
+
+      const iconPath = path.resolve(`./${category.category_icon[0]}`);
+      const iconPathOriginal = path.resolve(`./${category.category_icon[1]}`);
+
+      const featurePath = path.resolve(`./${category.featured_image[0]}`);
+      const featurePathOriginal = path.resolve(
+        `./${category.featured_image[1]}`
+      );
+
+      await fs.mkdir(destinationDir, { recursive: true });
+
+      if (await fileExists(iconPath)) {
+        const profile = path.basename(iconPath);
+        await fs.rename(iconPath, path.join(destinationDir, profile));
+        iconMoved.push(`media/course/${profile}`);
+      }
+
+      if (await fileExists(iconPathOriginal)) {
+        const profile = path.basename(iconPathOriginal);
+        await fs.rename(iconPathOriginal, path.join(destinationDir, profile));
+        iconMoved.push(`media/course/${profile}`);
+      }
+
+      if (await fileExists(featurePath)) {
+        const profile = path.basename(featurePath);
+        await fs.rename(featurePath, path.join(destinationDir, profile));
+        featureMoved.push(`media/course/${profile}`);
+      }
+
+      if (await fileExists(featurePathOriginal)) {
+        const profile = path.basename(featurePathOriginal);
+        await fs.rename(
+          featurePathOriginal,
+          path.join(destinationDir, profile)
+        );
+        featureMoved.push(`media/course/${profile}`);
+      }
+
+      if (iconMoved.length > 0) {
+        await Category.findOneAndUpdate(
+          { uniqueId: category.uniqueId },
+          { $set: { category_icon: iconMoved } },
+          { new: true }
+        );
+      }
+      if (featureMoved.length > 0) {
+        await Category.findOneAndUpdate(
+          { uniqueId: category.uniqueId },
+          { $set: { featured_image: featureMoved } },
+          { new: true }
+        );
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const UserImageMover = async (req, res) => {
+  try {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+    const destinationDir = path.resolve("./media/users/");
+
+    const allUser = await User.find();
+
+    for (const user of allUser) {
+      let movedImages = [];
+
+      const imagePath = path.resolve(`./${user.profile[0]}`);
+      const imagePathOriginal = path.resolve(`./${user.profile[1]}`);
+
+      await fs.mkdir(destinationDir, { recursive: true });
+
+      if (await fileExists(imagePath)) {
+        const profile = path.basename(imagePath);
+        await fs.rename(imagePath, path.join(destinationDir, profile));
+        movedImages.push(`media/users/${profile}`);
+      }
+
+      if (await fileExists(imagePathOriginal)) {
+        const profile = path.basename(imagePathOriginal);
+        await fs.rename(imagePathOriginal, path.join(destinationDir, profile));
+        movedImages.push(`media/users/${profile}`);
+      }
+
+      if (movedImages.length > 0) {
+        await User.findOneAndUpdate(
+          { uniqueId: user.uniqueId },
+          { $set: { profile: movedImages } },
+          { new: true }
+        );
+      }
+    }
+  } catch (error) {
+    console.log(error);
   }
 };

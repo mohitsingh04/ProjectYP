@@ -123,6 +123,8 @@ function Root() {
             <Route path={`/dashboard/view/course/:property_name/:uniqueId`}element={<ProtectedRoutes><ViewPropertyCourse /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course`}element={<ProtectedRoutes><CourseList /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course/add`}element={<ProtectedRoutes><AddCourse /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/course/view/:uniqueId`} element={<ProtectedRoutes><ViewCourse/></ProtectedRoutes>}/>
+            <Route path={`/dashboard/course/edit/:uniqueId`} element={<ProtectedRoutes><EditCourse/></ProtectedRoutes>} />
             <Route path={`/dashboard/course-seo/add/:uniqueId`} element={<ProtectedRoutes><AddCourseSeo /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course-seo/edit/:uniqueId`} element={<ProtectedRoutes><EditCourseSeo /></ProtectedRoutes>}/>
           </Route>

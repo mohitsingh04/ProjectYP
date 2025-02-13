@@ -35,7 +35,9 @@ export const addCourse = async (req, res) => {
       duration,
       description,
     } = req.body;
-    const course_image = req?.files["image"]?.[0]?.filename;
+
+    const course_image = req?.files["image"]?.[0]?.path;
+    const course_original_image = req?.files["image"]?.[0]?.originalPath;
     const courseSlug = course_name?.replace(/ /g, "-").toLowerCase();
     const kebabCase = property_name?.replace(/ /g, "-").toLowerCase();
     const course = await Course.findOne().sort({ _id: -1 }).limit(1);
@@ -52,7 +54,7 @@ export const addCourse = async (req, res) => {
         course_type,
         course_level,
         price,
-        image: course_image,
+        image: [course_image, course_original_image],
         duration,
         description,
         course_slug: courseSlug,
@@ -82,12 +84,14 @@ export const updateCourse = async (req, res) => {
       description,
       status,
     } = req.body;
-    const imageFile = req.files["image"];
-    let existImage = req.body.image;
-    if (imageFile) {
-      existImage = req?.files["image"][0]?.filename;
-    }
     const course = await Course.findOne({ uniqueId: uniqueId });
+
+    const imageFile = req.files["image"];
+    let existImage = imageFile ? req?.files["image"][0]?.path : course.image[0];
+    const existImageOriginal = imageFile
+      ? req.files["image"][0]?.originalPath
+      : course.image[1];
+
     if (!course) {
       return res.send({ error: "Course not found!" });
     } else {
@@ -99,7 +103,7 @@ export const updateCourse = async (req, res) => {
             course_short_name,
             course_type,
             price,
-            image: existImage,
+            image: [existImage, existImageOriginal],
             duration,
             course_level,
             description,

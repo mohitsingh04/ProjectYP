@@ -111,6 +111,7 @@ export default function ProtectedRoutes({ children }) {
       "/dashboard/edit/seo/:property_name/:uniqueId",
       "/dashboard/edit/gallery/:property_name/:uniqueId",
       "/dashboard/course",
+      "/dashboard/course/view/:uniqueId",
       "/dashboard/course/add",
       "/dashboard/course/edit/:uniqueId",
       "/dashboard/course/view/:uniqueId",

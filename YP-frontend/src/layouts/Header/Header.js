@@ -42,14 +42,14 @@ export function Header() {
     };
     getProfile();
     getProperty();
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     const result = property.filter((property) => {
       return property.property_name.toLowerCase().match(search.toLowerCase());
     });
     setFilterData(result);
-  }, [search]);
+  }, [search, property]);
 
   //full screen
   function Fullscreen() {
@@ -77,9 +77,9 @@ export function Header() {
     }
   }
   //dark-mode
-  const Darkmode = () => {
-    document.querySelector(".app").classList.toggle("dark-mode");
-  };
+  // const Darkmode = () => {
+  //   document.querySelector(".app").classList.toggle("dark-mode");
+  // };
   //leftsidemenu
   const openCloseSidebar = () => {
     document.querySelector(".app").classList.toggle("sidenav-toggled");
@@ -94,10 +94,10 @@ export function Header() {
     document.querySelector(".header-search").classList.toggle("show");
   };
   //swichermainright
-  const swichermainright = () => {
-    document.querySelector(".demo_changer").classList.toggle("active");
-    document.querySelector(".demo_changer").style.right = "0px";
-  };
+  // const swichermainright = () => {
+  //   document.querySelector(".demo_changer").classList.toggle("active");
+  //   document.querySelector(".demo_changer").style.right = "0px";
+  // };
 
   const handleLogout = () => {
     API.get("/logout");
@@ -107,10 +107,10 @@ export function Header() {
     window.location.reload();
   };
 
-  const viewProperty = (uniqueId) => {
-    navigate("/dashboard/view/property/" + uniqueId);
-    window.location.reload();
-  };
+  // const viewProperty = (uniqueId) => {
+  //   navigate("/dashboard/view/property/" + uniqueId);
+  //   window.location.reload();
+  // };
 
   return (
     <Navbar expand="md" className="app-header header sticky">
@@ -119,7 +119,7 @@ export function Header() {
           <Link
             aria-label="Hide Sidebar"
             className="app-sidebar__toggle"
-            to="#"
+            to=""
             onClick={() => openCloseSidebar()}
           ></Link>
           <div className="responsive-logo">
@@ -346,7 +346,7 @@ export function Header() {
                           />
                         ) : (
                           <img
-                            src={`http://localhost:5000/images/${user.profile}`}
+                            src={`http://localhost:5000/${user.profile[0]}`}
                             alt="profile-user"
                             className="avatar  profile-user brround cover-image"
                           />

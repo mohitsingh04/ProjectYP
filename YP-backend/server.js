@@ -5,13 +5,15 @@ import dotenv from "dotenv";
 import morgan from "morgan";
 import helmet from "helmet";
 import router from "./routes/index.js";
-import handleFolderCleaner from "./helper/FolderCleaners/FolderCleaners.js";
 import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
 import {
   AchievementImageMover,
+  CategoryImageMover,
+  CourseImageMover,
   GalleryImageMover,
   PropertyImageMover,
   TeacherImageMover,
+  UserImageMover,
 } from "./helper/FolderCleaners/PropertyImageMover.js";
 import cookieParser from "cookie-parser";
 
@@ -42,7 +44,9 @@ setInterval(() => {
   TeacherImageMover();
   GalleryImageMover();
   AchievementImageMover();
-  // handleFolderCleaner()
+  CourseImageMover();
+  CategoryImageMover();
+  UserImageMover();
 }, 2000);
 
 mongoose

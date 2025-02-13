@@ -215,8 +215,8 @@ router.get("/faqs/:uniqueId", getFaqById);
 // Course Route
 const courseUpload = upload.fields([{ name: "image", maxCount: 1 }]);
 router.get("/course", getCourse);
-router.post("/course", courseUpload, addCourse);
-router.patch("/course/:uniqueId", courseUpload, updateCourse);
+router.post("/course", courseUpload, processImage, addCourse);
+router.patch("/course/:uniqueId", courseUpload, processImage, updateCourse);
 router.delete("/course/:uniqueId", deleteCourse);
 router.get("/course/:uniqueId", getCourseById);
 
