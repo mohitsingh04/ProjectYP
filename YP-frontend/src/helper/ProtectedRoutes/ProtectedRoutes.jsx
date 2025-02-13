@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { accessToken, API } from "../../context/Api";
+import { API } from "../../context/Api";
 import { matchPath, Navigate, useLocation } from "react-router-dom";
 import DataRequest from "../../context/DataRequest";
 

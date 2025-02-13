@@ -131,8 +131,13 @@ router.get("/profile", profile);
 // User Route
 const profileUpload = upload.fields([{ name: "profile", maxCount: 1 }]);
 router.get("/users", getUser);
-router.patch("/user/:uniqueId", profileUpload, updateUser);
-router.patch("/user/profile/:uniqueId", profileUpload, UpdateUserProfile);
+router.patch("/user/:uniqueId", updateUser);
+router.patch(
+  "/user/profile/:uniqueId",
+  profileUpload,
+  processImage,
+  UpdateUserProfile
+);
 router.delete("/user/:uniqueId", deleteUser);
 router.delete("/user/profile/:uniqueId", deleteUserProfile);
 router.get("/user/:uniqueId", getUserById);

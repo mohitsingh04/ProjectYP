@@ -138,7 +138,8 @@ export const deleteUserProfile = async (req, res) => {
 export const UpdateUserProfile = async (req, res) => {
   try {
     const { uniqueId } = req.params;
-    let profile = req.files.profile[0].filename;
+    let profile = req.files.profile[0].path;
+    let originalProfile = req.files.profile[0].originalPath;
     const user = await User.findOne({ uniqueId: uniqueId });
 
     if (!profile) {
@@ -149,7 +150,7 @@ export const UpdateUserProfile = async (req, res) => {
       { uniqueId: uniqueId },
       {
         $set: {
-          profile: profile,
+          profile: [profile, originalProfile],
         },
       }
     );

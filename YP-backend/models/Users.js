@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema({
     type: Number,
   },
   profile: {
-    type: String,
+    type: Array,
     default: null,
   },
   name: {

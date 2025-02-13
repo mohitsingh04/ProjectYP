@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Breadcrumb, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
@@ -14,11 +14,7 @@ export default function UserList() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
 
-  useEffect(() => {
-    getUser();
-  }, []);
-
-  const getUser = () => {
+  const getUser = useCallback(() => {
     try {
       dispatch(showLoading());
       API.get("/users").then(({ data }) => {
@@ -29,7 +25,11 @@ export default function UserList() {
       dispatch(hideLoading());
       toast.error(err.message);
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
 
   const viewUser = (uniqueId) => {
     navigate("/dashboard/user/view/" + uniqueId);
@@ -79,7 +79,7 @@ export default function UserList() {
       name: "PROFILE",
       selector: (row) => [
         <img
-          src={`http://localhost:5000/images/${row.profile}`}
+          src={`http://localhost:5000/${row.profile[0]}`}
           className="rounded-circle"
           width={50}
           height={50}

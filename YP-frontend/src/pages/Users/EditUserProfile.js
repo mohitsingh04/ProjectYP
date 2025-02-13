@@ -8,11 +8,13 @@ import { toast } from "react-toastify";
 export default function EditUserProfile() {
   const [previewProfile, setPreviewProfile] = useState("");
   const [user, setUser] = useState({});
+  const [userProfile, setUserProfile] = useState("");
   const { uniqueId } = useParams();
 
   useEffect(() => {
     API.get(`/user/${uniqueId}`).then(({ data }) => {
       setUser(data);
+      setUserProfile(data?.profile[0]);
     });
   }, [uniqueId]);
 
@@ -45,7 +47,7 @@ export default function EditUserProfile() {
       <img
         src={
           previewProfile ||
-          `http://localhost:5000/images/${user.profile || "default.jpg"}`
+          `http://localhost:5000/${userProfile || "default.jpg"}`
         }
         className="rounded-circle avatar-lg me-2"
         alt="user avatar"
