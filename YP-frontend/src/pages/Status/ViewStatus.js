@@ -5,12 +5,19 @@ import { API } from "../../context/Api";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
+import DataRequest from "../../context/DataRequest";
 
 export default function ViewStatus() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [status, setStatus] = useState("");
   const { uniqueId } = useParams();
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   useEffect(() => {
     try {
@@ -24,12 +31,24 @@ export default function ViewStatus() {
       dispatch(hideLoading());
       toast.error(err.message);
     }
-  }, []);
+  }, [dispatch, uniqueId]);
 
   const [isExpanded, setIsExpended] = useState(false);
   const toggleReadMore = () => {
     setIsExpended(!isExpanded);
   };
+
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Read Status"
+  );
+
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        USER DOES NOT HAVE THE RIGHT ROLES.
+      </div>
+    );
+  }
 
   return (
     <>
@@ -110,30 +129,30 @@ export default function ViewStatus() {
 
                       {status.description && (
                         <span>
-                            {status.description.length >= 1500 ? (
-                        <>
-                          <p
-                            dangerouslySetInnerHTML={{
-                              __html: isExpanded
-                                ? status.description
-                                : status.description.substring(0, 1200) +
-                                  "...",
-                            }}
-                          />
-                          <button
-                            onClick={toggleReadMore}
-                            className="text-primary m-0 p-0 text-decoration-underline"
-                          >
-                            {isExpanded ? "Read Less" : "Read More"}
-                          </button>
-                        </>
-                      ) : (
-                        <p
-                          dangerouslySetInnerHTML={{
-                            __html: status.description,
-                          }}
-                        />
-                      )}
+                          {status.description.length >= 1500 ? (
+                            <>
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: isExpanded
+                                    ? status.description
+                                    : status.description.substring(0, 1200) +
+                                      "...",
+                                }}
+                              />
+                              <button
+                                onClick={toggleReadMore}
+                                className="text-primary m-0 p-0 text-decoration-underline"
+                              >
+                                {isExpanded ? "Read Less" : "Read More"}
+                              </button>
+                            </>
+                          ) : (
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: status.description,
+                              }}
+                            />
+                          )}
                         </span>
                       )}
                     </p>

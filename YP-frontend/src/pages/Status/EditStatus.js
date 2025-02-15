@@ -1,13 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Breadcrumb, Card, Row, Form, } from "react-bootstrap";
+import { Breadcrumb, Card, Row, Form } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Editor } from '@tinymce/tinymce-react';
+import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
+import DataRequest from "../../context/DataRequest";
 
 export default function EditStatus() {
   const dispatch = useDispatch();
@@ -17,51 +18,69 @@ export default function EditStatus() {
   const [status, setStatus] = useState([]);
   const [error, setError] = useState("");
   const [description, setDescription] = useState("");
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   useEffect(() => {
     dispatch(showLoading());
     API.get(`/status/${uniqueId}`).then(({ data }) => {
       dispatch(hideLoading());
       // setStatus(data.filter(status => status.uniqueId == uniqueId))
-      setStatus(data)
-    })
-  }, [])
+      setStatus(data);
+    });
+  }, [dispatch, uniqueId]);
 
   const initialValues = {
     status_name: status.name || "",
     status_color: status.color || "#6259ca",
-  }
+  };
 
   const validationSchema = Yup.object({
-    status_name: Yup.string()
-      .required('Status name is required.'),
-  })
+    status_name: Yup.string().required("Status name is required."),
+  });
 
   const onSubmit = async (values) => {
     try {
-      values = { ...values, "description": description || status.description }
+      values = { ...values, description: description || status.description };
       dispatch(showLoading());
       API.patch(`/status/${uniqueId}`, values).then((response) => {
         dispatch(hideLoading());
         if (response.data.message) {
-          toast.success(response.data.message)
-          navigate("/dashboard/status")
+          toast.success(response.data.message);
+          navigate("/dashboard/status");
         } else if (response.data.error) {
-          setError(response.data.error)
+          setError(response.data.error);
         }
-      })
+      });
     } catch (err) {
       dispatch(hideLoading());
-      toast.error(err.message)
+      toast.error(err.message);
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } = useFormik({
-    initialValues: initialValues,
-    validationSchema: validationSchema,
-    onSubmit: onSubmit,
-    enableReinitialize: true
-  });
+  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
+    useFormik({
+      initialValues: initialValues,
+      validationSchema: validationSchema,
+      onSubmit: onSubmit,
+      enableReinitialize: true,
+    });
+
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Update Status"
+  );
+
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        USER DOES NOT HAVE THE RIGHT ROLES.
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -70,25 +89,30 @@ export default function EditStatus() {
           <h1 className="page-title">Status</h1>
           <Breadcrumb className="breadcrumb">
             <Breadcrumb.Item className="breadcrumb-item">
-              <Link to="/dashboard/">
-                Dashboard
-              </Link>
+              <Link to="/dashboard/">Dashboard</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item" aria-current="page"            >
-              <Link to="/dashboard/status/">
-              Status
-              </Link>
+            <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
+              <Link to="/dashboard/status/">Status</Link>
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item active" aria-current="page"            >
+            <Breadcrumb.Item
+              className="breadcrumb-item active"
+              aria-current="page"
+            >
               Edit
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item active breadcrumds" aria-current="page"            >
+            <Breadcrumb.Item
+              className="breadcrumb-item active breadcrumds"
+              aria-current="page"
+            >
               {status.uniqueId}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className="ms-auto pageheader-btn">
-          <Link to="/dashboard/status/" className="btn btn-primary btn-icon text-white me-3">
+          <Link
+            to="/dashboard/status/"
+            className="btn btn-primary btn-icon text-white me-3"
+          >
             <span>
               <i className="fe fe-arrow-left"></i>&nbsp;
             </span>
@@ -105,7 +129,13 @@ export default function EditStatus() {
             </Card.Header>
             <Card.Body>
               <form onSubmit={handleSubmit} encType="multipart/form-data">
-                {error ? <div className="alert alert-danger"><small>{error}</small></div> : <span />}
+                {error ? (
+                  <div className="alert alert-danger">
+                    <small>{error}</small>
+                  </div>
+                ) : (
+                  <span />
+                )}
                 <div className="form-row">
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
@@ -119,7 +149,13 @@ export default function EditStatus() {
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                      {errors.status_name && touched.status_name ? <span className='text-danger'>{errors.status_name}</span> : <span />}
+                      {errors.status_name && touched.status_name ? (
+                        <span className="text-danger">
+                          {errors.status_name}
+                        </span>
+                      ) : (
+                        <span />
+                      )}
                     </Form.Group>
                   </div>
                   <div className="form-group col-md-1 mb-3">
@@ -133,7 +169,13 @@ export default function EditStatus() {
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                      {errors.status_color && touched.status_color ? <span className='text-danger'>{errors.status_color}</span> : <span />}
+                      {errors.status_color && touched.status_color ? (
+                        <span className="text-danger">
+                          {errors.status_color}
+                        </span>
+                      ) : (
+                        <span />
+                      )}
                     </Form.Group>
                   </div>
                   <div className="form-group col-md-12 mb-3">
@@ -141,24 +183,44 @@ export default function EditStatus() {
                       <Form.Label>Description</Form.Label>
                       <Editor
                         apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
-                        onInit={(evt, editor) => editorRef.current = editor}
-                        onChange={(e) => setDescription(editorRef.current.getContent())}
+                        onInit={(evt, editor) => (editorRef.current = editor)}
+                        onChange={(e) =>
+                          setDescription(editorRef.current.getContent())
+                        }
                         onBlur={handleBlur}
                         init={{
                           height: 200,
                           menubar: false,
                           plugins: [
-                            'advlist', 'autolink', 'lists', 'link', 'image', 'charmap', 'preview',
-                            'anchor', 'searchreplace', 'visualblocks', 'code', 'fullscreen',
-                            'insertdatetime', 'media', 'table', 'code', 'help', 'wordcount'
+                            "advlist",
+                            "autolink",
+                            "lists",
+                            "link",
+                            "image",
+                            "charmap",
+                            "preview",
+                            "anchor",
+                            "searchreplace",
+                            "visualblocks",
+                            "code",
+                            "fullscreen",
+                            "insertdatetime",
+                            "media",
+                            "table",
+                            "code",
+                            "help",
+                            "wordcount",
                           ],
-                          toolbar: 'undo redo | blocks | ' +
-                            'bold italic forecolor | alignleft aligncenter ' +
-                            'alignright alignjustify | bullist numlist outdent indent | ' +
-                            'removeformat',
-                          content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                          toolbar:
+                            "undo redo | blocks | " +
+                            "bold italic forecolor | alignleft aligncenter " +
+                            "alignright alignjustify | bullist numlist outdent indent | " +
+                            "removeformat",
+                          content_style:
+                            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                         }}
-                        initialValue={status.description} />
+                        initialValue={status.description}
+                      />
                       {/* {errors.description && touched.description ? <span className='text-danger'>{errors.description}</span> : <span />} */}
                     </Form.Group>
                   </div>

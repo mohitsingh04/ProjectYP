@@ -8,11 +8,18 @@ import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
+import DataRequest from "../../context/DataRequest";
 
 export default function StatusList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [status, setStatus] = useState([]);
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   const getStatus = useCallback(async () => {
     try {
@@ -83,27 +90,39 @@ export default function StatusList() {
       name: "ACTION",
       selector: (row) => (
         <>
-          <button
-            data-bs-toggle="tooltip"
-            title="View"
-            onClick={() => viewStatus(row.uniqueId)}
-          >
-            <i className="fe fe-eye"></i>
-          </button>
-          <button
-            data-bs-toggle="tooltip"
-            title="Edit"
-            onClick={() => editStatus(row.uniqueId)}
-          >
-            <i className="fe fe-edit"></i>
-          </button>
-          <button
-            data-bs-toggle="tooltip"
-            title="Delete"
-            onClick={() => deleteStatus(row.uniqueId)}
-          >
-            <i className="fe fe-trash-2"></i>
-          </button>
+          {authPermissions?.some((items) => items.value === "Read Status") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="View"
+              onClick={() => viewStatus(row.uniqueId)}
+            >
+              <i className="fe fe-eye"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some((items) => items.value === "Update Status") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Edit"
+              onClick={() => editStatus(row.uniqueId)}
+            >
+              <i className="fe fe-edit"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some((items) => items.value === "Delete Status") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Delete"
+              onClick={() => deleteStatus(row.uniqueId)}
+            >
+              <i className="fe fe-trash-2"></i>
+            </button>
+          ) : (
+            ""
+          )}
         </>
       ),
     },
@@ -135,15 +154,21 @@ export default function StatusList() {
             </Breadcrumb>
           </div>
           <div className="ms-auto pageheader-btn">
-            <Link
-              to="/dashboard/status/add/"
-              className="btn btn-primary btn-icon text-white me-3"
-            >
-              <span>
-                <i className="fe fe-plus"></i>&nbsp;
-              </span>
-              Add Status
-            </Link>
+            {authPermissions?.some(
+              (items) => items.value === "Create Status"
+            ) ? (
+              <Link
+                to="/dashboard/status/add/"
+                className="btn btn-primary btn-icon text-white me-3"
+              >
+                <span>
+                  <i className="fe fe-plus"></i>&nbsp;
+                </span>
+                Add Status
+              </Link>
+            ) : (
+              ""
+            )}
           </div>
         </div>
 

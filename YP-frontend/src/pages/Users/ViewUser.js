@@ -37,11 +37,11 @@ export default function ViewUser() {
   //   setIsExpended(!isExpanded);
   // };
 
-  const hasReadPermission = authPermissions?.some(
+  const hasPermission = authPermissions?.some(
     (item) => item.value === "Read User"
   );
 
-  if (!hasReadPermission) {
+  if (!hasPermission) {
     return (
       <div className="position-absolute top-50 start-50 translate-middle">
         USER DOES NOT HAVE THE RIGHT ROLES.
