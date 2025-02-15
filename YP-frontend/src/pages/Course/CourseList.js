@@ -8,11 +8,19 @@ import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
+import DataRequest from "../../context/DataRequest";
 
 export default function CourseList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [course, setCourse] = useState("");
+
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   useEffect(() => {
     getCourse();
@@ -98,27 +106,41 @@ export default function CourseList() {
     {
       name: "ACTION",
       selector: (row) => [
-        <button
-          data-bs-toggle="tooltip"
-          title="View"
-          onClick={() => viewCourse(row.uniqueId)}
-        >
-          <i className="fe fe-eye"></i>
-        </button>,
-        <button
-          data-bs-toggle="tooltip"
-          title="Edit"
-          onClick={() => editCourse(row.uniqueId)}
-        >
-          <i className="fe fe-edit"></i>
-        </button>,
-        <button
-          data-bs-toggle="tooltip"
-          title="Delete"
-          onClick={() => deleteCourse(row.uniqueId)}
-        >
-          <i className="fe fe-trash-2"></i>
-        </button>,
+        <>
+          {authPermissions?.some((items) => items.value === "Read Course") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="View"
+              onClick={() => viewCourse(row.uniqueId)}
+            >
+              <i className="fe fe-eye"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some((items) => items.value === "Update Course") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Edit"
+              onClick={() => editCourse(row.uniqueId)}
+            >
+              <i className="fe fe-edit"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some((items) => items.value === "Delete Course") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Delete"
+              onClick={() => deleteCourse(row.uniqueId)}
+            >
+              <i className="fe fe-trash-2"></i>
+            </button>
+          ) : (
+            ""
+          )}
+        </>,
       ],
     },
   ];
