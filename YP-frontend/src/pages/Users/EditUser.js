@@ -19,7 +19,6 @@ export default function EditUser() {
   useEffect(() => {
     API.get(`/user/${uniqueId}`).then(({ data }) => {
       setUser(data);
-      console.log(user);
     }, []);
     API.get(`/status/`).then(({ data }) => {
       setStatus(data);
@@ -27,7 +26,7 @@ export default function EditUser() {
     API.get("/permissions").then(({ data }) => {
       setPermissionData(data);
     }, []);
-  }, []);
+  }, [uniqueId]);
 
   const initialValues = {
     uniqueId: user.uniqueId,

@@ -24,10 +24,12 @@ export default function EditProfile() {
   const [previewProfile, setPreviewProfile] = useState("");
   const navigate = useNavigate();
   const { User } = DataRequest();
+  const [profileImg, setProfileImg] = useState("");
 
   const getUser = useCallback(async () => {
     await API.get(`/user/${User.uniqueId}`).then(({ data }) => {
       setUser(data);
+      setProfileImg(data?.profile[0]);
     });
   }, [User]);
   useEffect(() => {
@@ -43,7 +45,7 @@ export default function EditProfile() {
     address: user.address || "",
     city: user.city || "",
     state: user.state || "",
-    profile: user.profile,
+    profile: profileImg,
   };
 
   const validationSchema = Yup.object({
@@ -193,7 +195,7 @@ export default function EditProfile() {
                   <div className="d-flex mb-3">
                     {previewProfile === "" ? (
                       <img
-                        src={`http://localhost:5000/images/${user.profile}`}
+                        src={`http://localhost:5000/${profileImg}`}
                         className="rounded-circle avatar-lg me-2"
                         alt="avatar"
                       />

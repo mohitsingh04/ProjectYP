@@ -91,7 +91,10 @@ export const userData = async (req, res) => {
     }
 
     const decoded = await jwt.verify(token, process.env.JWT_SECRET_VALUE);
-    return decoded;
+    const userId = decoded.uniqueId;
+
+    const userData = await User.findOne({ uniqueId: userId });
+    return userData;
   } catch (err) {
     console.log(err);
   }

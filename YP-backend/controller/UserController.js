@@ -26,10 +26,18 @@ export const updateUser = async (req, res) => {
       state,
       role,
       status,
-      permission,
     } = req.body;
 
-    await User.findOneAndUpdate(
+    const user = await User.findOne({ uniqueId: uniqueId });
+    const profileFile = req.files
+      ? req.files.profile[0].path
+      : user?.profile[0];
+
+    const profileOriginal = req.files
+      ? req.files.profile[0].originalPath
+      : user?.profile[1];
+
+    const updatedUser = await User.findOneAndUpdate(
       { uniqueId: uniqueId },
       {
         $set: {
@@ -42,7 +50,7 @@ export const updateUser = async (req, res) => {
           state,
           role,
           status,
-          permissions: permission,
+          profile: [profileFile, profileOriginal],
         },
       },
       { new: true }
