@@ -204,6 +204,21 @@ export default function UserList() {
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
+          <div className="ms-auto pageheader-btn">
+            {authPermissions?.some((items) => items.value === "Create User") ? (
+              <Link
+                to="/dashboard/user/add/"
+                className="btn btn-primary btn-icon text-white me-3"
+              >
+                <span>
+                  <i className="fe fe-plus"></i>&nbsp;
+                </span>
+                Add User
+              </Link>
+            ) : (
+              ""
+            )}
+          </div>
         </div>
 
         <Row className="row-sm">

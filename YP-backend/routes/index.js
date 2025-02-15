@@ -16,6 +16,7 @@ import {
 } from "../controller/AuthController.js";
 // import { userData } from "../middleware/index.js";
 import {
+  addNewUser,
   deleteUser,
   deleteUserProfile,
   getUser,
@@ -140,6 +141,7 @@ router.patch(
   processImage,
   UpdateUserProfile
 );
+router.post("/user/new", addNewUser);
 router.delete("/user/:uniqueId", deleteUser);
 router.delete("/user/profile/:uniqueId", deleteUserProfile);
 router.get("/user/:uniqueId", getUserById);

@@ -2,6 +2,8 @@ import User from "../models/Users.js";
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
+import bcrypt from "bcrypt";
+import newUserInfoEmail from "../email/newUserInfoEmail.js";
 
 export const getUser = async (req, res) => {
   try {
@@ -52,7 +54,7 @@ export const updateUser = async (req, res) => {
           role,
           status,
           profile: [profileFile, profileOriginal],
-          permissions:permission
+          permissions: permission,
         },
       },
       { new: true }
@@ -167,6 +169,47 @@ export const UpdateUserProfile = async (req, res) => {
     return res
       .status(200)
       .json({ message: "User Profile Updated Successfully" });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export const addNewUser = async (req, res) => {
+  try {
+    const { name, email, mobile_no, role } = req.body;
+    const existEmail = await User.findOne({ email: email });
+    const existMobile = await User.findOne({ mobile_no: mobile_no });
+    if (existEmail) {
+      return res.status(400).json({ error: "This email is already exist." });
+    }
+    if (existMobile) {
+      return res
+        .status(400)
+        .json({ error: "This mobile number is already exist." });
+    }
+
+    const password = Math.floor(Math.random() * 899999 + 100000);
+
+    const hash = bcrypt.hashSync(String(password), 10);
+
+    const user = await User.findOne().sort({ _id: -1 }).limit(1);
+    const x = user ? user.uniqueId + 1 : 1;
+    const newUser = User({
+      uniqueId: x,
+      name,
+      email,
+      mobile_no,
+      role,
+      password: hash,
+    });
+
+    const savedUser = await newUser.save();
+
+    if (savedUser) {
+      await newUserInfoEmail({ email, password });
+    }
+
+    return res.status(200).json({ message: "User Add Successfully" });
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

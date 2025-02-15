@@ -5,11 +5,20 @@ import User from "../models/Users.js";
 
 dotenv.config();
 
-const transporter = nodemailer.createTransport({
-  service: "gmail",
+// const transporter = nodemailer.createTransport({
+//   service: "gmail",
+//   auth: {
+//     user: process.env.EMAIL,
+//     pass: process.env.EMAIL_PASSWORD,
+//   },
+// });
+
+var transporter = nodemailer.createTransport({
+  host: "sandbox.smtp.mailtrap.io",
+  port: 2525,
   auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASSWORD,
+    user: "5832f6caafc9bd",
+    pass: "1ec06c5bff684d",
   },
 });
 
@@ -50,7 +59,6 @@ const sendEmailVerification = async ({ uniqueId, email, emailType }) => {
     }
   } catch (err) {
     console.error(err.message);
-    return res.send({ error: "Error sending verification email" });
   }
 };
 

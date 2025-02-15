@@ -53,6 +53,7 @@ import EditCourseSeo from "./pages/Course/Seo/EditCourseSeo";
 import VerificationEmail from "./pages/Auth/Email/VerificationEmail";
 import SendVerifyEmail from "./pages/Auth/Email/SendVerifyEmail";
 import ProtectedRoutes from "./helper/ProtectedRoutes/ProtectedRoutes";
+import CreateUser from "./pages/Users/CreateUser";
 
 window.Swal = Swal;
 const toast = Swal.mixin({
@@ -117,6 +118,7 @@ function Root() {
             <Route path={`/dashboard/edit/seo/:property_name/:uniqueId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
             <Route path={`/dashboard/edit/gallery/:property_name/:uniqueId`}element={<ProtectedRoutes><EditGallery /></ProtectedRoutes>}/>
             <Route path={`/dashboard/user`} element={<ProtectedRoutes><UserList /></ProtectedRoutes>} />
+            <Route path={`/dashboard/user/add`}element={<ProtectedRoutes><CreateUser/></ProtectedRoutes>}/>
             <Route path={`/dashboard/user/view/:uniqueId`}element={<ProtectedRoutes><ViewUser /></ProtectedRoutes>}/>
             <Route path={`/dashboard/user/edit/:uniqueId`}element={<ProtectedRoutes><EditUser /></ProtectedRoutes>}/>
             <Route path={`/dashboard/edit/course/:property_name/:uniqueId`}element={<ProtectedRoutes><EditPropertyCourse /></ProtectedRoutes>}/>

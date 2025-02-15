@@ -108,6 +108,7 @@ export default function ProtectedRoutes({ children }) {
       "/dashboard/my-profile",
       "/dashboard/edit/my-profile",
       "/dashboard/user",
+      "/dashboard/user/add",
       "/dashboard/user/view/:uniqueId",
       "/dashboard/user/edit/:uniqueId",
       "/dashboard/edit/course/:property_name/:uniqueId",
