@@ -8,11 +8,18 @@ import Swal from "sweetalert2";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
+import DataRequest from "../../context/DataRequest";
 
 export default function CategoryList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [category, setCategory] = useState("");
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   const getCategory = useCallback(() => {
     try {
@@ -114,27 +121,45 @@ export default function CategoryList() {
     {
       name: "Action",
       selector: (row) => [
-        <button
-          data-bs-toggle="tooltip"
-          title="View"
-          onClick={() => viewCategory(row.uniqueId)}
-        >
-          <i className="fe fe-eye"></i>
-        </button>,
-        <button
-          data-bs-toggle="tooltip"
-          title="Edit"
-          onClick={() => editCategory(row.uniqueId)}
-        >
-          <i className="fe fe-edit"></i>
-        </button>,
-        <button
-          data-bs-toggle="tooltip"
-          title="Delete"
-          onClick={() => deleteCategory(row.uniqueId)}
-        >
-          <i className="fe fe-trash"></i>
-        </button>,
+        <>
+          {authPermissions?.some((items) => items.value === "Read Category") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="View"
+              onClick={() => viewCategory(row.uniqueId)}
+            >
+              <i className="fe fe-eye"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some(
+            (items) => items.value === "Update Category"
+          ) ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Edit"
+              onClick={() => editCategory(row.uniqueId)}
+            >
+              <i className="fe fe-edit"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some(
+            (items) => items.value === "Delete Category"
+          ) ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Delete"
+              onClick={() => deleteCategory(row.uniqueId)}
+            >
+              <i className="fe fe-trash"></i>
+            </button>
+          ) : (
+            ""
+          )}
+        </>,
       ],
     },
   ];

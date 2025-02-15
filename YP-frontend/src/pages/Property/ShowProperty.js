@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Tabs, Tab, Breadcrumb, Card, Row, Col } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { API } from "../../context/Api";
@@ -16,18 +16,21 @@ import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import OtherDetails from "./PropertyComponents/OtherDetails";
+import DataRequest from "../../context/DataRequest";
 
 export default function ShowProperty() {
   const dispatch = useDispatch();
   const { uniqueId } = useParams();
   const [property, setProperty] = useState("");
   const [icon, setIcon] = useState("");
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
 
   useEffect(() => {
-    getProperty();
-  }, []);
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
-  const getProperty = async () => {
+  const getProperty = useCallback(async () => {
     try {
       dispatch(showLoading());
       const { data } = await API.get(`/property/${uniqueId}`);
@@ -38,13 +41,29 @@ export default function ShowProperty() {
     } finally {
       dispatch(hideLoading());
     }
-  };
+  }, [dispatch, uniqueId]);
+
+  useEffect(() => {
+    getProperty();
+  }, [getProperty]);
 
   useEffect(() => {
     if (property?.property_icon?.length) {
       setIcon(property.property_icon[0]);
     }
   }, [property]);
+
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Read Property"
+  );
+
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        USER DOES NOT HAVE THE RIGHT ROLES.
+      </div>
+    );
+  }
 
   return (
     <div>

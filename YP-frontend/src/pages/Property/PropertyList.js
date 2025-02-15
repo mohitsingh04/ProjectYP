@@ -8,17 +8,20 @@ import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import DataRequest from "../../context/DataRequest";
 
 export default function PropertyList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [property, setProperty] = useState([]);
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
 
   useEffect(() => {
-    getProperty();
-  }, []);
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
-  const getProperty = () => {
+  const getProperty = useCallback(() => {
     try {
       dispatch(showLoading());
       API.get("/property").then(({ data }) => {
@@ -29,7 +32,11 @@ export default function PropertyList() {
       dispatch(hideLoading());
       toast.error(err.message);
     }
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    getProperty();
+  }, [getProperty]);
 
   const viewProperty = (uniqueId) => {
     navigate("/dashboard/property/view/" + uniqueId);
@@ -110,20 +117,30 @@ export default function PropertyList() {
     {
       name: "ACTION",
       selector: (row) => [
-        <button
-          data-bs-toggle="tooltip"
-          title="View"
-          onClick={() => viewProperty(row.uniqueId)}
-        >
-          <i className="fe fe-eye"></i>
-        </button>,
-        <button
-          data-bs-toggle="tooltip"
-          title="Delete"
-          onClick={() => deleteProperty(row.uniqueId)}
-        >
-          <i className="fe fe-trash"></i>
-        </button>,
+        <>
+          {authPermissions?.some((items) => items.value === "Read Property") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="View"
+              onClick={() => viewProperty(row.uniqueId)}
+            >
+              <i className="fe fe-eye"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some((items) => items.value === "Read Property") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Delete"
+              onClick={() => deleteProperty(row.uniqueId)}
+            >
+              <i className="fe fe-trash"></i>
+            </button>
+          ) : (
+            ""
+          )}
+        </>,
       ],
     },
   ];
@@ -153,15 +170,21 @@ export default function PropertyList() {
           </Breadcrumb>
         </div>
         <div className="ms-auto pageheader-btn">
-          <Link
-            to="/dashboard/property/add/"
-            className="btn btn-primary btn-icon text-white me-3"
-          >
-            <span>
-              <i className="fe fe-plus"></i>&nbsp;
-            </span>
-            Add Property
-          </Link>
+          {authPermissions?.some(
+            (items) => items.value === "Create Property"
+          ) ? (
+            <Link
+              to="/dashboard/property/add/"
+              className="btn btn-primary btn-icon text-white me-3"
+            >
+              <span>
+                <i className="fe fe-plus"></i>&nbsp;
+              </span>
+              Add Property
+            </Link>
+          ) : (
+            ""
+          )}
         </div>
       </div>
 

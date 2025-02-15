@@ -4,6 +4,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { API } from "../../context/Api";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
+import DataRequest from "../../context/DataRequest";
 
 export default function ViewCategory() {
   const navigate = useNavigate();
@@ -12,6 +13,12 @@ export default function ViewCategory() {
   const [category, setCategory] = useState("");
   const [categoryIcon, setCategoryIcon] = useState("");
   const [featureImage, setFeatureImage] = useState("");
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   useEffect(() => {
     const getCategory = () => {
@@ -30,6 +37,18 @@ export default function ViewCategory() {
   const toggleReadMore = () => {
     setIsExpended(!isExpanded);
   };
+
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Read Category"
+  );
+
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        USER DOES NOT HAVE THE RIGHT ROLES.
+      </div>
+    );
+  }
 
   return (
     <>

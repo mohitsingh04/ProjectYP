@@ -25,6 +25,11 @@ export default function EditCategory() {
   const [categoryIcon, setCategoryIcon] = useState("");
   const [featureImage, setFeatureImage] = useState("");
   const { User } = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(User?.permissions);
+  }, [User]);
 
   useEffect(() => {
     const getCategory = () => {
@@ -117,6 +122,18 @@ export default function EditCategory() {
     onSubmit: onSubmit,
     enableReinitialize: true,
   });
+
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Update Category"
+  );
+
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        USER DOES NOT HAVE THE RIGHT ROLES.
+      </div>
+    );
+  }
 
   return (
     <div>
