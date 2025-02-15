@@ -26,6 +26,7 @@ export const updateUser = async (req, res) => {
       state,
       role,
       status,
+      permission,
     } = req.body;
 
     const user = await User.findOne({ uniqueId: uniqueId });
@@ -51,6 +52,7 @@ export const updateUser = async (req, res) => {
           role,
           status,
           profile: [profileFile, profileOriginal],
+          permissions:permission
         },
       },
       { new: true }

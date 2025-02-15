@@ -8,11 +8,18 @@ import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
+import DataRequest from "../../context/DataRequest";
 
 export default function UserList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   const getUser = useCallback(() => {
     try {
@@ -133,27 +140,41 @@ export default function UserList() {
     {
       name: "ACTION",
       selector: (row) => [
-        <button
-          data-bs-toggle="tooltip"
-          title="View"
-          onClick={() => viewUser(row.uniqueId)}
-        >
-          <i className="fe fe-eye"></i>
-        </button>,
-        <button
-          data-bs-toggle="tooltip"
-          title="Edit"
-          onClick={() => editUser(row.uniqueId)}
-        >
-          <i className="fe fe-edit"></i>
-        </button>,
-        <button
-          data-bs-toggle="tooltip"
-          title="Delete"
-          onClick={() => deleteUser(row.uniqueId)}
-        >
-          <i className="fe fe-trash-2"></i>
-        </button>,
+        <>
+          {authPermissions?.some((item) => item.value === "Read User") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="View"
+              onClick={() => viewUser(row.uniqueId)}
+            >
+              <i className="fe fe-eye"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some((item) => item.value === "Update User") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Edit"
+              onClick={() => editUser(row.uniqueId)}
+            >
+              <i className="fe fe-edit"></i>
+            </button>
+          ) : (
+            ""
+          )}
+          {authPermissions?.some((item) => item.value === "Delete User") ? (
+            <button
+              data-bs-toggle="tooltip"
+              title="Delete"
+              onClick={() => deleteUser(row.uniqueId)}
+            >
+              <i className="fe fe-trash-2"></i>
+            </button>
+          ) : (
+            ""
+          )}
+        </>,
       ],
     },
   ];

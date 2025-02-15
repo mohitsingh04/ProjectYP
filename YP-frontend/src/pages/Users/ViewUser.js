@@ -5,12 +5,19 @@ import { API } from "../../context/Api";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
+import DataRequest from "../../context/DataRequest";
 
 export default function ViewUser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [user, setUser] = useState("");
   const { uniqueId } = useParams();
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   useEffect(() => {
     try {
@@ -25,10 +32,22 @@ export default function ViewUser() {
     }
   }, [dispatch, uniqueId]);
 
-  const [isExpanded, setIsExpended] = useState(false);
-  const toggleReadMore = () => {
-    setIsExpended(!isExpanded);
-  };
+  // const [isExpanded, setIsExpended] = useState(false);
+  // const toggleReadMore = () => {
+  //   setIsExpended(!isExpanded);
+  // };
+
+  const hasReadPermission = authPermissions?.some(
+    (item) => item.value === "Read User"
+  );
+
+  if (!hasReadPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        USER DOES NOT HAVE THE RIGHT ROLES.
+      </div>
+    );
+  }
 
   return (
     <>

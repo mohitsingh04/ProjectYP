@@ -7,6 +7,7 @@ import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import Dropdown from "react-dropdown-select";
 import EditUserProfile from "./EditUserProfile";
+import DataRequest from "../../context/DataRequest";
 
 export default function EditUser() {
   const navigate = useNavigate();
@@ -15,6 +16,13 @@ export default function EditUser() {
 
   const { uniqueId } = useParams();
   const [permissionData, setPermissionData] = useState([]);
+
+  const mainUser = DataRequest();
+  const [authPermissions, setAuthPermissions] = useState([]);
+
+  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions);
+  }, [mainUser]);
 
   useEffect(() => {
     API.get(`/user/${uniqueId}`).then(({ data }) => {
@@ -79,6 +87,18 @@ export default function EditUser() {
     onSubmit: onSubmit,
     enableReinitialize: true,
   });
+
+  const hasReadPermission = authPermissions?.some(
+    (item) => item.value === "Update User"
+  );
+
+  if (!hasReadPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        USER DOES NOT HAVE THE RIGHT ROLES.
+      </div>
+    );
+  }
 
   return (
     <>
