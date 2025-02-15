@@ -74,6 +74,7 @@ export default function Achievements() {
       setIsUpdating(false);
       getAchievements();
       setImages([]);
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }

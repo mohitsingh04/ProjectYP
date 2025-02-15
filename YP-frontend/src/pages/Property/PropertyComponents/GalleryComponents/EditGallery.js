@@ -65,6 +65,7 @@ export default function EditGallery({
       toast.success(response.data.message);
       setToggleGalleryPage(true);
       getGallery();
+      window.location.reload();
     } catch (error) {
       console.error("Error updating gallery:", error);
       toast.error("Failed to update gallery");
