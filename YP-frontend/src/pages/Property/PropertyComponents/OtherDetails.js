@@ -1,16 +1,14 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
-import { Formik, useFormik } from "formik";
+import { useFormik } from "formik";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
-import DataRequest from "../../../context/DataRequest";
 
 export default function OtherDetails() {
   const dispatch = useDispatch();
-  const { User } = DataRequest();
   const { uniqueId } = useParams();
   const [status, setStatus] = useState([]);
   const [category, setCategory] = useState([]);
@@ -47,14 +45,17 @@ export default function OtherDetails() {
   const getBussinessHours = useCallback(async () => {
     const response = await API.get(`/business-hours/${property.uniqueId}`);
     setBussinessHours(response.data[0]);
-  }, []);
+  }, [property]);
 
   useEffect(() => {
     getProperty();
+  }, [getProperty]);
+
+  useEffect(() => {
     getCategory();
     getStatus();
     getBussinessHours();
-  }, [getBussinessHours, getProperty, getCategory, getStatus]);
+  }, [getBussinessHours, getCategory, getStatus]);
 
   const [formState, setFormState] = useState({
     monday: { open: null, close: null },
@@ -157,9 +158,8 @@ export default function OtherDetails() {
     }
   };
 
-  const { values, handleSubmit, handleChange } = useFormik({
+  const { values, handleSubmit } = useFormik({
     initialValues: initialValues,
-    // validationSchema: validationSchema,
     onSubmit: onSubmit,
     enableReinitialize: true,
   });
@@ -243,7 +243,6 @@ export default function OtherDetails() {
                             </option>
                           ))}
                         </select>
-                        {/* <span onClick={handleCancelEditCategory} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
                         <button type="submit" className="btn">
                           <i className="fe fe-check text-primary"></i>
                         </button>
@@ -292,78 +291,73 @@ export default function OtherDetails() {
                     </>
                   )}
                 </Col>
-                {User.role === "Admin" || User.role === "Editor" ? (
-                  <>
-                    <Col md={6} className="mb-3">
-                      <strong>Status :</strong>
-                      {!property.status ? (
-                        <>
-                          <form onSubmit={handleCateogory} className="d-flex">
-                            <select
-                              name="status"
-                              id="status"
-                              className="form-control"
-                              value={values.status}
-                              onChange={(e) => setActiveStatus(e.target.value)}
-                            >
-                              <option value="">--Select Status--</option>
-                              {status.map((item, key) => (
-                                <option key={key} value={item.name}>
-                                  {item.name}
-                                </option>
-                              ))}
-                            </select>
-                            {/* <span onClick={handleCancelEditStatus} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
-                            <button type="submit" className="btn">
-                              <i className="fe fe-check text-primary"></i>
-                            </button>
-                          </form>
-                        </>
-                      ) : showStatusInInput ? (
-                        <>
-                          <form onSubmit={handleCateogory} className="d-flex">
-                            <select
-                              name="status"
-                              id="status"
-                              className="form-control"
-                              value={values.status}
-                              onChange={(e) => setActiveStatus(e.target.value)}
-                            >
-                              <option value="">--Select Status--</option>
-                              {status.map((item, key) => (
-                                <option key={key} value={item.name}>
-                                  {item.name}
-                                </option>
-                              ))}
-                            </select>
-                            <span
-                              onClick={handleCancelEditStatus}
-                              className="mx-3 py-2"
-                            >
-                              <i className="fe fe-x"></i>
-                            </span>
-                            <button type="submit" className="btn">
-                              <i className="fe fe-check text-primary"></i>
-                            </button>
-                          </form>
-                        </>
-                      ) : (
-                        <>
-                          <>
-                            <br />
-                            {property.status}
-                            <span
-                              onClick={() => handleEditStatus()}
-                              className="mx-2"
-                            >
-                              <i className="fe fe-edit"></i>
-                            </span>
-                          </>
-                        </>
-                      )}
-                    </Col>
-                  </>
-                ) : null}
+                <Col md={6} className="mb-3">
+                  <strong>Status :</strong>
+                  {!property.status ? (
+                    <>
+                      <form onSubmit={handleCateogory} className="d-flex">
+                        <select
+                          name="status"
+                          id="status"
+                          className="form-control"
+                          value={values.status}
+                          onChange={(e) => setActiveStatus(e.target.value)}
+                        >
+                          <option value="">--Select Status--</option>
+                          {status.map((item, key) => (
+                            <option key={key} value={item.name}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                        <button type="submit" className="btn">
+                          <i className="fe fe-check text-primary"></i>
+                        </button>
+                      </form>
+                    </>
+                  ) : showStatusInInput ? (
+                    <>
+                      <form onSubmit={handleCateogory} className="d-flex">
+                        <select
+                          name="status"
+                          id="status"
+                          className="form-control"
+                          value={values.status}
+                          onChange={(e) => setActiveStatus(e.target.value)}
+                        >
+                          <option value="">--Select Status--</option>
+                          {status.map((item, key) => (
+                            <option key={key} value={item.name}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                        <span
+                          onClick={handleCancelEditStatus}
+                          className="mx-3 py-2"
+                        >
+                          <i className="fe fe-x"></i>
+                        </span>
+                        <button type="submit" className="btn">
+                          <i className="fe fe-check text-primary"></i>
+                        </button>
+                      </form>
+                    </>
+                  ) : (
+                    <>
+                      <>
+                        <br />
+                        {property.status}
+                        <span
+                          onClick={() => handleEditStatus()}
+                          className="mx-2"
+                        >
+                          <i className="fe fe-edit"></i>
+                        </span>
+                      </>
+                    </>
+                  )}
+                </Col>
                 <Col md={6}>
                   <strong>Established Year :</strong>
                   {!property.est_year ? (
@@ -377,7 +371,6 @@ export default function OtherDetails() {
                           value={values.est_year}
                           onChange={(e) => setEstablishmentYear(e.target.value)}
                         />
-                        {/* <span onClick={handleCancelEditEstDate} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
                         <button type="submit" className="btn">
                           <i className="fe fe-check text-primary"></i>
                         </button>
@@ -400,7 +393,6 @@ export default function OtherDetails() {
                         >
                           <i className="fe fe-x"></i>
                         </span>
-                        {/* <span onClick={handleUpdateName} className="mx-3 py-2"><i className="fe fe-check"></i></span> */}
                         <button type="submit" className="btn">
                           <i className="fe fe-check text-primary"></i>
                         </button>
@@ -421,6 +413,18 @@ export default function OtherDetails() {
                     </>
                   )}
                 </Col>
+              </Row>
+            </Card.Body>
+          </Card>
+
+          <Card>
+            <Card.Header>
+              <h5>
+                <strong>Other Details</strong>
+              </h5>
+            </Card.Header>
+            <Card.Body>
+              <Row>
                 <Col md={12} className="mt-3">
                   <strong>Opening Hours :</strong>
                   <form onSubmit={handleSubmit}>

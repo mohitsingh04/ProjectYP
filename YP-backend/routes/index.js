@@ -111,6 +111,11 @@ import {
   getAchievementsByPropertyId,
 } from "../controller/AchievementsController.js";
 import { getPermissions } from "../controller/PermissionsControllers.js";
+import {
+  addAmenities,
+  getAmenities,
+  updateAmenities,
+} from "../controller/AmenitesController.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -270,5 +275,9 @@ router.get("/cities", getCity);
 const achievements = upload.fields([{ name: "achievements", maxCount: 4 }]);
 router.post("/achievements", achievements, processImage, addAchievements);
 router.get("/achievements/:property_id", getAchievementsByPropertyId);
+
+router.post("/amenities", addAmenities);
+router.get("/amenities", getAmenities);
+router.put("/amenities/:uniqueId", updateAmenities);
 
 export default router;

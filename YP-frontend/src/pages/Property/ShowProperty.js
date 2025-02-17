@@ -17,6 +17,7 @@ import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import OtherDetails from "./PropertyComponents/OtherDetails";
 import DataRequest from "../../context/DataRequest";
+import Amenities from "./PropertyComponents/Amenities";
 
 export default function ShowProperty() {
   const dispatch = useDispatch();
@@ -215,6 +216,9 @@ export default function ShowProperty() {
                       </Tab>
                       <Tab eventKey="Hostel" title="Hostel">
                         <Hostel />
+                      </Tab>
+                      <Tab eventKey="Amenities" title="Amenities">
+                        <Amenities />
                       </Tab>
                       <Tab eventKey="Reviews" title="Reviews ">
                         <Reviews />
