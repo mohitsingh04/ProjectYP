@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import DataRequest from "../../context/DataRequest";
+import defaultCourse from "../../Images/defaultcourse.webp";
 
 export default function ViewCourse() {
   const navigate = useNavigate();
@@ -100,12 +101,21 @@ export default function ViewCourse() {
                 <hr className="mt-5" />
                 <div className="table-responsive p-1">
                   <div>
-                    <img
-                      src={`http://localhost:5000/${courseImage}`}
-                      width="100%"
-                      height="50%"
-                      alt={courseImage}
-                    />
+                    {courseImage === null ? (
+                      <img
+                        src={defaultCourse}
+                        width="100%"
+                        height="50%"
+                        alt={defaultCourse}
+                      />
+                    ) : (
+                      <img
+                        src={`http://localhost:5000/${courseImage}`}
+                        width="100%"
+                        height="50%"
+                        alt={courseImage}
+                      />
+                    )}
                   </div>
                   <Table className="table row table-borderless mt-3">
                     <tbody className="col-lg-12 col-xl-6 p-0">

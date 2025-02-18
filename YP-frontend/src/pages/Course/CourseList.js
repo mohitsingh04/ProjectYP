@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
+import defaultCourse from "../../Images/defaultcourse.webp";
 
 export default function CourseList() {
   const dispatch = useDispatch();
@@ -60,9 +61,9 @@ export default function CourseList() {
           API.delete(`/course/${uniqueId}`).then((response) => {
             dispatch(hideLoading());
             toast.success(response.data.message);
+            getCourse();
           });
         }
-        getCourse();
       })
       .catch((error) => {
         dispatch(hideLoading());
@@ -78,9 +79,16 @@ export default function CourseList() {
     },
     {
       name: "IMAGE",
-      selector: (row) => [
-        <img src={`http://localhost:5000/${row.image[0]}`} width={53} alt="" />,
-      ],
+      selector: (row) =>
+        row?.image?.[0] === null ? (
+          <img src={defaultCourse} width={53} alt={defaultCourse} />
+        ) : (
+          <img
+            src={`http://localhost:5000/${row?.image?.[0]}`}
+            width={53}
+            alt={"Course"}
+          />
+        ),
       sortable: true,
     },
     {

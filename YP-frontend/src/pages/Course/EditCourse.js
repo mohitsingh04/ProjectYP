@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
+import defaultCourse from "../../Images/defaultcourse.webp";
 
 export default function EditCourse() {
   const dispatch = useDispatch();
@@ -378,6 +379,7 @@ export default function EditCourse() {
                       <input
                         type="file"
                         name="image"
+                        accept="image/jpeg, image/png"
                         className="form-control"
                         onChange={(e) => {
                           let file = e.target.files[0];
@@ -398,6 +400,13 @@ export default function EditCourse() {
                           className="mt-1"
                           width="100"
                           alt="Preview"
+                        />
+                      ) : courseImage === null ? (
+                        <img
+                          src={defaultCourse}
+                          className="mt-1"
+                          width="100"
+                          alt="Course"
                         />
                       ) : (
                         <img

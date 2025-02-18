@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
+import defaultProfile from "../../Images/DefaultProfile.jpg";
 
 export default function UserList() {
   const dispatch = useDispatch();
@@ -85,13 +86,23 @@ export default function UserList() {
     {
       name: "PROFILE",
       selector: (row) => [
-        <img
-          src={`http://localhost:5000/${row.profile[0]}`}
-          className="rounded-circle"
-          width={50}
-          height={50}
-          alt="profile"
-        />,
+        row.profile?.[0] === null ? (
+          <img
+            src={defaultProfile}
+            className="rounded-circle"
+            width={50}
+            height={50}
+            alt="profile"
+          />
+        ) : (
+          <img
+            src={`http://localhost:5000/${row.profile[0]}`}
+            className="rounded-circle"
+            width={50}
+            height={50}
+            alt="profile"
+          />
+        ),
       ],
       sortable: true,
     },

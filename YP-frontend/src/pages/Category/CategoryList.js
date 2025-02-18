@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
+import defaultIcon from "../../Images/defaultcategory-compressed.webp";
 
 export default function CategoryList() {
   const dispatch = useDispatch();
@@ -69,7 +70,6 @@ export default function CategoryList() {
             }
           });
         }
-        getCategory();
       })
       .catch((error) => {
         dispatch(hideLoading());
@@ -85,13 +85,16 @@ export default function CategoryList() {
     },
     {
       name: "ICON",
-      selector: (row) => [
-        <img
-          src={`http://localhost:5000/${row.category_icon[0]}`}
-          width={53}
-          alt=""
-        />,
-      ],
+      selector: (row) =>
+        row?.category_icon?.[0] === null ? (
+          <img src={defaultIcon} width={53} alt="" />
+        ) : (
+          <img
+            src={`http://localhost:5000/${row.category_icon[0]}`}
+            width={53}
+            alt=""
+          />
+        ),
       sortable: true,
     },
     {

@@ -31,14 +31,6 @@ export const addCategory = async (req, res) => {
     let featured_original_image =
       req?.files["featured_image"]?.[0]?.originalPath;
 
-    if (!category_icon) {
-      category_icon = "media/category/defaultcategory-compressed.webp";
-      category_original_icon = "media/category/defaultcategory.jpg";
-    }
-    if (!featured_image) {
-      featured_image = "media/category/defaultcategoryfeature-compressed.webp";
-      featured_original_image = "media/category/defaultcategoryfeature.jpg";
-    }
     const category = await Category.findOne().sort({ _id: -1 }).limit(1);
     const existCategory = await Category.findOne({
       category_name: category_name,

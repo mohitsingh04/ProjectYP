@@ -332,6 +332,7 @@ export default function AddCourse() {
                       <input
                         type="file"
                         name="image"
+                        accept="image/jpeg, image/png"
                         className="form-control"
                         onChange={(e) => {
                           let file = e.target.files[0];

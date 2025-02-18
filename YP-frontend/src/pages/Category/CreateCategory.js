@@ -279,6 +279,7 @@ export default function CreateCategory() {
                       <input
                         type="file"
                         name="category_icon"
+                        accept="image/jpeg, image/png"
                         className="form-control"
                         onChange={(e) => {
                           let reader = new FileReader();
@@ -313,6 +314,7 @@ export default function CreateCategory() {
                       <input
                         type="file"
                         name="featured_image"
+                        accept="image/jpeg, image/png"
                         className="form-control"
                         onChange={(e) => {
                           let reader = new FileReader();

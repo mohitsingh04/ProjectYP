@@ -5,6 +5,8 @@ import { API } from "../../context/Api";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
+import defaultIcon from "../../Images/defaultcategory-compressed.webp";
+import defaultFeature from "../../Images/defaultcategoryfeature-compressed.webp";
 
 export default function ViewCategory() {
   const navigate = useNavigate();
@@ -93,18 +95,32 @@ export default function ViewCategory() {
               <Card.Body>
                 <div className="text-center">
                   <div className="bg-light-gray p-5">
-                    <img
-                      className="position-absolute bottom-0 start-0"
-                      alt="Product"
-                      src={`http://localhost:5000/${categoryIcon}`}
-                      width={100}
-                      style={{ margin: "165px 26px" }}
-                    />
-                    <img
-                      alt="Product"
-                      src={`http://localhost:5000/${featureImage}`}
-                      width={200}
-                    />
+                    {categoryIcon === null ? (
+                      <img
+                        className="position-absolute bottom-0 start-0"
+                        alt="Product"
+                        src={defaultIcon}
+                        width={100}
+                        style={{ margin: "165px 26px" }}
+                      />
+                    ) : (
+                      <img
+                        className="position-absolute bottom-0 start-0"
+                        alt="Product"
+                        src={`http://localhost:5000/${categoryIcon}`}
+                        width={100}
+                        style={{ margin: "165px 26px" }}
+                      />
+                    )}
+                    {featureImage === null ? (
+                      <img alt="Product" src={defaultFeature} width={200} />
+                    ) : (
+                      <img
+                        alt="Product"
+                        src={`http://localhost:5000/${featureImage}`}
+                        width={200}
+                      />
+                    )}
                   </div>
                 </div>
                 <hr />

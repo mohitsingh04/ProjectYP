@@ -9,6 +9,8 @@ import DataRequest from "../../context/DataRequest.js";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice.js";
+import defaultIcon from "../../Images/defaultcategory-compressed.webp";
+import defaultFeature from "../../Images/defaultcategoryfeature-compressed.webp";
 
 export default function EditCategory() {
   const dispatch = useDispatch();
@@ -285,6 +287,7 @@ export default function EditCategory() {
                       <Form.Label>Icon</Form.Label>
                       <input
                         type="file"
+                        accept="image/jpeg, image/png"
                         name="category_icon"
                         className="form-control"
                         onChange={(e) => {
@@ -300,12 +303,21 @@ export default function EditCategory() {
                         onBlur={handleBlur}
                       />
                       {!previewIcon ? (
-                        <img
-                          src={`http://localhost:5000/${categoryIcon}`}
-                          className="mt-1"
-                          width="100"
-                          alt=""
-                        />
+                        categoryIcon === null ? (
+                          <img
+                            src={defaultIcon}
+                            className="mt-1"
+                            width="100"
+                            alt=""
+                          />
+                        ) : (
+                          <img
+                            src={`http://localhost:5000/${categoryIcon}`}
+                            className="mt-1"
+                            width="100"
+                            alt=""
+                          />
+                        )
                       ) : (
                         <img
                           src={previewIcon}
@@ -323,6 +335,7 @@ export default function EditCategory() {
                       <input
                         type="file"
                         name="featured_image"
+                        accept="image/jpeg, image/png"
                         className="form-control"
                         onChange={(e) => {
                           let reader = new FileReader();
@@ -340,12 +353,21 @@ export default function EditCategory() {
                         onBlur={handleBlur}
                       />
                       {!previewFeaturedImage ? (
-                        <img
-                          src={`http://localhost:5000/${featureImage}`}
-                          className="mt-1"
-                          width="100"
-                          alt=""
-                        />
+                        featureImage === null ? (
+                          <img
+                            src={defaultFeature}
+                            className="mt-1"
+                            width="100"
+                            alt=""
+                          />
+                        ) : (
+                          <img
+                            src={`http://localhost:5000/${featureImage}`}
+                            className="mt-1"
+                            width="100"
+                            alt=""
+                          />
+                        )
                       ) : (
                         <img
                           src={previewFeaturedImage}
@@ -354,7 +376,6 @@ export default function EditCategory() {
                           alt=""
                         />
                       )}
-                      {/* {errors.featured_image && touched.featured_image ? <span className='text-danger'>{errors.featured_image}</span> : <span />} */}
                     </Form.Group>
                   </div>
                   <div className="form-group col-md-6 mb-3">

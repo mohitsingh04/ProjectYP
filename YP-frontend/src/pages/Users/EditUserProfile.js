@@ -4,6 +4,7 @@ import { API } from "../../context/Api";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
+import defaultProfile from "../../Images/DefaultProfile.jpg";
 
 export default function EditUserProfile() {
   const [previewProfile, setPreviewProfile] = useState("");
@@ -44,14 +45,19 @@ export default function EditUserProfile() {
 
   return (
     <div className="d-flex mb-3">
-      <img
-        src={
-          previewProfile ||
-          `http://localhost:5000/${userProfile || "default.jpg"}`
-        }
-        className="rounded-circle avatar-lg me-2"
-        alt="user avatar"
-      />
+      {userProfile === null ? (
+        <img
+          src={defaultProfile}
+          className="rounded-circle avatar-lg me-2"
+          alt="user avatar"
+        />
+      ) : (
+        <img
+          src={`http://localhost:5000/${userProfile}` || previewProfile}
+          className="rounded-circle avatar-lg me-2"
+          alt="user avatar"
+        />
+      )}
       <div className="ms-auto mt-xl-2 mt-lg-0 me-lg-2">
         <form onSubmit={formik.handleSubmit}>
           <input
