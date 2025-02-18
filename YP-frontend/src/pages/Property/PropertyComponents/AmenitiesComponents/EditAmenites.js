@@ -57,23 +57,25 @@ export default function EditAmenities() {
             });
           }
 
-          filteredAmenities[0]?.selectedAmenities[0].Mandatory.map((item) => {
-            Object.entries(item).forEach(([key, value]) => {
-              if (key === "Parking") {
-                setParkingType(value);
-              }
-            });
-          });
-
-          filteredAmenities[0]?.selectedAmenities[0]["Basic Facilities"]?.map(
+          filteredAmenities[0]?.selectedAmenities[0].Mandatory.forEach(
             (item) => {
               Object.entries(item).forEach(([key, value]) => {
-                if (key === "WiFi") {
-                  setWifiType(value);
+                if (key === "Parking") {
+                  setParkingType(value);
                 }
               });
             }
           );
+
+          filteredAmenities[0]?.selectedAmenities[0][
+            "Basic Facilities"
+          ]?.forEach((item) => {
+            Object.entries(item).forEach(([key, value]) => {
+              if (key === "WiFi") {
+                setWifiType(value);
+              }
+            });
+          });
         }
       } catch (error) {
         console.log(error.message);

@@ -36,8 +36,16 @@ export const addCourse = async (req, res) => {
       description,
     } = req.body;
 
-    const course_image = req?.files["image"]?.[0]?.path;
-    const course_original_image = req?.files["image"]?.[0]?.originalPath;
+    let course_image = req?.files["image"]?.[0]?.path;
+    let course_original_image = req?.files["image"]?.[0]?.originalPath;
+
+    console.log(course_image);
+
+    if (!course_image) {
+      course_image = "media/course/defaultcourse-compressed.webp";
+      course_original_image = "media/course/defaultcourse.jpg";
+    }
+
     const courseSlug = course_name?.replace(/ /g, "-").toLowerCase();
     const kebabCase = property_name?.replace(/ /g, "-").toLowerCase();
     const course = await Course.findOne().sort({ _id: -1 }).limit(1);

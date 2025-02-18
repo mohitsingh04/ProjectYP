@@ -68,8 +68,6 @@ export const updateAmenities = async (req, res) => {
 
     const { propertyId, selectedAmenities } = req.body;
 
-    console.log(selectedAmenities, "y");
-
     const updatedAmenities = await Amenities.findOneAndUpdate(
       { uniqueId },
       {

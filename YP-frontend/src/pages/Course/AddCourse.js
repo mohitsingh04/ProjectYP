@@ -38,7 +38,7 @@ export default function AddCourse() {
     course_type: Yup.string().required("Course type is required."),
     course_name: Yup.string().required("Course full name is required."),
     course_short_name: Yup.string().required("Course short name is required."),
-    image: Yup.mixed().required("Course image is required."),
+    image: Yup.mixed(),
     duration_value: Yup.string().required("Course duration is required."),
     duration_unit: Yup.string().required("Course duration unit is required."),
     course_level: Yup.string().required("Course level is required."),
