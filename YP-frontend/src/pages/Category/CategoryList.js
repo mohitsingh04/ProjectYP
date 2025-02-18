@@ -130,7 +130,7 @@ export default function CategoryList() {
             <button
               data-bs-toggle="tooltip"
               title="View"
-              onClick={() => viewCategory(row.uniqueId)}
+              onClick={() => viewCategory(row._id)}
             >
               <i className="fe fe-eye"></i>
             </button>
@@ -143,7 +143,7 @@ export default function CategoryList() {
             <button
               data-bs-toggle="tooltip"
               title="Edit"
-              onClick={() => editCategory(row.uniqueId)}
+              onClick={() => editCategory(row._id)}
             >
               <i className="fe fe-edit"></i>
             </button>
@@ -156,7 +156,7 @@ export default function CategoryList() {
             <button
               data-bs-toggle="tooltip"
               title="Delete"
-              onClick={() => deleteCategory(row.uniqueId)}
+              onClick={() => deleteCategory(row._id)}
             >
               <i className="fe fe-trash"></i>
             </button>

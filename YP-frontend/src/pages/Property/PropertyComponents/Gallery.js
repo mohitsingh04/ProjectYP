@@ -10,21 +10,31 @@ import EditGallery from "./GalleryComponents/EditGallery";
 export default function Gallery() {
   const [open, setOpen] = useState(false);
   const [toggleGalleryPage, setToggleGalleryPage] = useState(true);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [gallery, setGallery] = useState([]);
   const [galleryUniqueId, setGalleryUniqueId] = useState("");
+  const [property, setProperty] = useState("");
+
+  const fetchProperty = useCallback(async () => {
+    const response = await API.get(`/property/${objectId}`);
+    setProperty(response.data);
+  }, [objectId]);
+
+  useEffect(() => {
+    fetchProperty();
+  }, [fetchProperty]);
 
   const fetchGallery = useCallback(async () => {
     try {
       const response = await API.get("/gallery");
       const filteredGallery = response.data.filter(
-        (gallery) => gallery.propertyId === Number(uniqueId)
+        (gallery) => gallery.propertyId === Number(property?.uniqueId)
       );
       setGallery(filteredGallery);
     } catch (error) {
       console.error("Error fetching gallery:", error);
     }
-  }, [uniqueId]);
+  }, [property]);
 
   useEffect(() => {
     fetchGallery();
@@ -174,7 +184,7 @@ export default function Gallery() {
               </div>
             </Card.Header>
             <Card.Body>
-              <AddGallery getGallery={fetchGallery} />
+              <AddGallery getGallery={fetchGallery} property={property} />
             </Card.Body>
           </Card>
         </>

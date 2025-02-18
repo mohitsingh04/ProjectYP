@@ -11,7 +11,7 @@ import defaultFeature from "../../../Images/defaultPropertyFeature.jpg";
 
 export default function PropertyImages() {
   const dispatch = useDispatch();
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [previewIcon, setPreviewIcon] = useState("");
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
@@ -20,11 +20,11 @@ export default function PropertyImages() {
 
   const getProperty = useCallback(() => {
     dispatch(showLoading());
-    API.get(`/property/${uniqueId}`).then(({ data }) => {
+    API.get(`/property/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   useEffect(() => {
     getProperty();
@@ -32,8 +32,8 @@ export default function PropertyImages() {
 
   useEffect(() => {
     if (property) {
-      setIconImage(property.property_icon[0]);
-      setFeatureImage(property.featured_image[0]);
+      setIconImage(property?.property_icon?.[0]);
+      setFeatureImage(property?.featured_image?.[0]);
     }
   }, [property]);
 
@@ -78,7 +78,7 @@ export default function PropertyImages() {
           formData.append(value, values[value]);
         }
         dispatch(showLoading());
-        API.patch(`/property/images/${uniqueId}`, formData).then((response) => {
+        API.patch(`/property/images/${objectId}`, formData).then((response) => {
           dispatch(hideLoading());
           if (response.data.message) {
             toast.success(response.data.message);

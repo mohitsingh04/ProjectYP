@@ -14,8 +14,8 @@ const amenitiesData = {
   "Food and Drink": ["Restaurant", "Cafe"],
 };
 
-export default function EditAmenities() {
-  const { uniqueId } = useParams();
+export default function EditAmenities({ property }) {
+  const { objectId } = useParams();
   const [selectedCategory, setSelectedCategory] = useState("Mandatory");
   const [parkingType, setParkingType] = useState("");
   const [wifiType, setWifiType] = useState("");
@@ -27,7 +27,7 @@ export default function EditAmenities() {
       try {
         const response = await API.get(`/amenities`);
         const filteredAmenities = response.data.filter(
-          (amenities) => amenities.propertyId === Number(uniqueId)
+          (amenities) => amenities.propertyId === Number(property?.uniqueId)
         );
 
         setAmenitiesListData(filteredAmenities);
@@ -83,7 +83,7 @@ export default function EditAmenities() {
     };
 
     fetchAmenitiesData();
-  }, [uniqueId]);
+  }, [property]);
 
   const [amenities, setAmenities] = useState(() =>
     Object.fromEntries(
@@ -133,7 +133,7 @@ export default function EditAmenities() {
 
   const formik = useFormik({
     initialValues: {
-      propertyId: uniqueId || "",
+      propertyId: property?.uniqueId || "",
     },
     onSubmit: async (values) => {
       if (isSubmitting) return;

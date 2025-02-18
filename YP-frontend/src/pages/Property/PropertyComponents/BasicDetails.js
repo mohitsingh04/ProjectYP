@@ -12,17 +12,17 @@ import PropertyImages from "./PropertyImages";
 export default function BasicDetails() {
   const dispatch = useDispatch();
   const editorRef = useRef(null);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [description, setDescription] = useState("");
 
   const getProperty = useCallback(() => {
     dispatch(showLoading());
-    API.get(`/property/${uniqueId}`).then(({ data }) => {
+    API.get(`/property/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   useEffect(() => {
     getProperty();
@@ -98,7 +98,7 @@ export default function BasicDetails() {
         property_description: description || property.property_description,
       };
       dispatch(showLoading());
-      API.patch(`/property/${uniqueId}`, values).then((response) => {
+      API.patch(`/property/${objectId}`, values).then((response) => {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);

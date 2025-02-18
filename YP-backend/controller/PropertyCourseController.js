@@ -12,8 +12,8 @@ export const getPropertyCourse = async (req, res) => {
 
 export const getPropertyCourseById = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const propertyCourse = await PropertyCourse.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const propertyCourse = await PropertyCourse.findOne({ _id: objectId });
     return res.status(200).json(propertyCourse);
   } catch (err) {
     res.send({ error: "Internal Server Error!" });
@@ -23,7 +23,7 @@ export const getPropertyCourseById = async (req, res) => {
 
 export const updatePropertyCourse = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
+    const objectId = req.params.objectId;
     const {
       course_name,
       course_type,
@@ -43,7 +43,7 @@ export const updatePropertyCourse = async (req, res) => {
     }
 
     await PropertyCourse.findOneAndUpdate(
-      { uniqueId: uniqueId },
+      { _id: objectId },
       {
         $set: {
           course_type,

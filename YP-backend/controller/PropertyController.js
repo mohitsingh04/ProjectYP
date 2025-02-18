@@ -23,8 +23,8 @@ export const getProperty = async (req, res) => {
 
 export const getPropertyById = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const property = await Property.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const property = await Property.findOne({ _id: objectId });
     return res.status(200).json(property);
   } catch (err) {
     console.log(err.message);
@@ -123,7 +123,7 @@ export const addProperty = async (req, res) => {
 
 export const updateProperty = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
+    const objectId = req.params.objectId;
     const {
       property_name,
       property_email,
@@ -150,7 +150,7 @@ export const updateProperty = async (req, res) => {
     const property = await Property.findOne({ property_name: property_name });
     if (property) {
       await Property.findOneAndUpdate(
-        { uniqueId: uniqueId },
+        { _id: objectId },
         {
           $set: {
             property_name,
@@ -194,18 +194,18 @@ export const updateProperty = async (req, res) => {
 
 export const deleteProperty = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const property = await Property.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const property = await Property.findOne({ _id: objectId });
     if (property) {
-      await Property.findOneAndDelete({ uniqueId: uniqueId });
-      await Teachers.deleteMany({ property_id: uniqueId });
-      await Gallery.deleteMany({ propertyId: uniqueId });
-      await Review.deleteMany({ property_id: uniqueId });
-      await PropertyCourse.deleteMany({ property_id: uniqueId });
-      await Seo.deleteMany({ property_id: uniqueId });
-      await Faqs.deleteMany({ property_id: uniqueId });
-      await Achievements.deleteMany({ property_id: uniqueId });
-      await BusinessHour.deleteMany({ property_id: uniqueId });
+      await Property.findOneAndDelete({ _id: objectId });
+      await Teachers.deleteMany({ property_id: property.uniqueId });
+      await Gallery.deleteMany({ propertyId: property.uniqueId });
+      await Review.deleteMany({ property_id: property.uniqueId });
+      await PropertyCourse.deleteMany({ property_id: property.uniqueId });
+      await Seo.deleteMany({ property_id: property.uniqueId });
+      await Faqs.deleteMany({ property_id: property.uniqueId });
+      await Achievements.deleteMany({ property_id: property.uniqueId });
+      await BusinessHour.deleteMany({ property_id: property.uniqueId });
 
       res.send({ message: "Property Deleted." });
     }
@@ -217,10 +217,10 @@ export const deleteProperty = async (req, res) => {
 
 export const updatePropertyImages = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
+    const objectId = req.params.objectId;
     const { property_name } = req.body;
     const iconFile = req.files["property_icon"];
-    const property = await Property.findOne({ uniqueId: uniqueId });
+    const property = await Property.findOne({ _id: objectId });
 
     const propertyIcon = iconFile
       ? req?.files["property_icon"]?.[0]?.filename
@@ -244,7 +244,7 @@ export const updatePropertyImages = async (req, res) => {
 
     if (property) {
       await Property.findOneAndUpdate(
-        { uniqueId: uniqueId },
+        { _id: objectId },
         {
           $set: {
             property_icon: [propertyIcon, orignal_property_icon],

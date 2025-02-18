@@ -37,15 +37,15 @@ export default function StatusList() {
     getStatus();
   }, [getStatus]);
 
-  const viewStatus = (uniqueId) => {
-    navigate("/dashboard/status/view/" + uniqueId);
+  const viewStatus = (objectId) => {
+    navigate("/dashboard/status/view/" + objectId);
   };
 
-  const editStatus = (uniqueId) => {
-    navigate("/dashboard/status/edit/" + uniqueId);
+  const editStatus = (objectId) => {
+    navigate("/dashboard/status/edit/" + objectId);
   };
 
-  const deleteStatus = (uniqueId) => {
+  const deleteStatus = (objectId) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -58,7 +58,7 @@ export default function StatusList() {
       if (result.isConfirmed) {
         try {
           dispatch(showLoading());
-          const response = await API.delete(`/status/${uniqueId}`);
+          const response = await API.delete(`/status/${objectId}`);
           toast.success(response.data.message);
           getStatus();
         } catch (error) {
@@ -94,7 +94,7 @@ export default function StatusList() {
             <button
               data-bs-toggle="tooltip"
               title="View"
-              onClick={() => viewStatus(row.uniqueId)}
+              onClick={() => viewStatus(row._id)}
             >
               <i className="fe fe-eye"></i>
             </button>
@@ -105,7 +105,7 @@ export default function StatusList() {
             <button
               data-bs-toggle="tooltip"
               title="Edit"
-              onClick={() => editStatus(row.uniqueId)}
+              onClick={() => editStatus(row._id)}
             >
               <i className="fe fe-edit"></i>
             </button>
@@ -116,7 +116,7 @@ export default function StatusList() {
             <button
               data-bs-toggle="tooltip"
               title="Delete"
-              onClick={() => deleteStatus(row.uniqueId)}
+              onClick={() => deleteStatus(row._id)}
             >
               <i className="fe fe-trash-2"></i>
             </button>

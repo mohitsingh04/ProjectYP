@@ -19,7 +19,7 @@ export default function Courses() {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const { User } = DataRequest();
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [courses, setCourses] = useState([]);
   const [courseTypes, setCourseTypes] = useState([]);
   const [selectedCourse, setSelectedCourse] = useState();
@@ -31,22 +31,22 @@ export default function Courses() {
 
   const getProperty = useCallback(() => {
     dispatch(showLoading());
-    API.get(`/property/${uniqueId}`).then(({ data }) => {
+    API.get(`/property/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const getPropertyCourse = useCallback(() => {
     API.get("/property-course").then(({ data }) => {
       setPropertyCourse(data);
       console.log(
         data.filter(
-          (propertyCourse) => propertyCourse?.property_id === uniqueId
+          (propertyCourse) => propertyCourse?.property_id === property?.uniqueId
         )
       );
     });
-  }, [uniqueId]);
+  }, [property]);
 
   const getCourse = useCallback(() => {
     API.get("/course").then(({ data }) => {
@@ -64,9 +64,12 @@ export default function Courses() {
 
   useEffect(() => {
     getProperty();
+  }, [getProperty]);
+
+  useEffect(() => {
     getPropertyCourse();
     getCourse();
-  }, [getProperty, getCourse, getPropertyCourse]);
+  }, [getCourse, getPropertyCourse]);
 
   const filteredCourses = courses.filter(
     (course) => course.course_name === selectedCourse
@@ -214,7 +217,7 @@ export default function Courses() {
             data-bs-toggle="tooltip"
             title="View"
             onClick={() =>
-              navigate(`/dashboard/view/course/ddd/${row.uniqueId}`)
+              navigate(`/dashboard/view/course/${row.property_name}/${row._id}`)
             }
           >
             <i className="fe fe-eye"></i>
@@ -223,7 +226,7 @@ export default function Courses() {
             data-bs-toggle="tooltip"
             title="Edit"
             onClick={() =>
-              navigate(`/dashboard/edit/course/ddd/${row.uniqueId}`)
+              navigate(`/dashboard/edit/course/${row.property_name}/${row._id}`)
             }
           >
             <i className="fe fe-edit"></i>

@@ -12,8 +12,8 @@ export const getCourse = async (req, res) => {
 
 export const getCourseById = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const course = await Course.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const course = await Course.findOne({ _id: objectId });
     return res.status(200).json(course);
   } catch (err) {
     console.log(err.message);
@@ -85,7 +85,7 @@ export const updateCourse = async (req, res) => {
       description,
       status,
     } = req.body;
-    const course = await Course.findOne({ uniqueId: uniqueId });
+    const course = await Course.findOne({ _id: uniqueId });
 
     const imageFile = req.files["image"];
     let existImage = imageFile ? req?.files["image"][0]?.path : course.image[0];
@@ -97,7 +97,7 @@ export const updateCourse = async (req, res) => {
       return res.send({ error: "Course not found!" });
     } else {
       await Course.findOneAndUpdate(
-        { uniqueId: uniqueId },
+        { _id: uniqueId },
         {
           $set: {
             course_name,
@@ -129,9 +129,9 @@ export const updateCourse = async (req, res) => {
 export const deleteCourse = async (req, res) => {
   try {
     const uniqueId = req.params.uniqueId;
-    const course = await Course.findOne({ uniqueId: uniqueId });
+    const course = await Course.findOne({ _id: uniqueId });
     if (course) {
-      await Course.findOneAndDelete({ uniqueId: uniqueId })
+      await Course.findOneAndDelete({ _id: uniqueId })
         .then((result) => {
           return res.send({ message: "Course Deleted." });
         })

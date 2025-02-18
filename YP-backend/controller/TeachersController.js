@@ -12,8 +12,8 @@ export const getTeacher = async (req, res) => {
 
 export const getTeacherById = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const teachers = await Teachers.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const teachers = await Teachers.findOne({ _id: objectId });
     return res.status(200).json(teachers);
   } catch (err) {
     console.log(err.message);
@@ -60,18 +60,18 @@ export const addTeacher = async (req, res) => {
 
 export const updateTeacher = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
+    const objectId = req.params.objectId;
     const { teacher_name, designation, experience, status } = req.body;
     const profileFile = req.files["profile"];
     const profile = req?.files["profile"]?.[0]?.path;
     const originalProfile = req?.files["profile"]?.[0]?.originalPath;
 
-    const teacher = await Teachers.findOne({ uniqueId: uniqueId });
+    const teacher = await Teachers.findOne({ _id: objectId });
     if (!teacher) {
       return res.send({ error: "Teacher not found!" });
     } else {
       await Teachers.findOneAndUpdate(
-        { uniqueId: uniqueId },
+        { _id: objectId },
         {
           $set: {
             teacher_name,
@@ -98,10 +98,10 @@ export const updateTeacher = async (req, res) => {
 
 export const deleteTeacher = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const teacher = await Teachers.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const teacher = await Teachers.findOne({ _id: objectId });
     if (teacher) {
-      await Teachers.findOneAndDelete({ uniqueId: uniqueId })
+      await Teachers.findOneAndDelete({ _id: objectId })
         .then((result) => {
           return res.send({ message: "Teacher Deleted." });
         })

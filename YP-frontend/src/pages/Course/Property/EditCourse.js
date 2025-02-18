@@ -13,18 +13,18 @@ export default function EditPropertyCourse() {
   const editorRef = useRef(null);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [propertyCourse, setPropertyCourse] = useState("");
   const [courseTypes, setCourseTypes] = useState([]);
   const [description, setDescription] = useState();
 
   const getPropertyCourse = useCallback(() => {
     dispatch(showLoading());
-    API.get(`/property-course/${uniqueId}`).then(({ data }) => {
+    API.get(`/property-course/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
       setPropertyCourse(data);
     });
-  }, [uniqueId, dispatch]);
+  }, [objectId, dispatch]);
 
   useEffect(() => {
     getPropertyCourse();
@@ -88,11 +88,13 @@ export default function EditPropertyCourse() {
         description: description,
       };
       dispatch(showLoading());
-      API.patch(`/property-course/${uniqueId}`, data).then((response) => {
+      API.patch(`/property-course/${objectId}`, data).then((response) => {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
-          navigate(`/dashboard/view/course/ddd/${uniqueId}`);
+          navigate(
+            `/dashboard/view/course/${propertyCourse?.property_name}/${objectId}`
+          );
           window.location.reload();
         } else if (response.data.error) {
           toast.error(response.data.error);

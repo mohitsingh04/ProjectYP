@@ -9,7 +9,7 @@ import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function OtherDetails() {
   const dispatch = useDispatch();
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [status, setStatus] = useState([]);
   const [category, setCategory] = useState([]);
   const [property, setProperty] = useState("");
@@ -18,13 +18,13 @@ export default function OtherDetails() {
 
   const getProperty = useCallback(async () => {
     dispatch(showLoading());
-    await API.get(`/property/${uniqueId}`).then(({ data }) => {
+    await API.get(`/property/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
       setProperty(data);
       setActiveCategory(data?.category);
       setEstablishmentYear(data?.est_year);
     });
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const getCategory = useCallback(async () => {
     dispatch(showLoading());

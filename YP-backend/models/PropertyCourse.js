@@ -5,7 +5,7 @@ const PropertyCourseSchema = new mongoose.Schema({
     type: Number,
   },
   image: {
-    type: String,
+    type: Array,
   },
   uniqueId: {
     type: Number,

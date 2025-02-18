@@ -17,6 +17,7 @@ export const getUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
   try {
+    const { objectId } = req.params;
     const {
       uniqueId,
       name,
@@ -31,7 +32,7 @@ export const updateUser = async (req, res) => {
       permission,
     } = req.body;
 
-    const user = await User.findOne({ uniqueId: uniqueId });
+    const user = await User.findOne({ _id: objectId });
     const profileFile = req.files
       ? req.files.profile[0].path
       : user?.profile[0];
@@ -41,7 +42,7 @@ export const updateUser = async (req, res) => {
       : user?.profile[1];
 
     const updatedUser = await User.findOneAndUpdate(
-      { uniqueId: uniqueId },
+      { _id: objectId },
       {
         $set: {
           name,
@@ -70,21 +71,11 @@ export const updateUser = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
   try {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
-
-    const uniqueId = req.params.uniqueId;
-    const user = await User.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const user = await User.findOne({ _id: objectId });
     if (user) {
-      await User.findOneAndDelete({ uniqueId: uniqueId })
+      await User.findOneAndDelete({ _id: objectId })
         .then((result) => {
-          const delFile = path.join(__dirname, "../images");
-          const DelFilePath = path.join(delFile, user.profile);
-          fs.unlink(DelFilePath, (err) => {
-            if (err) {
-              throw err;
-            }
-          });
           return res.send({ message: "User Deleted." });
         })
         .catch((err) => {
@@ -102,8 +93,8 @@ export const deleteUser = async (req, res) => {
 
 export const getUserById = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const user = await User.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const user = await User.findOne({ _id: objectId });
     return res.status(200).json(user);
   } catch (err) {
     console.log(err.message);

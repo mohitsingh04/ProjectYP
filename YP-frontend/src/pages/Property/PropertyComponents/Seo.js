@@ -14,7 +14,7 @@ export default function Seo() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const editorRef = useRef(null);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [seo, setSeo] = useState([]);
   const [description, setDescription] = useState("");
@@ -22,7 +22,7 @@ export default function Seo() {
   useEffect(() => {
     const getProperty = () => {
       dispatch(showLoading());
-      API.get(`/property/${uniqueId}`).then(({ data }) => {
+      API.get(`/property/${objectId}`).then(({ data }) => {
         dispatch(hideLoading());
         setProperty(data);
       });
@@ -31,7 +31,7 @@ export default function Seo() {
       dispatch(showLoading());
       API.get(`/seo`).then(({ data }) => {
         dispatch(hideLoading());
-        setSeo(data.filter((seo) => seo.property_id == uniqueId));
+        setSeo(data.filter((seo) => seo.property_id === property?.uniqueId));
       });
     };
     getProperty();
@@ -161,7 +161,7 @@ export default function Seo() {
               </div>
             </Card.Header>
             <Card.Body className="bg-white">
-              {seo.length != 0 ? (
+              {seo.length !== 0 ? (
                 <>
                   <Table className="table row table-borderless">
                     <tbody className="col-lg-12 col-xl-6 p-0">

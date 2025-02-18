@@ -11,7 +11,7 @@ export default function ViewUser() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [user, setUser] = useState("");
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
 
@@ -22,7 +22,7 @@ export default function ViewUser() {
   useEffect(() => {
     try {
       dispatch(showLoading());
-      API.get(`/user/${uniqueId}`).then(({ data }) => {
+      API.get(`/user/${objectId}`).then(({ data }) => {
         setUser(data);
         dispatch(hideLoading());
       });
@@ -30,12 +30,7 @@ export default function ViewUser() {
       dispatch(hideLoading());
       toast.error(err.message);
     }
-  }, [dispatch, uniqueId]);
-
-  // const [isExpanded, setIsExpended] = useState(false);
-  // const toggleReadMore = () => {
-  //   setIsExpended(!isExpanded);
-  // };
+  }, [dispatch, objectId]);
 
   const hasPermission = authPermissions?.some(
     (item) => item.value === "Read User"
@@ -132,7 +127,7 @@ export default function ViewUser() {
                     <Col lg={12} md={12} xl={6}>
                       <div className="text-xl-right mt-4 mt-xl-0">
                         <Link
-                          to={`/dashboard/user/edit/${uniqueId}`}
+                          to={`/dashboard/user/edit/${objectId}`}
                           className="btn btn-primary me-1"
                         >
                           Edit User

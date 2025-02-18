@@ -8,21 +8,21 @@ import { toast } from "react-toastify";
 export default function Achievements() {
   const [isUpdating, setIsUpdating] = useState(false);
   const [images, setImages] = useState([]);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [oldAchievements, setOldAchievements] = useState([]);
 
   const getProperty = useCallback(async () => {
-    const response = await API.get(`/property/${uniqueId}`);
+    const response = await API.get(`/property/${objectId}`);
     setProperty(response.data);
-  }, [uniqueId]);
+  }, [objectId]);
 
   const getAchievements = useCallback(async () => {
-    const response = await API.get(`/achievements/${uniqueId}`);
+    const response = await API.get(`/achievements/${property?.uniqueId}`);
     if (response?.data?.achievements) {
       setOldAchievements(response.data.achievements);
     }
-  }, [uniqueId]);
+  }, [property]);
 
   useEffect(() => {
     getProperty();

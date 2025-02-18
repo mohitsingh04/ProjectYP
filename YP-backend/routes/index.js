@@ -139,24 +139,33 @@ router.get("/profile", profile);
 // User Route
 const profileUpload = upload.fields([{ name: "profile", maxCount: 1 }]);
 router.get("/users", getUser);
-router.patch("/user/:uniqueId", profileUpload, processImage, updateUser);
+router.patch("/user/:objectId", profileUpload, processImage, updateUser);
 router.patch(
-  "/user/profile/:uniqueId",
+  "/user/profile/:objectId",
   profileUpload,
   processImage,
   UpdateUserProfile
 );
 router.post("/user/new", addNewUser);
-router.delete("/user/:uniqueId", deleteUser);
+router.delete("/user/:objectId", deleteUser);
 router.delete("/user/profile/:uniqueId", deleteUserProfile);
-router.get("/user/:uniqueId", getUserById);
+router.get("/user/:objectId", getUserById);
 router.get("/permissions", getPermissions);
+
 // Status Route
 router.get("/status", getStatus);
 router.post("/status", addStatus);
-router.patch("/status/:uniqueId", updateStatus);
-router.delete("/status/:uniqueId", deleteStatus);
-router.get("/status/:uniqueId", getStatusById);
+router.patch("/status/:objectId", updateStatus);
+router.delete("/status/:objectId", deleteStatus);
+router.get("/status/:objectId", getStatusById);
+
+// Course Route
+const courseUpload = upload.fields([{ name: "image", maxCount: 1 }]);
+router.get("/course", getCourse);
+router.post("/course", courseUpload, processImage, addCourse);
+router.patch("/course/:uniqueId", courseUpload, processImage, updateCourse);
+router.delete("/course/:uniqueId", deleteCourse);
+router.get("/course/:objectId", getCourseById);
 
 // Category Route
 const categoryUpload = upload.fields([
@@ -166,13 +175,13 @@ const categoryUpload = upload.fields([
 router.get("/category", getCategory);
 router.post("/category", categoryUpload, processImage, addCategory);
 router.patch(
-  "/category/:uniqueId",
+  "/category/:objectId",
   categoryUpload,
   processImage,
   updateCategory
 );
-router.delete("/category/:uniqueId", deleteCategory);
-router.get("/category/:uniqueId", getCategoryById);
+router.delete("/category/:objectId", deleteCategory);
+router.get("/category/:objectId", getCategoryById);
 
 // Property Route
 
@@ -183,28 +192,28 @@ const propertyUpload = upload.fields([
 router.get("/property", getProperty);
 router.post("/property", propertyUpload, processImage, addProperty);
 router.patch(
-  "/property/:uniqueId",
+  "/property/:objectId",
   propertyUpload,
   processImage,
   updateProperty
 );
 router.patch(
-  "/property/images/:uniqueId",
+  "/property/images/:objectId",
   propertyUpload,
   processImage,
   updatePropertyImages
 );
-router.delete("/property/:uniqueId", deleteProperty);
-router.get("/property/:uniqueId", getPropertyById);
+router.delete("/property/:objectId", deleteProperty);
+router.get("/property/:objectId", getPropertyById);
 router.get("/property/:property_slug", getPropertyBySlug);
 
 // Teacher Route
 const teacherProfile = upload.fields([{ name: "profile", maxCount: 1 }]);
 router.get("/teacher", getTeacher);
 router.post("/teacher", teacherProfile, processImage, addTeacher);
-router.patch("/teacher/:uniqueId", teacherProfile, processImage, updateTeacher);
-router.delete("/teacher/:uniqueId", deleteTeacher);
-router.get("/teacher/:uniqueId", getTeacherById);
+router.patch("/teacher/:objectId", teacherProfile, processImage, updateTeacher);
+router.delete("/teacher/:objectId", deleteTeacher);
+router.get("/teacher/:objectId", getTeacherById);
 
 // Review Route
 router.get("/review", getReview);
@@ -214,21 +223,6 @@ router.delete("/review/:uniqueId", deleteReview);
 router.get("/review/:uniqueId", getReviewById);
 router.get("/review/property/:property_id", getReviewByPropertyId);
 
-// Faqs Route
-router.get("/faqs", getFaq);
-router.post("/faqs", addFaq);
-router.patch("/faqs/:uniqueId", updateFaq);
-router.delete("/faqs/:uniqueId", deleteFaq);
-router.get("/faqs/:uniqueId", getFaqById);
-
-// Course Route
-const courseUpload = upload.fields([{ name: "image", maxCount: 1 }]);
-router.get("/course", getCourse);
-router.post("/course", courseUpload, processImage, addCourse);
-router.patch("/course/:uniqueId", courseUpload, processImage, updateCourse);
-router.delete("/course/:uniqueId", deleteCourse);
-router.get("/course/:uniqueId", getCourseById);
-
 // Gallery Route
 const gallery = upload.fields([{ name: "gallery", maxCount: 4 }]);
 const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 4 }]);
@@ -237,6 +231,13 @@ router.post("/gallery", gallery, processImage, addGallery);
 router.patch("/gallery/:uniqueId", galleryUpdate, processImage, updateGallery);
 router.delete("/gallery/:uniqueId", deleteGallery);
 router.get("/gallery/:uniqueId", gallery, getGalleryById);
+
+// Faqs Route
+router.get("/faqs", getFaq);
+router.post("/faqs", addFaq);
+router.patch("/faqs/:objectId", updateFaq);
+router.delete("/faqs/:uniqueId", deleteFaq);
+router.get("/faqs/:objectId", getFaqById);
 
 // Seo Route
 router.get("/seo", getSeo);
@@ -252,8 +253,8 @@ router.post("/search", addSearch);
 // Property Course
 router.get("/property-course", getPropertyCourse);
 router.post("/property-course", courseUpload, addPropertyCourse);
-router.patch("/property-course/:uniqueId", courseUpload, updatePropertyCourse);
-router.get("/property-course/:uniqueId", getPropertyCourseById);
+router.patch("/property-course/:objectId", courseUpload, updatePropertyCourse);
+router.get("/property-course/:objectId", getPropertyCourseById);
 router.delete("/property-course/:uniqueId", deletePropertyCourse);
 
 // Business Hours

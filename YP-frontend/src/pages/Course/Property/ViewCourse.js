@@ -9,15 +9,15 @@ export default function ViewPropertyCourse() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [course, setCourse] = useState("");
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
 
   useEffect(() => {
     dispatch(showLoading());
-    API.get(`/property-course/${uniqueId}`).then(({ data }) => {
+    API.get(`/property-course/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
       setCourse(data);
     });
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   return (
     <>
@@ -42,7 +42,7 @@ export default function ViewPropertyCourse() {
                 className="breadcrumb-item active breadcrumds"
                 aria-current="page"
               >
-                {course.uniqueId}
+                {course.course_name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -70,7 +70,7 @@ export default function ViewPropertyCourse() {
                   <Table className="table row table-borderless">
                     <tbody className="p-0">
                       <img
-                        src={`http://localhost:5000/images/${course.image}`}
+                        src={`http://localhost:5000/${course?.image?.[0]}`}
                         alt={course.course_name}
                         className="img-fluid w-100"
                       />

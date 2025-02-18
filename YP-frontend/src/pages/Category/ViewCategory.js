@@ -11,7 +11,7 @@ import defaultFeature from "../../Images/defaultcategoryfeature-compressed.webp"
 export default function ViewCategory() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [category, setCategory] = useState("");
   const [categoryIcon, setCategoryIcon] = useState("");
   const [featureImage, setFeatureImage] = useState("");
@@ -25,7 +25,7 @@ export default function ViewCategory() {
   useEffect(() => {
     const getCategory = () => {
       dispatch(showLoading());
-      API.get(`/category/${uniqueId}`).then(({ data }) => {
+      API.get(`/category/${objectId}`).then(({ data }) => {
         dispatch(hideLoading());
         setCategory(data);
         setCategoryIcon(data?.category_icon[0]);
@@ -33,7 +33,7 @@ export default function ViewCategory() {
       });
     };
     getCategory();
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const [isExpanded, setIsExpended] = useState(false);
   const toggleReadMore = () => {

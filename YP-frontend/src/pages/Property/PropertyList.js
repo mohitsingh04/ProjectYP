@@ -39,11 +39,11 @@ export default function PropertyList() {
     getProperty();
   }, [getProperty]);
 
-  const viewProperty = (uniqueId) => {
-    navigate("/dashboard/property/view/" + uniqueId);
+  const viewProperty = (objectId) => {
+    navigate("/dashboard/property/view/" + objectId);
   };
 
-  const deleteProperty = (uniqueId) => {
+  const deleteProperty = (objectId) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -56,7 +56,7 @@ export default function PropertyList() {
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(showLoading());
-          API.delete(`/property/${uniqueId}`).then((response) => {
+          API.delete(`/property/${objectId}`).then((response) => {
             dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
@@ -127,7 +127,7 @@ export default function PropertyList() {
             <button
               data-bs-toggle="tooltip"
               title="View"
-              onClick={() => viewProperty(row.uniqueId)}
+              onClick={() => viewProperty(row._id)}
             >
               <i className="fe fe-eye"></i>
             </button>
@@ -138,7 +138,7 @@ export default function PropertyList() {
             <button
               data-bs-toggle="tooltip"
               title="Delete"
-              onClick={() => deleteProperty(row.uniqueId)}
+              onClick={() => deleteProperty(row._id)}
             >
               <i className="fe fe-trash"></i>
             </button>

@@ -14,7 +14,7 @@ export default function EditStatus() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const editorRef = useRef(null);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [status, setStatus] = useState([]);
   const [error, setError] = useState("");
   const [description, setDescription] = useState("");
@@ -27,12 +27,11 @@ export default function EditStatus() {
 
   useEffect(() => {
     dispatch(showLoading());
-    API.get(`/status/${uniqueId}`).then(({ data }) => {
+    API.get(`/status/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
-      // setStatus(data.filter(status => status.uniqueId == uniqueId))
       setStatus(data);
     });
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const initialValues = {
     status_name: status.name || "",
@@ -47,7 +46,7 @@ export default function EditStatus() {
     try {
       values = { ...values, description: description || status.description };
       dispatch(showLoading());
-      API.patch(`/status/${uniqueId}`, values).then((response) => {
+      API.patch(`/status/${objectId}`, values).then((response) => {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
@@ -104,7 +103,7 @@ export default function EditStatus() {
               className="breadcrumb-item active breadcrumds"
               aria-current="page"
             >
-              {status.uniqueId}
+              {status.name}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>

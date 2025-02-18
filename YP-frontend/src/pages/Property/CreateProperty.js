@@ -350,6 +350,7 @@ export default function CreateProperty() {
                       <input
                         type="file"
                         name="property_icon"
+                        accept="image/jpeg, image/png"
                         id="property_icon"
                         className="form-control"
                         onChange={(e) => {

@@ -16,9 +16,8 @@ import Swal from "sweetalert2";
 import EditReview from "./ReviewComponents/EditReview";
 
 export default function Reviews() {
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [reviews, setReviews] = useState([]);
-  // const [searchParams, setSearchParams] = useSearchParams();
   const [property, setProperty] = useState("");
   const { User } = DataRequest();
   const dispatch = useDispatch();
@@ -26,11 +25,11 @@ export default function Reviews() {
 
   const getProperty = useCallback(() => {
     dispatch(showLoading());
-    API.get(`/property/${uniqueId}`).then(({ data }) => {
+    API.get(`/property/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
       setProperty(data);
     });
-  }, [uniqueId, dispatch]);
+  }, [objectId, dispatch]);
 
   useEffect(() => {
     getProperty();
@@ -115,12 +114,12 @@ export default function Reviews() {
             dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
+              getReviews();
             } else if (response.data.error) {
               toast.success(response.data.error);
             }
           });
         }
-        getReviews();
       })
       .catch((error) => {
         dispatch(hideLoading());

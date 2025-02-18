@@ -9,16 +9,16 @@ import { toast } from "react-toastify";
 
 export default function EditTeacher() {
   const navigate = useNavigate();
-  const { property_name, uniqueId } = useParams();
+  const { property_name, objectId } = useParams();
   const [previewProfile, setPreviewProfile] = useState("");
   const [teacher, setTeacher] = useState("");
   const [status, setStatus] = useState([]);
 
   const getTeacher = useCallback(() => {
-    API.get(`/teacher/${uniqueId}`).then(({ data }) => {
+    API.get(`/teacher/${objectId}`).then(({ data }) => {
       setTeacher(data);
     });
-  }, [uniqueId]);
+  }, [objectId]);
 
   const getStatus = useCallback(() => {
     API.get(`/status`).then(({ data }) => {
@@ -59,10 +59,10 @@ export default function EditTeacher() {
       formData.append("profile", values.profile);
     }
 
-    API.patch(`/teacher/${uniqueId}`, formData).then((response) => {
+    API.patch(`/teacher/${objectId}`, formData).then((response) => {
       if (response.data.message) {
         toast.success(response.data.message);
-        navigate(`/dashboard/view/teacher/${property_name}/${uniqueId}`);
+        navigate(`/dashboard/view/teacher/${property_name}/${objectId}`);
       } else if (response.data.error) {
         toast.error(response.data.message);
       }
@@ -110,7 +110,7 @@ export default function EditTeacher() {
                 className="breadcrumb-item active breadcrumds"
                 aria-current="page"
               >
-                {teacher.uniqueId}
+                {teacher.teacher_name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

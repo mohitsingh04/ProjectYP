@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from "react";
+import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { Card } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { API } from "../../../context/Api";
@@ -6,16 +6,27 @@ import AddAmenities from "./AmenitiesComponents/AddAmenities";
 import EditAmenities from "./AmenitiesComponents/EditAmenites";
 
 export default function Amenities() {
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [toggleAmenitiesPage, setToggleAmenitiesPage] = useState(true);
   const [amenities, setAmenities] = useState([]);
+  const [property, setProperty] = useState("");
+
+  const fetchProperties = useCallback(async () => {
+    const response = await API.get(`/property/${objectId}`);
+    setProperty(response.data);
+  }, [objectId]);
+
+  useEffect(() => {
+    fetchProperties();
+  }, [fetchProperties]);
 
   useEffect(() => {
     const fetchAmenities = async () => {
       try {
         const response = await API.get("/amenities");
+        console.log(response);
         const filteredAmenities = response.data.filter(
-          (amenities) => amenities.propertyId === Number(uniqueId)
+          (amenities) => amenities.propertyId === Number(property?.uniqueId)
         );
         setAmenities(filteredAmenities);
       } catch (error) {
@@ -24,7 +35,7 @@ export default function Amenities() {
     };
 
     fetchAmenities();
-  }, [uniqueId]);
+  }, [property]);
 
   const handleHideAmenitiesPage = () => {
     setToggleAmenitiesPage(false);
@@ -102,10 +113,10 @@ export default function Amenities() {
                 )}
               </>
             ) : (
-              <EditAmenities />
+              <EditAmenities property={property} />
             )
           ) : (
-            <AddAmenities />
+            <AddAmenities property={property} />
           )}
         </Card.Body>
       </Card>

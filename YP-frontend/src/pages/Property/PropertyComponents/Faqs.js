@@ -14,32 +14,37 @@ import Swal from "sweetalert2";
 export default function Faqs() {
   const dispatch = useDispatch();
   const editorRef = useRef(null);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const { User } = DataRequest();
-  const [faqs, setFaqs] = useState([]);
   const [property, setProperty] = useState("");
+  const [faqs, setFaqs] = useState([]);
   const [answer, setAnswer] = useState("");
+
+  const getProperty = useCallback(() => {
+    dispatch(showLoading());
+    API.get(`/property/${objectId}`).then(({ data }) => {
+      dispatch(hideLoading());
+      setProperty(data);
+    });
+  }, [objectId, dispatch]);
+
+  useEffect(() => {
+    getProperty();
+  }, [getProperty]);
 
   const getFaqs = useCallback(() => {
     dispatch(showLoading());
     API.get("/faqs").then(({ data }) => {
       dispatch(hideLoading());
-      setFaqs(data.filter((faqs) => faqs.property_id === uniqueId));
+      setFaqs(
+        data.filter((faqs) => faqs.property_id === String(property?.uniqueId))
+      );
     });
-  }, [uniqueId, dispatch]);
-
-  const getProperty = useCallback(() => {
-    dispatch(showLoading());
-    API.get(`/property/${uniqueId}`).then(({ data }) => {
-      dispatch(hideLoading());
-      setProperty(data);
-    });
-  }, [uniqueId, dispatch]);
+  }, [property, dispatch]);
 
   useEffect(() => {
     getFaqs();
-    getProperty();
-  }, [getFaqs, getProperty]);
+  }, [getFaqs]);
 
   const initialValues = {
     question: "",
@@ -160,7 +165,7 @@ export default function Faqs() {
                         <div>
                           <span>
                             <Link
-                              to={`/dashboard/edit/faqs/${item.property_name}/${item.uniqueId}`}
+                              to={`/dashboard/edit/faqs/${item.property_name}/${item._id}`}
                             >
                               <button className="btn">
                                 <i className="fe fe-edit text-primary"></i>

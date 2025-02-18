@@ -10,14 +10,14 @@ import defaultProfile from "../../Images/DefaultProfile.jpg";
 export default function ViewTeacher() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { uniqueId } = useParams();
+  const { objectId, property_name } = useParams();
   const [teacher, setTeacher] = useState("");
 
   useEffect(() => {
     (async () => {
       try {
         dispatch(showLoading());
-        const response = await API.get(`/teacher/${uniqueId}`);
+        const response = await API.get(`/teacher/${objectId}`);
         setTeacher(response.data);
         dispatch(hideLoading());
       } catch (error) {
@@ -25,7 +25,7 @@ export default function ViewTeacher() {
         toast.error("Something went wrong!");
       }
     })();
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   return (
     <>
@@ -47,13 +47,13 @@ export default function ViewTeacher() {
                 className="breadcrumb-item breadcrumds"
                 aria-current="page"
               >
-                {teacher.property_name}
+                {property_name}
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className="breadcrumb-item active breadcrumds"
                 aria-current="page"
               >
-                {teacher.uniqueId}
+                {teacher?.teacher_name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

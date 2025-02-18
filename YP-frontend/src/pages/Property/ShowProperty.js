@@ -22,7 +22,7 @@ import defaultLogo from "../../Images/defaultPropertyLogo.jpeg";
 
 export default function ShowProperty() {
   const dispatch = useDispatch();
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [icon, setIcon] = useState("");
   const mainUser = DataRequest();
@@ -35,7 +35,7 @@ export default function ShowProperty() {
   const getProperty = useCallback(async () => {
     try {
       dispatch(showLoading());
-      const { data } = await API.get(`/property/${uniqueId}`);
+      const { data } = await API.get(`/property/${objectId}`);
       setProperty(data);
     } catch (err) {
       toast.error(err.message);
@@ -43,7 +43,7 @@ export default function ShowProperty() {
     } finally {
       dispatch(hideLoading());
     }
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   useEffect(() => {
     getProperty();

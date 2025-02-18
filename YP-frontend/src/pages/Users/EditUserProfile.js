@@ -10,14 +10,14 @@ export default function EditUserProfile() {
   const [previewProfile, setPreviewProfile] = useState("");
   const [user, setUser] = useState({});
   const [userProfile, setUserProfile] = useState("");
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
 
   useEffect(() => {
-    API.get(`/user/${uniqueId}`).then(({ data }) => {
+    API.get(`/user/${objectId}`).then(({ data }) => {
       setUser(data);
       setUserProfile(data?.profile[0]);
     });
-  }, [uniqueId]);
+  }, [objectId]);
 
   const validationSchema = Yup.object({
     profile: Yup.string().required("Profile is required"),
@@ -27,7 +27,7 @@ export default function EditUserProfile() {
     try {
       const formData = new FormData();
       formData.append("profile", values.profile);
-      const response = await API.patch(`/user/profile/${uniqueId}`, formData);
+      const response = await API.patch(`/user/profile/${objectId}`, formData);
       toast.success(response.data.message);
     } catch (error) {
       toast.error(error.response.data.error);

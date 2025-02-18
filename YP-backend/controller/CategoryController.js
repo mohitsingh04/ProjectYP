@@ -12,8 +12,8 @@ export const getCategory = async (req, res) => {
 
 export const getCategoryById = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const category = await Category.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const category = await Category.findOne({ _id: objectId });
     return res.status(200).json(category);
   } catch (err) {
     console.log(err.message);
@@ -60,7 +60,7 @@ export const addCategory = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
+    const objectId = req.params.objectId;
     const {
       userId,
       category_name,
@@ -68,8 +68,6 @@ export const updateCategory = async (req, res) => {
       category_description,
       status,
     } = req.body;
-
-    console.log(req.body);
 
     const category = await Category.findOne({ category_name: category_name });
 
@@ -95,7 +93,7 @@ export const updateCategory = async (req, res) => {
       return res.send({ error: "Category not found." });
     }
     await Category.findOneAndUpdate(
-      { uniqueId: uniqueId },
+      { _id: objectId },
       {
         $set: {
           userId,
@@ -123,10 +121,10 @@ export const updateCategory = async (req, res) => {
 
 export const deleteCategory = async (req, res) => {
   try {
-    const uniqueId = req.params.uniqueId;
-    const category = await Category.findOne({ uniqueId: uniqueId });
+    const objectId = req.params.objectId;
+    const category = await Category.findOne({ _id: objectId });
     if (category) {
-      await Category.findOneAndDelete({ uniqueId: uniqueId })
+      await Category.findOneAndDelete({ _id: objectId })
         .then((result) => {
           return res.send({ message: "Category Deleted." });
         })

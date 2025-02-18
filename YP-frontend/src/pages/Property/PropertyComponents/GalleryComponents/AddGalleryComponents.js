@@ -6,7 +6,7 @@ import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { API } from "../../../../context/Api";
 
-export default function AddGallery({ getGallery }) {
+export default function AddGallery({ getGallery, property }) {
   const [images, setImages] = useState([]);
   const { uniqueId } = useParams();
 
@@ -21,7 +21,7 @@ export default function AddGallery({ getGallery }) {
   }, []);
 
   const initialValues = {
-    propertyId: uniqueId || "",
+    propertyId: property?.uniqueId || "",
     title: "",
     gallery: [],
   };
@@ -36,8 +36,8 @@ export default function AddGallery({ getGallery }) {
   const handleSubmit = async (values) => {
     try {
       const formData = new FormData();
-      if (uniqueId) {
-        formData.append("propertyId", uniqueId);
+      if (property) {
+        formData.append("propertyId", property.uniqueId);
       }
       formData.append("title", values.title);
       values.gallery.forEach((image) => {

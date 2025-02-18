@@ -64,12 +64,12 @@ export default function UserList() {
             dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
+              getUser();
             } else if (response.data.error) {
               toast.success(response.data.error);
             }
           });
         }
-        getUser();
       })
       .catch((error) => {
         dispatch(hideLoading());
@@ -156,7 +156,7 @@ export default function UserList() {
             <button
               data-bs-toggle="tooltip"
               title="View"
-              onClick={() => viewUser(row.uniqueId)}
+              onClick={() => viewUser(row._id)}
             >
               <i className="fe fe-eye"></i>
             </button>
@@ -167,7 +167,7 @@ export default function UserList() {
             <button
               data-bs-toggle="tooltip"
               title="Edit"
-              onClick={() => editUser(row.uniqueId)}
+              onClick={() => editUser(row._id)}
             >
               <i className="fe fe-edit"></i>
             </button>
@@ -178,7 +178,7 @@ export default function UserList() {
             <button
               data-bs-toggle="tooltip"
               title="Delete"
-              onClick={() => deleteUser(row.uniqueId)}
+              onClick={() => deleteUser(row._id)}
             >
               <i className="fe fe-trash-2"></i>
             </button>

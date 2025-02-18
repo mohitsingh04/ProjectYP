@@ -14,8 +14,7 @@ const amenitiesData = {
   "Food and Drink": ["Restaurant", "Cafe"],
 };
 
-export default function AddAmenities() {
-  const { uniqueId } = useParams();
+export default function AddAmenities({ property }) {
   const [selectedCategory, setSelectedCategory] = useState("Mandatory");
   const [parkingType, setParkingType] = useState("");
   const [wifiType, setWifiType] = useState("");
@@ -69,7 +68,7 @@ export default function AddAmenities() {
 
   const formik = useFormik({
     initialValues: {
-      propertyId: uniqueId || "",
+      propertyId: property?.uniqueId || "",
     },
     onSubmit: async (values) => {
       if (isSubmitting) return;

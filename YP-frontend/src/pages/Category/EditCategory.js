@@ -16,7 +16,7 @@ export default function EditCategory() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const editorRef = useRef(null);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [error, setError] = useState("");
   const [status, setStatus] = useState([]);
   const [description, setDescription] = useState("");
@@ -36,7 +36,7 @@ export default function EditCategory() {
   useEffect(() => {
     const getCategory = () => {
       dispatch(showLoading());
-      API.get(`/category/${uniqueId}`).then(({ data }) => {
+      API.get(`/category/${objectId}`).then(({ data }) => {
         dispatch(hideLoading());
         setCategory(data);
         setCategoryIcon(data?.category_icon[0]);
@@ -60,7 +60,7 @@ export default function EditCategory() {
     getCategory();
     getCategories();
     getStatus();
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const initialValues = {
     category_name: category.category_name || "",
@@ -94,7 +94,7 @@ export default function EditCategory() {
           formData.append(value, values[value]);
         }
         dispatch(showLoading());
-        API.patch(`/category/${uniqueId}`, formData).then((response) => {
+        API.patch(`/category/${objectId}`, formData).then((response) => {
           dispatch(hideLoading());
           if (response.data.message) {
             toast.success(response.data.message);

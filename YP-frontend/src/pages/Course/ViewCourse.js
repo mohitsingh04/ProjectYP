@@ -12,7 +12,7 @@ export default function ViewCourse() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [course, setCourse] = useState("");
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [courseImage, setCourseImage] = useState("");
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
@@ -24,7 +24,7 @@ export default function ViewCourse() {
   useEffect(() => {
     try {
       dispatch(showLoading());
-      API.get(`/course/${uniqueId}`).then(({ data }) => {
+      API.get(`/course/${objectId}`).then(({ data }) => {
         dispatch(hideLoading());
         setCourse(data);
         setCourseImage(data.image[0]);
@@ -33,7 +33,7 @@ export default function ViewCourse() {
       dispatch(hideLoading());
       toast.error(err.message);
     }
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const [isExpanded, setIsExpended] = useState(false);
   const toggleReadMore = () => {
@@ -75,7 +75,7 @@ export default function ViewCourse() {
                 className="breadcrumb-item active breadcrumds"
                 aria-current="page"
               >
-                {course.uniqueId}
+                {course.course_name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

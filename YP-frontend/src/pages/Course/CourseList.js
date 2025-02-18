@@ -119,7 +119,7 @@ export default function CourseList() {
             <button
               data-bs-toggle="tooltip"
               title="View"
-              onClick={() => viewCourse(row.uniqueId)}
+              onClick={() => viewCourse(row._id)}
             >
               <i className="fe fe-eye"></i>
             </button>
@@ -130,7 +130,7 @@ export default function CourseList() {
             <button
               data-bs-toggle="tooltip"
               title="Edit"
-              onClick={() => editCourse(row.uniqueId)}
+              onClick={() => editCourse(row._id)}
             >
               <i className="fe fe-edit"></i>
             </button>
@@ -141,7 +141,7 @@ export default function CourseList() {
             <button
               data-bs-toggle="tooltip"
               title="Delete"
-              onClick={() => deleteCourse(row.uniqueId)}
+              onClick={() => deleteCourse(row._id)}
             >
               <i className="fe fe-trash-2"></i>
             </button>

@@ -14,7 +14,7 @@ export default function EditUser() {
   const [user, setUser] = useState("");
   const [status, setStatus] = useState([]);
 
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [permissionData, setPermissionData] = useState([]);
 
   const mainUser = DataRequest();
@@ -25,7 +25,7 @@ export default function EditUser() {
   }, [mainUser]);
 
   useEffect(() => {
-    API.get(`/user/${uniqueId}`).then(({ data }) => {
+    API.get(`/user/${objectId}`).then(({ data }) => {
       setUser(data);
     }, []);
     API.get(`/status/`).then(({ data }) => {
@@ -34,7 +34,7 @@ export default function EditUser() {
     API.get("/permissions").then(({ data }) => {
       setPermissionData(data);
     }, []);
-  }, [uniqueId]);
+  }, [objectId]);
 
   const initialValues = {
     uniqueId: user.uniqueId,
@@ -63,12 +63,13 @@ export default function EditUser() {
   });
 
   const onSubmit = async (values) => {
-    await API.patch(`/user/${user.uniqueId}`, values).then((response) => {
+    await API.patch(`/user/${objectId}`, values).then((response) => {
       if (response.data.message) {
         toast.success(response.data.message);
         navigate("/dashboard/users");
       } else if (response.data.error) {
         toast.error(response.data.error);
+        console.log(errors);
       }
     });
   };

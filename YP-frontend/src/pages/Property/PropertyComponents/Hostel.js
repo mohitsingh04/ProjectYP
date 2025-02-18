@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { Form, Card, Row, Col } from "react-bootstrap";
+import { Card, Row, Col } from "react-bootstrap";
 import { Editor } from "@tinymce/tinymce-react";
 import { useParams } from "react-router-dom";
 import { API } from "../../../context/Api";
@@ -11,14 +11,14 @@ import { hideLoading, showLoading } from "../../../redux/alertSlice";
 export default function Hostel() {
   const dispatch = useDispatch();
   const editorRef = useRef(null);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [description, setDescription] = useState("");
 
   useEffect(() => {
     const getProperty = () => {
       dispatch(showLoading());
-      API.get(`/property/${uniqueId}`).then(({ data }) => {
+      API.get(`/property/${objectId}`).then(({ data }) => {
         dispatch(hideLoading());
         setProperty(data);
       });
@@ -62,7 +62,7 @@ export default function Hostel() {
           description || property.property_hostel_description,
       };
       dispatch(showLoading());
-      API.patch(`/property/${uniqueId}`, values).then((response) => {
+      API.patch(`/property/${objectId}`, values).then((response) => {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);

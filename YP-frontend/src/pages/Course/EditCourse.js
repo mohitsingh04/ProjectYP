@@ -15,7 +15,7 @@ export default function EditCourse() {
   const dispatch = useDispatch();
   const editorRef = useRef(null);
   const navigate = useNavigate();
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [course, setCourse] = useState([]);
@@ -33,7 +33,7 @@ export default function EditCourse() {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const { data } = await API.get(`/course/${uniqueId}`);
+        const { data } = await API.get(`/course/${objectId}`);
         setCourse(data);
         setDescription(data.description);
         setCourseImage(data.image[0]);
@@ -48,7 +48,7 @@ export default function EditCourse() {
     };
     fetchCourse();
     getStatus();
-  }, [uniqueId, dispatch]);
+  }, [objectId, dispatch]);
 
   const initialValues = {
     course_type: course.course_type || "",
@@ -88,7 +88,7 @@ export default function EditCourse() {
 
       dispatch(showLoading());
 
-      const response = await API.patch(`/course/${uniqueId}`, formData, {
+      const response = await API.patch(`/course/${objectId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

@@ -11,7 +11,7 @@ export default function ViewStatus() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [status, setStatus] = useState("");
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
 
@@ -22,7 +22,7 @@ export default function ViewStatus() {
   useEffect(() => {
     try {
       dispatch(showLoading());
-      API.get(`/status/${uniqueId}`).then(({ data }) => {
+      API.get(`/status/${objectId}`).then(({ data }) => {
         dispatch(hideLoading());
         // setStatus(data.filter(status => status.uniqueId == uniqueId))
         setStatus(data);
@@ -31,7 +31,7 @@ export default function ViewStatus() {
       dispatch(hideLoading());
       toast.error(err.message);
     }
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const [isExpanded, setIsExpended] = useState(false);
   const toggleReadMore = () => {

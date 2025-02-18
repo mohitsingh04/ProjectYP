@@ -16,7 +16,7 @@ import defaultProfile from "../../../Images/DefaultProfile.jpg";
 export default function Teachers() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const { User } = DataRequest();
   const [teachers, setTeachers] = useState([]);
   const [property, setProperty] = useState("");
@@ -25,11 +25,11 @@ export default function Teachers() {
 
   const getProperty = useCallback(() => {
     dispatch(showLoading());
-    API.get(`/property/${uniqueId}`).then(({ data }) => {
+    API.get(`/property/${objectId}`).then(({ data }) => {
       dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const getTeachers = useCallback(() => {
     dispatch(showLoading());
@@ -37,15 +37,20 @@ export default function Teachers() {
       dispatch(hideLoading());
       setTeachers(data);
       setTeachers(
-        data.filter((teachers) => teachers.property_id === parseInt(uniqueId))
+        data.filter(
+          (teachers) => teachers.property_id === parseInt(property?.uniqueId)
+        )
       );
     });
-  }, [dispatch, uniqueId]);
+  }, [dispatch, property]);
 
   useEffect(() => {
     getProperty();
+  }, [getProperty]);
+
+  useEffect(() => {
     getTeachers();
-  }, [getTeachers, getProperty]);
+  }, [getTeachers]);
 
   const handleAddTeacher = () => {
     setShowTeacherForm(!showTeacherForm);
@@ -191,7 +196,9 @@ export default function Teachers() {
             data-bs-toggle="tooltip"
             title="View"
             onClick={() =>
-              navigate(`/dashboard/view/teacher/ddd/${row.uniqueId}`)
+              navigate(
+                `/dashboard/view/teacher/${property?.property_name}/${row._id}`
+              )
             }
           >
             <i className="fe fe-eye"></i>
@@ -200,7 +207,7 @@ export default function Teachers() {
             data-bs-toggle="tooltip"
             title="Edit"
             onClick={() =>
-              navigate(`/dashboard/edit/teacher/ddd/${row.uniqueId}`)
+              navigate(`/dashboard/edit/teacher/${property?.property_name}/${row._id}`)
             }
           >
             <i className="fe fe-edit"></i>
@@ -208,7 +215,7 @@ export default function Teachers() {
           <button
             data-bs-toggle="tooltip"
             title="Delete"
-            onClick={() => deleteStatus(row.uniqueId)}
+            onClick={() => deleteStatus(row._id)}
           >
             <i className="fe fe-trash-2"></i>
           </button>
