@@ -25,12 +25,20 @@ export const addCategory = async (req, res) => {
   try {
     const { userId, category_name, parent_category, category_description } =
       req.body;
-    const category_icon = req?.files["category_icon"]?.[0]?.path;
-    const category_original_icon =
-      req?.files["category_icon"]?.[0]?.originalPath;
-    const featured_image = req?.files["featured_image"]?.[0]?.path;
-    const featured_original_image =
+    let category_icon = req?.files["category_icon"]?.[0]?.path;
+    let category_original_icon = req?.files["category_icon"]?.[0]?.originalPath;
+    let featured_image = req?.files["featured_image"]?.[0]?.path;
+    let featured_original_image =
       req?.files["featured_image"]?.[0]?.originalPath;
+
+    if (!category_icon) {
+      category_icon = "media/category/defaultcategory-compressed.webp";
+      category_original_icon = "media/category/defaultcategory.jpg";
+    }
+    if (!featured_image) {
+      featured_image = "media/category/defaultcategoryfeature-compressed.webp";
+      featured_original_image = "media/category/defaultcategoryfeature.jpg";
+    }
     const category = await Category.findOne().sort({ _id: -1 }).limit(1);
     const existCategory = await Category.findOne({
       category_name: category_name,
@@ -68,6 +76,8 @@ export const updateCategory = async (req, res) => {
       category_description,
       status,
     } = req.body;
+
+    console.log(req.body);
 
     const category = await Category.findOne({ category_name: category_name });
 

@@ -57,38 +57,37 @@ export default function CreateCategory() {
   const validationSchema = Yup.object({
     category_name: Yup.string().required("Category name is required."),
     parent_category: Yup.string().required("Parent category is required."),
-    category_icon: Yup.string().required("Icon is required."),
-    featured_image: Yup.string().required("Featured image is required."),
+    category_icon: Yup.string(),
+    featured_image: Yup.string(),
   });
 
   const onSubmit = async (values) => {
     try {
-      values = {
-        ...values,
-        category_description: description,
-        userId: user.uniqueId,
-      };
-      if (
-        typeof values.category_icon == "object" ||
-        typeof values.featured_image == "object" ||
-        (typeof values.category_icon == "object" &&
-          values.featured_image === "object")
-      ) {
-        let formData = new FormData();
-        for (let value in values) {
-          formData.append(value, values[value]);
-        }
-        dispatch(showLoading());
-        await API.post(`/category`, formData).then((response) => {
-          dispatch(hideLoading());
-          if (response.data.message) {
-            toast.success(response.data.message);
-            navigate("/dashboard/category");
-          } else if (response.data.error) {
-            toast.error(response.data.error);
-          }
-        });
+      let formData = new FormData();
+      formData.append("category_name", values.category_name);
+      formData.append("parent_category", values.parent_category);
+      formData.append("category_description", description);
+
+      if (values.category_icon) {
+        formData.append("category_icon", values.category_icon);
       }
+
+      if (values.featured_image) {
+        formData.append("featured_image", values.featured_image);
+      }
+
+      formData.append("userId", user.uniqueId);
+
+      dispatch(showLoading());
+      await API.post(`/category`, formData).then((response) => {
+        dispatch(hideLoading());
+        if (response.data.message) {
+          toast.success(response.data.message);
+          navigate("/dashboard/category");
+        } else if (response.data.error) {
+          toast.error(response.data.error);
+        }
+      });
     } catch (err) {
       dispatch(hideLoading());
       toast.error(err.message);

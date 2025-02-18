@@ -39,8 +39,6 @@ export const addCourse = async (req, res) => {
     let course_image = req?.files["image"]?.[0]?.path;
     let course_original_image = req?.files["image"]?.[0]?.originalPath;
 
-    console.log(course_image);
-
     if (!course_image) {
       course_image = "media/course/defaultcourse-compressed.webp";
       course_original_image = "media/course/defaultcourse.jpg";

@@ -63,6 +63,7 @@ export default function CategoryList() {
             dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
+              getCategory();
             } else if (response.data.error) {
               toast.success(response.data.error);
             }
