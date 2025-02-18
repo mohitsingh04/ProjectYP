@@ -9,6 +9,7 @@ import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import DataRequest from "../../context/DataRequest";
+import defautLogo from "../../Images/defaultPropertyLogo.jpeg";
 
 export default function PropertyList() {
   const dispatch = useDispatch();
@@ -73,14 +74,18 @@ export default function PropertyList() {
   };
 
   const handleLoadImage = useCallback((img) => {
-    const x = img.split("/");
-    if (x.length > 2) {
-      return [<img src={`http://localhost:5000/${img}`} width={53} alt="" />];
-    } else if (x.length < 2) {
-      return [
-        <img src={`http://localhost:5000/images/${img}`} width={53} alt="" />,
-      ];
+    if (img !== null) {
+      const x = img.split("/");
+      if (x.length > 2) {
+        return [<img src={`http://localhost:5000/${img}`} width={53} alt="" />];
+      } else if (x.length < 2) {
+        return [
+          <img src={`http://localhost:5000/images/${img}`} width={53} alt="" />,
+        ];
+      }
     }
+
+    return [<img src={defautLogo} width={53} alt="" />];
   }, []);
 
   const columns = [

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -6,6 +6,8 @@ import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
+import defaultLogo from "../../../Images/defaultPropertyLogo.jpeg";
+import defaultFeature from "../../../Images/defaultPropertyFeature.jpg";
 
 export default function PropertyImages() {
   const dispatch = useDispatch();
@@ -16,48 +18,43 @@ export default function PropertyImages() {
   const [iconImage, setIconImage] = useState("");
   const [featureImage, setFeatureImage] = useState("");
 
+  const getProperty = useCallback(() => {
+    dispatch(showLoading());
+    API.get(`/property/${uniqueId}`).then(({ data }) => {
+      dispatch(hideLoading());
+      setProperty(data);
+    });
+  }, [dispatch, uniqueId]);
+
   useEffect(() => {
-    const getProperty = () => {
-      dispatch(showLoading());
-      API.get(`/property/${uniqueId}`).then(({ data }) => {
-        dispatch(hideLoading());
-        setProperty(data);
-      });
-    };
     getProperty();
-  }, []);
+  }, [getProperty]);
 
   useEffect(() => {
     if (property) {
       setIconImage(property.property_icon[0]);
       setFeatureImage(property.featured_image[0]);
     }
-  });
+  }, [property]);
 
-  {
-    /*Files Information */
-  }
   const [showIconInInput, setShowIconInInput] = useState(false);
   const [showFimageInInput, setShowFimageInInput] = useState(false);
 
-  {
-    /*Files Information */
-  }
   const handleEditIcon = () => {
     setShowIconInInput(true);
   };
-  const handleUpdateIcon = () => {
-    setShowIconInInput(false);
-  };
+  // const handleUpdateIcon = () => {
+  //   setShowIconInInput(false);
+  // };
   const handleCancelEditIcon = () => {
     setShowIconInInput(false);
   };
   const handleEditFimage = () => {
     setShowFimageInInput(true);
   };
-  const handleUpdateFimage = () => {
-    setShowFimageInInput(false);
-  };
+  // const handleUpdateFimage = () => {
+  //   setShowFimageInInput(false);
+  // };
   const handleCancelEditFimage = () => {
     setShowFimageInInput(false);
   };
@@ -73,8 +70,8 @@ export default function PropertyImages() {
       if (
         typeof values.property_icon == "object" ||
         typeof values.featured_image == "object" ||
-        (typeof values.property_icon != "object" &&
-          values.featured_image != "object")
+        (typeof values.property_icon !== "object" &&
+          values.featured_image !== "object")
       ) {
         let formData = new FormData();
         for (let value in values) {
@@ -96,15 +93,7 @@ export default function PropertyImages() {
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
+  const { setFieldValue, handleBlur, handleSubmit } = useFormik({
     initialValues: initialValues,
     // validationSchema: validationSchema,
     onSubmit: onSubmit,
@@ -128,6 +117,7 @@ export default function PropertyImages() {
                   <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
                       type="file"
+                      accept="image/jpeg, image/png"
                       name="property_icon"
                       className="form-control"
                       onChange={(e) => {
@@ -142,7 +132,7 @@ export default function PropertyImages() {
                       }}
                       onBlur={handleBlur}
                     />
-                    {previewIcon == "" ? (
+                    {previewIcon === "" ? (
                       <img
                         src={`http://localhost:5000/${iconImage}`}
                         width={100}
@@ -172,6 +162,7 @@ export default function PropertyImages() {
                 <>
                   <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
+                      accept="image/jpeg, image/png"
                       type="file"
                       name="property_icon"
                       className="form-control"
@@ -187,14 +178,24 @@ export default function PropertyImages() {
                       }}
                       onBlur={handleBlur}
                     />
-                    {previewIcon == "" ? (
-                      <img
-                        src={`http://localhost:5000/${iconImage}`}
-                        width={100}
-                        height={100}
-                        className="rounded-circle"
-                        alt=""
-                      />
+                    {previewIcon === "" ? (
+                      iconImage === null ? (
+                        <img
+                          src={defaultLogo}
+                          width={100}
+                          height={100}
+                          className="rounded-circle"
+                          alt=""
+                        />
+                      ) : (
+                        <img
+                          src={`http://localhost:5000/${iconImage}`}
+                          width={100}
+                          height={100}
+                          className="rounded-circle"
+                          alt=""
+                        />
+                      )
                     ) : (
                       <img
                         src={previewIcon}
@@ -217,13 +218,23 @@ export default function PropertyImages() {
                 <>
                   <>
                     <br />
-                    <img
-                      src={`http://localhost:5000/${iconImage}`}
-                      width={100}
-                      height={100}
-                      className="rounded-circle"
-                      alt=""
-                    />
+                    {iconImage === null ? (
+                      <img
+                        src={defaultLogo}
+                        width={100}
+                        height={100}
+                        className="rounded-circle"
+                        alt=""
+                      />
+                    ) : (
+                      <img
+                        src={`http://localhost:5000/${iconImage}`}
+                        width={100}
+                        height={100}
+                        className="rounded-circle"
+                        alt=""
+                      />
+                    )}
                     <br />
                     <span onClick={() => handleEditIcon()} className="mx-2">
                       <i className="fe fe-edit"></i>
@@ -234,11 +245,12 @@ export default function PropertyImages() {
             </Col>
             <Col md={6} className="mb-3">
               <strong>Featured Image</strong>
-              {!property.featured_image ? (
+              {!property.featured_image === null ? (
                 <>
                   <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
                       type="file"
+                      accept="image/jpeg, image/png"
                       name="featured_image"
                       className="form-control"
                       onChange={(e) => {
@@ -253,7 +265,7 @@ export default function PropertyImages() {
                       }}
                       onBlur={handleBlur}
                     />
-                    {previewFeaturedImage == "" ? (
+                    {previewFeaturedImage === "" ? (
                       <img
                         src={`http://localhost:5000/${featureImage}`}
                         width={350}
@@ -287,6 +299,7 @@ export default function PropertyImages() {
                       type="file"
                       name="featured_image"
                       className="form-control"
+                      accept="image/jpeg, image/png"
                       onChange={(e) => {
                         let reader = new FileReader();
                         reader.onload = () => {
@@ -299,13 +312,22 @@ export default function PropertyImages() {
                       }}
                       onBlur={handleBlur}
                     />
-                    {previewFeaturedImage == "" ? (
-                      <img
-                        src={`http://localhost:5000/${featureImage}`}
-                        width={350}
-                        className="mt-1"
-                        alt=""
-                      />
+                    {previewFeaturedImage === "" ? (
+                      featureImage === null ? (
+                        <img
+                          src={defaultFeature}
+                          width={350}
+                          className="mt-1"
+                          alt=""
+                        />
+                      ) : (
+                        <img
+                          src={`http://localhost:5000/${featureImage}`}
+                          width={350}
+                          className="mt-1"
+                          alt=""
+                        />
+                      )
                     ) : (
                       <img
                         src={previewFeaturedImage}
@@ -330,11 +352,15 @@ export default function PropertyImages() {
                 <>
                   <>
                     <br />
-                    <img
-                      src={`http://localhost:5000/${featureImage}`}
-                      width={350}
-                      alt=""
-                    />
+                    {featureImage === null ? (
+                      <img src={defaultFeature} width={350} alt="" />
+                    ) : (
+                      <img
+                        src={`http://localhost:5000/${featureImage}`}
+                        width={350}
+                        alt=""
+                      />
+                    )}
                     <br />
                     <span onClick={() => handleEditFimage()} className="mx-2">
                       <i className="fe fe-edit"></i>

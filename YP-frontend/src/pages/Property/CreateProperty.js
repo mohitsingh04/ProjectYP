@@ -58,8 +58,8 @@ export default function CreateProperty() {
       .min(10, "Please enter a valid mobile number!")
       .max(10, "Please enter a valid mobile number!")
       .required("Mobile number is required."),
-    property_icon: Yup.string().required("Icon is required."),
-    featured_image: Yup.string().required("Featured image is required."),
+    property_icon: Yup.string(),
+    featured_image: Yup.string(),
     category: Yup.string().required("Category is required."),
   });
 
@@ -70,27 +70,30 @@ export default function CreateProperty() {
         property_description: description,
         userId: User.uniqueId,
       };
-      if (
-        typeof values.property_icon == "object" ||
-        typeof values.featured_image == "object" ||
-        (typeof values.property_icon == "object" &&
-          values.featured_image === "object")
-      ) {
-        let formData = new FormData();
-        for (let value in values) {
-          formData.append(value, values[value]);
-        }
-        dispatch(showLoading());
-        await API.post(`/property`, formData).then((response) => {
-          dispatch(hideLoading());
-          if (response.data.message) {
-            toast.success(response.data.message);
-            navigate("/dashboard/property");
-          } else if (response.data.error) {
-            setError(response.data.error);
-          }
-        });
+      let formData = new FormData();
+      formData.append("property_name", values.property_name);
+      formData.append("property_email", values.property_email);
+      formData.append("property_mobile_no", values.property_mobile_no);
+      formData.append("category", values.category);
+      formData.append("property_description", description);
+      formData.append("userId", User.uniqueId);
+      if (values.property_icon) {
+        formData.append("property_icon", values.property_icon);
       }
+      if (values.featured_image) {
+        formData.append("featured_image", values.featured_image);
+      }
+
+      dispatch(showLoading());
+      await API.post(`/property`, formData).then((response) => {
+        dispatch(hideLoading());
+        if (response.data.message) {
+          toast.success(response.data.message);
+          navigate("/dashboard/property");
+        } else if (response.data.error) {
+          setError(response.data.error);
+        }
+      });
     } catch (err) {
       dispatch(hideLoading());
       toast.error(err.message);
