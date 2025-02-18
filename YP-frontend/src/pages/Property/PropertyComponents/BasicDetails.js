@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Card, Row, Col, Table } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -8,108 +8,74 @@ import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import PropertyImages from "./PropertyImages";
-import DataRequest from "../../../context/DataRequest";
 
 export default function BasicDetails() {
   const dispatch = useDispatch();
   const editorRef = useRef(null);
-  const { User } = DataRequest();
   const { uniqueId } = useParams();
-  const [status, setStatus] = useState([]);
-  const [category, setCategory] = useState([]);
   const [property, setProperty] = useState("");
   const [description, setDescription] = useState("");
-  const [businessHours, setBusinessHours] = useState({
-    MondayToSaturday: { open: "", close: "" },
-    Sunday: " Closed",
-  });
-  const [previewIcon, setPreviewIcon] = useState("");
-  const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
 
-  useEffect(() => {
-    getProperty();
-    getCategory();
-    getStatus();
-  }, []);
-
-  const getProperty = () => {
+  const getProperty = useCallback(() => {
     dispatch(showLoading());
     API.get(`/property/${uniqueId}`).then(({ data }) => {
       dispatch(hideLoading());
       setProperty(data);
     });
-  };
+  }, [dispatch, uniqueId]);
 
-  const getCategory = () => {
-    dispatch(showLoading());
-    API.get(`/category`).then(({ data }) => {
-      dispatch(hideLoading());
-      setCategory(data);
-    });
-  };
+  useEffect(() => {
+    getProperty();
+  }, [getProperty]);
 
-  const getStatus = () => {
-    dispatch(showLoading());
-    API.get(`/status`).then(({ data }) => {
-      dispatch(hideLoading());
-      setStatus(data);
-    });
-  };
-
-  {
-    /*Personal Information */
-  }
   const [showNameInInput, setShowNameInInput] = useState(false);
   const [showEmailInInput, setShowEmailInInput] = useState(false);
   const [showContactInInput, setShowContactInInput] = useState(false);
   const [showAltContactInInput, setShowAltContactInInput] = useState(false);
   const [showDescriptionInInput, setShowDescriptionInInput] = useState(false);
 
-  {
-    /*Personal Information */
-  }
   const handleEditName = () => {
     setShowNameInInput(true);
   };
-  const handleUpdateName = () => {
-    setShowNameInInput(false);
-  };
+  // const handleUpdateName = () => {
+  //   setShowNameInInput(false);
+  // };
   const handleCancelEditName = () => {
     setShowNameInInput(false);
   };
   const handleEditEmail = () => {
     setShowEmailInInput(true);
   };
-  const handleUpdateEmail = () => {
-    setShowEmailInInput(false);
-  };
+  // const handleUpdateEmail = () => {
+  //   setShowEmailInInput(false);
+  // };
   const handleCancelEditEmail = () => {
     setShowEmailInInput(false);
   };
   const handleEditContact = () => {
     setShowContactInInput(true);
   };
-  const handleUpdateContact = () => {
-    setShowContactInInput(false);
-  };
+  // const handleUpdateContact = () => {
+  //   setShowContactInInput(false);
+  // };
   const handleCancelEditContact = () => {
     setShowContactInInput(false);
   };
   const handleEditAltContact = () => {
     setShowAltContactInInput(true);
   };
-  const handleUpdateAltContact = () => {
-    setShowAltContactInInput(false);
-  };
+  // const handleUpdateAltContact = () => {
+  //   setShowAltContactInInput(false);
+  // };
   const handleCancelEditAltContact = () => {
     setShowAltContactInInput(false);
   };
   const handleEditDescription = () => {
     setShowDescriptionInInput(true);
   };
-  const handleUpdateDescription = () => {
-    setShowDescriptionInInput(false);
-  };
+  // const handleUpdateDescription = () => {
+  //   setShowDescriptionInInput(false);
+  // };
   const handleCancelEditDescription = () => {
     setShowDescriptionInInput(false);
   };
@@ -130,7 +96,6 @@ export default function BasicDetails() {
       values = {
         ...values,
         property_description: description || property.property_description,
-        business_time: businessHours,
       };
       dispatch(showLoading());
       API.patch(`/property/${uniqueId}`, values).then((response) => {
@@ -147,13 +112,12 @@ export default function BasicDetails() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      // validationSchema: validationSchema,
-      onSubmit: onSubmit,
-      enableReinitialize: true,
-    });
+  const { values, handleChange, handleBlur, handleSubmit } = useFormik({
+    initialValues: initialValues,
+    // validationSchema: validationSchema,
+    onSubmit: onSubmit,
+    enableReinitialize: true,
+  });
 
   const [isExpanded, setIsExpended] = useState(false);
   const toggleReadMore = () => {

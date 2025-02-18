@@ -23,17 +23,17 @@ export default function PropertyList() {
   }, [mainUser]);
 
   const getProperty = useCallback(() => {
-    try {
-      dispatch(showLoading());
-      API.get("/property").then(({ data }) => {
+    dispatch(showLoading());
+    API.get("/property")
+      .then(({ data }) => {
         dispatch(hideLoading());
         setProperty(data);
+      })
+      .catch((err) => {
+        dispatch(hideLoading());
+        toast.error(err.message);
       });
-    } catch (err) {
-      dispatch(hideLoading());
-      toast.error(err.message);
-    }
-  }, [dispatch]);
+  }, [dispatch, setProperty]);
 
   useEffect(() => {
     getProperty();
@@ -60,12 +60,12 @@ export default function PropertyList() {
             dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
+              getProperty();
             } else if (response.data.error) {
               toast.success(response.data.error);
             }
           });
         }
-        getProperty();
       })
       .catch((error) => {
         dispatch(hideLoading());

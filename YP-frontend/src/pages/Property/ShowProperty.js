@@ -18,6 +18,7 @@ import { toast } from "react-toastify";
 import OtherDetails from "./PropertyComponents/OtherDetails";
 import DataRequest from "../../context/DataRequest";
 import Amenities from "./PropertyComponents/Amenities";
+import defaultLogo from "../../Images/defaultPropertyLogo.jpeg";
 
 export default function ShowProperty() {
   const dispatch = useDispatch();
@@ -109,13 +110,23 @@ export default function ShowProperty() {
                   <Col lg={12} md={12} xl={6}>
                     <div className="wideget-user-desc d-sm-flex">
                       <div className="wideget-user-img">
-                        <img
-                          className=""
-                          src={`http://localhost:5000/${icon}`}
-                          width={120}
-                          height={120}
-                          alt="img"
-                        />
+                        {icon === null ? (
+                          <img
+                            className=""
+                            src={defaultLogo}
+                            width={120}
+                            height={120}
+                            alt="img"
+                          />
+                        ) : (
+                          <img
+                            className=""
+                            src={`http://localhost:5000/${icon}`}
+                            width={120}
+                            height={120}
+                            alt="img"
+                          />
+                        )}
                       </div>
                       <div className="user-wrap">
                         <h4>{property.property_name}</h4>
