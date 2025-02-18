@@ -11,6 +11,7 @@ import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
 import Swal from "sweetalert2";
+import defaultProfile from "../../../Images/DefaultProfile.jpg";
 
 export default function Teachers() {
   const dispatch = useDispatch();
@@ -65,7 +66,7 @@ export default function Teachers() {
     teacher_name: Yup.string()
       .required("Name is required.")
       .matches(/^[a-zA-Z\s]+$/, "Name must be alphabets only!"),
-    profile: Yup.string().required("Profile is required."),
+    profile: Yup.string(),
     designation: Yup.string().required("Designation is required."),
     experience: Yup.string().required("Experience is required."),
   });
@@ -155,13 +156,16 @@ export default function Teachers() {
     },
     {
       name: "Teacher Name",
-      selector: (row) => (
-        <img
-          src={`http://localhost:5000/${row.profile[0]}`}
-          width={53}
-          alt={row.profile}
-        />
-      ),
+      selector: (row) =>
+        row.profile[0] === null ? (
+          <img src={defaultProfile} width={53} alt={row.profile} />
+        ) : (
+          <img
+            src={`http://localhost:5000/${row.profile[0]}`}
+            width={53}
+            alt={row.profile}
+          />
+        ),
       sortable: true,
     },
     {

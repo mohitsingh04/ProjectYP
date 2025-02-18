@@ -5,6 +5,7 @@ import { API } from "../../context/Api";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
+import defaultProfile from "../../Images/DefaultProfile.jpg";
 
 export default function ViewTeacher() {
   const dispatch = useDispatch();
@@ -75,15 +76,17 @@ export default function ViewTeacher() {
                     <Col lg={12} md={12} xl={6}>
                       <div className="wideget-user-desc d-sm-flex">
                         <div className="wideget-user-img">
-                          {teacher.profile == null ? (
+                          {teacher?.profile?.[0] === null ? (
                             <img
-                              src={require("../../assets/images/users/8.jpg")}
+                              src={defaultProfile}
                               alt="profile-user"
                               className=""
+                              width={128}
+                              height={128}
                             />
                           ) : (
                             <img
-                              src={`http://localhost:5000/${teacher?.profile[0]}`}
+                              src={`http://localhost:5000/${teacher?.profile?.[0]}`}
                               alt="profile-user"
                               width={128}
                               height={128}
