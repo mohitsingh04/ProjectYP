@@ -73,7 +73,7 @@ export default function ViewStatus() {
                 className="breadcrumb-item active breadcrumds"
                 aria-current="page"
               >
-                {status.uniqueId}
+                {status.name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

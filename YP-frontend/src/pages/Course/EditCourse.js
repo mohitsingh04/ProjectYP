@@ -160,7 +160,7 @@ export default function EditCourse() {
               className="breadcrumb-item active"
               aria-current="page"
             >
-              {course.uniqueId}
+              {course.course_name}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>

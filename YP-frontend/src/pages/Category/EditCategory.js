@@ -159,7 +159,7 @@ export default function EditCategory() {
               className="breadcrumb-item active breadcrumds"
               aria-current="page"
             >
-              {category.uniqueId}
+              {category.category_name}
             </Breadcrumb.Item>
           </Breadcrumb>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Form, Card, Row, Col, Table } from "react-bootstrap";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -19,24 +19,31 @@ export default function Seo() {
   const [seo, setSeo] = useState([]);
   const [description, setDescription] = useState("");
 
+  const getProperty = useCallback(() => {
+    dispatch(showLoading());
+    API.get(`/property/${objectId}`).then(({ data }) => {
+      dispatch(hideLoading());
+      setProperty(data);
+    });
+  }, [dispatch, objectId]);
+  const getSeo = useCallback(() => {
+    dispatch(showLoading());
+    API.get(`/seo`).then(({ data }) => {
+      dispatch(hideLoading());
+      setSeo(
+        data.filter((seo) => seo.property_id === String(property?.uniqueId))
+      );
+    });
+  }, [dispatch, property]);
+
   useEffect(() => {
-    const getProperty = () => {
-      dispatch(showLoading());
-      API.get(`/property/${objectId}`).then(({ data }) => {
-        dispatch(hideLoading());
-        setProperty(data);
-      });
-    };
-    const getSeo = () => {
-      dispatch(showLoading());
-      API.get(`/seo`).then(({ data }) => {
-        dispatch(hideLoading());
-        setSeo(data.filter((seo) => seo.property_id === property?.uniqueId));
-      });
-    };
     getProperty();
+  }, [getProperty]);
+  useEffect(() => {
     getSeo();
-  }, []);
+  }, [getSeo]);
+
+  console.log(seo);
 
   const initialValues = {
     title: "",
@@ -71,6 +78,7 @@ export default function Seo() {
         if (response.data.message) {
           toast.success(response.data.message);
           resetForm();
+          getSeo();
         } else if (response.data.error) {
           toast.error(response.data.error);
         }

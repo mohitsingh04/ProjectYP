@@ -70,7 +70,7 @@ export default function ViewUser() {
                 className="breadcrumb-item active breadcrumds"
                 aria-current="page"
               >
-                {user.uniqueId}
+                {user.name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>

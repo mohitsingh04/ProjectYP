@@ -92,7 +92,7 @@ function Root() {
           {/* Unkown */}
           {/* <Route path="/property/:uniqueId" element={<ViewProperty />} /> */}
 
-            <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<App />}>
             <Route index element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>}/>
 
@@ -132,8 +132,9 @@ function Root() {
             <Route path={`/dashboard/enquiry`} element={<ProtectedRoutes><Enquiry /></ProtectedRoutes>} />
             <Route path={`/dashboard/my-profile`} element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
             <Route path={`/dashboard/edit/my-profile`}element={<ProtectedRoutes><EditProfile /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/edit/seo/:property_name/:uniqueId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
             <Route path={`/dashboard/edit/gallery/:property_name/:uniqueId`}element={<ProtectedRoutes><EditGallery /></ProtectedRoutes>}/>
+
+            <Route path={`/dashboard/edit/seo/:property_name/:uniqueId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course-seo/add/:uniqueId`} element={<ProtectedRoutes><AddCourseSeo /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course-seo/edit/:uniqueId`} element={<ProtectedRoutes><EditCourseSeo /></ProtectedRoutes>}/>
           </Route>

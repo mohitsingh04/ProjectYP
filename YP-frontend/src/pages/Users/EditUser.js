@@ -121,7 +121,7 @@ export default function EditUser() {
                 Edit
               </Breadcrumb.Item>
               <Breadcrumb.Item className="breadcrumb-item active" href="#">
-                {user.uniqueId}
+                {user.name}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
