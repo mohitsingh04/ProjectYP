@@ -39,7 +39,13 @@ export default function EditStatus() {
   };
 
   const validationSchema = Yup.object({
-    status_name: Yup.string().required("Status name is required."),
+    status_name: Yup.string()
+      .min(3, "Status Name must be at least 3 characters long.")
+      .required("Status name is required.")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Status Name can only contain alphabets and spaces."
+      ),
   });
 
   const onSubmit = async (values) => {

@@ -14,6 +14,7 @@ export default function EditGallery({
   const [title, setTitle] = useState("");
   const [newImages, setNewImages] = useState("");
   const [propertyId, setPropertyId] = useState("");
+  const [error, setError] = useState("");
 
   const fetchGallery = useCallback(async () => {
     try {
@@ -40,6 +41,15 @@ export default function EditGallery({
   };
 
   const handleUpdateGallery = async () => {
+    if (!/^[A-Za-z]+$/.test(title)) {
+      setError("Title must contain only alphabets.");
+      return;
+    }
+
+    if (title.length < 3) {
+      setError("Title year at least 3 Char long.");
+      return;
+    }
     const formData = new FormData();
     formData.append("title", title);
     formData.append("propertyId", propertyId);
@@ -120,10 +130,14 @@ export default function EditGallery({
           id="title"
           name="title"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e) => {
+            setTitle(e.target.value);
+            setError("");
+          }}
           placeholder="Enter a Title for Gallery"
           className="form-control"
         />
+        <span className="text-danger">{error}</span>
       </div>
       <div
         {...getRootProps({

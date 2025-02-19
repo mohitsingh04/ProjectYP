@@ -65,9 +65,20 @@ export default function Reviews() {
   };
 
   const validationSchema = Yup.object({
-    name: Yup.string().required("Name is Required"),
-    email: Yup.string().required("Email is Required"),
-    phone_number: Yup.number().required("Phone Number is Required"),
+    name: Yup.string()
+      .min(3, "Name must be at least 3 characters long.")
+      .required("Name is required.")
+      .matches(/^[a-zA-Z\s]+$/, "Name can only contain alphabets and spaces."),
+    email: Yup.string()
+      .email("Please enter a valid email address.")
+      .required("Email address is required."),
+
+    phone_number: Yup.string()
+      .matches(
+        /^[0-9]{10}$/,
+        "Mobile number must be a positive 10-digit number."
+      )
+      .required("Mobile number is required."),
     gender: Yup.string().required("Gender is Required"),
     rating: Yup.number().required("Rating is Required"),
     review: Yup.string().required("Review is Required"),

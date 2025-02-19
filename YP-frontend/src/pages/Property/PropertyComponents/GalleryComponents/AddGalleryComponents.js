@@ -2,13 +2,11 @@ import React, { useCallback, useState, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import { API } from "../../../../context/Api";
 
 export default function AddGallery({ getGallery, property }) {
   const [images, setImages] = useState([]);
-  const { uniqueId } = useParams();
 
   useEffect(() => {
     return () => {
@@ -27,7 +25,10 @@ export default function AddGallery({ getGallery, property }) {
   };
 
   const validationSchema = Yup.object({
-    title: Yup.string().required("Title is required."),
+    title: Yup.string()
+      .min(3, "Title must be at least 3 characters long.")
+      .required("Title is required.")
+      .matches(/^[a-zA-Z\s]+$/, "Title can only contain alphabets and spaces."),
     gallery: Yup.array()
       .min(1, "You must select at least one image.")
       .required("Image selection is required."),

@@ -69,11 +69,18 @@ export default function Teachers() {
 
   const validationSchema = Yup.object({
     teacher_name: Yup.string()
-      .required("Name is required.")
-      .matches(/^[a-zA-Z\s]+$/, "Name must be alphabets only!"),
+      .min(3, "Teacher Name must be at least 3 characters long.")
+      .required("Teacher Name is required.")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Teacher Name can only contain alphabets and spaces."
+      ),
+
     profile: Yup.string(),
     designation: Yup.string().required("Designation is required."),
-    experience: Yup.string().required("Experience is required."),
+    experience: Yup.number()
+      .required("Experience is required.")
+      .min(0, "Experience cannot be negative."),
   });
 
   const onSubmit = async (values, { resetForm }) => {
@@ -207,7 +214,9 @@ export default function Teachers() {
             data-bs-toggle="tooltip"
             title="Edit"
             onClick={() =>
-              navigate(`/dashboard/edit/teacher/${property?.property_name}/${row._id}`)
+              navigate(
+                `/dashboard/edit/teacher/${property?.property_name}/${row._id}`
+              )
             }
           >
             <i className="fe fe-edit"></i>
@@ -362,6 +371,7 @@ export default function Teachers() {
                         className="form-control"
                         placeholder="Enter Teacher Experience..."
                         value={values.experience}
+                        min={0}
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />

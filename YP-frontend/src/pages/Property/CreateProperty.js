@@ -49,15 +49,24 @@ export default function CreateProperty() {
 
   const validationSchema = Yup.object({
     property_name: Yup.string()
-      .required("Property name is required.")
-      .matches(/^[a-zA-Z\s]+$/, "Name must be alphabets only!"),
+      .min(3, "Property Name must be at least 3 characters long.")
+      .required("Property Name is required.")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Property Name can only contain alphabets and spaces."
+      ),
+
     property_email: Yup.string()
-      .email("Invalid email format.")
-      .required("Email is required."),
+      .email("Please enter a valid email address.")
+      .required("Email address is required."),
+
     property_mobile_no: Yup.string()
-      .min(10, "Please enter a valid mobile number!")
-      .max(10, "Please enter a valid mobile number!")
+      .matches(
+        /^[0-9]{10}$/,
+        "Mobile number must be a positive 10-digit number."
+      )
       .required("Mobile number is required."),
+
     property_icon: Yup.string(),
     featured_image: Yup.string(),
     category: Yup.string().required("Category is required."),

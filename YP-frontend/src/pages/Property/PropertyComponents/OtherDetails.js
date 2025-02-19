@@ -174,9 +174,19 @@ export default function OtherDetails() {
   const [activeCategory, setActiveCategory] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
   const [establishmentYear, setEstablishmentYear] = useState("");
+  const [error, setError] = useState("");
   const handleCateogory = async (e) => {
     e.preventDefault();
     let data = {};
+
+    if (!/^\d+$/.test(establishmentYear)) {
+      setError("Establishment year must contain only numbers.");
+      return;
+    }
+    if (establishmentYear.length !== 4) {
+      setError("Establishment year must be exactly 4 digits.");
+      return;
+    }
 
     if (activeStatus) {
       data = {
@@ -192,10 +202,7 @@ export default function OtherDetails() {
     };
 
     try {
-      const response = await API.patch(
-        `/property/${initialValues?.property_id}`,
-        data
-      );
+      const response = await API.patch(`/property/${objectId}`, data);
       toast.success(response.data.message);
       setActiveCategory("");
       await getProperty();
@@ -369,12 +376,16 @@ export default function OtherDetails() {
                           className="form-control"
                           placeholder="Enter established year..."
                           value={values.est_year}
-                          onChange={(e) => setEstablishmentYear(e.target.value)}
+                          onChange={(e) => {
+                            setEstablishmentYear(e.target.value);
+                            setError("");
+                          }}
                         />
                         <button type="submit" className="btn">
                           <i className="fe fe-check text-primary"></i>
                         </button>
                       </form>
+                      <span className="text-danger">{error}</span>
                     </>
                   ) : showEstDateInInput ? (
                     <>
@@ -385,7 +396,10 @@ export default function OtherDetails() {
                           className="form-control"
                           placeholder="Enter established year..."
                           value={establishmentYear}
-                          onChange={(e) => setEstablishmentYear(e.target.value)}
+                          onChange={(e) => {
+                            setEstablishmentYear(e.target.value);
+                            setError("");
+                          }}
                         />
                         <span
                           onClick={handleCancelEditEstDate}
@@ -397,6 +411,7 @@ export default function OtherDetails() {
                           <i className="fe fe-check text-primary"></i>
                         </button>
                       </form>
+                      <span className="text-danger">{error}</span>
                     </>
                   ) : (
                     <>

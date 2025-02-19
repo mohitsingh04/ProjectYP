@@ -39,8 +39,7 @@ export default function Courses() {
 
   const getPropertyCourse = useCallback(() => {
     API.get("/property-course").then(({ data }) => {
-      setPropertyCourse(data);
-      console.log(
+      setPropertyCourse(
         data.filter(
           (propertyCourse) => propertyCourse?.property_id === property?.uniqueId
         )
@@ -103,10 +102,15 @@ export default function Courses() {
     course_type: Yup.string().required("Course type is required."),
     course_name: Yup.string().required("Course name is required."),
     shortName: Yup.string().required("Course Short Name is required."),
-    courseDuration: Yup.number().required("Course duration is required."),
+    courseDuration: Yup.number()
+      .typeError("Duration must be a number.")
+      .required("Course duration is required.")
+      .min(0, "Duration cannot be negative."),
     durationType: Yup.string().required("Duration type is required."),
     course_level: Yup.string().required("Course Level is required."),
-    course_price: Yup.string().required("Course price is required."),
+    course_price: Yup.string()
+      .required("Course price is required.")
+      .min(0, "Course Price cannot be negative."),
   });
 
   const onSubmit = async (values) => {
@@ -386,6 +390,7 @@ export default function Courses() {
                       <label htmlFor="courseDuration">Duration</label>
                       <div className="d-flex">
                         <input
+                          min={0}
                           type="number"
                           placeholder="Course Duration"
                           className="form-control"
@@ -465,6 +470,7 @@ export default function Courses() {
                         id="coursePrice"
                         className="form-control"
                         name="course_price"
+                        min={1}
                         placeholder="Enter Amount ₹"
                         value={formik.values.course_price}
                         onChange={formik.handleChange}

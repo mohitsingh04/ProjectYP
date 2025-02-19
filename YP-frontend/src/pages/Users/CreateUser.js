@@ -12,9 +12,22 @@ export default function CreateUser() {
   const navigate = useNavigate();
   const initialValues = { name: "", email: "", mobile_no: "", role: "" };
   const validationSchema = Yup.object({
-    name: Yup.string().required("Name is Required"),
-    email: Yup.string().required("Email is Required"),
-    mobile_no: Yup.number().required("Phone Number is Required"),
+    name: Yup.string()
+      .min(3, "Full Name must be at least 3 characters long.")
+      .required("Full name is required.")
+      .matches(/^[a-zA-Z\s]+$/, "Name can only contain alphabets and spaces."),
+
+    email: Yup.string()
+      .email("Please enter a valid email address.")
+      .required("Email address is required."),
+
+    mobile_no: Yup.string()
+      .matches(
+        /^[0-9]{10}$/,
+        "Mobile number must be a positive 10-digit number."
+      )
+      .required("Mobile number is required."),
+
     role: Yup.string().required("Role is Required"),
   });
 
@@ -68,7 +81,7 @@ export default function CreateUser() {
           </div>
           <div className="ms-auto pageheader-btn">
             <Link
-              to="/dashboard/status/"
+              to="/dashboard/user/"
               className="btn btn-primary btn-icon text-white me-3"
             >
               <span>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Table } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -15,18 +15,11 @@ export default function Location() {
   const [city, setCity] = useState([]);
   const [state, setState] = useState([]);
   const [country, setCountry] = useState([]);
-  const [filteredCountry, setFilteredCountry] = useState([]);
-  const [filteredState, setFilteredState] = useState([]);
-  const [filteredCity, setFilteredCity] = useState([]);
+  // const [filteredCountry, setFilteredCountry] = useState([]);
+  // const [filteredState, setFilteredState] = useState([]);
+  // const [filteredCity, setFilteredCity] = useState([]);
 
-  useEffect(() => {
-    getProperty();
-    getCity();
-    getState();
-    getCountry();
-  }, []);
-
-  const getProperty = () => {
+  const getProperty = useCallback(() => {
     try {
       dispatch(showLoading());
       API.get(`/property/${objectId}`).then(({ data }) => {
@@ -37,25 +30,35 @@ export default function Location() {
       dispatch(hideLoading());
       toast.error(err.message);
     }
-  };
+  }, [dispatch, objectId]);
 
-  const getCity = () => {
+  const getCity = useCallback(() => {
     API.get("/cities").then(({ data }) => {
       setCity(data);
     });
-  };
+  }, []);
 
-  const getState = () => {
+  const getState = useCallback(() => {
     API.get("/states").then(({ data }) => {
       setState(data);
     });
-  };
+  }, []);
 
-  const getCountry = () => {
+  const getCountry = useCallback(() => {
     API.get("/countries").then(({ data }) => {
       setCountry(data);
     });
-  };
+  }, []);
+
+  useEffect(() => {
+    getProperty();
+  }, [getProperty]);
+
+  useEffect(() => {
+    getCity();
+    getState();
+    getCountry();
+  }, [getCity, getState, getCountry]);
 
   const [showAddressInInput, setShowAddressInInput] = useState(false);
   const [showCityInInput, setShowCityInInput] = useState(false);
@@ -66,45 +69,45 @@ export default function Location() {
   const handleEditAddress = () => {
     setShowAddressInInput(true);
   };
-  const handleUpdateAddress = () => {
-    setShowAddressInInput(false);
-  };
+  // const handleUpdateAddress = () => {
+  //   setShowAddressInInput(false);
+  // };
   const handleCancelEditAddress = () => {
     setShowAddressInInput(false);
   };
   const handleEditCity = () => {
     setShowCityInInput(true);
   };
-  const handleUpdateCity = () => {
-    setShowCityInInput(false);
-  };
+  // const handleUpdateCity = () => {
+  //   setShowCityInInput(false);
+  // };
   const handleCancelEditCity = () => {
     setShowCityInInput(false);
   };
   const handleEditPincode = () => {
     setShowPincodeInInput(true);
   };
-  const handleUpdatePincode = () => {
-    setShowPincodeInInput(false);
-  };
+  // const handleUpdatePincode = () => {
+  //   setShowPincodeInInput(false);
+  // };
   const handleCancelEditPincode = () => {
     setShowPincodeInInput(false);
   };
   const handleEditState = () => {
     setShowStateInInput(true);
   };
-  const handleUpdateState = () => {
-    setShowStateInInput(false);
-  };
+  // const handleUpdateState = () => {
+  //   setShowStateInInput(false);
+  // };
   const handleCancelEditState = () => {
     setShowStateInInput(false);
   };
   const handleEditCountry = () => {
     setShowCountryInInput(true);
   };
-  const handleUpdateCountry = () => {
-    setShowCountryInInput(false);
-  };
+  // const handleUpdateCountry = () => {
+  //   setShowCountryInInput(false);
+  // };
   const handleCancelEditCountry = () => {
     setShowCountryInInput(false);
   };
@@ -117,6 +120,12 @@ export default function Location() {
     property_state: property.property_state || "",
     property_country: property.property_country || "",
   };
+
+  const validationSchema = Yup.object({
+    property_pincode: Yup.string()
+      .matches(/^[0-9]{6}$/, "Pincode must be exactly 6 digits.")
+      .required("Pincode is required."),
+  });
 
   const onSubmit = async (values) => {
     try {
@@ -138,7 +147,7 @@ export default function Location() {
   const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
     useFormik({
       initialValues: initialValues,
-      // validationSchema: validationSchema,
+      validationSchema: validationSchema,
       onSubmit: onSubmit,
       enableReinitialize: true,
     });
@@ -380,6 +389,14 @@ export default function Location() {
                                 <i className="fe fe-check text-primary"></i>
                               </button>
                             </form>
+                            {errors.property_pincode &&
+                            touched.property_pincode ? (
+                              <small className="text-danger">
+                                {errors.property_pincode}
+                              </small>
+                            ) : (
+                              <span />
+                            )}
                           </>
                         ) : showPincodeInInput ? (
                           <>
@@ -403,6 +420,14 @@ export default function Location() {
                                 <i className="fe fe-check text-primary"></i>
                               </button>
                             </form>
+                            {errors.property_pincode &&
+                            touched.property_pincode ? (
+                              <small className="text-danger">
+                                {errors.property_pincode}
+                              </small>
+                            ) : (
+                              <span />
+                            )}
                           </>
                         ) : (
                           <>

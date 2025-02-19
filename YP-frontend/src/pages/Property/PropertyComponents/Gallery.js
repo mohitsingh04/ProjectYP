@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import EditGallery from "./GalleryComponents/EditGallery";
 
 export default function Gallery() {
-  const [open, setOpen] = useState(false);
+  // const [open, setOpen] = useState(false);
   const [toggleGalleryPage, setToggleGalleryPage] = useState(true);
   const { objectId } = useParams();
   const [gallery, setGallery] = useState([]);
@@ -77,7 +77,7 @@ export default function Gallery() {
     if (extension === "webp") {
       return (
         <Col key={index} lg={3} md={3} sm={6} className="col-12">
-          <Link to="#" onClick={() => setOpen(true)} className="glightbox card">
+          <Link to="#" className="glightbox card">
             <img
               src={`http://localhost:5000/${img}`}
               alt={img}

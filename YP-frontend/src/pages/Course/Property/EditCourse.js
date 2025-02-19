@@ -70,10 +70,15 @@ export default function EditPropertyCourse() {
     course_type: Yup.string().required("Course type is required."),
     course_name: Yup.string().required("Course name is required."),
     shortName: Yup.string().required("Course Short Name is required."),
-    courseDuration: Yup.number().required("Course duration is required."),
+    courseDuration: Yup.number()
+      .typeError("Duration must be a number.")
+      .required("Course duration is required.")
+      .min(0, "Duration cannot be negative."),
     durationType: Yup.string().required("Duration type is required."),
     course_level: Yup.string().required("Course Level is required."),
-    course_price: Yup.string().required("Course price is required."),
+    course_price: Yup.string()
+      .required("Course price is required.")
+      .min(0, "Course Price cannot be negative."),
   });
 
   const onSubmit = async (values) => {
@@ -242,6 +247,7 @@ export default function EditPropertyCourse() {
                           className="form-control"
                           name="courseDuration"
                           value={formik.values.courseDuration}
+                          min={0}
                           onChange={formik.handleChange}
                           onBlur={formik.handleBlur}
                         />
@@ -316,6 +322,7 @@ export default function EditPropertyCourse() {
                         id="coursePrice"
                         className="form-control"
                         name="course_price"
+                        min={0}
                         placeholder="Enter Amount ₹"
                         value={formik.values.course_price}
                         onChange={formik.handleChange}

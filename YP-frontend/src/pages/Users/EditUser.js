@@ -52,14 +52,37 @@ export default function EditUser() {
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .required("Name is required.")
-      .matches(/^[a-zA-Z\s]+$/, "Name must be alphabets only!"),
+      .min(3, "Full Name must be at least 3 characters long.")
+      .required("Full name is required.")
+      .matches(/^[a-zA-Z\s]+$/, "Name can only contain alphabets and spaces."),
+
+    email: Yup.string()
+      .email("Invalid email address.")
+      .required("Email is required."),
+
     mobile_no: Yup.string()
-      .min(10, "Please enter a valid mobile number!")
-      .max(10, "Please enter a valid mobile number!")
+      .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits.")
       .required("Mobile number is required."),
-    status: Yup.string().required("Status is required."),
+
+    address: Yup.string().required("Address is required."),
+
+    pincode: Yup.string()
+      .matches(/^[0-9]{6}$/, "Pincode must be exactly 6 digits.")
+      .required("Pincode is required."),
+
+    city: Yup.string()
+      .min(2, "City must be at least 2 characters long.")
+      .required("City is required.")
+      .matches(/^[a-zA-Z\s]+$/, "City can only contain alphabets and spaces."),
+
+    state: Yup.string()
+      .min(2, "State must be at least 2 characters long.")
+      .required("State is required.")
+      .matches(/^[a-zA-Z\s]+$/, "State can only contain alphabets and spaces."),
+
     role: Yup.string().required("Role is required."),
+
+    status: Yup.string().required("Status is required."),
   });
 
   const onSubmit = async (values) => {
@@ -237,6 +260,13 @@ export default function EditUser() {
                           onChange={handleChange}
                           onBlur={handleBlur}
                         />
+                        {errors.pincode && touched.pincode ? (
+                          <small className="text-danger">
+                            {errors.pincode}
+                          </small>
+                        ) : (
+                          <span />
+                        )}
                       </FormGroup>
                     </Col>
                   </Row>
@@ -254,6 +284,11 @@ export default function EditUser() {
                           onChange={handleChange}
                           onBlur={handleBlur}
                         />
+                        {errors.city && touched.city ? (
+                          <small className="text-danger">{errors.city}</small>
+                        ) : (
+                          <span />
+                        )}
                       </FormGroup>
                     </Col>
                     <Col lg={6} md={12}>
@@ -269,6 +304,11 @@ export default function EditUser() {
                           onChange={handleChange}
                           onBlur={handleBlur}
                         />
+                        {errors.state && touched.state ? (
+                          <small className="text-danger">{errors.state}</small>
+                        ) : (
+                          <span />
+                        )}
                       </FormGroup>
                     </Col>
                     <Col lg={6} md={12} className="mt-2">
@@ -278,7 +318,7 @@ export default function EditUser() {
                           name="status"
                           className="form-control"
                           id="exampleInputstatus"
-                          value={values.status}
+                          value={values.status === "Pending" && ""}
                           onChange={handleChange}
                           onBlur={handleBlur}
                         >
@@ -344,6 +384,13 @@ export default function EditUser() {
                           }
                           onBlur={handleBlur}
                         />
+                        {errors.permission && touched.permission ? (
+                          <small className="text-danger">
+                            {errors.permission}
+                          </small>
+                        ) : (
+                          <span />
+                        )}
                       </Form.Group>
                     </Col>
                   </Row>

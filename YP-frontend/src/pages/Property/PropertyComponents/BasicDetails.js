@@ -28,48 +28,48 @@ export default function BasicDetails() {
     getProperty();
   }, [getProperty]);
 
-  const [showNameInInput, setShowNameInInput] = useState(false);
-  const [showEmailInInput, setShowEmailInInput] = useState(false);
-  const [showContactInInput, setShowContactInInput] = useState(false);
-  const [showAltContactInInput, setShowAltContactInInput] = useState(false);
+  // const [showNameInInput, setShowNameInInput] = useState(false);
+  // const [showEmailInInput, setShowEmailInInput] = useState(false);
+  // const [showContactInInput, setShowContactInInput] = useState(false);
+  // const [showAltContactInInput, setShowAltContactInInput] = useState(false);
   const [showDescriptionInInput, setShowDescriptionInInput] = useState(false);
 
-  const handleEditName = () => {
-    setShowNameInInput(true);
-  };
+  // const handleEditName = () => {
+  //   setShowNameInInput(true);
+  // };
   // const handleUpdateName = () => {
   //   setShowNameInInput(false);
   // };
-  const handleCancelEditName = () => {
-    setShowNameInInput(false);
-  };
-  const handleEditEmail = () => {
-    setShowEmailInInput(true);
-  };
+  // const handleCancelEditName = () => {
+  //   setShowNameInInput(false);
+  // };
+  // const handleEditEmail = () => {
+  //   setShowEmailInInput(true);
+  // };
   // const handleUpdateEmail = () => {
   //   setShowEmailInInput(false);
   // };
-  const handleCancelEditEmail = () => {
-    setShowEmailInInput(false);
-  };
-  const handleEditContact = () => {
-    setShowContactInInput(true);
-  };
+  // const handleCancelEditEmail = () => {
+  //   setShowEmailInInput(false);
+  // };
+  // const handleEditContact = () => {
+  //   setShowContactInInput(true);
+  // };
   // const handleUpdateContact = () => {
   //   setShowContactInInput(false);
   // };
-  const handleCancelEditContact = () => {
-    setShowContactInInput(false);
-  };
-  const handleEditAltContact = () => {
-    setShowAltContactInInput(true);
-  };
+  // const handleCancelEditContact = () => {
+  //   setShowContactInInput(false);
+  // };
+  // const handleEditAltContact = () => {
+  //   setShowAltContactInInput(true);
+  // };
   // const handleUpdateAltContact = () => {
   //   setShowAltContactInInput(false);
   // };
-  const handleCancelEditAltContact = () => {
-    setShowAltContactInInput(false);
-  };
+  // const handleCancelEditAltContact = () => {
+  //   setShowAltContactInInput(false);
+  // };
   const handleEditDescription = () => {
     setShowDescriptionInInput(true);
   };
@@ -82,13 +82,8 @@ export default function BasicDetails() {
 
   const initialValues = {
     property_name: property.property_name || "",
-    property_email: property.property_email || "",
-    property_mobile_no: property.property_mobile_no || "",
     property_alt_mobile_no: property.property_alt_mobile_no || "",
     property_description: property.property_description || "",
-    category: property.category || "",
-    status: property.status || "",
-    est_year: property.est_year || "",
   };
 
   const onSubmit = async (values) => {
@@ -102,6 +97,8 @@ export default function BasicDetails() {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
+          handleCancelEditDescription();
+          getProperty();
         } else if (response.data.error) {
           toast.error(response.data.error);
         }
@@ -141,118 +138,15 @@ export default function BasicDetails() {
                     <tr>
                       <td>
                         <strong>Name :</strong>
-                        {!property.property_name ? (
-                          <>
-                            <form onSubmit={handleSubmit} className="d-flex">
-                              <input
-                                type="text"
-                                name="property_name"
-                                className="form-control"
-                                placeholder="Enter Name..."
-                                value={values.property_name}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              {/* <button onClick={handleCancelEditName} className="mx-3 py-2 text-primary"><i className="fe fe-x"></i></button> */}
-                              <button type="submit" className="btn">
-                                <i className="fe fe-check text-primary"></i>
-                              </button>
-                            </form>
-                          </>
-                        ) : showNameInInput ? (
-                          <>
-                            <form onSubmit={handleSubmit} className="d-flex">
-                              <input
-                                type="text"
-                                name="property_name"
-                                className="form-control"
-                                placeholder="Enter Name..."
-                                value={values.property_name}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              <button
-                                onClick={handleCancelEditName}
-                                className="mx-3 py-2 text-primary"
-                              >
-                                <i className="fe fe-x"></i>
-                              </button>
-                              <button type="submit" className="btn">
-                                <i className="fe fe-check text-primary"></i>
-                              </button>
-                            </form>
-                          </>
-                        ) : (
-                          <>
-                            <>
-                              <br />
-                              {property.property_name}
-                              <button onClick={() => handleEditName()}>
-                                <i className="fe fe-edit text-primary"></i>
-                              </button>
-                            </>
-                          </>
-                        )}
+                        <br />
+                        {property?.property_name || "N/A"}
                       </td>
                     </tr>
                     <tr>
                       <td>
                         <strong>Contact :</strong>
-                        {!property.property_mobile_no ? (
-                          <>
-                            <form onSubmit={handleSubmit} className="d-flex">
-                              <input
-                                type="number"
-                                name="property_mobile_no"
-                                className="form-control"
-                                placeholder="Enter Contact..."
-                                value={values.property_mobile_no}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              {/* <button onClick={handleCancelEditContact} className="mx-3 py-2"><i className="fe fe-x"></i></button> */}
-                              <button type="submit" className="btn">
-                                <i className="fe fe-check text-primary"></i>
-                              </button>
-                            </form>
-                          </>
-                        ) : showContactInInput ? (
-                          <>
-                            <form onSubmit={handleSubmit} className="d-flex">
-                              <input
-                                type="number"
-                                name="property_mobile_no"
-                                className="form-control"
-                                placeholder="Enter Contact..."
-                                value={values.property_mobile_no}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              <button
-                                onClick={handleCancelEditContact}
-                                className="mx-3 py-2"
-                              >
-                                <i className="fe fe-x"></i>
-                              </button>
-                              <button type="submit" className="btn">
-                                <i className="fe fe-check text-primary"></i>
-                              </button>
-                            </form>
-                          </>
-                        ) : (
-                          <>
-                            <>
-                              <br />
-                              {property.property_mobile_no}
-                              <button
-                                onClick={() => handleEditContact()}
-                                className="mx-2"
-                              >
-                                <i className="fe fe-edit"></i>
-                              </button>
-                            </>
-                          </>
-                        )}
+                        <br />
+                        {property?.property_mobile_no || "N/A"}
                       </td>
                     </tr>
                   </tbody>
@@ -260,61 +154,8 @@ export default function BasicDetails() {
                     <tr>
                       <td>
                         <strong>Email :</strong>
-                        {!property.property_email ? (
-                          <>
-                            <form onSubmit={handleSubmit} className="d-flex">
-                              <input
-                                type="text"
-                                name="property_Email"
-                                className="form-control"
-                                placeholder="Enter Email..."
-                                value={values.property_email}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              {/* <span onClick={handleCancelEditEmail} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
-                              <button type="submit" className="btn">
-                                <i className="fe fe-check text-primary"></i>
-                              </button>
-                            </form>
-                          </>
-                        ) : showEmailInInput ? (
-                          <>
-                            <form onSubmit={handleSubmit} className="d-flex">
-                              <input
-                                type="text"
-                                name="property_Email"
-                                className="form-control"
-                                placeholder="Enter Email..."
-                                value={values.property_email}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              <span
-                                onClick={handleCancelEditEmail}
-                                className="mx-3 py-2"
-                              >
-                                <i className="fe fe-x"></i>
-                              </span>
-                              <button type="submit" className="btn">
-                                <i className="fe fe-check text-primary"></i>
-                              </button>
-                            </form>
-                          </>
-                        ) : (
-                          <>
-                            <>
-                              <br />
-                              {property.property_email}
-                              <span
-                                onClick={() => handleEditEmail()}
-                                className="mx-2"
-                              >
-                                <i className="fe fe-edit"></i>
-                              </span>
-                            </>
-                          </>
-                        )}
+                        <br />
+                        {property.property_email}
                       </td>
                     </tr>
                     <tr>
@@ -332,30 +173,6 @@ export default function BasicDetails() {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                               />
-                              {/* <span onClick={handleCancelEditAltContact} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
-                              <button type="submit" className="btn">
-                                <i className="fe fe-check text-primary"></i>
-                              </button>
-                            </form>
-                          </>
-                        ) : showAltContactInInput ? (
-                          <>
-                            <form onSubmit={handleSubmit} className="d-flex">
-                              <input
-                                type="number"
-                                name="property_alt_mobile_no"
-                                className="form-control"
-                                placeholder="Enter Alternate Contact..."
-                                value={values.property_alt_mobile_no}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              <span
-                                onClick={handleCancelEditAltContact}
-                                className="mx-3 py-2"
-                              >
-                                <i className="fe fe-x"></i>
-                              </span>
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
@@ -363,16 +180,8 @@ export default function BasicDetails() {
                           </>
                         ) : (
                           <>
-                            <>
-                              <br />
-                              {property.property_alt_mobile_no}
-                              <span
-                                onClick={() => handleEditAltContact()}
-                                className="mx-2"
-                              >
-                                <i className="fe fe-edit"></i>
-                              </span>
-                            </>
+                            <br />
+                            {property.property_alt_mobile_no}
                           </>
                         )}
                       </td>

@@ -63,9 +63,15 @@ export default function EditCourse() {
 
   const validationSchema = Yup.object({
     course_type: Yup.string().required("Course type is required."),
-    course_name: Yup.string().required("Course full name is required."),
-    course_short_name: Yup.string().required("Course short name is required."),
-    duration_value: Yup.string().required("Course duration is required."),
+    course_name: Yup.string()
+      .min(3, "Course Name must be at least 3 characters long.")
+      .required("Course Name is required."),
+    course_short_name: Yup.string().required("Course Short Name is required."),
+    duration_value: Yup.number()
+      .typeError("Duration must be a number.")
+      .required("Course duration is required.")
+      .min(0, "Duration cannot be negative."),
+
     duration_unit: Yup.string().required("Course duration unit is required."),
     course_level: Yup.string().required("Course level is required."),
     status: Yup.string().required("Status is required."),
@@ -278,6 +284,7 @@ export default function EditCourse() {
                           value={values.duration_value}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          min={0}
                           style={{ marginRight: "10px" }}
                         />
                         <select

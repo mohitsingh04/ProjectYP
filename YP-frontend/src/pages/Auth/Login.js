@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Card } from "react-bootstrap";
 import { useFormik } from "formik";
@@ -27,9 +27,12 @@ export default function Login() {
 
   const validationSchema = Yup.object({
     email: Yup.string()
-      .email("Invalid email format.")
+      .email("Please enter a valid email address.")
       .required("Email is required."),
-    password: Yup.string().required("Password is required."),
+
+    password: Yup.string()
+      .min(6, "Password must be at least 6 characters long.")
+      .required("Password is required."),
   });
 
   const onSubmit = async (values) => {
@@ -39,12 +42,12 @@ export default function Login() {
         withCredentials: true,
       });
       // const accessToken = response.data.accessToken;
-    
-        // localStorage.setItem("accessToken", accessToken);
-        toast.success(response.data.message);
-        navigate("/dashboard");
-        window.location.reload();
-      
+
+      // localStorage.setItem("accessToken", accessToken);
+      toast.success(response.data.message);
+      navigate("/dashboard");
+      window.location.reload();
+
       dispatch(hideLoading());
     } catch (error) {
       console.log(error);

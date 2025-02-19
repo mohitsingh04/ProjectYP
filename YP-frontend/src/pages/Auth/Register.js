@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Card } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
-import {  API } from "../../context/Api";
+import { API } from "../../context/Api";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 
@@ -31,21 +31,31 @@ export default function Register() {
 
   const validationSchema = Yup.object({
     name: Yup.string()
-      .required("Name is required.")
-      .matches(/^[a-zA-Z\s]+$/, "Name must be alphabets only!"),
+      .min(3, "Full Name must be at least 3 characters long.")
+      .required("Full Name is required.")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Full Name can only contain alphabets and spaces."
+      ),
+
     email: Yup.string()
-      .email("Invalid email format.")
-      .required("Email is required."),
+      .email("Please enter a valid email address.")
+      .required("Email address is required."),
+
     mobile_no: Yup.string()
-      .min(10, "Please enter a valid mobile number!")
-      .max(10, "Please enter a valid mobile number!")
+      .matches(
+        /^[0-9]{10}$/,
+        "Mobile number must be a positive 10-digit number."
+      )
       .required("Mobile number is required."),
+
     password: Yup.string()
-      .required("Password is required.")
-      .min(6, "Password must have at least 6 characters."),
+      .min(6, "Password must be at least 6 characters long.")
+      .required("Password is required."),
+
     confirm_password: Yup.string()
-      .required("Please re-type your password.")
-      .oneOf([Yup.ref("password"), null], "Passwords don't match"),
+      .oneOf([Yup.ref("password"), null], "Passwords do not match.")
+      .required("Please confirm your password."),
   });
 
   const onSubmit = async (values) => {
@@ -116,7 +126,7 @@ export default function Register() {
                       type="text"
                       name="name"
                       className="input100"
-                      placeholder="User name"
+                      placeholder="Full Name"
                       value={values.name}
                       onChange={handleChange}
                       onBlur={handleBlur}

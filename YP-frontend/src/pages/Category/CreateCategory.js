@@ -55,7 +55,14 @@ export default function CreateCategory() {
   };
 
   const validationSchema = Yup.object({
-    category_name: Yup.string().required("Category name is required."),
+    category_name: Yup.string()
+      .min(3, "Category Name must be at least 3 characters long.")
+      .required("Category Name is required.")
+      .matches(
+        /^[a-zA-Z\s]+$/,
+        "Category Name can only contain alphabets and spaces."
+      ),
+
     parent_category: Yup.string().required("Parent category is required."),
     category_icon: Yup.string(),
     featured_image: Yup.string(),
