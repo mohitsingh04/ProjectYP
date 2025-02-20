@@ -242,9 +242,9 @@ router.get("/faqs/:objectId", getFaqById);
 // Seo Route
 router.get("/seo", getSeo);
 router.post("/seo", addSeo);
-router.patch("/seo/:uniqueId", updateSeo);
-router.delete("/seo/:uniqueId", deleteSeo);
-router.get("/seo/:uniqueId", getSeoById);
+router.patch("/seo/:objectId", updateSeo);
+router.delete("/seo/:objectId", deleteSeo);
+router.get("/seo/:objectId", getSeoById);
 
 // Search
 router.get("/search", getSearch);

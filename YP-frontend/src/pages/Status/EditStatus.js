@@ -193,7 +193,7 @@ export default function EditStatus() {
                       <Form.Label htmlFor="description">Description</Form.Label>
                       <Editor
                         id="description"
-                        apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                        apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={(e) =>
                           setDescription(editorRef.current.getContent())

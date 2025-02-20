@@ -1,7 +1,7 @@
 import React from "react";
 import "./index.scss";
 import Swal from "sweetalert2";
-import { BrowserRouter, Routes, Route} from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import App from "./components/app";
 import Dashboard from "./components/Dashboard/Dashboard";
@@ -80,65 +80,348 @@ function Root() {
           {/* <Route path="/courses-in-india" element={<Home />} /> */}
 
           {/* non Login Paths */}
-          <Route path="/login" element={<ProtectedRoutes><Login /></ProtectedRoutes>} />
-          <Route path="/register" element={<ProtectedRoutes><Register /></ProtectedRoutes>} />
-          <Route path="/send/verify-email/success/:email"element={<SendVerifyEmail />}/>
-          <Route path="/verify-email" element={<ProtectedRoutes><VerifyEmail /></ProtectedRoutes>} />
-          <Route path="/verify-user/:token" element={<ProtectedRoutes><VerificationEmail /></ProtectedRoutes>} />
-          <Route path="/forgot-password" element={<ProtectedRoutes><ForgotPassword /></ProtectedRoutes>} />
-          <Route path="/reset/:token" element={<ProtectedRoutes><ResetPassword /></ProtectedRoutes>} />
-          <Route path="/email-verified/:token" element={<ProtectedRoutes><EmailVerified /></ProtectedRoutes>} />
+          <Route
+            path="/login"
+            element={
+              <ProtectedRoutes>
+                <Login />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/register"
+            element={
+              <ProtectedRoutes>
+                <Register />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/send/verify-email/success/:email"
+            element={<SendVerifyEmail />}
+          />
+          <Route
+            path="/verify-email"
+            element={
+              <ProtectedRoutes>
+                <VerifyEmail />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/verify-user/:token"
+            element={
+              <ProtectedRoutes>
+                <VerificationEmail />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/forgot-password"
+            element={
+              <ProtectedRoutes>
+                <ForgotPassword />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/reset/:token"
+            element={
+              <ProtectedRoutes>
+                <ResetPassword />
+              </ProtectedRoutes>
+            }
+          />
+          <Route
+            path="/email-verified/:token"
+            element={
+              <ProtectedRoutes>
+                <EmailVerified />
+              </ProtectedRoutes>
+            }
+          />
 
           {/* Unkown */}
           {/* <Route path="/property/:uniqueId" element={<ViewProperty />} /> */}
 
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<App />}>
-            <Route index element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>}/>
+            <Route
+              index
+              element={
+                <ProtectedRoutes>
+                  <Dashboard />
+                </ProtectedRoutes>
+              }
+            />
 
-            <Route path={`/dashboard/user`} element={<ProtectedRoutes><UserList /></ProtectedRoutes>} />
-            <Route path={`/dashboard/user/add`}element={<ProtectedRoutes><CreateUser/></ProtectedRoutes>}/>
-            <Route path={`/dashboard/user/view/:objectId`}element={<ProtectedRoutes><ViewUser /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/user/edit/:objectId`}element={<ProtectedRoutes><EditUser /></ProtectedRoutes>}/>
+            <Route
+              path={`/dashboard/user`}
+              element={
+                <ProtectedRoutes>
+                  <UserList />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/user/add`}
+              element={
+                <ProtectedRoutes>
+                  <CreateUser />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/user/view/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <ViewUser />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/user/edit/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <EditUser />
+                </ProtectedRoutes>
+              }
+            />
 
-            <Route path={`/dashboard/status`}element={<ProtectedRoutes><StatusList /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/status/add`}element={<ProtectedRoutes><CreateStatus /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/status/edit/:objectId`}element={<ProtectedRoutes><EditStatus /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/status/view/:objectId`}element={<ProtectedRoutes><ViewStatus /></ProtectedRoutes>}/>
+            <Route
+              path={`/dashboard/status`}
+              element={
+                <ProtectedRoutes>
+                  <StatusList />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/status/add`}
+              element={
+                <ProtectedRoutes>
+                  <CreateStatus />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/status/edit/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <EditStatus />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/status/view/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <ViewStatus />
+                </ProtectedRoutes>
+              }
+            />
 
-            <Route path={`/dashboard/course`}element={<ProtectedRoutes><CourseList /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/course/add`}element={<ProtectedRoutes><AddCourse /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/course/view/:objectId`} element={<ProtectedRoutes><ViewCourse/></ProtectedRoutes>}/>
-            <Route path={`/dashboard/course/edit/:objectId`} element={<ProtectedRoutes><EditCourse/></ProtectedRoutes>} />
-            
-            <Route path={`/dashboard/category`}element={<ProtectedRoutes><CategoryList /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/category/add`}element={<ProtectedRoutes><CreateCategory /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/category/edit/:objectId`}element={<ProtectedRoutes><EditCategory /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/category/view/:objectId`}element={<ProtectedRoutes><ViewCategory /></ProtectedRoutes>}/>
+            <Route
+              path={`/dashboard/course`}
+              element={
+                <ProtectedRoutes>
+                  <CourseList />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/course/add`}
+              element={
+                <ProtectedRoutes>
+                  <AddCourse />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/course/view/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <ViewCourse />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/course/edit/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <EditCourse />
+                </ProtectedRoutes>
+              }
+            />
 
-            <Route path={`/dashboard/property`} element={<ProtectedRoutes><PropertyList /></ProtectedRoutes>} />
-            <Route path={`/dashboard/property/add`}element={<ProtectedRoutes><CreateProperty /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/property/view/:objectId`}element={<ProtectedRoutes><ShowProperty /></ProtectedRoutes>}/>
-            
-            <Route path={`/dashboard/edit/teacher/:property_name/:objectId`}element={<ProtectedRoutes><EditTeacher /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/view/teacher/:property_name/:objectId`}element={<ProtectedRoutes><ViewTeacher /></ProtectedRoutes>}/>
+            <Route
+              path={`/dashboard/category`}
+              element={
+                <ProtectedRoutes>
+                  <CategoryList />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/category/add`}
+              element={
+                <ProtectedRoutes>
+                  <CreateCategory />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/category/edit/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <EditCategory />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/category/view/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <ViewCategory />
+                </ProtectedRoutes>
+              }
+            />
 
-            <Route path={`/dashboard/edit/faqs/:property_name/:objectId`}element={<ProtectedRoutes><EditFaqs /></ProtectedRoutes>}/>
+            <Route
+              path={`/dashboard/property`}
+              element={
+                <ProtectedRoutes>
+                  <PropertyList />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/property/add`}
+              element={
+                <ProtectedRoutes>
+                  <CreateProperty />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/property/view/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <ShowProperty />
+                </ProtectedRoutes>
+              }
+            />
 
-            <Route path={`/dashboard/edit/course/:property_name/:objectId`}element={<ProtectedRoutes><EditPropertyCourse /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/view/course/:property_name/:objectId`}element={<ProtectedRoutes><ViewPropertyCourse /></ProtectedRoutes>}/>
+            <Route
+              path={`/dashboard/edit/teacher/:property_name/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <EditTeacher />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/view/teacher/:property_name/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <ViewTeacher />
+                </ProtectedRoutes>
+              }
+            />
 
-            <Route path={`/dashboard/test/:id`} element={<ProtectedRoutes><YourComponent /></ProtectedRoutes>} />
-            <Route path={`/dashboard/enquiry`} element={<ProtectedRoutes><Enquiry /></ProtectedRoutes>} />
-            <Route path={`/dashboard/my-profile`} element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
-            <Route path={`/dashboard/edit/my-profile`}element={<ProtectedRoutes><EditProfile /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/edit/gallery/:property_name/:uniqueId`}element={<ProtectedRoutes><EditGallery /></ProtectedRoutes>}/>
+            <Route
+              path={`/dashboard/edit/faqs/:property_name/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <EditFaqs />
+                </ProtectedRoutes>
+              }
+            />
 
-            <Route path={`/dashboard/edit/seo/:property_name/:uniqueId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/course-seo/add/:uniqueId`} element={<ProtectedRoutes><AddCourseSeo /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/course-seo/edit/:uniqueId`} element={<ProtectedRoutes><EditCourseSeo /></ProtectedRoutes>}/>
+            <Route
+              path={`/dashboard/edit/course/:property_name/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <EditPropertyCourse />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/view/course/:property_name/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <ViewPropertyCourse />
+                </ProtectedRoutes>
+              }
+            />
+
+            <Route
+              path={`/dashboard/test/:id`}
+              element={
+                <ProtectedRoutes>
+                  <YourComponent />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/enquiry`}
+              element={
+                <ProtectedRoutes>
+                  <Enquiry />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/my-profile`}
+              element={
+                <ProtectedRoutes>
+                  <Profile />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/edit/my-profile`}
+              element={
+                <ProtectedRoutes>
+                  <EditProfile />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/edit/gallery/:property_name/:uniqueId`}
+              element={
+                <ProtectedRoutes>
+                  <EditGallery />
+                </ProtectedRoutes>
+              }
+            />
+
+            <Route
+              path={`/dashboard/edit/seo/:property_name/:objectId`}
+              element={
+                <ProtectedRoutes>
+                  <EditSeo />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/course-seo/add/:uniqueId`}
+              element={
+                <ProtectedRoutes>
+                  <AddCourseSeo />
+                </ProtectedRoutes>
+              }
+            />
+            <Route
+              path={`/dashboard/course-seo/edit/:uniqueId`}
+              element={
+                <ProtectedRoutes>
+                  <EditCourseSeo />
+                </ProtectedRoutes>
+              }
+            />
           </Route>
-            <Route path="/*" element={<Error404 />} />
+          <Route path="/*" element={<Error404 />} />
         </Routes>
       </BrowserRouter>
     </>

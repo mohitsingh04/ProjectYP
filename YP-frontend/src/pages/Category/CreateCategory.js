@@ -242,7 +242,7 @@ export default function CreateCategory() {
                       <Form.Label htmlFor="decription">Description</Form.Label>
                       <Editor
                         id="decription"
-                        apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                        apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={() =>
                           setDescription(editorRef.current.getContent())

@@ -188,14 +188,14 @@ export default function EditCourse() {
           <Card>
             <Card.Header>
               <h3 className="card-title">Edit Course</h3>
-              <div className="ms-auto pageheader-btn">
+              {/* <div className="ms-auto pageheader-btn">
                 <Link
                   to={`/dashboard/course-seo/add/${course.uniqueId}`}
                   className="btn btn-primary btn-icon text-white me-3"
                 >
                   Add Course Seo
                 </Link>
-              </div>
+              </div> */}
             </Card.Header>
             <Card.Body>
               <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -342,7 +342,7 @@ export default function EditCourse() {
                     <Form.Group>
                       <Form.Label htmlFor="description">Description</Form.Label>
                       <Editor
-                        apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                        apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={() =>
                           setDescription(editorRef.current.getContent())

@@ -307,7 +307,7 @@ export default function AddCourse() {
                     <Form.Group>
                       <Form.Label htmlFor="description">Description</Form.Label>
                       <Editor
-                        apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                        apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                         id="description"
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={() =>

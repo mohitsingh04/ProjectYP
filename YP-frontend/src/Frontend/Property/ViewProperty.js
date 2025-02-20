@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Tabs, Tab, Row, Col, Card, FormGroup, Form } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import CustomHeader from "../../layouts/Header/CustomHeader";
 import CustomFooter from "../../layouts/Footer/CustomFooter";
 import { Editor } from '@tinymce/tinymce-react';
@@ -243,7 +243,7 @@ export default function ViewProperty() {
                                                                 <div className="mb-3">
                                                                     <label className="form-label">Write Review <i>(Optional)</i></label>
                                                                     <Editor
-                                                                        apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                                                                        apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                                                                         onInit={(evt, editor) => editorRef.current = editor}
                                                                         onChange={() => setDescription(editorRef.current.getContent())}
                                                                         onBlur={handleBlur}

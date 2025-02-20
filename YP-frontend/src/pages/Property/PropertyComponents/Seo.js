@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Form, Card, Row, Col, Table } from "react-bootstrap";
+import Dropdown from "react-dropdown-select";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -52,7 +53,6 @@ export default function Seo() {
 
   const validationSchema = Yup.object({
     title: Yup.string().required("Title is required."),
-    meta_tags: Yup.string().required("Meta tags is required."),
     slug: Yup.string().required("Slug is required."),
     primary_focus_keyword: Yup.string().required(
       "Primary focus keyword is required."
@@ -68,6 +68,7 @@ export default function Seo() {
         property_id: property.uniqueId,
         property_name: property.property_name,
       };
+      console.log(values);
       dispatch(showLoading());
       API.post(`/seo`, values).then((response) => {
         dispatch(hideLoading());
@@ -85,15 +86,22 @@ export default function Seo() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-      enableReinitialize: true,
-    });
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setFieldValue,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+    enableReinitialize: true,
+  });
 
-  const handleDeleteSeo = (uniqueId) => {
+  const handleDeleteSeo = (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -106,7 +114,7 @@ export default function Seo() {
       .then((result) => {
         if (result.isConfirmed) {
           dispatch(showLoading());
-          API.delete(`/seo/${uniqueId}`).then((response) => {
+          API.delete(`/seo/${id}`).then((response) => {
             dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
@@ -143,7 +151,7 @@ export default function Seo() {
                 {seo.length > 0 && (
                   <>
                     <Link
-                      to={`/dashboard/edit/seo/${seo[0].property_name}/${seo[0].uniqueId}`}
+                      to={`/dashboard/edit/seo/${seo[0].property_name}/${seo[0]._id}`}
                       className="btn btn-primary btn-icon text-white me-3"
                     >
                       <span>
@@ -152,7 +160,7 @@ export default function Seo() {
                       Edit
                     </Link>
                     <button
-                      onClick={() => handleDeleteSeo(seo[0].uniqueId)}
+                      onClick={() => handleDeleteSeo(seo[0]._id)}
                       className="btn btn-danger"
                     >
                       <span>
@@ -178,7 +186,9 @@ export default function Seo() {
                       <tr>
                         <td>
                           <strong>Meta Tags: </strong>
-                          {seo[0].meta_tags}
+                          {seo[0].meta_tags.map((item, index) => (
+                            <li key={index}>{item.value}</li>
+                          ))}
                         </td>
                       </tr>
                       <tr>
@@ -250,9 +260,10 @@ export default function Seo() {
                     <Row>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Form.Label>Seo Title</Form.Label>
+                          <Form.Label htmlFor="seoTitle">Seo Title</Form.Label>
                           <input
                             type="text"
+                            id="seoTitle"
                             className="form-control"
                             name="title"
                             placeholder="Seo title"
@@ -269,16 +280,23 @@ export default function Seo() {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Form.Label>Meta Tags</Form.Label>
-                          <input
-                            type="text"
-                            className="form-control"
-                            name="meta_tags"
-                            placeholder="Meta Tags"
+                          <Form.Label htmlFor="metaTag">Meta Tags</Form.Label>
+                          <Dropdown
+                            options={[]}
+                            values={[]}
+                            id="metaTag"
+                            create={true}
+                            placeholder="Meta Tags...    "
+                            searchable={true}
+                            dropdownHandle={false}
+                            multi={true}
                             value={values.meta_tags}
-                            onChange={handleChange}
+                            onChange={(value) =>
+                              setFieldValue("meta_tags", value)
+                            }
                             onBlur={handleBlur}
                           />
+
                           {errors.meta_tags && touched.meta_tags ? (
                             <span className="text-danger">
                               {errors.meta_tags}
@@ -290,9 +308,10 @@ export default function Seo() {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Form.Label>Slug</Form.Label>
+                          <Form.Label htmlFor="slug">Slug</Form.Label>
                           <input
                             type="text"
+                            id="slug"
                             className="form-control"
                             name="slug"
                             placeholder="Slug"
@@ -309,9 +328,12 @@ export default function Seo() {
                       </Col>
                       <Col md={6}>
                         <div className="mb-3">
-                          <Form.Label>Primary Focus Keyword</Form.Label>
+                          <Form.Label htmlFor="primayKey">
+                            Primary Focus Keyword
+                          </Form.Label>
                           <input
                             type="text"
+                            id="primaryKey"
                             className="form-control"
                             name="primary_focus_keyword"
                             placeholder="Primary Focus Keyword"
@@ -331,9 +353,12 @@ export default function Seo() {
                       </Col>
                       <Col md={12}>
                         <div className="mb-3">
-                          <Form.Label>Json Schema</Form.Label>
+                          <Form.Label htmlFor="jsonSchema">
+                            Json Schema
+                          </Form.Label>
                           <textarea
                             className="form-control"
+                            id="jsonSchema"
                             name="json_schema"
                             placeholder="Json Schema"
                             value={values.json_schema}
@@ -353,9 +378,12 @@ export default function Seo() {
                       </Col>
                       <Col md={12}>
                         <div className="mb-3">
-                          <Form.Label>Description</Form.Label>
+                          <Form.Label htmlFor="description">
+                            Description
+                          </Form.Label>
                           <Editor
-                            apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                            id="description"
+                            apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                             onInit={(evt, editor) =>
                               (editorRef.current = editor)
                             }

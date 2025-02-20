@@ -8,29 +8,30 @@ import { Editor } from "@tinymce/tinymce-react";
 import { useDispatch } from "react-redux";
 import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { API } from "../../context/Api";
+import Dropdown from "react-dropdown-select";
 
 export default function EditSeo() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const editorRef = useRef(null);
-  const { uniqueId } = useParams();
+  const { objectId } = useParams();
   const [seo, setSeo] = useState("");
   const [description, setDescription] = useState("");
 
   useEffect(() => {
     const getSeo = () => {
       dispatch(showLoading());
-      API.get(`/seo/${uniqueId}`).then(({ data }) => {
+      API.get(`/seo/${objectId}`).then(({ data }) => {
         dispatch(hideLoading());
         setSeo(data);
       });
     };
     getSeo();
-  }, [dispatch, uniqueId]);
+  }, [dispatch, objectId]);
 
   const initialValues = {
     title: seo.title || "",
-    meta_tags: seo.meta_tags || "",
+    meta_tags: seo.meta_tags || [],
     slug: seo.slug || "",
     primary_focus_keyword: seo.primary_focus_keyword || "",
     json_schema: seo.json_schema || "",
@@ -38,7 +39,6 @@ export default function EditSeo() {
 
   const validationSchema = Yup.object({
     title: Yup.string().required("Title is required."),
-    meta_tags: Yup.string().required("Meta tags is required."),
     slug: Yup.string().required("Slug is required."),
     primary_focus_keyword: Yup.string().required(
       "Primary focus keyword is required."
@@ -49,8 +49,9 @@ export default function EditSeo() {
   const onSubmit = async (values, { resetForm }) => {
     try {
       values = { ...values, description: description || seo.description };
+      console.log(values);
       dispatch(showLoading());
-      API.patch(`/seo/${uniqueId}`, values).then((response) => {
+      API.patch(`/seo/${objectId}`, values).then((response) => {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
@@ -65,13 +66,20 @@ export default function EditSeo() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-      enableReinitialize: true,
-    });
+  const {
+    values,
+    errors,
+    touched,
+    handleChange,
+    handleBlur,
+    handleSubmit,
+    setFieldValue,
+  } = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+    enableReinitialize: true,
+  });
 
   return (
     <>
@@ -140,13 +148,16 @@ export default function EditSeo() {
                 <Col md={6}>
                   <div className="mb-3">
                     <Form.Label>Meta Tags</Form.Label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="meta_tags"
-                      placeholder="Meta Tags"
+                    <Dropdown
+                      options={[]}
+                      create={true}
+                      placeholder="Meta Tags ...    "
+                      searchable={true}
+                      dropdownHandle={false}
+                      multi={true}
+                      values={values.meta_tags}
                       value={values.meta_tags}
-                      onChange={handleChange}
+                      onChange={(value) => setFieldValue("meta_tags", value)}
                       onBlur={handleBlur}
                     />
                     {errors.meta_tags && touched.meta_tags ? (
@@ -220,7 +231,7 @@ export default function EditSeo() {
                   <div className="mb-3">
                     <Form.Label>Description</Form.Label>
                     <Editor
-                      apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                      apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                       onInit={(evt, editor) => (editorRef.current = editor)}
                       onChange={(e) =>
                         setDescription(editorRef.current.getContent())

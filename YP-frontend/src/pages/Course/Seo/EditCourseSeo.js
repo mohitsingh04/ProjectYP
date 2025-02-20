@@ -227,7 +227,7 @@ export default function EditCourseAeo() {
                       <div className="mb-3">
                         <Form.Label>Description</Form.Label>
                         <Editor
-                          apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                          apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                           onInit={(evt, editor) => (editorRef.current = editor)}
                           onChange={(e) =>
                             setDescription(editorRef.current.getContent())
