@@ -158,7 +158,7 @@ export default function OtherDetails() {
     }
   };
 
-  const { values, handleSubmit } = useFormik({
+  const { handleSubmit } = useFormik({
     initialValues: initialValues,
     onSubmit: onSubmit,
     enableReinitialize: true,
@@ -234,7 +234,7 @@ export default function OtherDetails() {
                           name="category"
                           id="category"
                           className="form-control"
-                          value={values.category}
+                          value={activeCategory}
                           onChange={(e) => {
                             setActiveCategory(e.target.value);
                           }}
@@ -307,7 +307,7 @@ export default function OtherDetails() {
                           name="status"
                           id="status"
                           className="form-control"
-                          value={values.status}
+                          value={activeStatus}
                           onChange={(e) => setActiveStatus(e.target.value)}
                         >
                           <option value="">--Select Status--</option>
@@ -329,7 +329,7 @@ export default function OtherDetails() {
                           name="status"
                           id="status"
                           className="form-control"
-                          value={values.status}
+                          value={activeStatus}
                           onChange={(e) => setActiveStatus(e.target.value)}
                         >
                           <option value="">--Select Status--</option>
@@ -375,7 +375,7 @@ export default function OtherDetails() {
                           name="est_year"
                           className="form-control"
                           placeholder="Enter established year..."
-                          value={values.est_year}
+                          value={establishmentYear}
                           onChange={(e) => {
                             setEstablishmentYear(e.target.value);
                             setError("");
@@ -456,7 +456,7 @@ export default function OtherDetails() {
                               type="time"
                               className="form-control"
                               name="businessHours"
-                              value={times.open}
+                              value={times.open || ""}
                               onChange={(e) =>
                                 handleTimeChange(day, "open", e.target.value)
                               }
@@ -467,7 +467,7 @@ export default function OtherDetails() {
                               type="time"
                               className="form-control"
                               name="businessHours"
-                              value={times.close}
+                              value={times.close || ""}
                               onChange={(e) =>
                                 handleTimeChange(day, "close", e.target.value)
                               }

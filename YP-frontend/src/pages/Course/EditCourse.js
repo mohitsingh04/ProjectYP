@@ -147,14 +147,14 @@ export default function EditCourse() {
         <div>
           <h1 className="page-title">Edit Course</h1>
           <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item className="breadcrumb-item">
-              <Link to="/dashboard/">Dashboard</Link>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+              Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item
-              className="breadcrumb-item breadcrumds"
-              aria-current="page"
+              linkAs={Link}
+              linkProps={{ to: "/dashboard/course/" }}
             >
-              <Link to="/dashboard/course/">Course</Link>
+              Course
             </Breadcrumb.Item>
             <Breadcrumb.Item
               className="breadcrumb-item active"
@@ -207,8 +207,9 @@ export default function EditCourse() {
                 <div className="form-row">
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Type</Form.Label>
+                      <Form.Label htmlFor="courseType">Course Type</Form.Label>
                       <select
+                        id="courseType"
                         name="course_type"
                         className="form-control"
                         value={values.course_type}
@@ -221,19 +222,17 @@ export default function EditCourse() {
                         <option value="Degree">Degree</option>
                         <option value="Bachlore">Bachlore</option>
                       </select>
-                      {errors.course_type && touched.course_type && (
-                        <span className="text-danger">
-                          {errors.course_type}
-                        </span>
-                      )}
                     </Form.Group>
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Full Name</Form.Label>
+                      <Form.Label htmlFor="course_name">
+                        Course Full Name
+                      </Form.Label>
                       <input
                         type="text"
                         name="course_name"
+                        id="course_name"
                         className="form-control"
                         placeholder="Course Full Name"
                         value={values.course_name}
@@ -249,10 +248,13 @@ export default function EditCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Short Name</Form.Label>
+                      <Form.Label htmlFor="course_short_name">
+                        Course Short Name
+                      </Form.Label>
                       <input
                         type="text"
                         name="course_short_name"
+                        id="course_short_name"
                         className="form-control"
                         placeholder="Course Short Name"
                         value={values.course_short_name}
@@ -269,16 +271,14 @@ export default function EditCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Duration</Form.Label>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
+                      <Form.Label htmlFor="course_duration">
+                        Course Duration
+                      </Form.Label>
+                      <div className="d-flex justify-content-between">
                         <input
                           type="number"
                           name="duration_value"
+                          id="course_duration"
                           className="form-control"
                           placeholder="Course Duration"
                           value={values.duration_value}
@@ -314,9 +314,12 @@ export default function EditCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Level</Form.Label>
+                      <Form.Label htmlFor="course_level">
+                        Course Level
+                      </Form.Label>
                       <select
                         name="course_level"
+                        id="course_level"
                         className="form-control"
                         placeholder="Course Level"
                         value={values.course_level}
@@ -337,13 +340,14 @@ export default function EditCourse() {
                   </div>
                   <div className="form-group col-md-12 mb-3">
                     <Form.Group>
-                      <Form.Label>Description</Form.Label>
+                      <Form.Label htmlFor="description">Description</Form.Label>
                       <Editor
                         apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={() =>
                           setDescription(editorRef.current.getContent())
                         }
+                        id={`description`}
                         onBlur={handleBlur}
                         init={{
                           height: 200,
@@ -382,10 +386,11 @@ export default function EditCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Image</Form.Label>
+                      <Form.Label htmlFor="course_image">Image</Form.Label>
                       <input
                         type="file"
                         name="image"
+                        id="course_image"
                         accept="image/jpeg, image/png"
                         className="form-control"
                         onChange={(e) => {
@@ -430,9 +435,10 @@ export default function EditCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Status</Form.Label>
+                      <Form.Label htmlFor="status">Status</Form.Label>
                       <select
                         name="status"
+                        id="status"
                         className="form-control"
                         value={values.status}
                         onChange={handleChange}

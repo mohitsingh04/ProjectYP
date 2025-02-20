@@ -93,11 +93,14 @@ export default function EditStatus() {
         <div>
           <h1 className="page-title">Status</h1>
           <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item className="breadcrumb-item">
-              <Link to="/dashboard/">Dashboard</Link>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+              Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-              <Link to="/dashboard/status/">Status</Link>
+            <Breadcrumb.Item
+              linkAs={Link}
+              linkProps={{ to: "/dashboard/status/" }}
+            >
+              Status
             </Breadcrumb.Item>
             <Breadcrumb.Item
               className="breadcrumb-item active"
@@ -144,9 +147,10 @@ export default function EditStatus() {
                 <div className="form-row">
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Name</Form.Label>
+                      <Form.Label htmlFor="status_name">Name</Form.Label>
                       <input
                         type="text"
+                        id="status_name"
                         name="status_name"
                         className="form-control"
                         placeholder="Name"
@@ -165,10 +169,11 @@ export default function EditStatus() {
                   </div>
                   <div className="form-group col-md-1 mb-3">
                     <Form.Group>
-                      <Form.Label>Color</Form.Label>
+                      <Form.Label htmlFor="status_color">Color</Form.Label>
                       <input
                         type="color"
                         name="status_color"
+                        id="status_color"
                         className="form-control"
                         value={values.status_color}
                         onChange={handleChange}
@@ -185,8 +190,9 @@ export default function EditStatus() {
                   </div>
                   <div className="form-group col-md-12 mb-3">
                     <Form.Group>
-                      <Form.Label>Description</Form.Label>
+                      <Form.Label htmlFor="description">Description</Form.Label>
                       <Editor
+                        id="description"
                         apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={(e) =>

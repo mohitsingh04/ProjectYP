@@ -161,9 +161,10 @@ export default function AddCourse() {
                 <div className="form-row">
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Type</Form.Label>
+                      <Form.Label htmlFor="course_type">Course Type</Form.Label>
                       <select
                         name="course_type"
+                        id="course_type"
                         className="form-control"
                         value={values.course_type}
                         onChange={handleChange}
@@ -184,10 +185,13 @@ export default function AddCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Full Name</Form.Label>
+                      <Form.Label htmlFor="course_name">
+                        Course Full Name
+                      </Form.Label>
                       <input
                         type="text"
                         name="course_name"
+                        id="course_name"
                         className="form-control"
                         placeholder="Course Full Name"
                         value={values.course_name}
@@ -203,10 +207,13 @@ export default function AddCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Short Name</Form.Label>
+                      <Form.Label htmlFor="course_short_name">
+                        Course Short Name
+                      </Form.Label>
                       <input
                         type="text"
                         name="course_short_name"
+                        id="course_short_name"
                         className="form-control"
                         placeholder="Course Short Name"
                         value={values.course_short_name}
@@ -223,7 +230,9 @@ export default function AddCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Duration</Form.Label>
+                      <Form.Label htmlFor="duration_value">
+                        Course Duration
+                      </Form.Label>
                       <div
                         style={{
                           display: "flex",
@@ -233,6 +242,7 @@ export default function AddCourse() {
                         <input
                           type="number"
                           name="duration_value"
+                          id="duration_value"
                           className="form-control"
                           placeholder="Course Duration"
                           value={values.duration_value}
@@ -270,9 +280,12 @@ export default function AddCourse() {
 
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Course Level</Form.Label>
+                      <Form.Label htmlFor="course_level">
+                        Course Level
+                      </Form.Label>
                       <select
                         name="course_level"
+                        id="course_level"
                         className="form-control"
                         value={values.course_level}
                         onChange={handleChange}
@@ -292,9 +305,10 @@ export default function AddCourse() {
                   </div>
                   <div className="form-group col-md-12 mb-3">
                     <Form.Group>
-                      <Form.Label>Description</Form.Label>
+                      <Form.Label htmlFor="description">Description</Form.Label>
                       <Editor
                         apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
+                        id="description"
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={() =>
                           setDescription(editorRef.current.getContent())
@@ -336,10 +350,11 @@ export default function AddCourse() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Image</Form.Label>
+                      <Form.Label htmlFor="course_image">Image</Form.Label>
                       <input
                         type="file"
                         name="image"
+                        id="course_image"
                         accept="image/jpeg, image/png"
                         className="form-control"
                         onChange={(e) => {

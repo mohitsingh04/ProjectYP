@@ -10,7 +10,7 @@
 @import "~react-dropzone-uploader/dist/styles.css";
 @import "~@mobiscroll/react-lite/dist/css/mobiscroll.min.css";
 //Maps
-@import "~leaflet/dist/leaflet.css";
+// @import "~leaflet/dist/leaflet.css";
 //draft-wysiwyg
 @import "~react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 //react-slick
@@ -4330,7 +4330,6 @@ ol.progtrckr li.progtrckr-done span {
 
 .ellipsis {
   display: -webkit-box;
-  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;

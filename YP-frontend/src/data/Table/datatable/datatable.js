@@ -354,7 +354,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$143,654",
     EMAIL: "i.bond@datatables.net",
-    STATUS: <span className="badge bg-success">Active</span>
+    STATUS: <span className="badge bg-success">Active</span>,
   },
   {
     id: "2",
@@ -365,7 +365,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$343,654",
     EMAIL: "a.bond@datatables.net",
-    STATUS: <span className="badge bg-success">Active</span>
+    STATUS: <span className="badge bg-success">Active</span>,
   },
   {
     id: "3",
@@ -376,7 +376,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$743,654",
     EMAIL: "s.bond@datatables.net",
-    STATUS: <span className="badge bg-danger">Inactive</span>
+    STATUS: <span className="badge bg-danger">Inactive</span>,
   },
   {
     id: "4",
@@ -387,7 +387,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$643,654",
     EMAIL: "w.bond@datatables.net",
-    STATUS: <span className="badge bg-warning">Pending</span>
+    STATUS: <span className="badge bg-warning">Pending</span>,
   },
   {
     id: "5",
@@ -398,7 +398,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$243,654",
     EMAIL: "e.bond@datatables.net",
-    STATUS: <span className="badge bg-danger">Inactive</span>
+    STATUS: <span className="badge bg-danger">Inactive</span>,
   },
   {
     id: "6",
@@ -409,7 +409,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$543,654",
     EMAIL: "r.bond@datatables.net",
-    STATUS: <span className="badge bg-danger">Inactive</span>
+    STATUS: <span className="badge bg-danger">Inactive</span>,
   },
   {
     id: "7",
@@ -420,7 +420,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$843,654",
     EMAIL: "g.bond@datatables.net",
-    STATUS: <span className="badge bg-warning">Pending</span>
+    STATUS: <span className="badge bg-warning">Pending</span>,
   },
   {
     id: "8",
@@ -431,7 +431,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$743,654",
     EMAIL: "x.bond@datatables.net",
-    STATUS: <span className="badge bg-success">Active</span>
+    STATUS: <span className="badge bg-success">Active</span>,
   },
   {
     id: "9",
@@ -442,7 +442,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$543,654",
     EMAIL: "k.bond@datatables.net",
-    STATUS: <span className="badge bg-success">Active</span>
+    STATUS: <span className="badge bg-success">Active</span>,
   },
   {
     id: "10",
@@ -453,7 +453,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$143,654",
     EMAIL: "s.bond@datatables.net",
-    STATUS: <span className="badge bg-success">Active</span>
+    STATUS: <span className="badge bg-success">Active</span>,
   },
   {
     id: "11",
@@ -464,7 +464,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$143,654",
     EMAIL: "b.bond@datatables.net",
-    STATUS: <span className="badge bg-success">Pending</span>
+    STATUS: <span className="badge bg-success">Pending</span>,
   },
   {
     id: "12",
@@ -475,7 +475,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$143,654",
     EMAIL: "o.bond@datatables.net",
-    STATUS: <span className="badge bg-success">Active</span>
+    STATUS: <span className="badge bg-success">Active</span>,
   },
   {
     id: "13",
@@ -486,7 +486,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$243,654",
     EMAIL: "q.bond@datatables.net",
-    STATUS: <span className="badge bg-warning">Pending</span>
+    STATUS: <span className="badge bg-warning">Pending</span>,
   },
   {
     id: "14",
@@ -497,7 +497,7 @@ const data = [
     DATE: "2012/02/21",
     SALARY: "$143,654",
     EMAIL: "m.bond@datatables.net",
-    STATUS: <span className="badge bg-danger">Inactive</span>
+    STATUS: <span className="badge bg-danger">Inactive</span>,
   },
 ];
 const columns = [
@@ -547,19 +547,25 @@ const tableDatas = {
   data,
 };
 export const ExportCSV = () => {
-  const actionsMemo = React.useMemo(() => <Export onExport={() => downloadCSV(data)} />, []);
+  const actionsMemo = React.useMemo(
+    () => <Export onExport={() => downloadCSV(data)} />,
+    []
+  );
+
   const [selectedRows, setSelectedRows] = React.useState([]);
   const [toggleCleared, setToggleCleared] = React.useState(false);
-  let selectdata = [];
+
   const handleRowSelected = React.useCallback((state) => {
     setSelectedRows(state.selectedRows);
   }, []);
+
   const contextActions = React.useMemo(() => {
     const Selectdata = () => {
-      if (window.confirm(`download:\r ${selectedRows.map((r) => r.SNO)}?`)) {
+      const selectdata = []; // ✅ Moved inside the function
+      if (window.confirm(`Download:\r ${selectedRows.map((r) => r.SNO)}?`)) {
         setToggleCleared(!toggleCleared);
-        data.map((e) => {
-          selectedRows.map((sr) => {
+        data.forEach((e) => {
+          selectedRows.forEach((sr) => {
             if (e.id === sr.id) {
               selectdata.push(e);
             }
@@ -569,8 +575,9 @@ export const ExportCSV = () => {
       }
     };
 
-    return <Export onExport={() => Selectdata()} icon="true" />;
-  }, [data, selectdata, selectedRows]);
+    return <Export onExport={Selectdata} icon={true} />;
+  }, [toggleCleared, selectedRows]);
+
   return (
     <DataTableExtensions {...tableDatas}>
       <DataTable

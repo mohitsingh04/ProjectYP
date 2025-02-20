@@ -27,14 +27,12 @@ export default function Seo() {
     });
   }, [dispatch, objectId]);
   const getSeo = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/seo`).then(({ data }) => {
-      dispatch(hideLoading());
       setSeo(
         data.filter((seo) => seo.property_id === String(property?.uniqueId))
       );
     });
-  }, [dispatch, property]);
+  }, [property]);
 
   useEffect(() => {
     getProperty();
@@ -42,8 +40,6 @@ export default function Seo() {
   useEffect(() => {
     getSeo();
   }, [getSeo]);
-
-  console.log(seo);
 
   const initialValues = {
     title: "",

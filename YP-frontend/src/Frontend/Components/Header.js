@@ -10,7 +10,7 @@ export default function Header() {
             <div class="container">
                 <header>
                     <nav class="navbar navbar-expand-md py-1">
-                        <a class="navbar-brand" href="#">
+                        <a class="navbar-brand" href="/">
                             <img src={Logo} class="brand-logo" width="140px" alt="Yogprerna" />
                         </a>
                         <div class="form-inline justify-content-center wcenter" id="head-search-bar">
@@ -30,10 +30,10 @@ export default function Header() {
                                     <a class="nav-link" href="blog.php">Blogs</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Job</a>
+                                    <a class="nav-link" href="/">Job</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">Log in</a>
+                                    <a class="nav-link" href="/">Log in</a>
                                 </li>
                             </ul>
                         </div>

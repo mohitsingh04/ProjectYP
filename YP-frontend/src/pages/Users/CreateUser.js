@@ -110,15 +110,17 @@ export default function CreateUser() {
                   <div className="form-row">
                     <div className="form-group col-md-6 mb-3">
                       <Form.Group>
-                        <Form.Label>User Name</Form.Label>
+                        <Form.Label htmlFor="name">User Name</Form.Label>
                         <input
                           type="text"
                           name="name"
+                          id="name"
                           className="form-control"
                           placeholder="User Name"
                           value={values.name}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="name"
                         />
                         {errors.name && touched.name ? (
                           <span className="text-danger">{errors.name}</span>
@@ -129,15 +131,17 @@ export default function CreateUser() {
                     </div>
                     <div className="form-group col-md-6 mb-3">
                       <Form.Group>
-                        <Form.Label>User Email</Form.Label>
+                        <Form.Label htmlFor="email">User Email</Form.Label>
                         <input
                           type="text"
+                          id="email"
                           name="email"
                           className="form-control"
                           placeholder="User Email"
                           value={values.email}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="email"
                         />
                         {errors.email && touched.email ? (
                           <span className="text-danger">{errors.email}</span>
@@ -148,10 +152,13 @@ export default function CreateUser() {
                     </div>
                     <div className="form-group col-md-6 mb-3">
                       <Form.Group>
-                        <Form.Label>Phone Number</Form.Label>
+                        <Form.Label htmlFor="mobile_no">
+                          Phone Number
+                        </Form.Label>
                         <input
                           type="text"
                           name="mobile_no"
+                          id="mobile_no"
                           className="form-control"
                           placeholder="User Phone Number"
                           value={values.mobile_no}
@@ -169,11 +176,11 @@ export default function CreateUser() {
                     </div>
                     <div className="form-group col-md-6 mb-3">
                       <Form.Group>
-                        <Form.Label>User Role</Form.Label>
+                        <Form.Label htmlFor="role">User Role</Form.Label>
                         <select
                           name="role"
                           className="form-control"
-                          id="exampleInputRole"
+                          id="role"
                           value={values.role}
                           onChange={handleChange}
                           onBlur={handleBlur}

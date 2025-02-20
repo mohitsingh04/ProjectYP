@@ -323,7 +323,7 @@ export default function Reviews() {
                         <Form.Label>Rating</Form.Label>
                         <Rating
                           name="simple-controlled"
-                          value={formik.values.rating}
+                          value={Number(formik.values.rating)}
                           onChange={(_event, newValue) => {
                             formik.setFieldValue("rating", newValue);
                           }}

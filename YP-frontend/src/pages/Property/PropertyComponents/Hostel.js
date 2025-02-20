@@ -24,7 +24,7 @@ export default function Hostel() {
       });
     };
     getProperty();
-  }, []);
+  }, [dispatch, objectId]);
 
   const [showHostelTypeInInput, setShowHostelTypeInInput] = useState(false);
   const [showHostelDescriptionInInput, setShowHostelDescriptionInInput] =
@@ -33,17 +33,11 @@ export default function Hostel() {
   const handleEditHostelType = () => {
     setShowHostelTypeInInput(true);
   };
-  const handleUpdateHostelType = () => {
-    setShowHostelTypeInInput(false);
-  };
   const handleCancelEditHostelType = () => {
     setShowHostelTypeInInput(false);
   };
   const handleEditHostelDescription = () => {
     setShowHostelDescriptionInInput(true);
-  };
-  const handleUpdateHostelDescription = () => {
-    setShowHostelDescriptionInInput(false);
   };
   const handleCancelEditHostelDescription = () => {
     setShowHostelDescriptionInInput(false);
@@ -76,7 +70,7 @@ export default function Hostel() {
     }
   };
 
-  const { values, handleChange, handleBlur, handleSubmit } = useFormik({
+  const { handleBlur, handleSubmit } = useFormik({
     initialValues: initialValues,
     onSubmit: onSubmit,
     enableReinitialize: true,
@@ -519,7 +513,7 @@ export default function Hostel() {
                     </>
                   ) : (
                     <>
-                      <p>
+                      <div>
                         {property.property_hostel_description && (
                           <span>
                             {property.property_hostel_description.length >=
@@ -551,7 +545,7 @@ export default function Hostel() {
                             )}
                           </span>
                         )}
-                      </p>
+                      </div>
                     </>
                   )}
                 </Col>

@@ -33,14 +33,12 @@ export default function Faqs() {
   }, [getProperty]);
 
   const getFaqs = useCallback(() => {
-    dispatch(showLoading());
     API.get("/faqs").then(({ data }) => {
-      dispatch(hideLoading());
       setFaqs(
         data.filter((faqs) => faqs.property_id === String(property?.uniqueId))
       );
     });
-  }, [property, dispatch]);
+  }, [property]);
 
   useEffect(() => {
     getFaqs();

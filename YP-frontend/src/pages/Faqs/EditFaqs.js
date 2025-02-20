@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Breadcrumb, Form, Card, Row, Col } from "react-bootstrap";
-import DataRequest from "../../context/DataRequest";
-import { Link, useNavigate, useParams } from "react-router-dom";
+// import DataRequest from "../../context/DataRequest";
+import { useNavigate, useParams } from "react-router-dom";
 import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
@@ -12,29 +12,29 @@ export default function EditFaqs() {
   const navigate = useNavigate();
   const editorRef = useRef(null);
   const { objectId } = useParams();
-  const { User } = DataRequest();
+  // const { User } = DataRequest();
   const [faqs, setFaqs] = useState("");
   const [status, setStatus] = useState([]);
-  const [property, setProperty] = useState("");
+  // const [property, setProperty] = useState("");
   const [answer, setAnswer] = useState("");
-  const [Error, setError] = useState("");
+  // const [Error, setError] = useState("");
+
+  const getFaqs = useCallback(() => {
+    API.get(`/faqs/${objectId}`).then(({ data }) => {
+      setFaqs(data);
+    });
+  }, [objectId]);
+
+  const getStatus = useCallback(() => {
+    API.get(`/status`).then(({ data }) => {
+      setStatus(data);
+    });
+  }, []);
 
   useEffect(() => {
     getFaqs();
     getStatus();
-  }, []);
-
-  const getFaqs = () => {
-    API.get(`/faqs/${objectId}`).then(({ data }) => {
-      setFaqs(data);
-    });
-  };
-
-  const getStatus = () => {
-    API.get(`/status`).then(({ data }) => {
-      setStatus(data);
-    });
-  };
+  }, [getFaqs, getStatus]);
 
   const initialValues = {
     question: faqs.question || "",

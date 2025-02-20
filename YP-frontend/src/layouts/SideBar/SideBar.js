@@ -130,14 +130,13 @@ const Sidebar = () => {
                 </li>
                 {User?.role === "Super Admin" ? (
                   <>
-                    {" "}
                     <li
                       className={`slide ${
                         activeIndex === 1 ? "is-expanded" : ""
                       }`}
                       onClick={() => toggleActiveIndex(1)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "user" ? "active" : ""
                         }`}
@@ -145,7 +144,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-users`}></i>
                         <span className="side-menu__label">Users</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -163,7 +162,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(2)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "status" ? "active" : ""
                         }`}
@@ -171,7 +170,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-cpu`}></i>
                         <span className="side-menu__label">Status</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -197,7 +196,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(3)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "course" ? "active" : ""
                         }`}
@@ -205,7 +204,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-database`}></i>
                         <span className="side-menu__label">Course</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -231,7 +230,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(4)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "category" ? "active" : ""
                         }`}
@@ -239,7 +238,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-database`}></i>
                         <span className="side-menu__label">Category</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -265,7 +264,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(5)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "property" ? "active" : ""
                         }`}
@@ -273,7 +272,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-grid`}></i>
                         <span className="side-menu__label">Property</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -299,7 +298,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(6)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "enquiry" ? "active" : ""
                         }`}
@@ -309,7 +308,7 @@ const Sidebar = () => {
                         ></i>
                         <span className="side-menu__label">Enquiry</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -330,7 +329,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(2)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "status" ? "active" : ""
                         }`}
@@ -338,7 +337,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-cpu`}></i>
                         <span className="side-menu__label">Status</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -364,7 +363,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(3)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "course" ? "active" : ""
                         }`}
@@ -372,7 +371,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-database`}></i>
                         <span className="side-menu__label">Course</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -398,7 +397,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(4)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "category" ? "active" : ""
                         }`}
@@ -406,7 +405,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-database`}></i>
                         <span className="side-menu__label">Category</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -432,7 +431,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(5)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "property" ? "active" : ""
                         }`}
@@ -440,7 +439,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-grid`}></i>
                         <span className="side-menu__label">Property</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -466,7 +465,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(6)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "enquiry" ? "active" : ""
                         }`}
@@ -476,7 +475,7 @@ const Sidebar = () => {
                         ></i>
                         <span className="side-menu__label">Enquiry</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -497,7 +496,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(5)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "property" ? "active" : ""
                         }`}
@@ -505,7 +504,7 @@ const Sidebar = () => {
                         <i className={`side-menu__icon fe fe-grid`}></i>
                         <span className="side-menu__label">Property</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -531,7 +530,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(6)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "enquiry" ? "active" : ""
                         }`}
@@ -541,7 +540,7 @@ const Sidebar = () => {
                         ></i>
                         <span className="side-menu__label">Enquiry</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink
@@ -563,7 +562,7 @@ const Sidebar = () => {
                       }`}
                       onClick={() => toggleActiveIndex(6)}
                     >
-                      <li
+                      <div
                         className={`side-menu__item ${
                           isActive === "enquiry" ? "active" : ""
                         }`}
@@ -573,7 +572,7 @@ const Sidebar = () => {
                         ></i>
                         <span className="side-menu__label">Enquiry</span>
                         <i className={`fa angle fa-angle-right `}></i>
-                      </li>
+                      </div>
                       <ul className="slide-menu">
                         <li>
                           <NavLink

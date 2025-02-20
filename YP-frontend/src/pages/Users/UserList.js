@@ -85,25 +85,20 @@ export default function UserList() {
     },
     {
       name: "PROFILE",
-      selector: (row) => [
-        row.profile?.[0] === null ? (
-          <img
-            src={defaultProfile}
-            className="rounded-circle"
-            width={50}
-            height={50}
-            alt="profile"
-          />
-        ) : (
-          <img
-            src={`http://localhost:5000/${row.profile[0]}`}
-            className="rounded-circle"
-            width={50}
-            height={50}
-            alt="profile"
-          />
-        ),
-      ],
+      selector: (row) => (
+        <img
+          key={row._id}
+          src={
+            row.profile?.[0] === null
+              ? defaultProfile
+              : `http://localhost:5000/${row.profile[0]}`
+          }
+          className="rounded-circle"
+          width={50}
+          height={50}
+          alt="profile"
+        />
+      ),
       sortable: true,
     },
     {
@@ -118,41 +113,39 @@ export default function UserList() {
     },
     {
       name: "VERIFIED",
-      selector: (row) => [
-        <>
-          {row.verified === true ? (
-            <>
-              <span className="badge bg-success">Verified</span>
-            </>
-          ) : (
-            <>
-              <span className="badge bg-danger">Not verified</span>
-            </>
-          )}
-        </>,
-      ],
+      selector: (row) => (
+        <span
+          key={row._id}
+          className={`badge ${row.verified ? "bg-success" : "bg-danger"}`}
+        >
+          {row.verified ? "Verified" : "Not verified"}
+        </span>
+      ),
       sortable: true,
     },
     {
       name: "STATUS",
-      selector: (row) => [
-        <>
-          {row.status === "Active" ? (
-            <span className="badge bg-success">{row.status}</span>
-          ) : row.status === "InActive" ? (
-            <span className="badge bg-danger">{row.status}</span>
-          ) : (
-            <span className="badge bg-warning">{row.status}</span>
-          )}
-        </>,
-      ],
+      selector: (row) => (
+        <span
+          key={row._id}
+          className={`badge ${
+            row.status === "Active"
+              ? "bg-success"
+              : row.status === "InActive"
+              ? "bg-danger"
+              : "bg-warning"
+          }`}
+        >
+          {row.status}
+        </span>
+      ),
       sortable: true,
     },
     {
       name: "ACTION",
-      selector: (row) => [
-        <>
-          {authPermissions?.some((item) => item.value === "Read User") ? (
+      selector: (row) => (
+        <div key={row._id}>
+          {authPermissions?.some((item) => item.value === "Read User") && (
             <button
               data-bs-toggle="tooltip"
               title="View"
@@ -160,10 +153,8 @@ export default function UserList() {
             >
               <i className="fe fe-eye"></i>
             </button>
-          ) : (
-            ""
           )}
-          {authPermissions?.some((item) => item.value === "Update User") ? (
+          {authPermissions?.some((item) => item.value === "Update User") && (
             <button
               data-bs-toggle="tooltip"
               title="Edit"
@@ -171,10 +162,8 @@ export default function UserList() {
             >
               <i className="fe fe-edit"></i>
             </button>
-          ) : (
-            ""
           )}
-          {authPermissions?.some((item) => item.value === "Delete User") ? (
+          {authPermissions?.some((item) => item.value === "Delete User") && (
             <button
               data-bs-toggle="tooltip"
               title="Delete"
@@ -182,11 +171,9 @@ export default function UserList() {
             >
               <i className="fe fe-trash-2"></i>
             </button>
-          ) : (
-            ""
           )}
-        </>,
-      ],
+        </div>
+      ),
     },
   ];
 
@@ -204,8 +191,8 @@ export default function UserList() {
           <div>
             <h1 className="page-title">Users</h1>
             <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item">
-                <Link to="/dashboard/">Dashboard</Link>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+                Dashboard
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className="breadcrumb-item active breadcrumds"

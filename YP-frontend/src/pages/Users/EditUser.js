@@ -131,11 +131,14 @@ export default function EditUser() {
           <div>
             <h1 className="page-title">User</h1>
             <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item">
-                <Link to="/dashboard/">Dashboard</Link>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+                Dashboard
               </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item">
-                <Link to="/dashboard/user/">User</Link>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: "/dashboard/user/" }}
+              >
+                User
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className="breadcrumb-item active"
@@ -171,16 +174,17 @@ export default function EditUser() {
                   <Row>
                     <Col lg={12} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputname">First Name</label>
+                        <label htmlFor="name">First Name</label>
                         <Form.Control
                           type="text"
                           name="name"
                           className="form-control"
-                          id="exampleInputname"
+                          id="name"
                           placeholder="First Name"
                           value={values.name}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="name"
                         />
                         {errors.name && touched.name ? (
                           <small className="text-danger">{errors.name}</small>
@@ -191,30 +195,32 @@ export default function EditUser() {
                     </Col>
                   </Row>
                   <FormGroup className="mt-2">
-                    <label htmlFor="exampleInputEmail1">Email address</label>
+                    <label htmlFor="email">Email address</label>
                     <Form.Control
                       type="email"
                       name="email"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="email"
                       placeholder="email address"
                       value={values.email}
                       onChange={handleChange}
+                      autoComplete="email"
                       onBlur={handleBlur}
                       disabled
                     />
                     {/* {errors.email && touched.email ? <small className='text-danger'>{errors.email}</small> : <span />} */}
                   </FormGroup>
                   <FormGroup className="mt-2">
-                    <label htmlFor="exampleInputnumber">Contact Number</label>
+                    <label htmlFor="phone">Contact Number</label>
                     <Form.Control
                       type="number"
                       name="mobile_no"
                       className="form-control"
-                      id="exampleInputnumber"
+                      id="phone"
                       placeholder="mobile number"
                       value={values.mobile_no}
                       onChange={handleChange}
+                      autoComplete="mobile_no"
                       onBlur={handleBlur}
                       disabled
                     />
@@ -227,16 +233,17 @@ export default function EditUser() {
                   <Row className="mt-3">
                     <Col lg={8} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputaddress">Address</label>
+                        <label htmlFor="address">Address</label>
                         <Form.Control
                           type="text"
                           name="address"
                           className="form-control"
-                          id="exampleInputaddress"
+                          id="address"
                           placeholder="Address *"
                           value={values.address}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="address"
                         />
                         {errors.address && touched.address ? (
                           <small className="text-danger">
@@ -249,12 +256,12 @@ export default function EditUser() {
                     </Col>
                     <Col lg={4} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputpincode">Pincode</label>
+                        <label htmlFor="pincode">Pincode</label>
                         <Form.Control
                           type="number"
                           name="pincode"
                           className="form-control"
-                          id="exampleInputpincode"
+                          id="pincode"
                           placeholder="Pincode *"
                           value={values.pincode}
                           onChange={handleChange}
@@ -273,12 +280,12 @@ export default function EditUser() {
                   <Row className="mt-2">
                     <Col lg={6} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputcity">City</label>
+                        <label htmlFor="city">City</label>
                         <Form.Control
                           type="text"
                           name="city"
                           className="form-control"
-                          id="exampleInputcity"
+                          id="city"
                           placeholder="City *"
                           value={values.city}
                           onChange={handleChange}
@@ -293,12 +300,12 @@ export default function EditUser() {
                     </Col>
                     <Col lg={6} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputstate">State</label>
+                        <label htmlFor="state">State</label>
                         <Form.Control
                           type="text"
                           name="state"
                           className="form-control"
-                          id="exampleInputstate"
+                          id="state"
                           placeholder="State *"
                           value={values.state}
                           onChange={handleChange}
@@ -313,11 +320,11 @@ export default function EditUser() {
                     </Col>
                     <Col lg={6} md={12} className="mt-2">
                       <FormGroup>
-                        <label htmlFor="exampleInputstatus">Status</label>
+                        <label htmlFor="status">Status</label>
                         <select
                           name="status"
                           className="form-control"
-                          id="exampleInputstatus"
+                          id="status"
                           value={values.status === "Pending" && ""}
                           onChange={handleChange}
                           onBlur={handleBlur}
@@ -338,11 +345,11 @@ export default function EditUser() {
                     </Col>
                     <Col lg={6} md={12} className="mt-2">
                       <FormGroup>
-                        <label htmlFor="exampleInputRole">Role</label>
+                        <label htmlFor="role">Role</label>
                         <select
                           name="role"
                           className="form-control"
-                          id="exampleInputRole"
+                          id="role"
                           value={values.role}
                           onChange={handleChange}
                           onBlur={handleBlur}
@@ -366,7 +373,7 @@ export default function EditUser() {
                   <Row>
                     <Col md={6}>
                       <Form.Group className="mb-3">
-                        <Form.Label htmlFor="userPermission">
+                        <Form.Label htmlFor="permissions">
                           Permission
                         </Form.Label>
                         <Dropdown
@@ -375,6 +382,8 @@ export default function EditUser() {
                             value: group.name,
                           }))}
                           keepSelectedInList={false}
+                          id="permissions"
+                          name="permissions"
                           multi={true}
                           placeholder="Choose Permissions   "
                           value={values.permission}

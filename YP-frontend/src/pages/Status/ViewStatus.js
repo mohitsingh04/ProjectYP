@@ -57,11 +57,14 @@ export default function ViewStatus() {
           <div>
             <h1 className="page-title">Status</h1>
             <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item" href="#">
-                <Link to="/dashboard/">Dashboard</Link>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+                Dashboard
               </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-                <Link to="/dashboard/status/">Status</Link>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: "/dashboard/status/" }}
+              >
+                Status
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className="breadcrumb-item active"
@@ -118,7 +121,7 @@ export default function ViewStatus() {
                 </div>
                 <Row className="row profie-img">
                   <Col md={12}>
-                    <p className="mb-0">
+                    <div className="mb-0">
                       {status.description ? (
                         <strong className="fs-6">Description: </strong>
                       ) : (
@@ -155,7 +158,7 @@ export default function ViewStatus() {
                           )}
                         </span>
                       )}
-                    </p>
+                    </div>
                   </Col>
                 </Row>
               </Card.Body>

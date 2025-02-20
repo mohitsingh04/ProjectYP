@@ -14,7 +14,7 @@ import defaultIcon from "../../Images/defaultcategory-compressed.webp";
 export default function CategoryList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState([]);
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
 
@@ -109,62 +109,64 @@ export default function CategoryList() {
     },
     {
       name: "STATUS",
-      selector: (row) => [
-        <>
-          {row.status === "Active" ? (
-            <span className="badge bg-success">{row.status}</span>
-          ) : row.status === "InActive" ? (
-            <span className="badge bg-danger">{row.status}</span>
-          ) : (
-            <span className="badge bg-warning">{row.status}</span>
-          )}
-        </>,
-      ],
+      selector: (row) => (
+        <span
+          key={row._id}
+          className={`badge ${
+            row.status === "Active"
+              ? "bg-success"
+              : row.status === "InActive"
+              ? "bg-danger"
+              : "bg-warning"
+          }`}
+        >
+          {row.status}
+        </span>
+      ),
       sortable: true,
     },
     {
       name: "Action",
-      selector: (row) => [
+      selector: (row) => (
         <>
-          {authPermissions?.some((items) => items.value === "Read Category") ? (
+          {authPermissions?.some(
+            (items) => items.value === "Read Category"
+          ) && (
             <button
+              key={`${row._id}-view`}
               data-bs-toggle="tooltip"
               title="View"
               onClick={() => viewCategory(row._id)}
             >
               <i className="fe fe-eye"></i>
             </button>
-          ) : (
-            ""
           )}
           {authPermissions?.some(
             (items) => items.value === "Update Category"
-          ) ? (
+          ) && (
             <button
+              key={`${row._id}-edit`}
               data-bs-toggle="tooltip"
               title="Edit"
               onClick={() => editCategory(row._id)}
             >
               <i className="fe fe-edit"></i>
             </button>
-          ) : (
-            ""
           )}
           {authPermissions?.some(
             (items) => items.value === "Delete Category"
-          ) ? (
+          ) && (
             <button
+              key={`${row._id}-delete`}
               data-bs-toggle="tooltip"
               title="Delete"
               onClick={() => deleteCategory(row._id)}
             >
               <i className="fe fe-trash"></i>
             </button>
-          ) : (
-            ""
           )}
-        </>,
-      ],
+        </>
+      ),
     },
   ];
 
@@ -182,8 +184,8 @@ export default function CategoryList() {
           <div>
             <h1 className="page-title">Category</h1>
             <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item" href="#">
-                <Link to="/dashboard/">Dashboard</Link>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+                Dashboard
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className="breadcrumb-item active breadcrumds"
@@ -224,6 +226,7 @@ export default function CategoryList() {
                         persistTableHead
                         pagination
                         highlightOnHover
+                        aria-label="Category List Table"
                       />
                     </DataTableExtensions>
                   </div>

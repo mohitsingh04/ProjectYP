@@ -73,24 +73,17 @@ export default function ShowProperty() {
         <div>
           <h1 className="page-title">Property</h1>
           <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item className="breadcrumb-item">
-              <Link to="/dashboard/">Dashboard</Link>
-            </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-              <Link to="/dashboard/property/">Property</Link>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+              Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item
-              className="breadcrumb-item active"
-              aria-current="page"
+              linkAs={Link}
+              linkProps={{ to: "/dashboard/property/" }}
             >
-              View
+              Property
             </Breadcrumb.Item>
-            <Breadcrumb.Item
-              className="breadcrumb-item active breadcrumds"
-              aria-current="page"
-            >
-              {property.property_name}
-            </Breadcrumb.Item>
+            <Breadcrumb.Item active>View</Breadcrumb.Item>
+            <Breadcrumb.Item active>{property.property_name}</Breadcrumb.Item>
           </Breadcrumb>
         </div>
       </div>
@@ -98,12 +91,6 @@ export default function ShowProperty() {
       <Row id="user-profile">
         <Col lg={12}>
           <Card className=" bg-transparent shadow-none border-0">
-            {/* <Card.Body className="bg-white">
-              <div className="wideget-user-img">
-                <img className="" src={`http://localhost:5000/images/${property.featured_image}`} width={1019} height={180} alt="img" />
-              </div>
-            </Card.Body> */}
-            <br />
             <Card.Body className=" bg-white">
               <div className="wideget-user">
                 <Row>

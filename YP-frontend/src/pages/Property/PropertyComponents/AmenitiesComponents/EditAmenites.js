@@ -2,7 +2,7 @@ import React, { Fragment, useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { API } from "../../../../context/Api";
 
 const amenitiesData = {
@@ -15,7 +15,7 @@ const amenitiesData = {
 };
 
 export default function EditAmenities({ property }) {
-  const { objectId } = useParams();
+  // const { objectId } = useParams();
   const [selectedCategory, setSelectedCategory] = useState("Mandatory");
   const [parkingType, setParkingType] = useState("");
   const [wifiType, setWifiType] = useState("");

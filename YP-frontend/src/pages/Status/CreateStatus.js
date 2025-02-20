@@ -129,10 +129,11 @@ export default function CreateStatus() {
                 <div className="form-row">
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Status Name</Form.Label>
+                      <Form.Label htmlFor="status_name">Status Name</Form.Label>
                       <input
                         type="text"
                         name="status_name"
+                        id="status_name"
                         className="form-control"
                         placeholder="Status Name"
                         value={values.status_name}
@@ -150,10 +151,11 @@ export default function CreateStatus() {
                   </div>
                   <div className="form-group col-md-2 mb-3">
                     <Form.Group>
-                      <Form.Label>Color</Form.Label>
+                      <Form.Label htmlFor="status_color">Color</Form.Label>
                       <input
                         type="color"
                         name="status_color"
+                        id="status_color"
                         className="form-control"
                         placeholder="Color"
                         value={values.status_color}
@@ -171,13 +173,14 @@ export default function CreateStatus() {
                   </div>
                   <div className="form-group col-md-12 mb-3">
                     <Form.Group>
-                      <Form.Label>Description</Form.Label>
+                      <Form.Label htmlFor="description">Description</Form.Label>
                       <Editor
                         apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={(e) =>
                           setDescription(editorRef.current.getContent())
                         }
+                        id="description"
                         onBlur={handleBlur}
                         init={{
                           height: 200,

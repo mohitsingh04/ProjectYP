@@ -132,12 +132,15 @@ export default function CreateCategory() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Category</h1>
-          <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item className="breadcrumb-item">
-              <Link to="/dashboard/">Dashboard</Link>
+          <Breadcrumb>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard" }}>
+              Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-              <Link to="/dashboard/category/">Category</Link>
+            <Breadcrumb.Item
+              linkAs={Link}
+              linkProps={{ to: "/dashboard/category/" }}
+            >
+              Category
             </Breadcrumb.Item>
             <Breadcrumb.Item
               className="breadcrumb-item active breadcrumds"
@@ -168,10 +171,13 @@ export default function CreateCategory() {
                 <div className="form-row">
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Category Name</Form.Label>
+                      <Form.Label htmlFor="category_name">
+                        Category Name
+                      </Form.Label>
                       <input
                         type="text"
                         name="category_name"
+                        id="category_name"
                         className="form-control"
                         placeholder="Category Name"
                         value={values.category_name}
@@ -189,10 +195,13 @@ export default function CreateCategory() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Parent Category</Form.Label>
+                      <Form.Label htmlFor="parent_category">
+                        Parent Category
+                      </Form.Label>
                       {category.length > 0 ? (
                         <>
                           <select
+                            id="parent_category"
                             name="parent_category"
                             className="farms form-control"
                             value={values.parent_category}
@@ -201,7 +210,7 @@ export default function CreateCategory() {
                           >
                             <option value="">--Select--</option>
                             {category.map((item, key) => (
-                              <option value={item.uniqueId}>
+                              <option key={key} value={item.uniqueId}>
                                 {item.category_name}
                               </option>
                             ))}
@@ -230,8 +239,9 @@ export default function CreateCategory() {
                   </div>
                   <div className="form-group col-md-12 mb-3">
                     <Form.Group>
-                      <Form.Label>Description</Form.Label>
+                      <Form.Label htmlFor="decription">Description</Form.Label>
                       <Editor
+                        id="decription"
                         apiKey="2208d39gvqf0t85mghgd0dkeiea75lcrl5ffsyn3y8ulwsy8"
                         onInit={(evt, editor) => (editorRef.current = editor)}
                         onChange={() =>
@@ -282,9 +292,10 @@ export default function CreateCategory() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Icon</Form.Label>
+                      <Form.Label htmlFor="icon">Icon</Form.Label>
                       <input
                         type="file"
+                        id="icon"
                         name="category_icon"
                         accept="image/jpeg, image/png"
                         className="form-control"
@@ -317,10 +328,13 @@ export default function CreateCategory() {
                   </div>
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label>Featured Image</Form.Label>
+                      <Form.Label htmlFor="featured_image">
+                        Featured Image
+                      </Form.Label>
                       <input
                         type="file"
                         name="featured_image"
+                        id="featured_image"
                         accept="image/jpeg, image/png"
                         className="form-control"
                         onChange={(e) => {

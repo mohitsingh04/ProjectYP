@@ -27,55 +27,12 @@ export default function BasicDetails() {
   useEffect(() => {
     getProperty();
   }, [getProperty]);
-
-  // const [showNameInInput, setShowNameInInput] = useState(false);
-  // const [showEmailInInput, setShowEmailInInput] = useState(false);
-  // const [showContactInInput, setShowContactInInput] = useState(false);
-  // const [showAltContactInInput, setShowAltContactInInput] = useState(false);
   const [showDescriptionInInput, setShowDescriptionInInput] = useState(false);
 
-  // const handleEditName = () => {
-  //   setShowNameInInput(true);
-  // };
-  // const handleUpdateName = () => {
-  //   setShowNameInInput(false);
-  // };
-  // const handleCancelEditName = () => {
-  //   setShowNameInInput(false);
-  // };
-  // const handleEditEmail = () => {
-  //   setShowEmailInInput(true);
-  // };
-  // const handleUpdateEmail = () => {
-  //   setShowEmailInInput(false);
-  // };
-  // const handleCancelEditEmail = () => {
-  //   setShowEmailInInput(false);
-  // };
-  // const handleEditContact = () => {
-  //   setShowContactInInput(true);
-  // };
-  // const handleUpdateContact = () => {
-  //   setShowContactInInput(false);
-  // };
-  // const handleCancelEditContact = () => {
-  //   setShowContactInInput(false);
-  // };
-  // const handleEditAltContact = () => {
-  //   setShowAltContactInInput(true);
-  // };
-  // const handleUpdateAltContact = () => {
-  //   setShowAltContactInInput(false);
-  // };
-  // const handleCancelEditAltContact = () => {
-  //   setShowAltContactInInput(false);
-  // };
   const handleEditDescription = () => {
     setShowDescriptionInInput(true);
   };
-  // const handleUpdateDescription = () => {
-  //   setShowDescriptionInInput(false);
-  // };
+
   const handleCancelEditDescription = () => {
     setShowDescriptionInInput(false);
   };
@@ -268,12 +225,12 @@ export default function BasicDetails() {
                     </>
                   ) : (
                     <>
-                      <p>
+                      <div>
                         {property.property_description && (
                           <span>
                             {property.property_description.length >= 1500 ? (
                               <>
-                                <p
+                                <div
                                   dangerouslySetInnerHTML={{
                                     __html: isExpanded
                                       ? property.property_description
@@ -291,7 +248,7 @@ export default function BasicDetails() {
                                 </button>
                               </>
                             ) : (
-                              <p
+                              <div
                                 dangerouslySetInnerHTML={{
                                   __html: property.property_description,
                                 }}
@@ -299,7 +256,7 @@ export default function BasicDetails() {
                             )}
                           </span>
                         )}
-                      </p>
+                      </div>
                     </>
                   )}
                 </Col>

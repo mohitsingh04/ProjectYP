@@ -14,7 +14,7 @@ import defaultCourse from "../../Images/defaultcourse.webp";
 export default function CourseList() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [course, setCourse] = useState("");
+  const [course, setCourse] = useState([]);
 
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
@@ -98,58 +98,65 @@ export default function CourseList() {
     },
     {
       name: "STATUS",
-      selector: (row) => [
+      selector: (row) => (
         <>
           {row.status === "Active" ? (
-            <span className="badge bg-success">{row.status}</span>
+            <span key={`${row._id}-active`} className="badge bg-success">
+              {row.status}
+            </span>
           ) : row.status === "InActive" ? (
-            <span className="badge bg-danger">{row.status}</span>
+            <span key={`${row._id}-inactive`} className="badge bg-danger">
+              {row.status}
+            </span>
           ) : (
-            <span className="badge bg-warning">{row.status}</span>
+            <span key={`${row._id}-other`} className="badge bg-warning">
+              {row.status}
+            </span>
           )}
-        </>,
-      ],
+        </>
+      ),
       sortable: true,
     },
     {
       name: "ACTION",
-      selector: (row) => [
+      selector: (row) => (
         <>
-          {authPermissions?.some((items) => items.value === "Read Course") ? (
+          {authPermissions?.some((items) => items.value === "Read Course") && (
             <button
+              key={`${row._id}-view`}
               data-bs-toggle="tooltip"
               title="View"
               onClick={() => viewCourse(row._id)}
             >
               <i className="fe fe-eye"></i>
             </button>
-          ) : (
-            ""
           )}
-          {authPermissions?.some((items) => items.value === "Update Course") ? (
+          {authPermissions?.some(
+            (items) => items.value === "Update Course"
+          ) && (
             <button
+              key={`${row._id}-edit`}
               data-bs-toggle="tooltip"
               title="Edit"
               onClick={() => editCourse(row._id)}
             >
               <i className="fe fe-edit"></i>
             </button>
-          ) : (
-            ""
           )}
-          {authPermissions?.some((items) => items.value === "Delete Course") ? (
+          {authPermissions?.some(
+            (items) => items.value === "Delete Course"
+          ) && (
             <button
+              key={`${row._id}-delete`}
               data-bs-toggle="tooltip"
               title="Delete"
               onClick={() => deleteCourse(row._id)}
             >
               <i className="fe fe-trash-2"></i>
             </button>
-          ) : (
-            ""
           )}
-        </>,
-      ],
+        </>
+      ),
     },
   ];
 
@@ -167,8 +174,8 @@ export default function CourseList() {
           <div>
             <h1 className="page-title">Course</h1>
             <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item">
-                <Link to="/dashboard/">Dashboard</Link>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+                Dashboard
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className="breadcrumb-item active breadcrumds"

@@ -18,9 +18,13 @@ export default function Achievements() {
   }, [objectId]);
 
   const getAchievements = useCallback(async () => {
-    const response = await API.get(`/achievements/${property?.uniqueId}`);
-    if (response?.data?.achievements) {
-      setOldAchievements(response.data.achievements);
+    try {
+      const response = await API.get(`/achievements/${property?.uniqueId}`);
+      if (response?.data?.achievements) {
+        setOldAchievements(response.data.achievements);
+      }
+    } catch (error) {
+      console.log(error);
     }
   }, [property]);
 
@@ -29,8 +33,10 @@ export default function Achievements() {
   }, [getProperty]);
 
   useEffect(() => {
-    getAchievements();
-  }, [getAchievements]);
+    if (property?.uniqueId) {
+      getAchievements();
+    }
+  }, [getAchievements, property]);
 
   const onDrop = useCallback((acceptedFiles) => {
     const filePreviews = acceptedFiles.map((file) =>

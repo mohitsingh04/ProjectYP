@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Button, Col, Form, Row, Container } from "react-bootstrap";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+// import { useParams } from "react-router-dom";
 import { API } from "../../../../context/Api";
 
 const amenitiesData = {

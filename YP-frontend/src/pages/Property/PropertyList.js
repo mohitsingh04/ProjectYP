@@ -77,21 +77,32 @@ export default function PropertyList() {
     if (img !== null) {
       const x = img.split("/");
       if (x.length > 2) {
-        return [<img src={`http://localhost:5000/${img}`} width={53} alt="" />];
+        return (
+          <img
+            key={img}
+            src={`http://localhost:5000/${img}`}
+            width={53}
+            alt=""
+          />
+        );
       } else if (x.length < 2) {
-        return [
-          <img src={`http://localhost:5000/images/${img}`} width={53} alt="" />,
-        ];
+        return (
+          <img
+            key={img}
+            src={`http://localhost:5000/images/${img}`}
+            width={53}
+            alt=""
+          />
+        );
       }
     }
-
-    return [<img src={defautLogo} width={53} alt="" />];
+    return <img key={`default Logo`} src={defautLogo} width={53} alt="" />;
   }, []);
 
   const columns = [
     {
       name: "S.NO",
-      selector: (row) => [row.uniqueId],
+      selector: (row) => row.uniqueId,
       sortable: true,
     },
     {
@@ -101,52 +112,59 @@ export default function PropertyList() {
     },
     {
       name: "NAME",
-      selector: (row) => [row.property_name],
+      selector: (row) => row.property_name,
       sortable: true,
     },
     {
       name: "STATUS",
-      selector: (row) => [
-        <>
-          {row.status === "Active" ? (
-            <span className="badge bg-success">{row.status}</span>
-          ) : row.status === "InActive" ? (
-            <span className="badge bg-danger">{row.status}</span>
-          ) : (
-            <span className="badge bg-warning">{row.status}</span>
-          )}
-        </>,
-      ],
+      selector: (row) => (
+        <span
+          key={`status-${row._id}`}
+          className={`badge ${
+            row.status === "Active"
+              ? "bg-success"
+              : row.status === "InActive"
+              ? "bg-danger"
+              : "bg-warning"
+          }`}
+        >
+          {row.status}
+        </span>
+      ),
       sortable: true,
     },
     {
       name: "ACTION",
-      selector: (row) => [
-        <>
-          {authPermissions?.some((items) => items.value === "Read Property") ? (
+      selector: (row) => (
+        <div key={`actions-${row._id}`} className="action-buttons">
+          {" "}
+          {/* ✅ Added key */}
+          {authPermissions?.some(
+            (items) => items.value === "Read Property"
+          ) && (
             <button
+              key={`view-${row._id}`}
               data-bs-toggle="tooltip"
               title="View"
               onClick={() => viewProperty(row._id)}
             >
               <i className="fe fe-eye"></i>
             </button>
-          ) : (
-            ""
           )}
-          {authPermissions?.some((items) => items.value === "Read Property") ? (
+          {authPermissions?.some(
+            (items) => items.value === "Read Property"
+          ) && (
             <button
+              key={`delete-${row._id}`}
               data-bs-toggle="tooltip"
               title="Delete"
               onClick={() => deleteProperty(row._id)}
             >
               <i className="fe fe-trash"></i>
             </button>
-          ) : (
-            ""
           )}
-        </>,
-      ],
+        </div>
+      ),
     },
   ];
 

@@ -57,8 +57,10 @@ export const getAchievementsByPropertyId = async (req, res) => {
   try {
     const { property_id } = req.params;
 
+    const id = Number(property_id);
+
     const achievements = await Achievements.findOne({
-      property_id: property_id,
+      property_id: id,
     });
 
     return res.status(200).json(achievements);

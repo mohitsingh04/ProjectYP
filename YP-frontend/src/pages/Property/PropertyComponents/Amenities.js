@@ -24,7 +24,6 @@ export default function Amenities() {
     const fetchAmenities = async () => {
       try {
         const response = await API.get("/amenities");
-        console.log(response);
         const filteredAmenities = response.data.filter(
           (amenities) => amenities.propertyId === Number(property?.uniqueId)
         );
@@ -88,7 +87,10 @@ export default function Amenities() {
                       (amenityCategory, index) =>
                         Object.entries(amenityCategory).map(
                           ([category, items]) => (
-                            <div key={index} className="col-md-4">
+                            <div
+                              key={`${category}-${index}`}
+                              className="col-md-4"
+                            >
                               <h6 className="font-bold">{category}</h6>
                               <ul>
                                 {Array.isArray(items) &&

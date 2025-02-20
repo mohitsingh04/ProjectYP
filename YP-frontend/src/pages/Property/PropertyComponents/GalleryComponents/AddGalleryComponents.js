@@ -9,14 +9,17 @@ export default function AddGallery({ getGallery, property }) {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
-    return () => {
-      images.forEach((file) => {
-        if (file.preview) {
-          URL.revokeObjectURL(file.preview);
-        }
-      });
+    const handleImageRemoval = () => {
+      return () => {
+        images.forEach((file) => {
+          if (file.preview) {
+            URL.revokeObjectURL(file.preview);
+          }
+        });
+      };
     };
-  }, []);
+    handleImageRemoval();
+  }, [images]);
 
   const initialValues = {
     propertyId: property?.uniqueId || "",
