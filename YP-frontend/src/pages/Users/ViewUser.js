@@ -93,19 +93,21 @@ export default function ViewUser() {
                     <Col lg={12} md={12} xl={6}>
                       <div className="wideget-user-desc d-sm-flex">
                         <div className="wideget-user-img">
-                          {user.profile == null ? (
+                          {user?.profile?.[0] ? (
                             <img
-                              src={require("../../assets/images/users/8.jpg")}
-                              alt="profile-user"
-                              className=""
-                            />
-                          ) : (
-                            <img
-                              src={`http://localhost:5000/${user?.profile[0]}`}
+                              src={`http://localhost:5000/${user?.profile?.[0]}`}
                               alt="profile-user"
                               width={128}
                               height={128}
                               className=""
+                            />
+                          ) : (
+                            <img
+                              src={require("../../Images/DefaultProfile.jpg")}
+                              alt="profile-user"
+                              className=""
+                              width={128}
+                              height={128}
                             />
                           )}
                         </div>

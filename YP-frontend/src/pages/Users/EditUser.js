@@ -6,7 +6,6 @@ import * as Yup from "yup";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import Dropdown from "react-dropdown-select";
-import EditUserProfile from "./EditUserProfile";
 import DataRequest from "../../context/DataRequest";
 
 export default function EditUser() {
@@ -89,7 +88,7 @@ export default function EditUser() {
     await API.patch(`/user/${objectId}`, values).then((response) => {
       if (response.data.message) {
         toast.success(response.data.message);
-        navigate("/dashboard/users");
+        navigate("/dashboard/user");
       } else if (response.data.error) {
         toast.error(response.data.error);
         console.log(errors);
@@ -119,7 +118,8 @@ export default function EditUser() {
   if (!hasPermission) {
     return (
       <div className="position-absolute top-50 start-50 translate-middle">
-        USER DOES NOT HAVE THE RIGHT ROLES.
+        <h2 className="text-danger fw-bold">Access Denied</h2>
+        <p>You do not have the required permissions to access this page.</p>
       </div>
     );
   }
@@ -168,8 +168,6 @@ export default function EditUser() {
                 <Card.Title as="h3">Edit User</Card.Title>
               </Card.Header>
               <Card.Body>
-                <EditUserProfile />
-                <br />
                 <form onSubmit={handleSubmit}>
                   <Row>
                     <Col lg={12} md={12}>
@@ -325,7 +323,7 @@ export default function EditUser() {
                           name="status"
                           className="form-control"
                           id="status"
-                          value={values.status === "Pending" && ""}
+                          value={values.status}
                           onChange={handleChange}
                           onBlur={handleBlur}
                         >

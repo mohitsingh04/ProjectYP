@@ -210,7 +210,7 @@ export default function CreateCategory() {
                           >
                             <option value="">--Select--</option>
                             {category.map((item, key) => (
-                              <option key={key} value={item.uniqueId}>
+                              <option key={key} value={item.category_name}>
                                 {item.category_name}
                               </option>
                             ))}
@@ -219,7 +219,7 @@ export default function CreateCategory() {
                       ) : (
                         <>
                           <input
-                            type="number"
+                            type="text"
                             name="parent_category"
                             className="farms form-control"
                             value={values.parent_category}

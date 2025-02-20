@@ -100,7 +100,7 @@ export const updateSeo = async (req, res) => {
       }
     )
       .then((result) => {
-        // console.log(result);
+        console.log(result);
         return res.send({ message: "Seo updated." });
       })
       .catch((err) => {

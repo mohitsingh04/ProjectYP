@@ -14,12 +14,9 @@ import * as Yup from "yup";
 import { API } from "../../context/Api";
 import ChangePassword from "../Auth/Password/ChangePassword";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { updateUser } from "../../redux/actions/authAction";
 import DataRequest from "../../context/DataRequest";
 
 export default function EditProfile() {
-  const dispatch = useDispatch();
   const [user, setUser] = useState("");
   const [previewProfile, setPreviewProfile] = useState("");
   const navigate = useNavigate();
@@ -27,24 +24,27 @@ export default function EditProfile() {
   const [profileImg, setProfileImg] = useState("");
 
   const getUser = useCallback(async () => {
-    await API.get(`/user/${User.uniqueId}`).then(({ data }) => {
-      setUser(data);
-      setProfileImg(data?.profile[0]);
-    });
+    if (User) {
+      await API.get(`/user/${User?._id}`).then(({ data }) => {
+        setUser(data);
+        setProfileImg(data?.profile?.[0]);
+      });
+    }
   }, [User]);
+
   useEffect(() => {
     getUser();
   }, [getUser]);
 
   const initialValues = {
-    uniqueId: user.uniqueId,
-    name: user.name || "",
-    email: user.email || "",
-    mobile_no: user.mobile_no || "",
-    pincode: user.pincode || "",
-    address: user.address || "",
-    city: user.city || "",
-    state: user.state || "",
+    uniqueId: user?._id,
+    name: user?.name || "",
+    email: user?.email || "",
+    mobile_no: user?.mobile_no || "",
+    pincode: user?.pincode || "",
+    address: user?.address || "",
+    city: user?.city || "",
+    state: user?.state || "",
     profile: profileImg,
   };
 
@@ -64,20 +64,19 @@ export default function EditProfile() {
   });
 
   const onSubmit = async (values) => {
-    try {
-      if (
-        typeof values.profile == "object" ||
-        typeof values.profile != "object"
-      ) {
-        let formData = new FormData();
-        for (let value in values) {
-          formData.append(value, values[value]);
-          console.log(value, values[value]);
-        }
-        navigate(`/dashboard/my-profile`);
-        dispatch(updateUser(formData));
+    const formData = new FormData();
+    Object.keys(values).forEach((key) => {
+      if (key !== "email" && key !== "mobile_no") {
+        formData.append(key, values[key]);
       }
+    });
+    try {
+      const response = await API.patch(`/user/${User?._id}`, formData);
+      console.log(response, User._id);
+      toast.success(response.data.message);
+      navigate(`/dashboard/my-profile`);
     } catch (err) {
+      console.log(err);
       toast.error(err.message);
     }
   };
@@ -96,32 +95,6 @@ export default function EditProfile() {
     onSubmit: onSubmit,
     enableReinitialize: true,
   });
-
-  // const deleteUserProfile = (uniqueId) => {
-  //     Swal.fire({
-  //         title: "Are you sure?",
-  //         text: "You won't be able to revert this!",
-  //         icon: "warning",
-  //         showCancelButton: true,
-  //         confirmButtonColor: "#3085d6",
-  //         cancelButtonColor: "#d33",
-  //         confirmButtonText: "Yes delete it!",
-  //     })
-  //         .then((result) => {
-  //             if (result.isConfirmed) {
-  //                 API.delete(`/user/profile/${uniqueId}`).then((response) => {
-  //                     if (response.data.message) {
-  //                         toast.success(response.data.message);
-  //                     } else if (response.data.error) {
-  //                         toast.error(response.data.error);
-  //                     }
-  //                 })
-  //             }
-  //             getUser();
-  //         }).catch((error) => {
-  //             console.log(error.message)
-  //         })
-  // }
 
   return (
     <>
@@ -175,7 +148,9 @@ export default function EditProfile() {
                   </ListGroup.Item>
                   <ListGroup.Item className="list-group-item">
                     <i className="fa fa-globe list-contact-icons border text-center br-100"></i>
-                    <span className="contact-icons"> www.abcd.com</span>
+                    <span className="contact-icons">
+                      {user.address}, {user.city}, {user.state}
+                    </span>
                   </ListGroup.Item>
                   <ListGroup.Item className="list-group-item">
                     <i className="fa fa-phone list-contact-icons border text-center br-100"></i>
@@ -227,23 +202,23 @@ export default function EditProfile() {
                       ) : (
                         <span />
                       )}
-                      {/* <i onClick={() => deleteUserProfile(user.uniqueId)} data-bs-toggle="tooltip" title="Remove Profile" className="fe fe-camera-off me-1 btn btn-danger btn-sm mt-1 mb-1 me-2"></i> */}
                     </div>
                   </div>
                   <br />
                   <Row>
                     <Col lg={12} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputname">First Name</label>
+                        <label htmlFor="userName">First Name</label>
                         <Form.Control
                           type="text"
                           name="name"
                           className="form-control"
-                          id="exampleInputname"
+                          id="userName"
                           placeholder="First Name"
                           value={values.name}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="off"
                         />
                         {errors.name && touched.name ? (
                           <small className="text-danger">{errors.name}</small>
@@ -254,17 +229,18 @@ export default function EditProfile() {
                     </Col>
                   </Row>
                   <FormGroup className="mt-2">
-                    <label htmlFor="exampleInputEmail1">Email address</label>
+                    <label htmlFor="email">Email address</label>
                     <Form.Control
                       type="email"
                       name="email"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="email"
                       placeholder="email address"
                       value={values.email}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       disabled
+                      autoComplete="off"
                     />
                     {errors.email && touched.email ? (
                       <small className="text-danger">{errors.email}</small>
@@ -273,17 +249,18 @@ export default function EditProfile() {
                     )}
                   </FormGroup>
                   <FormGroup className="mt-2">
-                    <label htmlFor="exampleInputnumber">Contact Number</label>
+                    <label htmlFor="mobile_no">Contact Number</label>
                     <Form.Control
                       type="number"
                       name="mobile_no"
                       className="form-control"
-                      id="exampleInputnumber"
+                      id="mobile_no"
                       placeholder="mobile number"
                       value={values.mobile_no}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       disabled
+                      autoComplete="off"
                     />
                     {errors.mobile_no && touched.mobile_no ? (
                       <small className="text-danger">{errors.mobile_no}</small>
@@ -294,16 +271,17 @@ export default function EditProfile() {
                   <Row className="mt-3">
                     <Col lg={8} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputaddress">Address</label>
+                        <label htmlFor="address">Address</label>
                         <Form.Control
                           type="text"
                           name="address"
                           className="form-control"
-                          id="exampleInputaddress"
+                          id="address"
                           placeholder="Address *"
                           value={values.address}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="off"
                         />
                         {errors.address && touched.address ? (
                           <small className="text-danger">
@@ -316,16 +294,17 @@ export default function EditProfile() {
                     </Col>
                     <Col lg={4} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputpincode">Pincode</label>
+                        <label htmlFor="pincode">Pincode</label>
                         <Form.Control
                           type="number"
                           name="pincode"
                           className="form-control"
-                          id="exampleInputpincode"
+                          id="pincode"
                           placeholder="Pincode *"
                           value={values.pincode}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="off"
                         />
                         {errors.pincode && touched.pincode ? (
                           <small className="text-danger">
@@ -340,16 +319,17 @@ export default function EditProfile() {
                   <Row className="mt-2">
                     <Col lg={6} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputcity">City</label>
+                        <label htmlFor="city">City</label>
                         <Form.Control
                           type="text"
                           name="city"
                           className="form-control"
-                          id="exampleInputcity"
+                          id="city"
                           placeholder="City *"
                           value={values.city}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="off"
                         />
                         {errors.city && touched.city ? (
                           <small className="text-danger">{errors.city}</small>
@@ -360,16 +340,17 @@ export default function EditProfile() {
                     </Col>
                     <Col lg={6} md={12}>
                       <FormGroup>
-                        <label htmlFor="exampleInputstate">State</label>
+                        <label htmlFor="state">State</label>
                         <Form.Control
                           type="text"
                           name="state"
                           className="form-control"
-                          id="exampleInputstate"
+                          id="state"
                           placeholder="State *"
                           value={values.state}
                           onChange={handleChange}
                           onBlur={handleBlur}
+                          autoComplete="off"
                         />
                         {errors.state && touched.state ? (
                           <small className="text-danger">{errors.state}</small>

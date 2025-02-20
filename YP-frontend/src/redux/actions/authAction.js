@@ -122,7 +122,7 @@ export const verifyEmail = (userInfo) => async (dispatch) => {
 export const updateUser = (userInfo) => async (dispatch) => {
   try {
     dispatch({ type: USER_PROFILE_REQUEST });
-    const { data } = await API.patch(`/user/${userInfo.uniqueId}`, userInfo);
+    const { data } = await API.patch(`/user/${userInfo._id}`, userInfo);
     if (data.message) {
       toast.success(data.message);
     } else {

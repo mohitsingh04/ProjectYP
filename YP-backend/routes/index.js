@@ -22,7 +22,7 @@ import {
   getUser,
   getUserById,
   updateUser,
-  UpdateUserProfile,
+  // UpdateUserProfile,
 } from "../controller/UserController.js";
 import {
   addStatus,
@@ -140,12 +140,12 @@ router.get("/profile", profile);
 const profileUpload = upload.fields([{ name: "profile", maxCount: 1 }]);
 router.get("/users", getUser);
 router.patch("/user/:objectId", profileUpload, processImage, updateUser);
-router.patch(
-  "/user/profile/:objectId",
-  profileUpload,
-  processImage,
-  UpdateUserProfile
-);
+// router.patch(
+//   "/user/profile/:objectId",
+//   profileUpload,
+//   processImage,
+//   UpdateUserProfile
+// );
 router.post("/user/new", addNewUser);
 router.delete("/user/:objectId", deleteUser);
 router.delete("/user/profile/:uniqueId", deleteUserProfile);

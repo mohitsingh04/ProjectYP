@@ -238,7 +238,7 @@ export default function EditCategory() {
                       >
                         <option value="">--Select--</option>
                         {categories.map((item, key) => (
-                          <option key={key} value={item.uniqueId}>
+                          <option key={key} value={item.category_name}>
                             {item.category_name}
                           </option>
                         ))}

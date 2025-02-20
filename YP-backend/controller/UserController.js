@@ -18,8 +18,8 @@ export const getUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { objectId } = req.params;
+
     const {
-      uniqueId,
       name,
       email,
       mobile_no,
@@ -33,15 +33,19 @@ export const updateUser = async (req, res) => {
     } = req.body;
 
     const user = await User.findOne({ _id: objectId });
-    const profileFile = req.files
-      ? req.files.profile[0].path
-      : user?.profile[0];
 
-    const profileOriginal = req.files
-      ? req.files.profile[0].originalPath
-      : user?.profile[1];
+    let profileFile = req?.files?.profile?.[0]?.path;
 
-    const updatedUser = await User.findOneAndUpdate(
+    let profileOriginal = req?.files?.profile?.[0]?.originalPath;
+
+    if (!profileFile) {
+      profileFile = user?.profile?.[0];
+    }
+    if (!profileOriginal) {
+      profileOriginal = user?.profile?.[1];
+    }
+
+    await User.findOneAndUpdate(
       { _id: objectId },
       {
         $set: {
@@ -60,6 +64,7 @@ export const updateUser = async (req, res) => {
       },
       { new: true }
     );
+
     if (updateUser) {
       return res.status(200).json({ message: "User Updated Successfully" });
     }
@@ -138,32 +143,32 @@ export const deleteUserProfile = async (req, res) => {
   }
 };
 
-export const UpdateUserProfile = async (req, res) => {
-  try {
-    const { uniqueId } = req.params;
-    let profile = req.files.profile[0].path;
-    let originalProfile = req.files.profile[0].originalPath;
-    const user = await User.findOne({ uniqueId: uniqueId });
+// export const UpdateUserProfile = async (req, res) => {
+//   try {
+//     const { uniqueId } = req.params;
+//     let profile = req.files.profile[0].path;
+//     let originalProfile = req.files.profile[0].originalPath;
+//     const user = await User.findOne({ uniqueId: uniqueId });
 
-    if (!profile) {
-      profile = user.profile;
-    }
+//     if (!profile) {
+//       profile = user.profile;
+//     }
 
-    await User.findOneAndUpdate(
-      { uniqueId: uniqueId },
-      {
-        $set: {
-          profile: [profile, originalProfile],
-        },
-      }
-    );
-    return res
-      .status(200)
-      .json({ message: "User Profile Updated Successfully" });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};
+//     await User.findOneAndUpdate(
+//       { uniqueId: uniqueId },
+//       {
+//         $set: {
+//           profile: [profile, originalProfile],
+//         },
+//       }
+//     );
+//     return res
+//       .status(200)
+//       .json({ message: "User Profile Updated Successfully" });
+//   } catch (error) {
+//     return res.status(500).json({ error: error.message });
+//   }
+// };
 
 export const addNewUser = async (req, res) => {
   try {

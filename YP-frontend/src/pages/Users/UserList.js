@@ -89,9 +89,9 @@ export default function UserList() {
         <img
           key={row._id}
           src={
-            row.profile?.[0] === null
-              ? defaultProfile
-              : `http://localhost:5000/${row.profile[0]}`
+            row?.profile?.[0]
+              ? `http://localhost:5000/${row.profile[0]}`
+              : defaultProfile
           }
           className="rounded-circle"
           width={50}
