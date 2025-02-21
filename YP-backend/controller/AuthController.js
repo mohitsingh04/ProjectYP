@@ -12,10 +12,10 @@ export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
-    if (!user) return res.send({ error: "User does not exist!" });
+    if (!user) return res.status(400).json({ error: "User does not exist!" });
 
     const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.send({ error: "Invalid credentials." });
+    if (!isMatch) return res.status(400).send({ error: "Incorrect Password." });
 
     const isVerified = user?.verified;
 
@@ -25,7 +25,7 @@ export const login = async (req, res) => {
         email,
         emailType: "VERIFY",
       });
-      return res.status(400).json({ error: "You are Not Verified." });
+      return res.status(401).json({ error: "You are Not Verified." });
     }
 
     const accessToken = jwt.sign(user.toJSON(), process.env.JWT_SECRET_VALUE);
@@ -72,8 +72,6 @@ export const register = async (req, res) => {
     });
 
     await newUser.save();
-
-    await sendEmailVerification({ uniqueId: x, email, emailType: "VERIFY" });
 
     return res.send({ message: "Registered Successfully, You can login now." });
   } catch (err) {

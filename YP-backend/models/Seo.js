@@ -17,7 +17,7 @@ const SeoSchema = new mongoose.Schema({
     type: String,
   },
   primary_focus_keyword: {
-    type: String,
+    type: Array,
   },
   json_schema: {
     type: String,

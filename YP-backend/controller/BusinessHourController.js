@@ -73,7 +73,9 @@ export const addBusinessHours = async (req, res) => {
 export const getBusinessHoursByPropertyId = async (req, res) => {
   try {
     const { property_id } = req.params;
-    const businessHours = await BusinessHour.find({ property_id: property_id });
+    const businessHours = await BusinessHour.findOne({
+      property_id: property_id,
+    });
     return res.status(200).json(businessHours);
   } catch (error) {
     return res.status(500).json({ error: error.message });

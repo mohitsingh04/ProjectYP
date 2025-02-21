@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Card, Row, Col } from "react-bootstrap";
+import { Card, Row, Col, Table } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { API } from "../../../context/Api";
@@ -13,7 +13,7 @@ export default function OtherDetails() {
   const [status, setStatus] = useState([]);
   const [category, setCategory] = useState([]);
   const [property, setProperty] = useState("");
-
+  const [isUpdating, setIsUpdating] = useState(false);
   const [bussinessHours, setBussinessHours] = useState([]);
 
   const getProperty = useCallback(async () => {
@@ -43,8 +43,10 @@ export default function OtherDetails() {
   }, [dispatch]);
 
   const getBussinessHours = useCallback(async () => {
-    const response = await API.get(`/business-hours/${property.uniqueId}`);
-    setBussinessHours(response.data[0]);
+    if (property) {
+      const response = await API.get(`/business-hours/${property?.uniqueId}`);
+      setBussinessHours(response.data);
+    }
   }, [property]);
 
   useEffect(() => {
@@ -211,6 +213,16 @@ export default function OtherDetails() {
       toast.error(error.response.data.error);
       console.log(error);
     }
+  };
+
+  const formatTime = (time) => {
+    const [hourStr, minuteStr] = time.split(":");
+    let hour = parseInt(hourStr, 10);
+    const minute = minuteStr || "00";
+    const ampm = hour >= 12 ? "PM" : "AM";
+
+    hour = hour % 12 || 12;
+    return `${hour}:${minute} ${ampm}`;
   };
 
   return (
@@ -434,52 +446,114 @@ export default function OtherDetails() {
 
           <Card>
             <Card.Header>
-              <h5>
-                <strong>Other Details</strong>
-              </h5>
+              <div>
+                <h5>
+                  <strong>Business Hours</strong>
+                </h5>
+              </div>
+              <div className="ms-auto">
+                <button onClick={() => setIsUpdating(!isUpdating)}>
+                  <i className={`fe fe-${isUpdating ? "x" : "edit"}`}></i>
+                </button>
+              </div>
             </Card.Header>
             <Card.Body>
               <Row>
                 <Col md={12} className="mt-3">
-                  <strong>Opening Hours :</strong>
-                  <form onSubmit={handleSubmit}>
-                    {Object.entries(formState).map(([day, times]) => (
-                      <div key={day}>
-                        <div className="mb-1 row">
-                          <div className="col-md-2">
-                            <label>
-                              {day.charAt(0).toUpperCase() + day.slice(1)}
-                            </label>
-                          </div>
-                          <div className="col-5">
-                            <input
-                              type="time"
-                              className="form-control"
-                              name="businessHours"
-                              value={times.open || ""}
-                              onChange={(e) =>
-                                handleTimeChange(day, "open", e.target.value)
-                              }
-                            />
-                          </div>
-                          <div className="col-5">
-                            <input
-                              type="time"
-                              className="form-control"
-                              name="businessHours"
-                              value={times.close || ""}
-                              onChange={(e) =>
-                                handleTimeChange(day, "close", e.target.value)
-                              }
-                            />
+                  {isUpdating ? (
+                    <form onSubmit={handleSubmit}>
+                      {Object.entries(formState).map(([day, times]) => (
+                        <div key={day}>
+                          <div className="mb-1 row">
+                            <div className="col-md-2">
+                              <label>
+                                {day.charAt(0).toUpperCase() + day.slice(1)}
+                              </label>
+                            </div>
+                            <div className="col-5">
+                              <input
+                                type="time"
+                                className="form-control"
+                                name="businessHours"
+                                value={times.open || ""}
+                                onChange={(e) =>
+                                  handleTimeChange(day, "open", e.target.value)
+                                }
+                              />
+                            </div>
+                            <div className="col-5">
+                              <input
+                                type="time"
+                                className="form-control"
+                                name="businessHours"
+                                value={times.close || ""}
+                                onChange={(e) =>
+                                  handleTimeChange(day, "close", e.target.value)
+                                }
+                              />
+                            </div>
                           </div>
                         </div>
+                      ))}
+                      <div className="d-flex justify-content-between">
+                        <button type="submit" className="btn">
+                          <i className="fe fe-check text-primary"></i>
+                        </button>
+                        <p>
+                          Note: If the opening or closing time for a day is not
+                          provided, it will be considered as Closed for that
+                          day.
+                        </p>
                       </div>
-                    ))}
-                    <button type="submit" className="btn">
-                      <i className="fe fe-check text-primary"></i>
-                    </button>
-                  </form>
+                    </form>
+                  ) : bussinessHours &&
+                    Object.keys(bussinessHours).length > 0 ? (
+                    <div className="p-0">
+                      <Table responsive borderless className="text-center">
+                        <thead>
+                          <tr>
+                            <th>Day</th>
+                            <th>Opening Time</th>
+                            <th>Closing Time</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {Object.entries(bussinessHours)
+                            .filter(([key]) =>
+                              [
+                                "monday",
+                                "tuesday",
+                                "wednesday",
+                                "thursday",
+                                "friday",
+                                "saturday",
+                                "sunday",
+                              ].includes(key)
+                            )
+                            .map(([day, time]) => (
+                              <tr key={day}>
+                                <td>
+                                  {day.charAt(0).toUpperCase() + day.slice(1)}
+                                </td>
+                                {time.open && time.close ? (
+                                  <>
+                                    <td>{formatTime(time?.open)}</td>
+                                    <td>{formatTime(time?.close)}</td>
+                                  </>
+                                ) : (
+                                  <>
+                                    <td>Closed</td>
+                                    <td>Closed</td>
+                                  </>
+                                )}
+                              </tr>
+                            ))}
+                        </tbody>
+                      </Table>
+                    </div>
+                  ) : (
+                    <p>No business hours available.</p>
+                  )}
                 </Col>
               </Row>
             </Card.Body>

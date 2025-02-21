@@ -135,6 +135,7 @@ function Root() {
             <Route path={`/dashboard/edit/gallery/:property_name/:uniqueId`}element={<ProtectedRoutes><EditGallery /></ProtectedRoutes>}/>
 
             <Route path={`/dashboard/edit/seo/:property_name/:objectId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
+
             <Route path={`/dashboard/course-seo/add/:uniqueId`} element={<ProtectedRoutes><AddCourseSeo /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course-seo/edit/:uniqueId`} element={<ProtectedRoutes><EditCourseSeo /></ProtectedRoutes>}/>
           </Route>

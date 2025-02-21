@@ -22,9 +22,8 @@ export default function PropertyList() {
     setAuthPermissions(mainUser?.User?.permissions);
   }, [mainUser]);
 
-  const getProperty = useCallback(() => {
-    dispatch(showLoading());
-    API.get("/property")
+  const getProperty = useCallback(async () => {
+    await API.get("/property")
       .then(({ data }) => {
         dispatch(hideLoading());
         setProperty(data);
@@ -33,7 +32,7 @@ export default function PropertyList() {
         dispatch(hideLoading());
         toast.error(err.message);
       });
-  }, [dispatch, setProperty]);
+  }, [dispatch]);
 
   useEffect(() => {
     getProperty();
@@ -137,8 +136,6 @@ export default function PropertyList() {
       name: "ACTION",
       selector: (row) => (
         <div key={`actions-${row._id}`} className="action-buttons">
-          {" "}
-          {/* ✅ Added key */}
           {authPermissions?.some(
             (items) => items.value === "Read Property"
           ) && (
@@ -168,7 +165,10 @@ export default function PropertyList() {
     },
   ];
 
-  const data = property;
+  const data =
+    mainUser?.User?.role === "Property Manager"
+      ? property.filter((item) => item.userId === mainUser?.User?.uniqueId)
+      : property;
 
   const tableData = {
     columns,

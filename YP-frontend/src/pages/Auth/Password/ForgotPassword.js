@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Row, Col, Card } from "react-bootstrap";
 import { useFormik } from "formik";
@@ -10,6 +10,8 @@ import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function ForgotPassword() {
   const dispatch = useDispatch();
+  const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
   // useEffect(() => {
   //     if (accessToken) {
@@ -34,8 +36,10 @@ export default function ForgotPassword() {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
+          setSuccess(response.data.message);
         } else {
           toast.error(response.data.error);
+          setError(response.data.error);
         }
       });
     } catch (err) {
@@ -79,6 +83,20 @@ export default function ForgotPassword() {
                       <p className="text-muted">
                         Enter the email address registered on your account
                       </p>
+                      {error ? (
+                        <div className="alert alert-danger">
+                          <small>{error}</small>
+                        </div>
+                      ) : (
+                        <span />
+                      )}
+                      {success ? (
+                        <div className="alert alert-success">
+                          <small>{success}</small>
+                        </div>
+                      ) : (
+                        <span />
+                      )}
                     </div>
                     <div className="pt-3" id="forgot">
                       <div className="form-group">

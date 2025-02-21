@@ -55,11 +55,11 @@ export default function ResetPassword() {
     try {
       values = { ...values, token: token };
       dispatch(showLoading());
-      const response = API.post("/reset", values);
+      const response = await API.post("/reset", values);
       dispatch(hideLoading());
       if (response.data.message) {
         toast.success(response.data.message);
-        navigate("/login"); // redirect to login page after successful reset
+        navigate("/login");
       } else {
         toast.error(response.data.error);
       }

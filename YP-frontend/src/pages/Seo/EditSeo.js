@@ -40,9 +40,6 @@ export default function EditSeo() {
   const validationSchema = Yup.object({
     title: Yup.string().required("Title is required."),
     slug: Yup.string().required("Slug is required."),
-    primary_focus_keyword: Yup.string().required(
-      "Primary focus keyword is required."
-    ),
     json_schema: Yup.string().required("Json schema is required."),
   });
 
@@ -189,13 +186,18 @@ export default function EditSeo() {
                 <Col md={6}>
                   <div className="mb-3">
                     <Form.Label>Primary Focus Keyword</Form.Label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="primary_focus_keyword"
-                      placeholder="Primary Focus Keyword"
+                    <Dropdown
+                      options={[]}
+                      create={true}
+                      placeholder="primary focus keyword ...    "
+                      searchable={true}
+                      dropdownHandle={false}
+                      multi={true}
+                      values={values.primary_focus_keyword}
                       value={values.primary_focus_keyword}
-                      onChange={handleChange}
+                      onChange={(value) =>
+                        setFieldValue("primary_focus_keyword", value)
+                      }
                       onBlur={handleBlur}
                     />
                     {errors.primary_focus_keyword &&
@@ -219,7 +221,11 @@ export default function EditSeo() {
                       onChange={handleChange}
                       onBlur={handleBlur}
                       rows="3"
+                      maxLength={200}
                     />
+                    <small className="float-end">
+                      {values?.json_schema?.length}/200
+                    </small>
                     {errors.json_schema && touched.json_schema ? (
                       <span className="text-danger">{errors.json_schema}</span>
                     ) : (

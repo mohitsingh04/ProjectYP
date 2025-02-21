@@ -39,7 +39,7 @@ const UserSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    default: "User",
+    default: "Property Manager",
   },
   resetToken: {
     type: String,

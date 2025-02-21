@@ -54,9 +54,6 @@ export default function Seo() {
   const validationSchema = Yup.object({
     title: Yup.string().required("Title is required."),
     slug: Yup.string().required("Slug is required."),
-    primary_focus_keyword: Yup.string().required(
-      "Primary focus keyword is required."
-    ),
     json_schema: Yup.string().required("Json schema is required."),
   });
 
@@ -187,7 +184,7 @@ export default function Seo() {
                         <td>
                           <strong>Meta Tags: </strong>
                           {seo[0].meta_tags.map((item, index) => (
-                            <li key={index}>{item.value}</li>
+                            <span key={index}>{item.value}, </span>
                           ))}
                         </td>
                       </tr>
@@ -208,7 +205,9 @@ export default function Seo() {
                       <tr>
                         <td>
                           <strong>Primary Focus Keyword: </strong>
-                          {seo[0].primary_focus_keyword}
+                          {seo[0].primary_focus_keyword.map((item, index) => (
+                            <span key={index}>{item.value}, </span>
+                          ))}
                         </td>
                       </tr>
                     </tbody>
@@ -296,7 +295,6 @@ export default function Seo() {
                             }
                             onBlur={handleBlur}
                           />
-
                           {errors.meta_tags && touched.meta_tags ? (
                             <span className="text-danger">
                               {errors.meta_tags}
@@ -331,14 +329,21 @@ export default function Seo() {
                           <Form.Label htmlFor="primayKey">
                             Primary Focus Keyword
                           </Form.Label>
-                          <input
-                            type="text"
+                          <Dropdown
+                            options={[]}
+                            values={[]}
                             id="primaryKey"
                             className="form-control"
                             name="primary_focus_keyword"
                             placeholder="Primary Focus Keyword"
+                            create={true}
+                            searchable={true}
+                            dropdownHandle={false}
+                            multi={true}
                             value={values.primary_focus_keyword}
-                            onChange={handleChange}
+                            onChange={(value) =>
+                              setFieldValue("primary_focus_keyword", value)
+                            }
                             onBlur={handleBlur}
                           />
                           {errors.primary_focus_keyword &&
@@ -365,6 +370,7 @@ export default function Seo() {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             rows="3"
+                            maxLength={200}
                           />
                           {errors.json_schema && touched.json_schema ? (
                             <span className="text-danger">
@@ -373,7 +379,9 @@ export default function Seo() {
                           ) : (
                             <span />
                           )}
-                          <small className="float-end">0/200</small>
+                          <small className="float-end">
+                            {values?.json_schema?.length}/200
+                          </small>
                         </div>
                       </Col>
                       <Col md={12}>

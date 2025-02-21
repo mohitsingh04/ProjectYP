@@ -63,20 +63,19 @@ export default function EditUser() {
       .matches(/^[0-9]{10}$/, "Mobile number must be exactly 10 digits.")
       .required("Mobile number is required."),
 
-    address: Yup.string().required("Address is required."),
+    address: Yup.string(),
 
-    pincode: Yup.string()
-      .matches(/^[0-9]{6}$/, "Pincode must be exactly 6 digits.")
-      .required("Pincode is required."),
+    pincode: Yup.string().matches(
+      /^[0-9]{6}$/,
+      "Pincode must be exactly 6 digits."
+    ),
 
     city: Yup.string()
       .min(2, "City must be at least 2 characters long.")
-      .required("City is required.")
       .matches(/^[a-zA-Z\s]+$/, "City can only contain alphabets and spaces."),
 
     state: Yup.string()
       .min(2, "State must be at least 2 characters long.")
-      .required("State is required.")
       .matches(/^[a-zA-Z\s]+$/, "State can only contain alphabets and spaces."),
 
     role: Yup.string().required("Role is required."),

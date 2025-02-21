@@ -14,12 +14,6 @@ export default function Login() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
 
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     navigate("/dashboard");
-  //   }
-  // }, [navigate]);
-
   const initialValues = {
     email: "",
     password: "",
@@ -41,18 +35,16 @@ export default function Login() {
       const response = await API.post("/login", values, {
         withCredentials: true,
       });
-      // const accessToken = response.data.accessToken;
-
-      // localStorage.setItem("accessToken", accessToken);
+      console.log(response);
       toast.success(response.data.message);
       navigate("/dashboard");
       window.location.reload();
-
       dispatch(hideLoading());
     } catch (error) {
       console.log(error);
       dispatch(hideLoading());
       setError(error.response.data.error);
+      toast.error(error.response.data.error);
       if (error.response.data.error === "You are Not Verified.") {
         navigate(`/send/verify-email/success/${values.email}`);
       }

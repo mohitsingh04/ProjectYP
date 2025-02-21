@@ -102,6 +102,7 @@ import {
   addBusinessHours,
   changePropertyCategory,
   getBusinessHours,
+  getBusinessHoursByPropertyId,
 } from "../controller/BusinessHourController.js";
 import { getState } from "../controller/StateController.js";
 import { getCity } from "../controller/CityController.js";
@@ -259,7 +260,7 @@ router.delete("/property-course/:uniqueId", deletePropertyCourse);
 
 // Business Hours
 router.get("/business-hours", getBusinessHours);
-router.get("/business-hours/:property_id", getBusinessHours);
+router.get("/business-hours/:property_id", getBusinessHoursByPropertyId);
 router.post("/business-hours", addBusinessHours);
 router.patch("/business-hours/category", changePropertyCategory);
 
