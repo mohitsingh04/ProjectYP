@@ -73,7 +73,7 @@ export default function PropertyList() {
   };
 
   const handleLoadImage = useCallback((img) => {
-    if (img !== null) {
+    if (img) {
       const x = img.split("/");
       if (x.length > 2) {
         return (
@@ -105,8 +105,8 @@ export default function PropertyList() {
       sortable: true,
     },
     {
-      name: "ICON",
-      selector: (row) => handleLoadImage(row.property_icon[0]),
+      name: "Logo",
+      selector: (row) => handleLoadImage(row?.property_logo?.[0]),
       sortable: true,
     },
     {

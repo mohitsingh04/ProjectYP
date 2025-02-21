@@ -32,7 +32,7 @@ export default function PropertyImages() {
 
   useEffect(() => {
     if (property) {
-      setIconImage(property?.property_icon?.[0]);
+      setIconImage(property?.property_logo?.[0]);
       setFeatureImage(property?.featured_image?.[0]);
     }
   }, [property]);
@@ -61,16 +61,16 @@ export default function PropertyImages() {
 
   const initialValues = {
     property_name: property.property_name || "",
-    property_icon: property.property_icon || "",
+    property_logo: property.property_logo || "",
     featured_image: property.featured_image || "",
   };
 
   const onSubmit = async (values) => {
     try {
       if (
-        typeof values.property_icon == "object" ||
+        typeof values.property_logo == "object" ||
         typeof values.featured_image == "object" ||
-        (typeof values.property_icon !== "object" &&
+        (typeof values.property_logo !== "object" &&
           values.featured_image !== "object")
       ) {
         let formData = new FormData();
@@ -112,19 +112,19 @@ export default function PropertyImages() {
           <Row>
             <Col md={6} className="mb-3">
               <strong>Icon</strong>
-              {!property.property_icon ? (
+              {!property.property_logo ? (
                 <>
                   <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
                       type="file"
                       accept="image/jpeg, image/png"
-                      name="property_icon"
+                      name="property_logo"
                       className="form-control"
                       onChange={(e) => {
                         let reader = new FileReader();
                         reader.onload = () => {
                           if (reader.readyState === 2) {
-                            setFieldValue("property_icon", e.target.files[0]);
+                            setFieldValue("property_logo", e.target.files[0]);
                             setPreviewIcon(reader.result);
                           }
                         };
@@ -164,13 +164,13 @@ export default function PropertyImages() {
                     <input
                       accept="image/jpeg, image/png"
                       type="file"
-                      name="property_icon"
+                      name="property_logo"
                       className="form-control"
                       onChange={(e) => {
                         let reader = new FileReader();
                         reader.onload = () => {
                           if (reader.readyState === 2) {
-                            setFieldValue("property_icon", e.target.files[0]);
+                            setFieldValue("property_logo", e.target.files[0]);
                             setPreviewIcon(reader.result);
                           }
                         };

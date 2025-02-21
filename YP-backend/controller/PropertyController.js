@@ -61,12 +61,12 @@ export const addProperty = async (req, res) => {
 
     const slug = property_name.replace(/ /g, "-").toLowerCase();
 
-    const orignal_property_icon =
-      req?.files["property_icon"]?.[0]?.originalFilename;
+    const orignal_property_logo =
+      req?.files["property_logo"]?.[0]?.originalFilename;
     const orignal_feature_image =
       req?.files["featured_image"]?.[0]?.originalFilename;
 
-    const property_icon = req?.files["property_icon"]?.[0]?.filename;
+    const property_logo = req?.files["property_logo"]?.[0]?.filename;
     const featured_image = req?.files["featured_image"]?.[0]?.filename;
 
     const property = await Property.findOne().sort({ _id: -1 }).limit(1);
@@ -104,7 +104,7 @@ export const addProperty = async (req, res) => {
         property_email,
         property_mobile_no,
         category,
-        property_icon: [property_icon, orignal_property_icon],
+        property_logo: [property_logo, orignal_property_logo],
         featured_image: [featured_image, orignal_feature_image],
         property_description,
         property_slug: slug,
@@ -219,12 +219,12 @@ export const updatePropertyImages = async (req, res) => {
   try {
     const objectId = req.params.objectId;
     const { property_name } = req.body;
-    const iconFile = req.files["property_icon"];
+    const iconFile = req.files["property_logo"];
     const property = await Property.findOne({ _id: objectId });
 
     const propertyIcon = iconFile
-      ? req?.files["property_icon"]?.[0]?.filename
-      : property?.property_icon[0];
+      ? req?.files["property_logo"]?.[0]?.filename
+      : property?.property_logo[0];
 
     const featuredFile = req.files["featured_image"];
 
@@ -232,22 +232,22 @@ export const updatePropertyImages = async (req, res) => {
       ? req?.files["featured_image"][0]?.filename
       : property?.featured_image[0];
 
-    const orignal_property_icon = iconFile
-      ? req?.files["property_icon"]?.[0]?.originalFilename
-      : property?.property_icon[1];
+    const orignal_property_logo = iconFile
+      ? req?.files["property_logo"]?.[0]?.originalFilename
+      : property?.property_logo[1];
 
     const orignal_feature_image = featuredFile
       ? req?.files["featured_image"]?.[0]?.originalFilename
       : property?.featured_image[1];
 
-    console.log(propertyIcon, orignal_property_icon);
+    console.log(propertyIcon, orignal_property_logo);
 
     if (property) {
       await Property.findOneAndUpdate(
         { _id: objectId },
         {
           $set: {
-            property_icon: [propertyIcon, orignal_property_icon],
+            property_logo: [propertyIcon, orignal_property_logo],
             featured_image: [featuredImage, orignal_feature_image],
           },
         }

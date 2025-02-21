@@ -23,7 +23,7 @@ const PropertySchema = new mongoose.Schema({
   property_alt_mobile_no: {
     type: String,
   },
-  property_icon: {
+  property_logo: {
     type: Array,
   },
   featured_image: {

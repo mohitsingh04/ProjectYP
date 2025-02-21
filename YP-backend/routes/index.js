@@ -187,7 +187,7 @@ router.get("/category/:objectId", getCategoryById);
 // Property Route
 
 const propertyUpload = upload.fields([
-  { name: "property_icon", maxCount: 1 },
+  { name: "property_logo", maxCount: 1 },
   { name: "featured_image", maxCount: 1 },
 ]);
 router.get("/property", getProperty);

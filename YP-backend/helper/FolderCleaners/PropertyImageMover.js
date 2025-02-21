@@ -27,13 +27,13 @@ export const PropertyImageMover = async (req, res) => {
 
     for (const item of allProperties) {
       const iconPathCompressed = path.resolve(
-        `./images/${item.property_icon[0]}`
+        `./images/${item.property_logo[0]}`
       );
       const featuredImagePathCompressed = path.resolve(
         `./images/${item.featured_image[0]}`
       );
       const iconPathOriginal = path.resolve(
-        `./images/${item.property_icon[1]}`
+        `./images/${item.property_logo[1]}`
       );
       const featuredImagePathOriginal = path.resolve(
         `./images/${item.featured_image[1]}`
@@ -49,11 +49,11 @@ export const PropertyImageMover = async (req, res) => {
         if (await fileExists(iconPathCompressed)) {
           await fs.rename(
             iconPathCompressed,
-            path.join(destinationDir, item.property_icon[0])
+            path.join(destinationDir, item.property_logo[0])
           );
 
           iconPathMoved.push(
-            `media/${item.uniqueId}/main/${item.property_icon[0]}`
+            `media/${item.uniqueId}/main/${item.property_logo[0]}`
           );
         }
         if (await fileExists(featuredImagePathCompressed)) {
@@ -68,10 +68,10 @@ export const PropertyImageMover = async (req, res) => {
         if (await fileExists(iconPathOriginal)) {
           await fs.rename(
             iconPathOriginal,
-            path.join(destinationDir, item.property_icon[1])
+            path.join(destinationDir, item.property_logo[1])
           );
           iconPathMoved.push(
-            `media/${item.uniqueId}/main/${item.property_icon[1]}`
+            `media/${item.uniqueId}/main/${item.property_logo[1]}`
           );
         }
         if (await fileExists(featuredImagePathOriginal)) {
@@ -89,7 +89,7 @@ export const PropertyImageMover = async (req, res) => {
             { uniqueId: item.uniqueId },
             {
               $set: {
-                property_icon: iconPathMoved,
+                property_logo: iconPathMoved,
               },
             },
             { new: true }

@@ -43,7 +43,7 @@ export default function CreateProperty() {
     property_email: "",
     property_mobile_no: "",
     category: "",
-    property_icon: "",
+    property_logo: "",
     featured_image: "",
   };
 
@@ -67,7 +67,7 @@ export default function CreateProperty() {
       )
       .required("Mobile number is required."),
 
-    property_icon: Yup.string(),
+    property_logo: Yup.string(),
     featured_image: Yup.string(),
     category: Yup.string().required("Category is required."),
   });
@@ -86,8 +86,8 @@ export default function CreateProperty() {
       formData.append("category", values.category);
       formData.append("property_description", description);
       formData.append("userId", User.uniqueId);
-      if (values.property_icon) {
-        formData.append("property_icon", values.property_icon);
+      if (values.property_logo) {
+        formData.append("property_logo", values.property_logo);
       }
       if (values.featured_image) {
         formData.append("featured_image", values.featured_image);
@@ -373,20 +373,20 @@ export default function CreateProperty() {
                   {/* Property Icon */}
                   <div className="col-md-6">
                     <div className="mb-3">
-                      <label className="form-label" htmlFor="property_icon">
+                      <label className="form-label" htmlFor="property_logo">
                         Property Icon
                       </label>
                       <input
                         type="file"
-                        name="property_icon"
+                        name="property_logo"
                         accept="image/jpeg, image/png"
-                        id="property_icon"
+                        id="property_logo"
                         className="form-control"
                         onChange={(e) => {
                           let reader = new FileReader();
                           reader.onload = () => {
                             if (reader.readyState === 2) {
-                              setFieldValue("property_icon", e.target.files[0]);
+                              setFieldValue("property_logo", e.target.files[0]);
                               setPreviewIcon(reader.result);
                             }
                           };
@@ -400,9 +400,9 @@ export default function CreateProperty() {
                         width="100"
                         alt=""
                       />
-                      {errors.property_icon && touched.property_icon ? (
+                      {errors.property_logo && touched.property_logo ? (
                         <span className="text-danger">
-                          {errors.property_icon}
+                          {errors.property_logo}
                         </span>
                       ) : (
                         <span />

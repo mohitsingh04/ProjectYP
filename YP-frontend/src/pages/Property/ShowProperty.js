@@ -50,8 +50,8 @@ export default function ShowProperty() {
   }, [getProperty]);
 
   useEffect(() => {
-    if (property?.property_icon?.length) {
-      setIcon(property.property_icon[0]);
+    if (property?.property_logo?.length) {
+      setIcon(property.property_logo[0]);
     }
   }, [property]);
 

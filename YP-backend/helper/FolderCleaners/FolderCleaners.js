@@ -46,7 +46,7 @@ const handleFolderCleaner = async (req, res) => {
     });
 
     AllProperties.map((file) => {
-      files.push(file.property_icon);
+      files.push(file.property_logo);
       files.push(file.featured_image);
     });
     AllAchievements.map((file) => {
