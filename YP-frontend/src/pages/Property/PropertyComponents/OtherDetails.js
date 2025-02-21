@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from "react";
 import { Card, Row, Col, Table } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
@@ -294,6 +294,26 @@ export default function OtherDetails() {
                           <i className="fe fe-check text-primary"></i>
                         </button>
                       </form>
+                      {category.length === 0 && (
+                        <Row>
+                          <Col className="d-flex pt-3">
+                            <div>
+                              <p className="text-danger">
+                                No categories available. Please add a category
+                                to continue.
+                              </p>
+                            </div>
+                            <div className="ms-auto">
+                              <Link
+                                to={`/dashboard/category/add`}
+                                className="btn btn-primary"
+                              >
+                                Add Category
+                              </Link>
+                            </div>
+                          </Col>
+                        </Row>
+                      )}
                     </>
                   ) : (
                     <>

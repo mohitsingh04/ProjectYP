@@ -218,14 +218,13 @@ export default function Seo() {
                           <br />
                           {seo[0]?.description && (
                             <span>
-                              {property?.property_hostel_description?.length >=
-                              1500 ? (
+                              {seo[0]?.description?.length >= 1500 ? (
                                 <>
                                   <p
                                     dangerouslySetInnerHTML={{
                                       __html: isExpanded
-                                        ? property.property_hostel_description
-                                        : property.property_hostel_description.substring(
+                                        ? seo[0]?.description
+                                        : seo[0]?.description.substring(
                                             0,
                                             1200
                                           ) + "...",
@@ -241,8 +240,7 @@ export default function Seo() {
                               ) : (
                                 <p
                                   dangerouslySetInnerHTML={{
-                                    __html:
-                                      property.property_hostel_description,
+                                    __html: seo[0]?.description,
                                   }}
                                 />
                               )}

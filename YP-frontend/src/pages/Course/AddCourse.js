@@ -263,6 +263,7 @@ export default function AddCourse() {
                           <option value="Days">Days</option>
                           <option value="Weeks">Weeks</option>
                           <option value="Month">Month</option>
+                          <option value="Year">Year</option>
                         </select>
                       </div>
                       {errors.duration_value && touched.duration_value && (

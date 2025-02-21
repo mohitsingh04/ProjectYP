@@ -64,7 +64,8 @@ export default function Teachers() {
     teacher_name: "",
     profile: "",
     designation: "",
-    experience: "",
+    experience_value: "",
+    experience_type: "",
   };
 
   const validationSchema = Yup.object({
@@ -78,9 +79,10 @@ export default function Teachers() {
 
     profile: Yup.string(),
     designation: Yup.string().required("Designation is required."),
-    experience: Yup.number()
-      .required("Experience is required.")
+    experience_value: Yup.number()
+      .required("Experience Value is required.")
       .min(0, "Experience cannot be negative."),
+    experience_type: Yup.string().required("Experience Type is required."),
   });
 
   const onSubmit = async (values, { resetForm }) => {
@@ -98,7 +100,10 @@ export default function Teachers() {
       formData.append("property_name", values.property_name);
       formData.append("userId", values.userId);
       formData.append("designation", values.designation);
-      formData.append("experience", values.experience);
+      formData.append(
+        "experience",
+        `${values.experience_value} ${values.experience_type}`
+      );
       if (
         typeof values.profile == "object" ||
         typeof values.profile != "object"
@@ -365,18 +370,47 @@ export default function Teachers() {
                   <Col md="6">
                     <div className="mb-3">
                       <Form.Label>Experience</Form.Label>
-                      <input
-                        type="number"
-                        name="experience"
-                        className="form-control"
-                        placeholder="Enter Teacher Experience..."
-                        value={values.experience}
-                        min={0}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                      {errors.experience && touched.experience ? (
-                        <span className="text-danger">{errors.experience}</span>
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <input
+                          type="number"
+                          name="experience_value"
+                          id="experience_value"
+                          className="form-control"
+                          placeholder="Experence ..."
+                          value={values.experience_value}
+                          onChange={handleChange}
+                          min={0}
+                          onBlur={handleBlur}
+                          style={{ marginRight: "10px" }}
+                        />
+                        <select
+                          name="experience_type"
+                          className="form-control"
+                          value={values.experience_type}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        >
+                          <option value="">--Select Type--</option>
+                          <option value="Month">Month</option>
+                          <option value="Year">Year</option>
+                        </select>
+                      </div>
+                      {errors.experience_value && touched.experience_value ? (
+                        <span className="text-danger">
+                          {errors.experience_value}
+                        </span>
+                      ) : (
+                        <span />
+                      )}
+                      {errors.experience_type && touched.experience_type ? (
+                        <span className="text-danger float-end">
+                          {errors.experience_type}
+                        </span>
                       ) : (
                         <span />
                       )}

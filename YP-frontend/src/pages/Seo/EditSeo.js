@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Breadcrumb, Form, Card, Row, Col } from "react-bootstrap";
 import { useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -18,16 +18,17 @@ export default function EditSeo() {
   const [seo, setSeo] = useState("");
   const [description, setDescription] = useState("");
 
-  useEffect(() => {
-    const getSeo = () => {
-      dispatch(showLoading());
-      API.get(`/seo/${objectId}`).then(({ data }) => {
-        dispatch(hideLoading());
-        setSeo(data);
-      });
-    };
-    getSeo();
+  const getSeo = useCallback(() => {
+    dispatch(showLoading());
+    API.get(`/seo/${objectId}`).then(({ data }) => {
+      dispatch(hideLoading());
+      setSeo(data);
+    });
   }, [dispatch, objectId]);
+
+  useEffect(() => {
+    getSeo();
+  }, [getSeo]);
 
   const initialValues = {
     title: seo.title || "",
@@ -52,6 +53,7 @@ export default function EditSeo() {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
+          getSeo();
           resetForm();
         } else if (response.data.error) {
           toast.error(response.data.error);

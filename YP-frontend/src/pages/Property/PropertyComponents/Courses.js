@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Card, Row, Col } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
@@ -300,6 +300,25 @@ export default function Courses() {
             </>
           ) : (
             <>
+              {courses.length === 0 && (
+                <Row>
+                  <Col className="d-flex pt-3">
+                    <div>
+                      <p className="text-danger">
+                        No Courses available. Please add a Course to continue.
+                      </p>
+                    </div>
+                    <div className="ms-auto">
+                      <Link
+                        to={`/dashboard/course/add`}
+                        className="btn btn-primary"
+                      >
+                        Add Course
+                      </Link>
+                    </div>
+                  </Col>
+                </Row>
+              )}
               <form onSubmit={formik.handleSubmit}>
                 <Row>
                   <Col md={6}>

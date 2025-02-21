@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Card, Breadcrumb, Row } from "react-bootstrap";
+import { Card, Breadcrumb, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -178,6 +178,26 @@ export default function CreateProperty() {
               <h3 className="card-title">Property Details</h3>
             </Card.Header>
             <Card.Body>
+              {category.length === 0 && (
+                <Row>
+                  <Col className="d-flex">
+                    <div>
+                      <p className="text-danger">
+                        No categories available. Please add a category to
+                        continue.
+                      </p>
+                    </div>
+                    <div className="ms-auto">
+                      <Link
+                        to={`/dashboard/category/add`}
+                        className="btn btn-primary"
+                      >
+                        Add Category
+                      </Link>
+                    </div>
+                  </Col>
+                </Row>
+              )}
               <form onSubmit={handleSubmit} encType="multipart/form-data">
                 {error ? (
                   <div className="alert alert-danger">

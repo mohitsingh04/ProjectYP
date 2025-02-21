@@ -41,8 +41,8 @@ export default function EditGallery({
   };
 
   const handleUpdateGallery = async () => {
-    if (!/^[A-Za-z]+$/.test(title)) {
-      setError("Title must contain only alphabets.");
+    if (!/^[A-Za-z\s]+$/.test(title)) {
+      setError("Title must contain only alphabets and spaces.");
       return;
     }
 
