@@ -20,21 +20,21 @@ export default function Amenities() {
     fetchProperties();
   }, [fetchProperties]);
 
-  useEffect(() => {
-    const fetchAmenities = async () => {
-      try {
-        const response = await API.get("/amenities");
-        const filteredAmenities = response.data.filter(
-          (amenities) => amenities.propertyId === Number(property?.uniqueId)
-        );
-        setAmenities(filteredAmenities);
-      } catch (error) {
-        console.log(error.message);
-      }
-    };
-
-    fetchAmenities();
+  const fetchAmenities = useCallback(async () => {
+    try {
+      const response = await API.get("/amenities");
+      const filteredAmenities = response.data.filter(
+        (amenities) => amenities.propertyId === Number(property?.uniqueId)
+      );
+      setAmenities(filteredAmenities);
+    } catch (error) {
+      console.log(error.message);
+    }
   }, [property]);
+
+  useEffect(() => {
+    fetchAmenities();
+  }, [fetchAmenities]);
 
   const handleHideAmenitiesPage = () => {
     setToggleAmenitiesPage(false);
@@ -118,7 +118,7 @@ export default function Amenities() {
               <EditAmenities property={property} />
             )
           ) : (
-            <AddAmenities property={property} />
+            <AddAmenities getAmenities={fetchAmenities} />
           )}
         </Card.Body>
       </Card>

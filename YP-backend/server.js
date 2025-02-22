@@ -37,7 +37,7 @@ app.use("/media", express.static("media"));
 
 setInterval(() => {
   ExpireVerification();
-}, 1200000);
+}, 1);
 
 setInterval(() => {
   PropertyImageMover();

@@ -26,6 +26,12 @@ export const addGallery = async (req, res) => {
     const { propertyId, title } = req.body;
     const gallery = [];
 
+    if (req?.files?.gallery && req.files.gallery.length > 4) {
+      return res
+        .status(400)
+        .json({ error: "You Cannot Add More than 4 Images at Once." });
+    }
+
     if (req?.files?.gallery && req.files.gallery.length > 0) {
       for (let i = 0; i < req.files.gallery.length; i++) {
         gallery.push(req.files.gallery[i]?.path);
@@ -67,7 +73,6 @@ export const addGallery = async (req, res) => {
 
 export const updateGallery = async (req, res) => {
   try {
-    console.log(req.body);
     const { uniqueId } = req.params;
 
     if (!uniqueId) {
@@ -86,6 +91,12 @@ export const updateGallery = async (req, res) => {
 
     const newGallery = [];
 
+    if (req?.files?.newImages && req?.files?.newImages.length > 4) {
+      return res
+        .status(400)
+        .json({ error: "You Cannot Add More than 4 Images at Once." });
+    }
+
     newGallery.push(gallery);
     if (req?.files?.newImages && req.files.newImages.length > 0) {
       for (let i = 0; i < req.files.newImages.length; i++) {
@@ -94,6 +105,14 @@ export const updateGallery = async (req, res) => {
       for (let j = 0; j < req.files.newImages.length; j++) {
         gallery.push(req.files.newImages[j]?.originalPath);
       }
+    }
+
+    const checkLimit = gallery.filter((item) => item.endsWith(".webp"));
+
+    if (checkLimit.length > 8) {
+      return res
+        .status(400)
+        .json({ error: "You Cannot Add More Than 8 Images in a Gallery" });
     }
 
     const updateGallery = await Gallery.findOneAndUpdate(

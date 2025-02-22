@@ -121,18 +121,23 @@ export default function BasicDetails() {
                         {!property.property_alt_mobile_no ? (
                           <>
                             <form onSubmit={handleSubmit} className="d-flex">
-                              <input
-                                type="number"
-                                name="property_alt_mobile_no"
-                                className="form-control"
-                                placeholder="Enter Alternate Contact..."
-                                value={values.property_alt_mobile_no}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                              />
-                              <button type="submit" className="btn">
-                                <i className="fe fe-check text-primary"></i>
-                              </button>
+                              <div className="input-group">
+                                <input
+                                  type="tel"
+                                  name="property_alt_mobile_no"
+                                  className="form-control"
+                                  placeholder="Enter Alternate Contact..."
+                                  value={values.property_alt_mobile_no}
+                                  onChange={handleChange}
+                                  onBlur={handleBlur}
+                                />
+                                <button
+                                  type="submit"
+                                  className="btn btn-primary"
+                                >
+                                  <i className="fe fe-check"></i>
+                                </button>
+                              </div>
                             </form>
                           </>
                         ) : (
@@ -149,31 +154,19 @@ export default function BasicDetails() {
               <Row className="row profie-img">
                 <Col md={12}>
                   <div className="media-heading">
-                    <h5>
+                    <div className="d-flex justify-content-between align-items-center">
                       <strong>Description</strong>
-                      {showDescriptionInInput ? (
-                        <>
-                          <span
-                            onClick={handleCancelEditDescription}
-                            className="mx-3 py-2"
-                          >
-                            <i className="fe fe-x"></i>
-                          </span>
-                          <button type="submit" className="btn">
-                            <i className="fe fe-check text-primary"></i>
-                          </button>
-                        </>
-                      ) : (
-                        <>
-                          <span
+                      {!showDescriptionInInput && (
+                        <div>
+                          <button
                             onClick={() => handleEditDescription()}
-                            className="mx-2 py-2"
+                            className="btn btn-primary ms-auto"
                           >
                             <i className="fe fe-edit"></i>
-                          </span>
-                        </>
+                          </button>
+                        </div>
                       )}
-                    </h5>
+                    </div>
                   </div>
                   {showDescriptionInInput ? (
                     <>
@@ -218,8 +211,14 @@ export default function BasicDetails() {
                           }}
                           initialValue={property.property_description}
                         />
-                        <button type="submit" className="btn">
-                          <i className="fe fe-check text-primary"></i>
+                        <button type="submit" className="btn btn-success mt-1">
+                          <i className="fe fe-check"></i>
+                        </button>
+                        <button
+                          onClick={handleCancelEditDescription}
+                          className="mx-3 py-2 btn btn-danger mt-1"
+                        >
+                          <i className="fe fe-x"></i>
                         </button>
                       </form>
                     </>
@@ -242,7 +241,7 @@ export default function BasicDetails() {
                                 />
                                 <button
                                   onClick={toggleReadMore}
-                                  className="text-primary m-0 p-0 text-decoration-underline"
+                                  className="btn btn-primary"
                                 >
                                   {isExpanded ? "Read Less" : "Read More"}
                                 </button>

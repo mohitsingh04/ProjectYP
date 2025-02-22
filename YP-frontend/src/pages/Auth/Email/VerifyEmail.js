@@ -35,6 +35,7 @@ export default function VerifyEmail() {
         dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
+          navigate(`/send/verify-email/success/${values.email}`);
         } else if (response.data.error) {
           toast.error(response.data.error);
         }

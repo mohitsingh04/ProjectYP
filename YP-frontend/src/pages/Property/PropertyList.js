@@ -143,6 +143,7 @@ export default function PropertyList() {
               key={`view-${row._id}`}
               data-bs-toggle="tooltip"
               title="View"
+              className="btn btn-primary me-1"
               onClick={() => viewProperty(row._id)}
             >
               <i className="fe fe-eye"></i>
@@ -155,6 +156,7 @@ export default function PropertyList() {
               key={`delete-${row._id}`}
               data-bs-toggle="tooltip"
               title="Delete"
+              className="btn btn-danger"
               onClick={() => deleteProperty(row._id)}
             >
               <i className="fe fe-trash"></i>

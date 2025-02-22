@@ -239,60 +239,34 @@ export default function OtherDetails() {
               <Row>
                 <Col md={6} className="mb-3">
                   <strong>Category :</strong>
-                  {!property.category ? (
+                  {property.category && showCategoryInInput ? (
                     <>
                       <form onSubmit={handleCateogory} className="d-flex">
-                        <select
-                          name="category"
-                          id="category"
-                          className="form-control"
-                          value={activeCategory}
-                          onChange={(e) => {
-                            setActiveCategory(e.target.value);
-                          }}
-                        >
-                          <option value="">--Select Category--</option>
-                          {category.map((item, key) => (
-                            <option
-                              key={key}
-                              value={item.category_name}
-                              selected={property?.category === item.category}
-                            >
-                              {item.category_name}
-                            </option>
-                          ))}
-                        </select>
-                        <button type="submit" className="btn">
-                          <i className="fe fe-check text-primary"></i>
-                        </button>
-                      </form>
-                    </>
-                  ) : showCategoryInInput ? (
-                    <>
-                      <form onSubmit={handleCateogory} className="d-flex">
-                        <select
-                          name="category"
-                          id="category"
-                          className="form-control"
-                          value={activeCategory}
-                          onChange={(e) => setActiveCategory(e.target.value)}
-                        >
-                          <option value="">--Select Category--</option>
-                          {category.map((item, key) => (
-                            <option key={key} value={item.category_name}>
-                              {item.category_name}
-                            </option>
-                          ))}
-                        </select>
-                        <span
-                          onClick={handleCancelEditCategory}
-                          className="mx-3 py-2"
-                        >
-                          <i className="fe fe-x"></i>
-                        </span>
-                        <button type="submit" className="btn">
-                          <i className="fe fe-check text-primary"></i>
-                        </button>
+                        <div className="input-group">
+                          <select
+                            name="category"
+                            id="category"
+                            className="form-control"
+                            value={activeCategory}
+                            onChange={(e) => setActiveCategory(e.target.value)}
+                          >
+                            <option value="">--Select Category--</option>
+                            {category.map((item, key) => (
+                              <option key={key} value={item.category_name}>
+                                {item.category_name}
+                              </option>
+                            ))}
+                          </select>
+                          <button type="submit" className="btn btn-success">
+                            <i className="fe fe-check"></i>
+                          </button>
+                          <button
+                            onClick={handleCancelEditCategory}
+                            className="btn btn-danger"
+                          >
+                            <i className="fe fe-x"></i>
+                          </button>
+                        </div>
                       </form>
                       {category.length === 0 && (
                         <Row>
@@ -318,43 +292,22 @@ export default function OtherDetails() {
                   ) : (
                     <>
                       <>
-                        <br />
-                        {property.category}
-                        <span
-                          onClick={() => handleEditCategory()}
-                          className="mx-2"
-                        >
-                          <i className="fe fe-edit"></i>
-                        </span>
+                        <div className="d-flex justify-content-between align-items-center">
+                          {property.category}
+                          <button
+                            onClick={() => handleEditCategory()}
+                            className="btn btn-primary"
+                          >
+                            <i className="fe fe-edit"></i>
+                          </button>
+                        </div>
                       </>
                     </>
                   )}
                 </Col>
                 <Col md={6} className="mb-3">
                   <strong>Status :</strong>
-                  {!property.status ? (
-                    <>
-                      <form onSubmit={handleCateogory} className="d-flex">
-                        <select
-                          name="status"
-                          id="status"
-                          className="form-control"
-                          value={activeStatus}
-                          onChange={(e) => setActiveStatus(e.target.value)}
-                        >
-                          <option value="">--Select Status--</option>
-                          {status.map((item, key) => (
-                            <option key={key} value={item.name}>
-                              {item.name}
-                            </option>
-                          ))}
-                        </select>
-                        <button type="submit" className="btn">
-                          <i className="fe fe-check text-primary"></i>
-                        </button>
-                      </form>
-                    </>
-                  ) : showStatusInInput ? (
+                  {property.status && showStatusInInput ? (
                     <>
                       <form onSubmit={handleCateogory} className="d-flex">
                         <select
@@ -407,7 +360,6 @@ export default function OtherDetails() {
                           name="est_year"
                           className="form-control"
                           placeholder="Enter established year..."
-                          value={establishmentYear}
                           onChange={(e) => {
                             setEstablishmentYear(e.target.value);
                             setError("");

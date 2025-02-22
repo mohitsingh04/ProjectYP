@@ -15,9 +15,7 @@ export default function Location() {
   const [city, setCity] = useState([]);
   const [state, setState] = useState([]);
   const [country, setCountry] = useState([]);
-  // const [filteredCountry, setFilteredCountry] = useState([]);
-  // const [filteredState, setFilteredState] = useState([]);
-  // const [filteredCity, setFilteredCity] = useState([]);
+  const [selectedState, setSelectedState] = useState("");
 
   const getProperty = useCallback(() => {
     try {
@@ -25,6 +23,7 @@ export default function Location() {
       API.get(`/property/${objectId}`).then(({ data }) => {
         dispatch(hideLoading());
         setProperty(data);
+        setSelectedState(data?.property_state);
       });
     } catch (err) {
       dispatch(hideLoading());
@@ -32,17 +31,26 @@ export default function Location() {
     }
   }, [dispatch, objectId]);
 
-  const getCity = useCallback(() => {
-    API.get("/cities").then(({ data }) => {
-      setCity(data);
+  const getState = useCallback(async () => {
+    API.get("/states").then(({ data }) => {
+      const sortedStates = data.sort((a, b) => a.name.localeCompare(b.name));
+      setState(sortedStates);
     });
   }, []);
 
-  const getState = useCallback(() => {
-    API.get("/states").then(({ data }) => {
-      setState(data);
-    });
-  }, []);
+  const getCity = useCallback(async () => {
+    const { data } = await API.get("/cities");
+    let filteredCities = data;
+
+    if (selectedState) {
+      filteredCities = data.filter((item) => item.state_name === selectedState);
+    }
+
+    const sortedCities = filteredCities.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    setCity(sortedCities);
+  }, [selectedState]);
 
   const getCountry = useCallback(() => {
     API.get("/countries").then(({ data }) => {
@@ -122,25 +130,27 @@ export default function Location() {
   };
 
   const validationSchema = Yup.object({
-    property_pincode: Yup.string()
-      .matches(/^[0-9]{6}$/, "Pincode must be exactly 6 digits.")
-      .required("Pincode is required."),
+    property_pincode: Yup.string().matches(
+      /^[0-9]{6}$/,
+      "Pincode must be exactly 6 digits."
+    ),
   });
 
   const onSubmit = async (values) => {
     try {
       dispatch(showLoading());
-      API.patch(`/property/${objectId}`, values).then((response) => {
-        dispatch(hideLoading());
-        if (response.data.message) {
-          toast.success(response.data.message);
-        } else if (response.data.error) {
-          toast.error(response.data.error);
-        }
-      });
+      const response = await API.patch(`/property/${objectId}`, values);
+      toast.success(response.data.message);
+      getProperty();
+      setShowAddressInInput(false);
+      setShowCityInInput(false);
+      setShowCountryInInput(false);
+      setShowPincodeInInput(false);
+      setShowStateInInput(false);
+      dispatch(hideLoading());
     } catch (err) {
       dispatch(hideLoading());
-      toast.error(err.message);
+      toast.error(err.response.data.error);
     }
   };
 
@@ -181,7 +191,6 @@ export default function Location() {
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                               />
-                              {/* <span onClick={handleCancelEditAddress} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
@@ -228,20 +237,23 @@ export default function Location() {
                     </tr>
                     <tr>
                       <td>
-                        <strong>City :</strong>
-                        {!property.property_city ? (
+                        <strong>State :</strong>{" "}
+                        {!property.property_state ? (
                           <>
                             <form onSubmit={handleSubmit} className="d-flex">
                               <select
-                                name="property_city"
+                                name="property_state"
                                 className="form-control"
-                                placeholder="Enter City..."
-                                value={values.property_city}
-                                onChange={handleChange}
+                                value={values.property_state}
+                                // onChange={(e) => setFilteredState(e.target.value)}
+                                onChange={(e) => {
+                                  handleChange(e);
+                                  setSelectedState(e.target.value);
+                                }}
                                 onBlur={handleBlur}
                               >
                                 <option value="">--Select--</option>
-                                {city.map((item) => (
+                                {state.map((item) => (
                                   <option key={item.id} value={item.name}>
                                     {item.name}
                                   </option>
@@ -252,26 +264,26 @@ export default function Location() {
                               </button>
                             </form>
                           </>
-                        ) : showCityInInput ? (
+                        ) : showStateInInput ? (
                           <>
                             <form onSubmit={handleSubmit} className="d-flex">
                               <select
-                                name="property_city"
+                                name="property_state"
                                 className="form-control"
-                                placeholder="Enter City..."
-                                value={values.property_city}
+                                value={values.property_state}
+                                // onChange={(e) => setFilteredState(e.target.value)}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                               >
                                 <option value="">--Select--</option>
-                                {city.map((item) => (
-                                  <option key={item.id} value={item.name}>
+                                {state.map((item, index) => (
+                                  <option key={index} value={item.name}>
                                     {item.name}
                                   </option>
                                 ))}
                               </select>
                               <span
-                                onClick={handleCancelEditCity}
+                                onClick={handleCancelEditState}
                                 className="mx-3 py-2"
                               >
                                 <i className="fe fe-x"></i>
@@ -285,9 +297,9 @@ export default function Location() {
                           <>
                             <>
                               <br />
-                              {property.property_city}
+                              {property.property_state}
                               <span
-                                onClick={() => handleEditCity()}
+                                onClick={() => handleEditState()}
                                 className="mx-2"
                               >
                                 <i className="fe fe-edit"></i>
@@ -358,7 +370,7 @@ export default function Location() {
                               {property.property_country}
                               <span
                                 onClick={() => handleEditCountry()}
-                                className="mx-2"
+                                className="mx-2 d-none"
                               >
                                 <i className="fe fe-edit"></i>
                               </span>
@@ -447,20 +459,20 @@ export default function Location() {
                     </tr>
                     <tr>
                       <td>
-                        <strong>State : </strong>
-                        {!property.property_state ? (
+                        <strong>City : </strong>{" "}
+                        {!property.property_city ? (
                           <>
                             <form onSubmit={handleSubmit} className="d-flex">
                               <select
-                                name="property_state"
+                                name="property_city"
                                 className="form-control"
-                                value={values.property_state}
-                                // onChange={(e) => setFilteredState(e.target.value)}
+                                placeholder="Enter City..."
+                                value={values.property_city}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                               >
                                 <option value="">--Select--</option>
-                                {state.map((item) => (
+                                {city.map((item) => (
                                   <option key={item.id} value={item.name}>
                                     {item.name}
                                   </option>
@@ -471,26 +483,26 @@ export default function Location() {
                               </button>
                             </form>
                           </>
-                        ) : showStateInInput ? (
+                        ) : showCityInInput ? (
                           <>
                             <form onSubmit={handleSubmit} className="d-flex">
                               <select
-                                name="property_state"
+                                name="property_city"
                                 className="form-control"
-                                value={values.property_state}
-                                // onChange={(e) => setFilteredState(e.target.value)}
+                                placeholder="Enter City..."
+                                value={values.property_city}
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                               >
                                 <option value="">--Select--</option>
-                                {state.map((item) => (
+                                {city.map((item) => (
                                   <option key={item.id} value={item.name}>
                                     {item.name}
                                   </option>
                                 ))}
                               </select>
                               <span
-                                onClick={handleCancelEditState}
+                                onClick={handleCancelEditCity}
                                 className="mx-3 py-2"
                               >
                                 <i className="fe fe-x"></i>
@@ -504,9 +516,9 @@ export default function Location() {
                           <>
                             <>
                               <br />
-                              {property.property_state}
+                              {property.property_city}
                               <span
-                                onClick={() => handleEditState()}
+                                onClick={() => handleEditCity()}
                                 className="mx-2"
                               >
                                 <i className="fe fe-edit"></i>

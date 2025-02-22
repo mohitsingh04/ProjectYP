@@ -67,14 +67,18 @@ export default function ViewPropertyCourse() {
                 </div>
                 <hr className="mt-5" />
                 <div className="table-responsive p-1">
+                  <div>
+                    <img
+                      src={
+                        course?.image?.[0]
+                          ? `http://localhost:5000/${course?.image?.[0]}`
+                          : require(`../../../Images/defaultcourse.webp`)
+                      }
+                      alt={course.course_name}
+                      className="img-fluid"
+                    />
+                  </div>
                   <Table className="table row table-borderless">
-                    <tbody className="p-0">
-                      <img
-                        src={`http://localhost:5000/${course?.image?.[0]}`}
-                        alt={course.course_name}
-                        className="img-fluid w-100"
-                      />
-                    </tbody>
                     <tbody className="col-lg-12 col-xl-6 p-0">
                       <tr>
                         <td>

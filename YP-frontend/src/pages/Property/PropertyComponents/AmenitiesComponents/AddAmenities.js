@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button, Col, Form, Row, Container } from "react-bootstrap";
 import { useFormik } from "formik";
 import { toast } from "react-toastify";
 // import { useParams } from "react-router-dom";
 import { API } from "../../../../context/Api";
+import { useParams } from "react-router-dom";
 
 const amenitiesData = {
   Mandatory: ["Air Conditioning", "Laundry", "Newspaper", "Parking"],
@@ -14,11 +15,22 @@ const amenitiesData = {
   "Food and Drink": ["Restaurant", "Cafe"],
 };
 
-export default function AddAmenities({ property }) {
+export default function AddAmenities({ getAmenities }) {
+  const { objectId } = useParams();
   const [selectedCategory, setSelectedCategory] = useState("Mandatory");
   const [parkingType, setParkingType] = useState("");
   const [wifiType, setWifiType] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [property, setProperty] = useState("");
+
+  const getProperty = useCallback(async () => {
+    const response = await API.get(`/property/${objectId}`);
+    setProperty(response.data);
+  }, [objectId]);
+
+  useEffect(() => {
+    getProperty();
+  }, [getProperty]);
 
   const [amenities, setAmenities] = useState(() =>
     Object.fromEntries(
@@ -66,10 +78,13 @@ export default function AddAmenities({ property }) {
     return [formattedAmenities];
   };
 
+  const initialValues = {
+    propertyId: property?.uniqueId,
+  };
+
   const formik = useFormik({
-    initialValues: {
-      propertyId: property?.uniqueId || "",
-    },
+    initialValues: initialValues,
+    enableReinitialize: true,
     onSubmit: async (values) => {
       if (isSubmitting) return;
       setIsSubmitting(true);
@@ -80,10 +95,13 @@ export default function AddAmenities({ property }) {
           selectedAmenities: formatAmenitiesForSubmission(),
         };
 
+        console.log(values);
+
         const response = await API.post("/amenities", payload);
 
         if (response.status === 200) {
-          toast.success("Amenities added successfully!");
+          toast.success(response.data.message);
+          getAmenities();
           // Reset form or redirect as needed
         }
       } catch (error) {

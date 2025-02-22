@@ -48,7 +48,6 @@ const sendEmailVerification = async ({ uniqueId, email, emailType }) => {
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
           console.error(error);
-          return res.send({ error: "Error sending verification email" });
         } else {
           console.log("Email sent: " + info.response);
           return res

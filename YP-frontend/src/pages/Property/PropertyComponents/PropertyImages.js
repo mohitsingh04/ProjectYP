@@ -13,9 +13,9 @@ export default function PropertyImages() {
   const dispatch = useDispatch();
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
-  const [previewIcon, setPreviewIcon] = useState("");
+  const [previewLogo, setPreviewLogo] = useState("");
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
-  const [iconImage, setIconImage] = useState("");
+  const [LogoImage, setLogoImage] = useState("");
   const [featureImage, setFeatureImage] = useState("");
 
   const getProperty = useCallback(() => {
@@ -32,22 +32,22 @@ export default function PropertyImages() {
 
   useEffect(() => {
     if (property) {
-      setIconImage(property?.property_logo?.[0]);
+      setLogoImage(property?.property_logo?.[0]);
       setFeatureImage(property?.featured_image?.[0]);
     }
   }, [property]);
 
-  const [showIconInInput, setShowIconInInput] = useState(false);
+  const [showLogoInInput, setShowLogoInInput] = useState(false);
   const [showFimageInInput, setShowFimageInInput] = useState(false);
 
-  const handleEditIcon = () => {
-    setShowIconInInput(true);
+  const handleEditLogo = () => {
+    setShowLogoInInput(true);
   };
-  // const handleUpdateIcon = () => {
-  //   setShowIconInInput(false);
+  // const handleUpdateLogo = () => {
+  //   setShowLogoInInput(false);
   // };
-  const handleCancelEditIcon = () => {
-    setShowIconInInput(false);
+  const handleCancelEditLogo = () => {
+    setShowLogoInInput(false);
   };
   const handleEditFimage = () => {
     setShowFimageInInput(true);
@@ -111,9 +111,9 @@ export default function PropertyImages() {
         <Card.Body>
           <Row>
             <Col md={6} className="mb-3">
-              <strong>Icon</strong>
               {!property.property_logo ? (
                 <>
+                  <strong>Logo</strong>
                   <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
                       type="file"
@@ -125,16 +125,16 @@ export default function PropertyImages() {
                         reader.onload = () => {
                           if (reader.readyState === 2) {
                             setFieldValue("property_logo", e.target.files[0]);
-                            setPreviewIcon(reader.result);
+                            setPreviewLogo(reader.result);
                           }
                         };
                         reader.readAsDataURL(e.target.files[0]);
                       }}
                       onBlur={handleBlur}
                     />
-                    {previewIcon === "" ? (
+                    {previewLogo === "" ? (
                       <img
-                        src={`http://localhost:5000/${iconImage}`}
+                        src={`http://localhost:5000/${LogoImage}`}
                         width={100}
                         height={100}
                         className="rounded-circle"
@@ -142,24 +142,28 @@ export default function PropertyImages() {
                       />
                     ) : (
                       <img
-                        src={previewIcon}
+                        src={previewLogo}
                         width={100}
                         height={100}
                         className="rounded-circle mt-1"
-                        alt="icon"
+                        alt="Logo"
                       />
                     )}
                     <br />
-                    <span onClick={handleCancelEditIcon} className="mx-3 py-2">
+                    <span
+                      onClick={handleCancelEditLogo}
+                      className="btn btn-danger mt-1"
+                    >
                       <i className="fe fe-x"></i>
                     </span>
-                    <button type="submit" className="btn">
-                      <i className="fe fe-check text-primary"></i>
+                    <button type="submit" className="btn btn-success mt-1 ms-1">
+                      <i className="fe fe-check"></i>
                     </button>
                   </form>
                 </>
-              ) : showIconInInput ? (
+              ) : showLogoInInput ? (
                 <>
+                  <strong>Logo</strong>
                   <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
                       accept="image/jpeg, image/png"
@@ -171,15 +175,15 @@ export default function PropertyImages() {
                         reader.onload = () => {
                           if (reader.readyState === 2) {
                             setFieldValue("property_logo", e.target.files[0]);
-                            setPreviewIcon(reader.result);
+                            setPreviewLogo(reader.result);
                           }
                         };
                         reader.readAsDataURL(e.target.files[0]);
                       }}
                       onBlur={handleBlur}
                     />
-                    {previewIcon === "" ? (
-                      iconImage === null ? (
+                    {previewLogo === "" ? (
+                      LogoImage === null ? (
                         <img
                           src={defaultLogo}
                           width={100}
@@ -189,7 +193,7 @@ export default function PropertyImages() {
                         />
                       ) : (
                         <img
-                          src={`http://localhost:5000/${iconImage}`}
+                          src={`http://localhost:5000/${LogoImage}`}
                           width={100}
                           height={100}
                           className="rounded-circle"
@@ -198,27 +202,38 @@ export default function PropertyImages() {
                       )
                     ) : (
                       <img
-                        src={previewIcon}
+                        src={previewLogo}
                         width={100}
                         height={100}
                         className="rounded-circle mt-1"
-                        alt="icon"
+                        alt="Logo"
                       />
                     )}
                     <br />
-                    <span onClick={handleCancelEditIcon} className="mx-3 py-2">
+                    <span
+                      onClick={handleCancelEditLogo}
+                      className="btn btn-danger mt-1"
+                    >
                       <i className="fe fe-x"></i>
                     </span>
-                    <button type="submit" className="btn">
-                      <i className="fe fe-check text-primary"></i>
+                    <button type="submit" className="btn btn-success ms-1 mt-1">
+                      <i className="fe fe-check"></i>
                     </button>
                   </form>
                 </>
               ) : (
                 <>
-                  <>
-                    <br />
-                    {iconImage === null ? (
+                  <div>
+                    <div className="d-flex justify-content-between">
+                      <strong>Logo</strong>
+                      <span
+                        onClick={() => handleEditLogo()}
+                        className="btn btn-primary"
+                      >
+                        <i className="fe fe-edit"></i>
+                      </span>
+                    </div>
+                    {LogoImage === null ? (
                       <img
                         src={defaultLogo}
                         width={100}
@@ -228,25 +243,21 @@ export default function PropertyImages() {
                       />
                     ) : (
                       <img
-                        src={`http://localhost:5000/${iconImage}`}
+                        src={`http://localhost:5000/${LogoImage}`}
                         width={100}
                         height={100}
                         className="rounded-circle"
                         alt=""
                       />
                     )}
-                    <br />
-                    <span onClick={() => handleEditIcon()} className="mx-2">
-                      <i className="fe fe-edit"></i>
-                    </span>
-                  </>
+                  </div>
                 </>
               )}
             </Col>
             <Col md={6} className="mb-3">
-              <strong>Featured Image</strong>
               {!property.featured_image === null ? (
                 <>
+                  <strong>Featured Image</strong>
                   <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
                       type="file"
@@ -277,23 +288,24 @@ export default function PropertyImages() {
                         src={previewFeaturedImage}
                         width={350}
                         className="mt-1"
-                        alt="icon"
+                        alt="Logo"
                       />
                     )}
                     <br />
-                    <span
+                    <button
                       onClick={handleCancelEditFimage}
-                      className="mx-3 py-2"
+                      className="btn btn-danger mt-1"
                     >
                       <i className="fe fe-x"></i>
-                    </span>
-                    <button type="submit" className="btn">
+                    </button>
+                    <button type="submit" className="btn btn-success ms-1 mt-1">
                       <i className="fe fe-check text-primary"></i>
                     </button>
                   </form>
                 </>
               ) : showFimageInInput ? (
                 <>
+                  <strong>Featured Image</strong>
                   <form onSubmit={handleSubmit} encType="multipart/form-data">
                     <input
                       type="file"
@@ -337,34 +349,40 @@ export default function PropertyImages() {
                       />
                     )}
                     <br />
-                    <span
+                    <button
                       onClick={handleCancelEditFimage}
-                      className="mx-3 py-2"
+                      className="btn btn-danger me-1 mt-1"
                     >
                       <i className="fe fe-x"></i>
-                    </span>
-                    <button type="submit" className="btn">
-                      <i className="fe fe-check text-primary"></i>
+                    </button>
+                    <button type="submit" className="btn btn-success mt-1">
+                      <i className="fe fe-check"></i>
                     </button>
                   </form>
                 </>
               ) : (
                 <>
                   <>
-                    <br />
-                    {featureImage === null ? (
-                      <img src={defaultFeature} width={350} alt="" />
-                    ) : (
-                      <img
-                        src={`http://localhost:5000/${featureImage}`}
-                        width={350}
-                        alt=""
-                      />
-                    )}
-                    <br />
-                    <span onClick={() => handleEditFimage()} className="mx-2">
-                      <i className="fe fe-edit"></i>
-                    </span>
+                    <div>
+                      <div className="d-flex justify-content-between">
+                        <strong>Featured Image</strong>
+                        <button
+                          onClick={() => handleEditFimage()}
+                          className="btn btn-primary"
+                        >
+                          <i className="fe fe-edit"></i>
+                        </button>
+                      </div>
+                      {featureImage === null ? (
+                        <img src={defaultFeature} width={350} alt="" />
+                      ) : (
+                        <img
+                          src={`http://localhost:5000/${featureImage}`}
+                          width={350}
+                          alt=""
+                        />
+                      )}
+                    </div>
                   </>
                 </>
               )}

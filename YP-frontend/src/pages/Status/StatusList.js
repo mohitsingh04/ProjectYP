@@ -94,6 +94,7 @@ export default function StatusList() {
             <button
               data-bs-toggle="tooltip"
               title="View"
+              className="btn btn-primary me-1"
               onClick={() => viewStatus(row._id)}
             >
               <i className="fe fe-eye"></i>
@@ -105,6 +106,7 @@ export default function StatusList() {
             <button
               data-bs-toggle="tooltip"
               title="Edit"
+              className="btn btn-success me-1"
               onClick={() => editStatus(row._id)}
             >
               <i className="fe fe-edit"></i>
@@ -116,6 +118,7 @@ export default function StatusList() {
             <button
               data-bs-toggle="tooltip"
               title="Delete"
+              className="btn btn-danger"
               onClick={() => deleteStatus(row._id)}
             >
               <i className="fe fe-trash-2"></i>

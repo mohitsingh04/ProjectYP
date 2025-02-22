@@ -46,7 +46,7 @@ export default function Login() {
       setError(error.response.data.error);
       toast.error(error.response.data.error);
       if (error.response.data.error === "You are Not Verified.") {
-        navigate(`/send/verify-email/success/${values.email}`);
+        navigate(`/verify-email`);
       }
     }
   };

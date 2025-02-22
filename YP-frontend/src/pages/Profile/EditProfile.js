@@ -22,15 +22,47 @@ export default function EditProfile() {
   const navigate = useNavigate();
   const { User } = DataRequest();
   const [profileImg, setProfileImg] = useState("");
+  const [selectedState, setSelectedState] = useState("");
+  const [states, setStates] = useState([]);
+  const [cities, setCities] = useState([]);
+  const getStates = async () => {
+    API.get("/states").then(({ data }) => {
+      const sortedStates = data.sort((a, b) => a.name.localeCompare(b.name));
+      setStates(sortedStates);
+    });
+  };
+
+  const getCities = useCallback(async () => {
+    const { data } = await API.get("/cities");
+    let filteredCities = data;
+
+    if (selectedState) {
+      filteredCities = data.filter((item) => item.state_name === selectedState);
+    }
+
+    const sortedCities = filteredCities.sort((a, b) =>
+      a.name.localeCompare(b.name)
+    );
+    setCities(sortedCities);
+  }, [selectedState]);
 
   const getUser = useCallback(async () => {
     if (User) {
       await API.get(`/user/${User?._id}`).then(({ data }) => {
         setUser(data);
         setProfileImg(data?.profile?.[0]);
+        setSelectedState(data?.state || "");
       });
     }
   }, [User]);
+
+  useEffect(() => {
+    getStates();
+  }, []);
+
+  useEffect(() => {
+    getCities();
+  }, [getCities]);
 
   useEffect(() => {
     getUser();
@@ -170,7 +202,11 @@ export default function EditProfile() {
                   <div className="d-flex mb-3">
                     {previewProfile === "" ? (
                       <img
-                        src={`http://localhost:5000/${profileImg}`}
+                        src={
+                          !user?.profile?.[0]
+                            ? require("../../Images/DefaultProfile.jpg")
+                            : `http://localhost:5000/${profileImg}`
+                        }
                         className="rounded-circle avatar-lg me-2"
                         alt="avatar"
                       />
@@ -319,20 +355,27 @@ export default function EditProfile() {
                   <Row className="mt-2">
                     <Col lg={6} md={12}>
                       <FormGroup>
-                        <label htmlFor="city">City</label>
-                        <Form.Control
-                          type="text"
-                          name="city"
+                        <label htmlFor="state">State</label>
+                        <Form.Select
+                          name="state"
                           className="form-control"
-                          id="city"
-                          placeholder="City *"
-                          value={values.city}
-                          onChange={handleChange}
+                          id="state"
+                          value={values.state}
+                          onChange={(e) => {
+                            handleChange(e);
+                            setSelectedState(e.target.value);
+                          }}
                           onBlur={handleBlur}
-                          autoComplete="off"
-                        />
-                        {errors.city && touched.city ? (
-                          <small className="text-danger">{errors.city}</small>
+                        >
+                          <option value="">Select State *</option>
+                          {states.map((state, index) => (
+                            <option key={index} value={state.name}>
+                              {state.name}
+                            </option>
+                          ))}
+                        </Form.Select>
+                        {errors.state && touched.state ? (
+                          <small className="text-danger">{errors.state}</small>
                         ) : (
                           <span />
                         )}
@@ -340,20 +383,24 @@ export default function EditProfile() {
                     </Col>
                     <Col lg={6} md={12}>
                       <FormGroup>
-                        <label htmlFor="state">State</label>
-                        <Form.Control
-                          type="text"
-                          name="state"
+                        <label htmlFor="city">City</label>
+                        <Form.Select
+                          name="city"
                           className="form-control"
-                          id="state"
-                          placeholder="State *"
-                          value={values.state}
+                          id="city"
+                          value={values.city}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                          autoComplete="off"
-                        />
-                        {errors.state && touched.state ? (
-                          <small className="text-danger">{errors.state}</small>
+                        >
+                          <option value="">Select City *</option>
+                          {cities.map((city, index) => (
+                            <option key={index} value={city.name}>
+                              {city.name}
+                            </option>
+                          ))}
+                        </Form.Select>
+                        {errors.city && touched.city ? (
+                          <small className="text-danger">{errors.city}</small>
                         ) : (
                           <span />
                         )}

@@ -225,8 +225,8 @@ router.get("/review/:uniqueId", getReviewById);
 router.get("/review/property/:property_id", getReviewByPropertyId);
 
 // Gallery Route
-const gallery = upload.fields([{ name: "gallery", maxCount: 4 }]);
-const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 4 }]);
+const gallery = upload.fields([{ name: "gallery", maxCount: 8 }]);
+const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 8 }]);
 router.get("/gallery", getGallery);
 router.post("/gallery", gallery, processImage, addGallery);
 router.patch("/gallery/:uniqueId", galleryUpdate, processImage, updateGallery);

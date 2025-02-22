@@ -72,7 +72,7 @@ function Root() {
     <>
       <BrowserRouter>
         {loading && <Loader />}
-        <ToastContainer autoClose={3000} />
+        <ToastContainer />
         <Routes>
           {/* <Route path="/search" element={<Search />} /> */}
           {/* <Route path="/home" element={<Home />} /> */}

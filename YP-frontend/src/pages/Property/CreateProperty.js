@@ -17,7 +17,7 @@ export default function CreateProperty() {
   const { User } = DataRequest();
   const [error, setError] = useState("");
   const [description, setDescription] = useState("");
-  const [previewIcon, setPreviewIcon] = useState("");
+  const [previewLogo, setPreviewLogo] = useState("");
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
   const [category, setCategory] = useState([]);
   const [authPermissions, setAuthPermissions] = useState([]);
@@ -374,7 +374,7 @@ export default function CreateProperty() {
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label className="form-label" htmlFor="property_logo">
-                        Property Icon
+                        Property Logo
                       </label>
                       <input
                         type="file"
@@ -387,7 +387,7 @@ export default function CreateProperty() {
                           reader.onload = () => {
                             if (reader.readyState === 2) {
                               setFieldValue("property_logo", e.target.files[0]);
-                              setPreviewIcon(reader.result);
+                              setPreviewLogo(reader.result);
                             }
                           };
                           reader.readAsDataURL(e.target.files[0]);
@@ -395,7 +395,7 @@ export default function CreateProperty() {
                         onBlur={handleBlur}
                       />
                       <img
-                        src={previewIcon}
+                        src={previewLogo}
                         className="mt-1"
                         width="100"
                         alt=""

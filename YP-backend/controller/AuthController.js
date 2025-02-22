@@ -72,6 +72,7 @@ export const register = async (req, res) => {
     });
 
     await newUser.save();
+    await sendEmailVerification({ uniqueId: x, email, emailType: "VERIFY" });
 
     return res.send({ message: "Registered Successfully, You can login now." });
   } catch (err) {

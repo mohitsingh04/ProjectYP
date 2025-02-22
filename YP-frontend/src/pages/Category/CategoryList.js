@@ -136,6 +136,7 @@ export default function CategoryList() {
               key={`${row._id}-view`}
               data-bs-toggle="tooltip"
               title="View"
+              className="btn btn-primary me-1"
               onClick={() => viewCategory(row._id)}
             >
               <i className="fe fe-eye"></i>
@@ -148,6 +149,7 @@ export default function CategoryList() {
               key={`${row._id}-edit`}
               data-bs-toggle="tooltip"
               title="Edit"
+              className="btn btn-success me-1"
               onClick={() => editCategory(row._id)}
             >
               <i className="fe fe-edit"></i>
@@ -160,6 +162,7 @@ export default function CategoryList() {
               key={`${row._id}-delete`}
               data-bs-toggle="tooltip"
               title="Delete"
+              className="btn btn-danger"
               onClick={() => deleteCategory(row._id)}
             >
               <i className="fe fe-trash"></i>

@@ -63,21 +63,17 @@ export default function Profile() {
                     <Col lg={12} md={12} xl={6}>
                       <div className="wideget-user-desc d-sm-flex">
                         <div className="wideget-user-img">
-                          {user.profile == null ? (
-                            <img
-                              src={require("../../assets/images/users/8.jpg")}
-                              alt="profile-user"
-                              className=""
-                            />
-                          ) : (
-                            <img
-                              src={`http://localhost:5000/${profileImg}`}
-                              alt="profile-user"
-                              width={128}
-                              height={128}
-                              className=""
-                            />
-                          )}
+                          <img
+                            src={
+                              !user?.profile?.[0]
+                                ? require("../../Images/DefaultProfile.jpg")
+                                : `http://localhost:5000/${profileImg}`
+                            }
+                            alt="profile-user"
+                            width={128}
+                            height={128}
+                            className=""
+                          />
                         </div>
                         <div className="user-wrap">
                           <h4>{user.name}</h4>

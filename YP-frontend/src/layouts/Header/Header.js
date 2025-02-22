@@ -342,9 +342,9 @@ export function Header() {
                       variant=""
                     >
                       <span>
-                        {user.profile == null ? (
+                        {!user.profile?.[0] ? (
                           <img
-                            src={require("../../assets/images/users/8.jpg")}
+                            src={require("../../Images/DefaultProfile.jpg")}
                             alt="profile-user"
                             className="avatar  profile-user brround cover-image"
                           />

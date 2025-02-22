@@ -38,6 +38,9 @@ export const addSeo = async (req, res) => {
     const seoSlug = title?.replace(/ /g, "-")?.toLowerCase();
     const courseKebabCase = course_name?.replace(/ /g, "-")?.toLowerCase();
     const propertyKebabCase = property_name?.replace(/ /g, "-")?.toLowerCase();
+
+    const mainSlug = slug.toLowerCase().replace(/\s+/g, "-");
+
     const seo = await Seo.findOne().sort({ _id: -1 }).limit(1);
     const x = seo ? seo.uniqueId + 1 : 1;
     const existSeo = await Seo.findOne({
@@ -48,7 +51,7 @@ export const addSeo = async (req, res) => {
       const newSeo = new Seo({
         uniqueId: x,
         title,
-        slug,
+        slug: mainSlug,
         meta_tags,
         description,
         primary_focus_keyword,
@@ -84,13 +87,18 @@ export const updateSeo = async (req, res) => {
       status,
     } = req.body;
 
-    console.log(req.body, objectId);
+    const existSeo = await Seo.findOne({ _id: objectId });
+
+    const mainSlug = slug
+      ? slug.toLowerCase().replace(/\s+/g, "-")
+      : existSeo?.slug;
+
     await Seo.findOneAndUpdate(
       { _id: objectId },
       {
         $set: {
           title,
-          slug,
+          slug: mainSlug,
           meta_tags,
           description,
           primary_focus_keyword,
@@ -100,7 +108,6 @@ export const updateSeo = async (req, res) => {
       }
     )
       .then((result) => {
-        console.log(result);
         return res.send({ message: "Seo updated." });
       })
       .catch((err) => {

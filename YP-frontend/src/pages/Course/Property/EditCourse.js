@@ -260,15 +260,19 @@ export default function EditPropertyCourse() {
                           onBlur={formik.handleBlur}
                         >
                           <option value="">--Duration Type--</option>
-                          {["Days", "Weeks", "Month"].map((duration, index) => (
-                            <option
-                              key={index}
-                              value={duration}
-                              selected={duration === formik.values.durationType}
-                            >
-                              {duration}
-                            </option>
-                          ))}
+                          {["Days", "Weeks", "Month", "Year"].map(
+                            (duration, index) => (
+                              <option
+                                key={index}
+                                value={duration}
+                                selected={
+                                  duration === formik.values.durationType
+                                }
+                              >
+                                {duration}
+                              </option>
+                            )
+                          )}
                         </select>
                       </div>
                       {formik.errors.courseDuration &&

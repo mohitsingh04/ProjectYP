@@ -36,21 +36,6 @@ export default function SendVerifyEmail() {
     }
   };
 
-  useEffect(() => {
-    const sendMailonLoad = async () => {
-      try {
-        const response = await API.post(`/verify-email`, { email });
-        toast.success(response.data.message);
-        setTimer(60);
-        setIsRunning(true);
-      } catch (error) {
-        toast.error(error.response.data.error);
-        console.log(error);
-      }
-    };
-    sendMailonLoad();
-  }, [email]);
-
   return (
     <>
       <div className="login-img">

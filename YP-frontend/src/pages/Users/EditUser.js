@@ -15,8 +15,10 @@ export default function EditUser() {
 
   const { objectId } = useParams();
   const [permissionData, setPermissionData] = useState([]);
-
   const mainUser = DataRequest();
+  const [selectedState, setSelectedState] = useState("");
+  const [city, setCity] = useState([]);
+  const [state, setState] = useState([]);
   const [authPermissions, setAuthPermissions] = useState([]);
 
   useEffect(() => {
@@ -26,6 +28,7 @@ export default function EditUser() {
   useEffect(() => {
     API.get(`/user/${objectId}`).then(({ data }) => {
       setUser(data);
+      setSelectedState(data.state);
     }, []);
     API.get(`/status/`).then(({ data }) => {
       setStatus(data);
@@ -33,7 +36,29 @@ export default function EditUser() {
     API.get("/permissions").then(({ data }) => {
       setPermissionData(data);
     }, []);
+    API.get("/states").then(({ data }) => {
+      const sortedStates = data.sort((a, b) => a.name.localeCompare(b.name));
+      setState(sortedStates);
+    });
   }, [objectId]);
+
+  useEffect(() => {
+    API.get("/cities").then(({ data }) => {
+      let filteredCities = data;
+
+      if (selectedState) {
+        filteredCities = data.filter(
+          (item) => item.state_name === selectedState
+        );
+      }
+
+      const sortedCities = filteredCities.sort((a, b) =>
+        a.name.localeCompare(b.name)
+      );
+
+      setCity(sortedCities);
+    });
+  }, [selectedState]);
 
   const initialValues = {
     uniqueId: user.uniqueId,
@@ -48,6 +73,8 @@ export default function EditUser() {
     status: user.status || "",
     permission: user.permissions || [],
   };
+
+  console.log(selectedState);
 
   const validationSchema = Yup.object({
     name: Yup.string()
@@ -70,9 +97,7 @@ export default function EditUser() {
       "Pincode must be exactly 6 digits."
     ),
 
-    city: Yup.string()
-      .min(2, "City must be at least 2 characters long.")
-      .matches(/^[a-zA-Z\s]+$/, "City can only contain alphabets and spaces."),
+    city: Yup.string().min(2, "City must be at least 2 characters long."),
 
     state: Yup.string()
       .min(2, "State must be at least 2 characters long.")
@@ -277,19 +302,28 @@ export default function EditUser() {
                   <Row className="mt-2">
                     <Col lg={6} md={12}>
                       <FormGroup>
-                        <label htmlFor="city">City</label>
-                        <Form.Control
-                          type="text"
-                          name="city"
+                        <label htmlFor="state">State</label>
+                        <Form.Select
+                          name="state"
                           className="form-control"
-                          id="city"
-                          placeholder="City *"
-                          value={values.city}
-                          onChange={handleChange}
+                          id="state"
+                          value={values.state}
+                          onChange={(e) => {
+                            handleChange(e);
+                            setSelectedState(e.target.value);
+                          }}
                           onBlur={handleBlur}
-                        />
-                        {errors.city && touched.city ? (
-                          <small className="text-danger">{errors.city}</small>
+                        >
+                          <option value="">Select State *</option>
+                          {state.map((state, index) => (
+                            <option key={index} value={state.name}>
+                              {state.name}
+                            </option>
+                          ))}
+                        </Form.Select>
+
+                        {errors.state && touched.state ? (
+                          <small className="text-danger">{errors.state}</small>
                         ) : (
                           <span />
                         )}
@@ -297,19 +331,24 @@ export default function EditUser() {
                     </Col>
                     <Col lg={6} md={12}>
                       <FormGroup>
-                        <label htmlFor="state">State</label>
-                        <Form.Control
-                          type="text"
-                          name="state"
+                        <label htmlFor="city">City</label>
+                        <Form.Select
+                          name="city"
                           className="form-control"
-                          id="state"
-                          placeholder="State *"
-                          value={values.state}
+                          id="city"
+                          value={values.city}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                        />
-                        {errors.state && touched.state ? (
-                          <small className="text-danger">{errors.state}</small>
+                        >
+                          <option value="">Select City *</option>
+                          {city.map((city, index) => (
+                            <option key={index} value={city.name}>
+                              {city.name}
+                            </option>
+                          ))}
+                        </Form.Select>
+                        {errors.city && touched.city ? (
+                          <small className="text-danger">{errors.city}</small>
                         ) : (
                           <span />
                         )}
