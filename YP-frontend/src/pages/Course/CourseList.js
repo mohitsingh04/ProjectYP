@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Card, Breadcrumb, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
@@ -6,15 +6,14 @@ import DataTableExtensions from "react-data-table-component-extensions";
 import Swal from "sweetalert2";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
 import defaultCourse from "../../Images/defaultcourse.webp";
+import Skeleton from "react-loading-skeleton";
 
 export default function CourseList() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [course, setCourse] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
@@ -23,19 +22,20 @@ export default function CourseList() {
     setAuthPermissions(mainUser?.User?.permissions);
   }, [mainUser]);
 
-  useEffect(() => {
-    getCourse();
-  }, []);
-
-  const getCourse = () => {
+  const getCourse = useCallback(() => {
     try {
       API.get("/course").then(({ data }) => {
         setCourse(data);
+        setLoading(false);
       });
     } catch (err) {
       toast.error(err.message);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    getCourse();
+  }, [getCourse]);
 
   const viewCourse = (uniqueId) => {
     navigate("/dashboard/course/view/" + uniqueId);
@@ -57,16 +57,13 @@ export default function CourseList() {
     })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(showLoading());
           API.delete(`/course/${uniqueId}`).then((response) => {
-            dispatch(hideLoading());
             toast.success(response.data.message);
             getCourse();
           });
         }
       })
       .catch((error) => {
-        dispatch(hideLoading());
         console.log(error.message);
       });
   };
@@ -206,20 +203,24 @@ export default function CourseList() {
             <Card className="custom-card">
               <Card.Body>
                 <div className="table">
-                  <DataTableExtensions {...tableData}>
-                    <DataTable
-                      columns={columns}
-                      data={data}
-                      noHeader
-                      defaultSortField="id"
-                      defaultSortAsc={false}
-                      striped={true}
-                      center={true}
-                      persistTableHead
-                      pagination
-                      highlightOnHover
-                    />
-                  </DataTableExtensions>
+                  {loading ? (
+                    <Skeleton height={30} count={8} className="my-2" />
+                  ) : (
+                    <DataTableExtensions {...tableData}>
+                      <DataTable
+                        columns={columns}
+                        data={data}
+                        noHeader
+                        defaultSortField="id"
+                        defaultSortAsc={false}
+                        striped={true}
+                        center={true}
+                        persistTableHead
+                        pagination
+                        highlightOnHover
+                      />
+                    </DataTableExtensions>
+                  )}
                 </div>
               </Card.Body>
             </Card>

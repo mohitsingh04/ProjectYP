@@ -1,5 +1,6 @@
 import React from "react";
 import "./index.scss";
+import 'react-loading-skeleton/dist/skeleton.css'
 import Swal from "sweetalert2";
 import { BrowserRouter, Routes, Route} from "react-router-dom";
 import { ToastContainer } from "react-toastify";
@@ -71,7 +72,7 @@ function Root() {
   return (
     <>
       <BrowserRouter>
-        {loading && <Loader />}
+        {/* {loading && <Loader />} */}
         <ToastContainer />
         <Routes>
           {/* <Route path="/search" element={<Search />} /> */}

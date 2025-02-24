@@ -6,16 +6,15 @@ import DataTableExtensions from "react-data-table-component-extensions";
 import Swal from "sweetalert2";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
+import Skeleton from "react-loading-skeleton";
 
 export default function StatusList() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [status, setStatus] = useState([]);
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions);
@@ -23,15 +22,15 @@ export default function StatusList() {
 
   const getStatus = useCallback(async () => {
     try {
-      dispatch(showLoading());
+      setLoading(true);
       const { data } = await API.get("/status");
       setStatus(data);
+      setLoading(false);
     } catch (err) {
+      setLoading(false);
       toast.error(err.message);
-    } finally {
-      dispatch(hideLoading());
     }
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     getStatus();
@@ -57,14 +56,11 @@ export default function StatusList() {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          dispatch(showLoading());
           const response = await API.delete(`/status/${objectId}`);
           toast.success(response.data.message);
           getStatus();
         } catch (error) {
           toast.error(error.message);
-        } finally {
-          dispatch(hideLoading());
         }
       }
     });
@@ -85,12 +81,13 @@ export default function StatusList() {
       name: "COLOR",
       selector: (row) => <input type="color" value={row.color} disabled />,
       sortable: true,
+      cell: (row) => <input type="color" value={row.color} disabled />,
     },
     {
       name: "ACTION",
       selector: (row) => (
         <>
-          {authPermissions?.some((items) => items.value === "Read Status") ? (
+          {authPermissions?.some((items) => items.value === "Read Status") && (
             <button
               data-bs-toggle="tooltip"
               title="View"
@@ -99,10 +96,10 @@ export default function StatusList() {
             >
               <i className="fe fe-eye"></i>
             </button>
-          ) : (
-            ""
           )}
-          {authPermissions?.some((items) => items.value === "Update Status") ? (
+          {authPermissions?.some(
+            (items) => items.value === "Update Status"
+          ) && (
             <button
               data-bs-toggle="tooltip"
               title="Edit"
@@ -111,10 +108,10 @@ export default function StatusList() {
             >
               <i className="fe fe-edit"></i>
             </button>
-          ) : (
-            ""
           )}
-          {authPermissions?.some((items) => items.value === "Delete Status") ? (
+          {authPermissions?.some(
+            (items) => items.value === "Delete Status"
+          ) && (
             <button
               data-bs-toggle="tooltip"
               title="Delete"
@@ -123,8 +120,6 @@ export default function StatusList() {
             >
               <i className="fe fe-trash-2"></i>
             </button>
-          ) : (
-            ""
           )}
         </>
       ),
@@ -159,7 +154,7 @@ export default function StatusList() {
           <div className="ms-auto pageheader-btn">
             {authPermissions?.some(
               (items) => items.value === "Create Status"
-            ) ? (
+            ) && (
               <Link
                 to="/dashboard/status/add/"
                 className="btn btn-primary btn-icon text-white me-3"
@@ -169,8 +164,6 @@ export default function StatusList() {
                 </span>
                 Add Status
               </Link>
-            ) : (
-              ""
             )}
           </div>
         </div>
@@ -180,20 +173,24 @@ export default function StatusList() {
             <Card className="custom-card">
               <Card.Body>
                 <div className="table">
-                  <DataTableExtensions {...tableData}>
-                    <DataTable
-                      columns={columns}
-                      data={data}
-                      noHeader
-                      defaultSortField="id"
-                      defaultSortAsc={false}
-                      striped
-                      center
-                      persistTableHead
-                      pagination
-                      highlightOnHover
-                    />
-                  </DataTableExtensions>
+                  {loading ? (
+                    <Skeleton height={30} count={8} className="my-2" />
+                  ) : (
+                    <DataTableExtensions {...tableData}>
+                      <DataTable
+                        columns={columns}
+                        data={data}
+                        noHeader
+                        defaultSortField="id"
+                        defaultSortAsc={false}
+                        striped
+                        center
+                        persistTableHead
+                        pagination
+                        highlightOnHover
+                      />
+                    </DataTableExtensions>
+                  )}
                 </div>
               </Card.Body>
             </Card>

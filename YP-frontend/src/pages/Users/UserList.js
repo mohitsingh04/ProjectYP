@@ -6,15 +6,14 @@ import DataTableExtensions from "react-data-table-component-extensions";
 import Swal from "sweetalert2";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
 import defaultProfile from "../../Images/DefaultProfile.jpg";
+import Skeleton from "react-loading-skeleton";
 
 export default function UserList() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
 
@@ -23,17 +22,17 @@ export default function UserList() {
   }, [mainUser]);
 
   const getUser = useCallback(() => {
+    setLoading(true);
     try {
-      dispatch(showLoading());
       API.get("/users").then(({ data }) => {
         setUsers(data);
-        dispatch(hideLoading());
+        setLoading(false);
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
+      setLoading(false);
     }
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     getUser();
@@ -59,20 +58,17 @@ export default function UserList() {
     })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(showLoading());
           API.delete(`/user/${uniqueId}`).then((response) => {
-            dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
               getUser();
             } else if (response.data.error) {
-              toast.success(response.data.error);
+              toast.error(response.data.error);
             }
           });
         }
       })
       .catch((error) => {
-        dispatch(hideLoading());
         console.log(error.message);
       });
   };
@@ -206,7 +202,9 @@ export default function UserList() {
             </Breadcrumb>
           </div>
           <div className="ms-auto pageheader-btn">
-            {authPermissions?.some((items) => items.value === "Create User") ? (
+            {authPermissions?.some(
+              (items) => items.value === "Create User"
+            ) && (
               <Link
                 to="/dashboard/user/add/"
                 className="btn btn-primary btn-icon text-white me-3"
@@ -216,8 +214,6 @@ export default function UserList() {
                 </span>
                 Add User
               </Link>
-            ) : (
-              ""
             )}
           </div>
         </div>
@@ -227,20 +223,24 @@ export default function UserList() {
             <Card className="custom-card">
               <Card.Body>
                 <div className="table">
-                  <DataTableExtensions {...tableData}>
-                    <DataTable
-                      columns={columns}
-                      data={data}
-                      noHeader
-                      defaultSortField="id"
-                      defaultSortAsc={false}
-                      striped={true}
-                      center={true}
-                      persistTableHead
-                      pagination
-                      highlightOnHover
-                    />
-                  </DataTableExtensions>
+                  {loading ? (
+                    <Skeleton height={30} count={8} className="my-2" />
+                  ) : (
+                    <DataTableExtensions {...tableData}>
+                      <DataTable
+                        columns={columns}
+                        data={data}
+                        noHeader
+                        defaultSortField="id"
+                        defaultSortAsc={false}
+                        striped={true}
+                        center={true}
+                        persistTableHead
+                        pagination
+                        highlightOnHover
+                      />
+                    </DataTableExtensions>
+                  )}
                 </div>
               </Card.Body>
             </Card>

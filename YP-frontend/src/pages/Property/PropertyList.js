@@ -4,19 +4,18 @@ import { Link, useNavigate } from "react-router-dom";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
 import { API } from "../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import DataRequest from "../../context/DataRequest";
 import defautLogo from "../../Images/defaultPropertyLogo.jpeg";
+import Skeleton from "react-loading-skeleton";
 
 export default function PropertyList() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [property, setProperty] = useState([]);
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions);
@@ -25,14 +24,13 @@ export default function PropertyList() {
   const getProperty = useCallback(async () => {
     await API.get("/property")
       .then(({ data }) => {
-        dispatch(hideLoading());
         setProperty(data);
+        setLoading(false);
       })
       .catch((err) => {
-        dispatch(hideLoading());
         toast.error(err.message);
       });
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     getProperty();
@@ -54,9 +52,7 @@ export default function PropertyList() {
     })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(showLoading());
           API.delete(`/property/${objectId}`).then((response) => {
-            dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
               getProperty();
@@ -67,7 +63,6 @@ export default function PropertyList() {
         }
       })
       .catch((error) => {
-        dispatch(hideLoading());
         console.log(error.message);
       });
   };
@@ -197,7 +192,7 @@ export default function PropertyList() {
         <div className="ms-auto pageheader-btn">
           {authPermissions?.some(
             (items) => items.value === "Create Property"
-          ) ? (
+          ) && (
             <Link
               to="/dashboard/property/add/"
               className="btn btn-primary btn-icon text-white me-3"
@@ -207,8 +202,6 @@ export default function PropertyList() {
               </span>
               Add Property
             </Link>
-          ) : (
-            ""
           )}
         </div>
       </div>
@@ -218,20 +211,24 @@ export default function PropertyList() {
           <Card className="custom-card">
             <Card.Body>
               <div className="table">
-                <DataTableExtensions {...tableData}>
-                  <DataTable
-                    columns={columns}
-                    data={data}
-                    noHeader
-                    defaultSortField="id"
-                    defaultSortAsc={false}
-                    striped={true}
-                    center={true}
-                    persistTableHead
-                    pagination
-                    highlightOnHover
-                  />
-                </DataTableExtensions>
+                {loading ? (
+                  <Skeleton height={30} count={8} className="my-2" />
+                ) : (
+                  <DataTableExtensions {...tableData}>
+                    <DataTable
+                      columns={columns}
+                      data={data}
+                      noHeader
+                      defaultSortField="id"
+                      defaultSortAsc={false}
+                      striped={true}
+                      center={true}
+                      persistTableHead
+                      pagination
+                      highlightOnHover
+                    />
+                  </DataTableExtensions>
+                )}
               </div>
             </Card.Body>
           </Card>

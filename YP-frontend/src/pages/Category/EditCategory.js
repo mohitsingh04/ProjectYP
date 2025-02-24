@@ -63,11 +63,11 @@ export default function EditCategory() {
   }, [dispatch, objectId]);
 
   const initialValues = {
-    category_name: category.category_name || "",
-    parent_category: category.parent_category || "",
-    category_icon: category.category_icon || "",
-    featured_image: category.featured_image || "",
-    status: category.status || "",
+    category_name: category?.category_name || "",
+    parent_category: category?.parent_category || "",
+    category_icon: category?.category_icon || "",
+    featured_image: category?.featured_image || "",
+    status: category?.status || "",
   };
 
   const validationSchema = Yup.object({
@@ -132,16 +132,19 @@ export default function EditCategory() {
     enableReinitialize: true,
   });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Update Category"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        USER DOES NOT HAVE THE RIGHT ROLES.
-      </div>
+  if (authPermissions?.length > 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Read Course"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (

@@ -6,17 +6,16 @@ import DataTableExtensions from "react-data-table-component-extensions";
 import { API } from "../../context/Api";
 import Swal from "sweetalert2";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
 import defaultIcon from "../../Images/defaultcategory-compressed.webp";
+import Skeleton from "react-loading-skeleton";
 
 export default function CategoryList() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [category, setCategory] = useState([]);
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions);
@@ -24,16 +23,14 @@ export default function CategoryList() {
 
   const getCategory = useCallback(() => {
     try {
-      dispatch(showLoading());
       API.get("/category").then(({ data }) => {
-        dispatch(hideLoading());
         setCategory(data);
+        setLoading(false);
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     getCategory();
@@ -59,9 +56,7 @@ export default function CategoryList() {
     })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(showLoading());
           API.delete(`/category/${uniqueId}`).then((response) => {
-            dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
               getCategory();
@@ -72,7 +67,6 @@ export default function CategoryList() {
         }
       })
       .catch((error) => {
-        dispatch(hideLoading());
         console.log(error.message);
       });
   };
@@ -173,7 +167,7 @@ export default function CategoryList() {
     },
   ];
 
-  const data = category;
+  const data = loading ? Array(5).fill({}) : category;
 
   const tableData = {
     columns,
@@ -217,21 +211,25 @@ export default function CategoryList() {
               <Card.Body>
                 <div className="table-responsive">
                   <div className="table">
-                    <DataTableExtensions {...tableData}>
-                      <DataTable
-                        columns={columns}
-                        data={data}
-                        noHeader
-                        defaultSortField="id"
-                        defaultSortAsc={false}
-                        striped={true}
-                        center={true}
-                        persistTableHead
-                        pagination
-                        highlightOnHover
-                        aria-label="Category List Table"
-                      />
-                    </DataTableExtensions>
+                    {loading ? (
+                      <Skeleton height={30} count={8} className={`my-2`} />
+                    ) : (
+                      <DataTableExtensions {...tableData}>
+                        <DataTable
+                          columns={columns}
+                          data={data}
+                          noHeader
+                          defaultSortField="id"
+                          defaultSortAsc={false}
+                          striped={true}
+                          center={true}
+                          persistTableHead
+                          pagination
+                          highlightOnHover
+                          aria-label="Category List Table"
+                        />
+                      </DataTableExtensions>
+                    )}
                   </div>
                 </div>
               </Card.Body>

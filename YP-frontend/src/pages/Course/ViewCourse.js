@@ -2,15 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Row, Col, Card, Table } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { API } from "../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
+// import { useDispatch } from "react-redux";
+// import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import DataRequest from "../../context/DataRequest";
 import defaultCourse from "../../Images/defaultcourse.webp";
+import Skeleton from "react-loading-skeleton";
 
 export default function ViewCourse() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const dispatch = useDispatch();
   const [course, setCourse] = useState("");
   const { objectId } = useParams();
   const [courseImage, setCourseImage] = useState("");
@@ -23,33 +24,33 @@ export default function ViewCourse() {
 
   useEffect(() => {
     try {
-      dispatch(showLoading());
       API.get(`/course/${objectId}`).then(({ data }) => {
-        dispatch(hideLoading());
         setCourse(data);
-        setCourseImage(data.image[0]);
+        setCourseImage(data?.image?.[0]);
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   const [isExpanded, setIsExpended] = useState(false);
   const toggleReadMore = () => {
     setIsExpended(!isExpanded);
   };
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Read Course"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        USER DOES NOT HAVE THE RIGHT ROLES.
-      </div>
+  if (authPermissions?.length > 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Read Course"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (
@@ -59,11 +60,14 @@ export default function ViewCourse() {
           <div>
             <h1 className="page-title">Course</h1>
             <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item" href="#">
-                <Link to="/dashboard/">Dashboard</Link>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+                Dashboard
               </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-                <Link to="/dashboard/course/">Course</Link>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: "/dashboard/course/" }}
+              >
+                Course
               </Breadcrumb.Item>
               <Breadcrumb.Item
                 className="breadcrumb-item active"
@@ -71,11 +75,8 @@ export default function ViewCourse() {
               >
                 View
               </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                aria-current="page"
-              >
-                {course.course_name}
+              <Breadcrumb.Item>
+                {course?.course_name || <Skeleton className="w-100" />}
               </Breadcrumb.Item>
             </Breadcrumb>
           </div>
@@ -92,103 +93,126 @@ export default function ViewCourse() {
         <Row>
           <Col md={12}>
             <Card>
-              <Card.Body className="bg-white">
-                <div className="media-heading">
-                  <h5>
-                    <strong>View Course</strong>
-                  </h5>
-                </div>
-                <hr className="mt-5" />
-                <div className="table-responsive p-1">
-                  <div>
-                    {courseImage === null ? (
-                      <img
-                        src={defaultCourse}
-                        width="100%"
-                        height="50%"
-                        alt={defaultCourse}
-                      />
-                    ) : (
-                      <img
-                        src={`http://localhost:5000/${courseImage}`}
-                        width="100%"
-                        height="50%"
-                        alt={courseImage}
-                      />
-                    )}
-                  </div>
-                  <Table className="table row table-borderless mt-3">
-                    <tbody className="col-lg-12 col-xl-6 p-0">
-                      <tr>
-                        <td>
-                          <strong>Name : </strong> {course.course_name}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <strong>Course Level : </strong> {course.course_level}
-                        </td>
-                      </tr>
-                    </tbody>
-                    <tbody className="col-lg-12 col-xl-6 p-0">
-                      <tr>
-                        <td>
-                          <strong>Short Name : </strong>
-                          {course.course_short_name}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          <strong>Duration : </strong>
-                          {course.duration}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </Table>
-                </div>
-                <Row className="row profie-img">
-                  <Col md={12}>
-                    <p className="mb-0">
-                      {course.description ? (
-                        <strong className="fs-6">Description: </strong>
-                      ) : (
-                        <strong className="fs-6">
-                          Description: Not Available
-                        </strong>
-                      )}
-
-                      {course.description && (
-                        <span>
-                          {course.description.length >= 1500 ? (
-                            <>
-                              <p
-                                dangerouslySetInnerHTML={{
-                                  __html: isExpanded
-                                    ? course.description
-                                    : course.description.substring(0, 1200) +
-                                      "...",
-                                }}
-                              />
-                              <button
-                                onClick={toggleReadMore}
-                                className="text-primary m-0 p-0 text-decoration-underline"
-                              >
-                                {isExpanded ? "Read Less" : "Read More"}
-                              </button>
-                            </>
+              {course ? (
+                <>
+                  <Card.Header>
+                    <div className="media-heading">
+                      <h5>
+                        <strong>View Course</strong>
+                      </h5>
+                    </div>
+                  </Card.Header>
+                  {/* <hr className="mt-5" /> */}
+                  <Card.Body>
+                    <div className="table-responsive p-1">
+                      <div>
+                        {courseImage === null ? (
+                          <img
+                            src={defaultCourse}
+                            width="100%"
+                            height="50%"
+                            alt={defaultCourse}
+                          />
+                        ) : (
+                          <img
+                            src={`http://localhost:5000/${courseImage}`}
+                            width="100%"
+                            height="50%"
+                            alt={courseImage}
+                          />
+                        )}
+                      </div>
+                      <Table className="table row table-borderless mt-3">
+                        <tbody className="col-lg-12 col-xl-6 p-0">
+                          <tr>
+                            <td>
+                              <strong>Name : </strong> {course.course_name}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <strong>Course Level : </strong>{" "}
+                              {course.course_level}
+                            </td>
+                          </tr>
+                        </tbody>
+                        <tbody className="col-lg-12 col-xl-6 p-0">
+                          <tr>
+                            <td>
+                              <strong>Short Name : </strong>
+                              {course.course_short_name}
+                            </td>
+                          </tr>
+                          <tr>
+                            <td>
+                              <strong>Duration : </strong>
+                              {course.duration || <Skeleton />}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Table>
+                    </div>
+                    <Row className="row profie-img">
+                      <Col md={12}>
+                        <p className="mb-0">
+                          {course.description ? (
+                            <strong className="fs-6">Description: </strong>
                           ) : (
-                            <p
-                              dangerouslySetInnerHTML={{
-                                __html: course.description,
-                              }}
-                            />
+                            <strong className="fs-6">
+                              Description: Not Available
+                            </strong>
                           )}
-                        </span>
-                      )}
-                    </p>
-                  </Col>
-                </Row>
-              </Card.Body>
+
+                          {course.description && (
+                            <span>
+                              {course.description.length >= 1500 ? (
+                                <>
+                                  <p
+                                    dangerouslySetInnerHTML={{
+                                      __html: isExpanded
+                                        ? course.description
+                                        : course.description.substring(
+                                            0,
+                                            1200
+                                          ) + "...",
+                                    }}
+                                  />
+                                  <button
+                                    onClick={toggleReadMore}
+                                    className="text-primary m-0 p-0 text-decoration-underline"
+                                  >
+                                    {isExpanded ? "Read Less" : "Read More"}
+                                  </button>
+                                </>
+                              ) : (
+                                <p
+                                  dangerouslySetInnerHTML={{
+                                    __html: course.description,
+                                  }}
+                                />
+                              )}
+                            </span>
+                          )}
+                        </p>
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </>
+              ) : (
+                <>
+                  <Card.Body>
+                    <Skeleton height={250} />
+                    <Row>
+                      <Col md={6}>
+                        <Skeleton count={3} height={20} className="my-2" />
+                      </Col>
+                      <Col md={6}>
+                        <Skeleton count={2} height={20} className="my-2" />
+                      </Col>
+                    </Row>
+                  </Card.Body>
+                </>
+              )}
             </Card>
           </Col>
         </Row>
