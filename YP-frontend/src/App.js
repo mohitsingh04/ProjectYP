@@ -35,8 +35,8 @@ import EditTeacher from "./pages/Teachers/EditTeacher";
 import ViewTeacher from "./pages/Teachers/ViewTeacher";
 // import ViewFaqs from "./pages/Faqs/ViewFaq";
 import EditFaqs from "./pages/Faqs/EditFaqs";
-import Loader from "./components/Loader/Loader";
-import { useSelector } from "react-redux";
+// import Loader from "./components/Loader/Loader";
+// import { useSelector } from "react-redux";
 import VerifyEmail from "./pages/Auth/Email/VerifyEmail";
 import EmailVerified from "./pages/Auth/Email/EmailVerified";
 import EditSeo from "./pages/Seo/EditSeo";
@@ -67,7 +67,7 @@ const toast = Swal.mixin({
 window.toast = toast;
 
 function Root() {
-  const { loading } = useSelector((state) => state.alerts);
+  // const { loading } = useSelector((state) => state.alerts);
 
   return (
     <>
