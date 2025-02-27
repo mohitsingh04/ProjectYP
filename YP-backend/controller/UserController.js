@@ -172,7 +172,7 @@ export const deleteUserProfile = async (req, res) => {
 
 export const addNewUser = async (req, res) => {
   try {
-    const { name, email, mobile_no, role } = req.body;
+    const { name, email, mobile_no, role, permission } = req.body;
     const existEmail = await User.findOne({ email: email });
     const existMobile = await User.findOne({ mobile_no: mobile_no });
     if (existEmail) {
@@ -197,6 +197,7 @@ export const addNewUser = async (req, res) => {
       mobile_no,
       role,
       password: hash,
+      permissions: permission,
     });
 
     const savedUser = await newUser.save();

@@ -14,12 +14,33 @@ export default function EditStatus() {
   const editorRef = useRef(null);
   const { objectId } = useParams();
   const mainUser = DataRequest();
-
+  const [allStatus, setAllStatus] = useState([]);
   const [status, setStatus] = useState({});
   const [error, setError] = useState("");
   const [description, setDescription] = useState("");
   const [authPermissions, setAuthPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const getAllStatus = async () => {
+    try {
+      const response = await API.get("/status");
+
+      const uniqueStatus = Object.values(
+        response.data.reduce((acc, item) => {
+          acc[item.parent_status] = item;
+          return acc;
+        }, {})
+      );
+
+      setAllStatus(uniqueStatus);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getAllStatus();
+  }, []);
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions || []);
@@ -30,7 +51,7 @@ export default function EditStatus() {
   }, [mainUser, objectId]);
 
   const validationSchema = Yup.object({
-    status_name: Yup.string()
+    parent_status: Yup.string()
       .min(3, "Status Name must be at least 3 characters.")
       .required("Status name is required.")
       .matches(
@@ -41,8 +62,8 @@ export default function EditStatus() {
 
   const formik = useFormik({
     initialValues: {
+      parent_status: status.parent_status || "",
       status_name: status.name || "",
-      status_color: status.color || "#6259ca",
     },
     validationSchema,
     onSubmit: async (values) => {
@@ -59,23 +80,25 @@ export default function EditStatus() {
           setError(response.data.error);
         }
       } catch (err) {
-        toast.error(err.message);
+        toast.error(err.response.data.error);
       }
     },
     enableReinitialize: true,
   });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Update Status"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Update Status"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (
@@ -145,36 +168,49 @@ export default function EditStatus() {
                     </div>
                   )}
                   <div className="form-row">
-                    <div className="form-group col-md-6 mb-3">
+                    <div className="form-group col mb-3">
                       <Form.Group>
-                        <Form.Label htmlFor="status_name">Name</Form.Label>
-                        <input
-                          type="text"
+                        <Form.Label htmlFor="status_name">
+                          Status Name
+                        </Form.Label>
+                        <Form.Select
                           id="status_name"
                           name="status_name"
-                          className="form-control"
-                          placeholder="Name"
-                          {...formik.getFieldProps("status_name")}
-                        />
-                        {formik.touched.status_name &&
-                          formik.errors.status_name && (
-                            <span className="text-danger">
-                              {formik.errors.status_name}
-                            </span>
-                          )}
+                          value={formik.values.status_name}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                        >
+                          <option value="" disabled>
+                            --Select Category--
+                          </option>
+                          <option value={`uncategorized`}>Uncategorized</option>
+                          {allStatus.map((item, index) => (
+                            <option key={index} value={item.parent_status}>
+                              {item.parent_status}
+                            </option>
+                          ))}
+                        </Form.Select>
                       </Form.Group>
                     </div>
-
-                    <div className="form-group col-md-1 mb-3">
+                    <div className="form-group col mb-3">
                       <Form.Group>
-                        <Form.Label htmlFor="status_color">Color</Form.Label>
+                        <Form.Label htmlFor="parent_status">
+                          Parent Status
+                        </Form.Label>
                         <input
-                          type="color"
-                          name="status_color"
-                          id="status_color"
+                          type="text"
+                          id="parent_status"
+                          name="parent_status"
                           className="form-control"
-                          {...formik.getFieldProps("status_color")}
+                          placeholder="Name"
+                          {...formik.getFieldProps("parent_status")}
                         />
+                        {formik.touched.parent_status &&
+                          formik.errors.parent_status && (
+                            <span className="text-danger">
+                              {formik.errors.parent_status}
+                            </span>
+                          )}
                       </Form.Group>
                     </div>
 

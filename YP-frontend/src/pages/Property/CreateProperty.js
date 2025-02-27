@@ -1,10 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import DataRequest from "../../context/DataRequest";
 import { Card, Breadcrumb, Row, Col } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Editor } from "@tinymce/tinymce-react";
-import DataRequest from "../../context/DataRequest";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
 
@@ -26,6 +26,10 @@ export default function CreateProperty() {
   const getCategory = useCallback(async () => {
     API.get("/category").then(({ data }) => {
       setCategory(data);
+      const mainCategory = data.filter((item) => item.status === "Active");
+      if (mainCategory) {
+        setCategory(mainCategory);
+      }
     });
   }, []);
 
@@ -115,19 +119,20 @@ export default function CreateProperty() {
     onSubmit: onSubmit,
   });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Create Property"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Create Property"
     );
-  }
 
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
+  }
   return (
     <div>
       <div className="page-header">

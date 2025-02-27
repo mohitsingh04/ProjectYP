@@ -44,13 +44,17 @@ export default function Courses() {
 
   const getCourse = useCallback(() => {
     API.get("/course").then(({ data }) => {
-      setCourses(data);
+      const activeCourses = data.filter((item) => item.status === "Active");
+
+      setCourses(activeCourses);
+
       const uniqueCourseName = [
-        ...new Set(data.map((item) => item.course_name)),
+        ...new Set(activeCourses.map((item) => item.course_name)),
       ];
       setCourseName(uniqueCourseName);
+
       const uniqueCourseTypes = [
-        ...new Set(data.map((item) => item.course_type)),
+        ...new Set(activeCourses.map((item) => item.course_type)),
       ];
       setCourseTypes(uniqueCourseTypes);
     });
@@ -149,7 +153,7 @@ export default function Courses() {
     setShowCourseForm(true);
   };
 
-  const deleteStatus = (id) => {
+  const deletePropetyCourse = (id) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -161,9 +165,14 @@ export default function Courses() {
         confirmButtonText: "Yes, delete it!",
       }).then(async (result) => {
         if (result.isConfirmed) {
-          const deleteResponse = await API.delete(`/property-course/${id}`);
-          toast.success(deleteResponse.data.message);
-          getPropertyCourse();
+          API.delete(`/property-course/${id}`).then((response) => {
+            if (response.data.message) {
+              toast.success(response.data.message);
+              getPropertyCourse();
+            } else if (response.data.error) {
+              toast.success(response.data.error);
+            }
+          });
         }
       });
     } catch (error) {
@@ -232,7 +241,7 @@ export default function Courses() {
           <button
             data-bs-toggle="tooltip"
             title="Delete"
-            onClick={() => deleteStatus(row.uniqueId)}
+            onClick={() => deletePropetyCourse(row._id)}
           >
             <i className="fe fe-trash-2"></i>
           </button>

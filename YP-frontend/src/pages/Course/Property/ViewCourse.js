@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { Breadcrumb, Row, Col, Card, Table } from "react-bootstrap";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { API } from "../../../context/Api";
 import Skeleton from "react-loading-skeleton";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 export default function ViewPropertyCourse() {
   const navigate = useNavigate();
 
   const [course, setCourse] = useState("");
-  const { objectId } = useParams();
+  const { objectId, property_name } = useParams();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -17,6 +19,33 @@ export default function ViewPropertyCourse() {
       setLoading(false);
     });
   }, [objectId]);
+
+  const deletePropetyCourse = (id) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          API.delete(`/property-course/${id}`).then((response) => {
+            if (response.data.message) {
+              toast.success(response.data.message);
+            } else if (response.data.error) {
+              toast.success(response.data.error);
+            }
+          });
+          navigate(`/dashboard/property`);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -72,13 +101,23 @@ export default function ViewPropertyCourse() {
           <Col md={12}>
             <Card>
               <Card.Header>
-                {!loading && (
-                  <div className="media-heading">
-                    <h5>
-                      <strong>View Course</strong>
-                    </h5>
-                  </div>
-                )}
+                <h5 className="m-0 align-content-center">
+                  <strong>View Course</strong>
+                </h5>
+                <div className="ms-auto">
+                  <Link
+                    to={`/dashboard/edit/course/${property_name}/${objectId}`}
+                    className={`btn btn-primary me-1`}
+                  >
+                    Edit Course
+                  </Link>
+                  <button
+                    className={`btn btn-danger me-1`}
+                    onClick={() => deletePropetyCourse(objectId)}
+                  >
+                    Delete Course
+                  </button>
+                </div>
               </Card.Header>
               <Card.Body className="bg-white">
                 {!loading ? (

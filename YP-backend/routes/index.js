@@ -256,7 +256,7 @@ router.get("/property-course", getPropertyCourse);
 router.post("/property-course", courseUpload, addPropertyCourse);
 router.patch("/property-course/:objectId", courseUpload, updatePropertyCourse);
 router.get("/property-course/:objectId", getPropertyCourseById);
-router.delete("/property-course/:uniqueId", deletePropertyCourse);
+router.delete("/property-course/:objectId", deletePropertyCourse);
 
 // Business Hours
 router.get("/business-hours", getBusinessHours);

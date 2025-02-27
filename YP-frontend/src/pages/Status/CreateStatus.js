@@ -15,18 +15,33 @@ export default function CreateStatus() {
   const [error, setError] = useState("");
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [status, setStatus] = useState([]);
+
+  const getStatus = async () => {
+    const response = await API.get("/status");
+    const uniqueStatus = Object.values(
+      response.data.reduce((acc, item) => {
+        acc[item.parent_status] = item;
+        return acc;
+      }, {})
+    );
+    setStatus(uniqueStatus);
+  };
+  useEffect(() => {
+    getStatus();
+  }, []);
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions);
   }, [mainUser]);
 
   const initialValues = {
+    parent_status: "",
     status_name: "",
-    status_color: "#6259ca",
   };
 
   const validationSchema = Yup.object({
-    status_name: Yup.string()
+    parent_status: Yup.string()
       .min(3, "Status Name must be at least 3 characters long.")
       .required("Status name is required.")
       .matches(
@@ -34,7 +49,7 @@ export default function CreateStatus() {
         "Status Name can only contain alphabets and spaces."
       ),
 
-    status_color: Yup.string().required("Status color is required."),
+    status_name: Yup.string().required("Status color is required."),
   });
 
   const onSubmit = async (values) => {
@@ -60,17 +75,19 @@ export default function CreateStatus() {
       onSubmit: onSubmit,
     });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Update Status"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Create Status"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (
@@ -122,19 +139,27 @@ export default function CreateStatus() {
                   <span />
                 )}
                 <div className="form-row">
-                  <div className="form-group col-md-6 mb-3">
+                  <div className="form-group col-md-2 mb-3">
                     <Form.Group>
                       <Form.Label htmlFor="status_name">Status Name</Form.Label>
-                      <input
-                        type="text"
-                        name="status_name"
+                      <select
+                        className="form-select"
                         id="status_name"
-                        className="form-control"
-                        placeholder="Status Name"
-                        value={values.status_name}
+                        name="status_name"
                         onChange={handleChange}
                         onBlur={handleBlur}
-                      />
+                        value={values.status_name}
+                      >
+                        <option value="" disabled>
+                          --Select Category--
+                        </option>
+                        <option value={`uncategorized`}>Uncategorized</option>
+                        {status.map((item, index) => (
+                          <option key={index} value={item.parent_status}>
+                            {item.parent_status}
+                          </option>
+                        ))}
+                      </select>
                       {errors.status_name && touched.status_name ? (
                         <span className="text-danger">
                           {errors.status_name}
@@ -144,28 +169,31 @@ export default function CreateStatus() {
                       )}
                     </Form.Group>
                   </div>
-                  <div className="form-group col-md-2 mb-3">
+                  <div className="form-group col-md-6 mb-3">
                     <Form.Group>
-                      <Form.Label htmlFor="status_color">Color</Form.Label>
+                      <Form.Label htmlFor="parent_status">
+                        Parent Status
+                      </Form.Label>
                       <input
-                        type="color"
-                        name="status_color"
-                        id="status_color"
+                        type="text"
+                        name="parent_status"
+                        id="parent_status"
                         className="form-control"
-                        placeholder="Color"
-                        value={values.status_color}
+                        placeholder="Status Name"
+                        value={values.parent_status}
                         onChange={handleChange}
                         onBlur={handleBlur}
                       />
-                      {errors.status_color && touched.status_color ? (
+                      {errors.parent_status && touched.parent_status ? (
                         <span className="text-danger">
-                          {errors.status_color}
+                          {errors.parent_status}
                         </span>
                       ) : (
                         <span />
                       )}
                     </Form.Group>
                   </div>
+
                   <div className="form-group col-md-12 mb-3">
                     <Form.Group>
                       <Form.Label htmlFor="description">Description</Form.Label>

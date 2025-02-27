@@ -5,6 +5,7 @@ import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import DataRequest from "../../context/DataRequest";
 import Skeleton from "react-loading-skeleton";
+import Swal from "sweetalert2";
 
 export default function ViewStatus() {
   const navigate = useNavigate();
@@ -35,17 +36,41 @@ export default function ViewStatus() {
     setIsExpended(!isExpanded);
   };
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Read Status"
-  );
+  const deleteStatus = (objectId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await API.delete(`/status/${objectId}`);
+          toast.success(response.data.message);
+          navigate(`/dashboard/status`);
+        } catch (error) {
+          toast.error(error.message);
+        }
+      }
+    });
+  };
 
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Read Status"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (
@@ -98,17 +123,27 @@ export default function ViewStatus() {
         <Row>
           <Col md={12}>
             <Card>
-              <Card.Body className="bg-white">
-                <div className="media-heading">
-                  {loading ? (
-                    <Skeleton width={100} height={25} />
-                  ) : (
-                    <h5>
-                      <strong>View Status</strong>
-                    </h5>
-                  )}
+              <Card.Header>
+                <h5 className="m-0 align-content-center">
+                  <strong>View Status</strong>
+                </h5>
+                <div className="ms-auto">
+                  <Link
+                    to={`/dashboard/status/edit/${objectId}`}
+                    className={`btn btn-primary me-1`}
+                  >
+                    Edit Status
+                  </Link>
+                  <button
+                    className={`btn btn-danger me-1`}
+                    onClick={() => deleteStatus(objectId)}
+                  >
+                    Delete Status
+                  </button>
                 </div>
-                <hr className="mt-5" />
+              </Card.Header>
+
+              <Card.Body className="bg-white">
                 <div className="table-responsive p-1">
                   <Table className="table row table-borderless">
                     <tbody className="col-lg-12 col-xl-6 p-0">
@@ -131,12 +166,8 @@ export default function ViewStatus() {
                             <Skeleton width={100} height={25} />
                           ) : (
                             <>
-                              <strong>Color : </strong>
-                              <input
-                                type="color"
-                                value={status.color}
-                                disabled
-                              />
+                              <strong>Parent Status : </strong>
+                              {status.parent_status}
                             </>
                           )}
                         </td>
@@ -146,7 +177,6 @@ export default function ViewStatus() {
                 </div>
                 <Row className="row profie-img">
                   <Col md={12}>
-                    {" "}
                     {loading ? (
                       <Skeleton width={100} height={25} />
                     ) : (

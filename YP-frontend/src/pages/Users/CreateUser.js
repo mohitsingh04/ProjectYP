@@ -1,16 +1,20 @@
 import { useFormik } from "formik";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Breadcrumb, Card, Form, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 import { API } from "../../context/Api";
+import Dropdown from "react-dropdown-select";
 
 export default function CreateUser() {
   const [error, setError] = useState("");
   const [btnText, setBtnText] = useState("Add");
+  const [permissionData, setPermissionData] = useState([]);
   const navigate = useNavigate();
+
   const initialValues = { name: "", email: "", mobile_no: "", role: "" };
+
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, "Full Name must be at least 3 characters long.")
@@ -30,6 +34,12 @@ export default function CreateUser() {
 
     role: Yup.string().required("Role is Required"),
   });
+
+  useEffect(() => {
+    API.get("/permissions").then(({ data }) => {
+      setPermissionData(data);
+    }, []);
+  }, []);
 
   const handleAddUser = async (values) => {
     try {
@@ -52,6 +62,7 @@ export default function CreateUser() {
     handleBlur,
     handleChange,
     handleSubmit,
+    setFieldValue,
     resetForm,
   } = useFormik({
     initialValues: initialValues,
@@ -195,6 +206,34 @@ export default function CreateUser() {
                         </select>
                         {errors.role && touched.role ? (
                           <small className="text-danger">{errors.role}</small>
+                        ) : (
+                          <span />
+                        )}
+                      </Form.Group>
+                    </div>
+                    <div className="form-group col mb-3">
+                      <Form.Group className="mb-3">
+                        <Form.Label>Permission</Form.Label>
+                        <Dropdown
+                          options={permissionData.map((group) => ({
+                            label: group.name,
+                            value: group.name,
+                          }))}
+                          keepSelectedInList={false}
+                          name="permissions"
+                          id="permissions"
+                          multi={true}
+                          placeholder="Choose Permissions"
+                          value={values.permission}
+                          onChange={(value) =>
+                            setFieldValue("permission", value)
+                          }
+                          onBlur={handleBlur}
+                        />
+                        {errors.permission && touched.permission ? (
+                          <small className="text-danger">
+                            {errors.permission}
+                          </small>
                         ) : (
                           <span />
                         )}

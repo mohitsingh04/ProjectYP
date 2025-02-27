@@ -96,76 +96,92 @@ export default function PropertyList() {
   const columns = [
     {
       name: "S.NO",
-      selector: (row) => row.uniqueId,
+      selector: (row) =>
+        loading ? <Skeleton height={25} width={30} /> : row.uniqueId,
       sortable: true,
     },
     {
       name: "Logo",
-      selector: (row) => handleLoadImage(row?.property_logo?.[0]),
+      selector: (row) =>
+        loading ? (
+          <Skeleton height={25} width={53} />
+        ) : (
+          handleLoadImage(row?.property_logo?.[0])
+        ),
       sortable: true,
     },
     {
       name: "NAME",
-      selector: (row) => row.property_name,
+      selector: (row) =>
+        loading ? <Skeleton height={25} width={100} /> : row.property_name,
       sortable: true,
     },
     {
       name: "STATUS",
-      selector: (row) => (
-        <span
-          key={`status-${row._id}`}
-          className={`badge ${
-            row.status === "Active"
-              ? "bg-success"
-              : row.status === "InActive"
-              ? "bg-danger"
-              : "bg-warning"
-          }`}
-        >
-          {row.status}
-        </span>
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton width={80} height={25} />
+        ) : (
+          <span
+            key={row._id}
+            className={`badge ${
+              row.status === "Active"
+                ? "bg-success"
+                : row.status === "Suspended"
+                ? "bg-danger"
+                : row.status === "Pending"
+                ? "bg-warning"
+                : "bg-primary"
+            }`}
+          >
+            {row.status}
+          </span>
+        ),
       sortable: true,
     },
     {
       name: "ACTION",
-      selector: (row) => (
-        <div key={`actions-${row._id}`} className="action-buttons">
-          {authPermissions?.some(
-            (items) => items.value === "Read Property"
-          ) && (
-            <button
-              key={`view-${row._id}`}
-              data-bs-toggle="tooltip"
-              title="View"
-              className="btn btn-primary me-1"
-              onClick={() => viewProperty(row._id)}
-            >
-              <i className="fe fe-eye"></i>
-            </button>
-          )}
-          {authPermissions?.some(
-            (items) => items.value === "Delete Property"
-          ) && (
-            <button
-              key={`delete-${row._id}`}
-              data-bs-toggle="tooltip"
-              title="Delete"
-              className="btn btn-danger"
-              onClick={() => deleteProperty(row._id)}
-            >
-              <i className="fe fe-trash"></i>
-            </button>
-          )}
-        </div>
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton height={25} width={130} />
+        ) : (
+          <div key={`actions-${row._id}`} className="action-buttons">
+            {authPermissions?.some(
+              (items) => items.value === "Read Property"
+            ) && (
+              <button
+                key={`view-${row._id}`}
+                data-bs-toggle="tooltip"
+                title="View"
+                className="btn btn-primary me-1"
+                onClick={() => viewProperty(row._id)}
+              >
+                <i className="fe fe-eye"></i>
+              </button>
+            )}
+            {authPermissions?.some(
+              (items) => items.value === "Delete Property"
+            ) && (
+              <button
+                key={`delete-${row._id}`}
+                data-bs-toggle="tooltip"
+                title="Delete"
+                className="btn btn-danger"
+                onClick={() => deleteProperty(row._id)}
+              >
+                <i className="fe fe-trash"></i>
+              </button>
+            )}
+          </div>
+        ),
     },
   ];
 
-  const data =
-    mainUser?.User?.role === "Property Manager"
-      ? property.filter((item) => item.userId === mainUser?.User?.uniqueId)
-      : property;
+  const data = loading
+    ? Array(5).fill({})
+    : mainUser?.User?.role === "Property Manager"
+    ? property.filter((item) => item.userId === mainUser?.User?.uniqueId)
+    : property;
 
   const tableData = {
     columns,
@@ -211,24 +227,20 @@ export default function PropertyList() {
           <Card className="custom-card">
             <Card.Body>
               <div className="table">
-                {loading ? (
-                  <Skeleton height={30} count={8} className="my-2" />
-                ) : (
-                  <DataTableExtensions {...tableData}>
-                    <DataTable
-                      columns={columns}
-                      data={data}
-                      noHeader
-                      defaultSortField="id"
-                      defaultSortAsc={false}
-                      striped={true}
-                      center={true}
-                      persistTableHead
-                      pagination
-                      highlightOnHover
-                    />
-                  </DataTableExtensions>
-                )}
+                <DataTableExtensions {...tableData}>
+                  <DataTable
+                    columns={columns}
+                    data={data}
+                    noHeader
+                    defaultSortField="id"
+                    defaultSortAsc={false}
+                    striped={true}
+                    center={true}
+                    persistTableHead
+                    pagination
+                    highlightOnHover
+                  />
+                </DataTableExtensions>
               </div>
             </Card.Body>
           </Card>

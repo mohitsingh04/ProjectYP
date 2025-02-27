@@ -5,6 +5,7 @@ import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import defaultProfile from "../../Images/DefaultProfile.jpg";
 import Skeleton from "react-loading-skeleton";
+import Swal from "sweetalert2";
 
 export default function ViewTeacher() {
   const navigate = useNavigate();
@@ -23,6 +24,28 @@ export default function ViewTeacher() {
       }
     })();
   }, [objectId]);
+
+  const deleteTeacher = (id) => {
+    try {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then(async (result) => {
+        if (result.isConfirmed) {
+          const deleteResponse = await API.delete(`/teacher/${id}`);
+          toast.success(deleteResponse.data.message);
+          navigate(`/dashboard/property/`);
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -130,6 +153,20 @@ export default function ViewTeacher() {
                       </div>
                     </Col>
                     <Col lg={12} md={12} xl={6}>
+                      <div className="text-xl-right mt-4 mt-xl-0">
+                        <Link
+                          to={`/dashboard/edit/teacher/${property_name}/${objectId}`}
+                          className="btn btn-primary me-1"
+                        >
+                          Edit Teacher
+                        </Link>
+                        <button
+                          className="btn btn-danger me-1"
+                          onClick={() => deleteTeacher(objectId)}
+                        >
+                          Delete Teacher
+                        </button>
+                      </div>
                       <div className="mt-5">
                         <div className="main-profile-contact-list float-md-end d-md-flex">
                           <div className="me-5">

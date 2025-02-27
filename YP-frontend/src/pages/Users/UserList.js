@@ -22,7 +22,6 @@ export default function UserList() {
   }, [mainUser]);
 
   const getUser = useCallback(() => {
-    setLoading(true);
     try {
       API.get("/users").then(({ data }) => {
         setUsers(data);
@@ -76,107 +75,124 @@ export default function UserList() {
   const columns = [
     {
       name: "NAME",
-      selector: (row) => [row.name],
+      selector: (row) =>
+        loading ? <Skeleton width={100} height={25} /> : row.name,
       sortable: true,
     },
     {
       name: "PROFILE",
-      selector: (row) => (
-        <img
-          key={row._id}
-          src={
-            row?.profile?.[0]
-              ? `http://localhost:5000/${row.profile[0]}`
-              : defaultProfile
-          }
-          className="rounded-circle"
-          width={50}
-          height={50}
-          alt="profile"
-        />
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton width={50} height={50} circle={true} />
+        ) : (
+          <img
+            key={row._id}
+            src={
+              row?.profile?.[0]
+                ? `http://localhost:5000/${row.profile[0]}`
+                : defaultProfile
+            }
+            className="rounded-circle"
+            width={50}
+            height={50}
+            alt="profile"
+          />
+        ),
       sortable: true,
     },
     {
       name: "CITY",
-      selector: (row) => [row.city],
+      selector: (row) =>
+        loading ? <Skeleton width={80} height={25} /> : row.city,
       sortable: true,
     },
     {
       name: "ROLE",
-      selector: (row) => [row.role],
+      selector: (row) =>
+        loading ? <Skeleton width={80} height={25} /> : row.role,
       sortable: true,
     },
     {
       name: "VERIFIED",
-      selector: (row) => (
-        <span
-          key={row._id}
-          className={`badge ${row.verified ? "bg-success" : "bg-danger"}`}
-        >
-          {row.verified ? "Verified" : "Not verified"}
-        </span>
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton width={80} height={25} />
+        ) : (
+          <span
+            key={row._id}
+            className={`badge ${row.verified ? "bg-success" : "bg-danger"}`}
+          >
+            {row.verified ? "Verified" : "Not verified"}
+          </span>
+        ),
       sortable: true,
     },
     {
       name: "STATUS",
-      selector: (row) => (
-        <span
-          key={row._id}
-          className={`badge ${
-            row.status === "Active"
-              ? "bg-success"
-              : row.status === "InActive"
-              ? "bg-danger"
-              : "bg-warning"
-          }`}
-        >
-          {row.status}
-        </span>
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton width={80} height={25} />
+        ) : (
+          <span
+            key={row._id}
+            className={`badge ${
+              row.status === "Active"
+                ? "bg-success"
+                : row.status === "Suspended"
+                ? "bg-danger"
+                : row.status === "Pending"
+                ? "bg-warning"
+                : "bg-primary"
+            }`}
+          >
+            {row.status}
+          </span>
+        ),
       sortable: true,
     },
     {
       name: "ACTION",
-      selector: (row) => (
-        <div key={row._id}>
-          {authPermissions?.some((item) => item.value === "Read User") && (
-            <button
-              data-bs-toggle="tooltip"
-              title="View"
-              className="btn btn-primary me-1"
-              onClick={() => viewUser(row._id)}
-            >
-              <i className="fe fe-eye"></i>
-            </button>
-          )}
-          {authPermissions?.some((item) => item.value === "Update User") && (
-            <button
-              data-bs-toggle="tooltip"
-              title="Edit"
-              className="btn btn-success me-1"
-              onClick={() => editUser(row._id)}
-            >
-              <i className="fe fe-edit"></i>
-            </button>
-          )}
-          {authPermissions?.some((item) => item.value === "Delete User") && (
-            <button
-              data-bs-toggle="tooltip"
-              title="Delete"
-              className="btn btn-danger"
-              onClick={() => deleteUser(row._id)}
-            >
-              <i className="fe fe-trash-2"></i>
-            </button>
-          )}
-        </div>
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton width={150} height={25} />
+        ) : (
+          <div key={row._id}>
+            {authPermissions?.some((item) => item.value === "Read User") && (
+              <button
+                data-bs-toggle="tooltip"
+                title="View"
+                className="btn btn-primary me-1"
+                onClick={() => viewUser(row._id)}
+              >
+                <i className="fe fe-eye"></i>
+              </button>
+            )}
+            {authPermissions?.some((item) => item.value === "Update User") && (
+              <button
+                data-bs-toggle="tooltip"
+                title="Edit"
+                className="btn btn-success me-1"
+                onClick={() => editUser(row._id)}
+              >
+                <i className="fe fe-edit"></i>
+              </button>
+            )}
+            {authPermissions?.some((item) => item.value === "Delete User") && (
+              <button
+                data-bs-toggle="tooltip"
+                title="Delete"
+                className="btn btn-danger"
+                onClick={() => deleteUser(row._id)}
+              >
+                <i className="fe fe-trash-2"></i>
+              </button>
+            )}
+          </div>
+        ),
     },
   ];
 
-  const data = users;
+  const data = loading ? Array(5).fill({}) : users;
 
   const tableData = {
     columns,
@@ -223,24 +239,20 @@ export default function UserList() {
             <Card className="custom-card">
               <Card.Body>
                 <div className="table">
-                  {loading ? (
-                    <Skeleton height={30} count={8} className="my-2" />
-                  ) : (
-                    <DataTableExtensions {...tableData}>
-                      <DataTable
-                        columns={columns}
-                        data={data}
-                        noHeader
-                        defaultSortField="id"
-                        defaultSortAsc={false}
-                        striped={true}
-                        center={true}
-                        persistTableHead
-                        pagination
-                        highlightOnHover
-                      />
-                    </DataTableExtensions>
-                  )}
+                  <DataTableExtensions {...tableData}>
+                    <DataTable
+                      columns={columns}
+                      data={data}
+                      noHeader
+                      defaultSortField="id"
+                      defaultSortAsc={false}
+                      striped={true}
+                      center={true}
+                      persistTableHead
+                      pagination
+                      highlightOnHover
+                    />
+                  </DataTableExtensions>
                 </div>
               </Card.Body>
             </Card>

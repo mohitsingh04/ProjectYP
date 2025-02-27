@@ -1,11 +1,11 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
+import DataRequest from "../../context/DataRequest.js";
 import { Breadcrumb, Card, Row, Form } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../context/Api";
-import DataRequest from "../../context/DataRequest.js";
 import { toast } from "react-toastify";
 import defaultIcon from "../../Images/defaultcategory-compressed.webp";
 import defaultFeature from "../../Images/defaultcategoryfeature-compressed.webp";
@@ -17,6 +17,7 @@ export default function EditCategory() {
   const { objectId } = useParams();
   const [error, setError] = useState("");
   const [status, setStatus] = useState([]);
+  const { User } = DataRequest();
   const [description, setDescription] = useState("");
   const [previewIcon, setPreviewIcon] = useState("");
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
@@ -24,7 +25,6 @@ export default function EditCategory() {
   const [categories, setCategories] = useState([]);
   const [categoryIcon, setCategoryIcon] = useState("");
   const [featureImage, setFeatureImage] = useState("");
-  const { User } = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -48,6 +48,10 @@ export default function EditCategory() {
   const getStatus = useCallback(() => {
     API.get(`/status/`).then(({ data }) => {
       setStatus(data);
+      const mainStatus = data.filter((item) => item.name === "Category");
+      if (mainStatus) {
+        setStatus(mainStatus);
+      }
     });
   }, []);
 
@@ -124,17 +128,19 @@ export default function EditCategory() {
     enableReinitialize: true,
   });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Update Category"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Update Category"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (
@@ -389,8 +395,8 @@ export default function EditCategory() {
                         >
                           <option value="">--Select--</option>
                           {status.map((item, key) => (
-                            <option key={key} value={item.name}>
-                              {item.name}
+                            <option key={key} value={item.parent_status}>
+                              {item.parent_status}
                             </option>
                           ))}
                         </select>

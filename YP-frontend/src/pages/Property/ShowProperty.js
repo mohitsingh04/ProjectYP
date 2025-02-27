@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Tabs, Tab, Breadcrumb, Card, Row, Col } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { API } from "../../context/Api";
 import Teachers from "./PropertyComponents/Teachers";
 import Gallery from "./PropertyComponents/Gallery";
@@ -18,6 +18,7 @@ import DataRequest from "../../context/DataRequest";
 import Amenities from "./PropertyComponents/Amenities";
 import defaultLogo from "../../Images/defaultPropertyLogo.jpeg";
 import Skeleton from "react-loading-skeleton";
+import Swal from "sweetalert2";
 
 export default function ShowProperty() {
   const { objectId } = useParams();
@@ -26,6 +27,7 @@ export default function ShowProperty() {
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions);
@@ -52,17 +54,46 @@ export default function ShowProperty() {
     }
   }, [property]);
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Read Property"
-  );
+  const deleteProperty = (objectId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes delete it!",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          API.delete(`/property/${objectId}`).then((response) => {
+            if (response.data.message) {
+              toast.success(response.data.message);
+              navigate(`/dashboard/property`);
+            } else if (response.data.error) {
+              toast.success(response.data.error);
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
 
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Read Property"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (
@@ -87,6 +118,14 @@ export default function ShowProperty() {
           ) : (
             <Skeleton width={200} />
           )}
+        </div>
+        <div className="ms-auto pageheader-btn">
+          <button onClick={() => navigate(-1)} className="btn btn-primary">
+            <span>
+              <i className="fe fe-arrow-left"></i>&nbsp;
+            </span>
+            Back
+          </button>
         </div>
       </div>
 
@@ -148,15 +187,12 @@ export default function ShowProperty() {
                   </Col>
                   <Col lg={12} md={12} xl={6}>
                     <div className="text-xl-right mt-4 mt-xl-0">
-                      <Link
-                        to="/dashboard/property"
-                        className="btn btn-primary me-1"
+                      <button
+                        className="btn btn-danger me-1"
+                        onClick={() => deleteProperty(objectId)}
                       >
-                        <span>
-                          <i className="fe fe-arrow-left"></i>&nbsp;
-                        </span>
-                        Back
-                      </Link>
+                        Delete Property
+                      </button>
                     </div>
                     <div className="mt-5">
                       <div className="main-profile-contact-list float-md-end d-md-flex">

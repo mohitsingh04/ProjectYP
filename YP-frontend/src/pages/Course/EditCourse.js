@@ -14,6 +14,7 @@ export default function EditCourse() {
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const { objectId } = useParams();
+  const mainUser = DataRequest();
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [course, setCourse] = useState([]);
@@ -21,8 +22,6 @@ export default function EditCourse() {
   const [previewImage, setPreviewImage] = useState("");
   const [courseImage, setCourseImage] = useState("");
   const [loading, setLoading] = useState(true);
-
-  const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
 
   useEffect(() => {
@@ -47,6 +46,10 @@ export default function EditCourse() {
         const response = await API.get("/status");
         const data = response.data;
         setStatus(data);
+        const mainStatus = data.filter((item) => item.name === "Course");
+        if (mainStatus) {
+          setStatus(mainStatus);
+        }
       } catch (error) {
         console.error(error);
       }
@@ -131,17 +134,19 @@ export default function EditCourse() {
     enableReinitialize: true,
   });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Update Course"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Update Course"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (
@@ -451,8 +456,8 @@ export default function EditCourse() {
                           onBlur={handleBlur}
                         >
                           {status.map((item, key) => (
-                            <option key={key} value={item.name}>
-                              {item.name}
+                            <option key={key} value={item.parent_status}>
+                              {item.parent_status}
                             </option>
                           ))}
                         </select>

@@ -18,18 +18,27 @@ export default function OtherDetails() {
       setProperty(data);
       setActiveCategory(data?.category);
       setEstablishmentYear(data?.est_year);
+      setActiveStatus(data?.status);
     });
   }, [objectId]);
 
   const getCategory = useCallback(async () => {
     API.get(`/category`).then(({ data }) => {
       setCategory(data);
+      const mainCategory = data.filter((item) => item.status === "Active");
+      if (mainCategory) {
+        setCategory(mainCategory);
+      }
     });
   }, []);
 
   const getStatus = useCallback(async () => {
     await API.get(`/status`).then(({ data }) => {
       setStatus(data);
+      const mainStatus = data.filter((item) => item.name === "Property");
+      if (mainStatus) {
+        setStatus(mainStatus);
+      }
     });
   }, []);
 
@@ -169,30 +178,28 @@ export default function OtherDetails() {
     e.preventDefault();
     let data = {};
 
+    console.log(String(establishmentYear).length);
+
     if (!/^\d+$/.test(establishmentYear)) {
       setError("Establishment year must contain only numbers.");
       return;
     }
-    if (establishmentYear.length !== 4) {
+    if (String(establishmentYear).length !== 4) {
       setError("Establishment year must be exactly 4 digits.");
       return;
-    }
-
-    if (activeStatus) {
-      data = {
-        ...initialValues,
-        status: activeStatus,
-      };
     }
 
     data = {
       ...initialValues,
       category: activeCategory,
+      status: activeStatus,
       est_year: establishmentYear,
     };
 
     try {
+      console.log("ok");
       const response = await API.patch(`/property/${objectId}`, data);
+      console.log(response);
       toast.success(response.data.message);
       setActiveCategory("");
       await getProperty();
@@ -307,8 +314,8 @@ export default function OtherDetails() {
                         >
                           <option value="">--Select Status--</option>
                           {status.map((item, key) => (
-                            <option key={key} value={item.name}>
-                              {item.name}
+                            <option key={key} value={item.parent_status}>
+                              {item.parent_status}
                             </option>
                           ))}
                         </select>

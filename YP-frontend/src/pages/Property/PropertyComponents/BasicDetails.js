@@ -6,16 +6,19 @@ import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import PropertyImages from "./PropertyImages";
+import Skeleton from "react-loading-skeleton";
 
 export default function BasicDetails() {
   const editorRef = useRef(null);
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const getProperty = useCallback(() => {
     API.get(`/property/${objectId}`).then(({ data }) => {
       setProperty(data);
+      setLoading(false);
     });
   }, [objectId]);
 
@@ -86,57 +89,76 @@ export default function BasicDetails() {
                   <tbody className="col-lg-12 col-xl-6 p-0">
                     <tr>
                       <td>
-                        <strong>Name :</strong>
-                        <br />
-                        {property?.property_name || "N/A"}
+                        {!loading ? (
+                          <>
+                            <strong>Name :</strong>
+                            <br />
+                            <div>{property?.property_name || "N/A"}</div>
+                          </>
+                        ) : (
+                          <Skeleton height={25} width={150} className="my-2" />
+                        )}
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <strong>Contact :</strong>
-                        <br />
-                        {property?.property_mobile_no || "N/A"}
+                        {!loading ? (
+                          <>
+                            <strong>Contact :</strong>
+                            <br />
+                            <div>{property?.property_mobile_no || "N/A"}</div>
+                          </>
+                        ) : (
+                          <Skeleton height={25} width={150} className="my-2" />
+                        )}
                       </td>
                     </tr>
                   </tbody>
                   <tbody className="col-lg-12 col-xl-6 p-0">
                     <tr>
                       <td>
-                        <strong>Email :</strong>
-                        <br />
-                        {property.property_email}
+                        {!loading ? (
+                          <>
+                            <strong>Email :</strong>
+                            <br />
+                            <div>{property.property_email}</div>
+                          </>
+                        ) : (
+                          <Skeleton width={150} height={25} className="my-2" />
+                        )}
                       </td>
                     </tr>
                     <tr>
                       <td>
-                        <strong>Alt. Contact :</strong>
-                        {!property.property_alt_mobile_no ? (
+                        {!loading ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
-                              <div className="input-group">
-                                <input
-                                  type="tel"
-                                  name="property_alt_mobile_no"
-                                  className="form-control"
-                                  placeholder="Enter Alternate Contact..."
-                                  value={values.property_alt_mobile_no}
-                                  onChange={handleChange}
-                                  onBlur={handleBlur}
-                                />
-                                <button
-                                  type="submit"
-                                  className="btn btn-primary"
-                                >
-                                  <i className="fe fe-check"></i>
-                                </button>
-                              </div>
-                            </form>
+                            <strong>Alt. Contact :</strong>
+                            {!property.property_alt_mobile_no ? (
+                              <form onSubmit={handleSubmit} className="d-flex">
+                                <div className="input-group">
+                                  <input
+                                    type="tel"
+                                    name="property_alt_mobile_no"
+                                    className="form-control"
+                                    placeholder="Enter Alternate Contact..."
+                                    value={values.property_alt_mobile_no}
+                                    onChange={handleChange}
+                                    onBlur={handleBlur}
+                                  />
+                                  <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                  >
+                                    <i className="fe fe-check"></i>
+                                  </button>
+                                </div>
+                              </form>
+                            ) : (
+                              <div>{property.property_alt_mobile_no}</div>
+                            )}
                           </>
                         ) : (
-                          <>
-                            <br />
-                            {property.property_alt_mobile_no}
-                          </>
+                          <Skeleton height={25} width={150} className="my-2" />
                         )}
                       </td>
                     </tr>
@@ -145,116 +167,128 @@ export default function BasicDetails() {
               </div>
               <Row className="row profie-img">
                 <Col md={12}>
-                  <div className="media-heading">
-                    <div className="d-flex justify-content-between align-items-center">
-                      <strong>Description</strong>
-                      {!showDescriptionInInput && (
-                        <div>
-                          <button
-                            onClick={() => handleEditDescription()}
-                            className="btn btn-primary ms-auto"
-                          >
-                            <i className="fe fe-edit"></i>
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  {showDescriptionInInput ? (
+                  {!loading ? (
                     <>
-                      <form onSubmit={handleSubmit}>
-                        <Editor
-                          apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
-                          onInit={(evt, editor) => (editorRef.current = editor)}
-                          onChange={(e) =>
-                            setDescription(editorRef.current.getContent())
-                          }
-                          onBlur={handleBlur}
-                          init={{
-                            height: 200,
-                            menubar: false,
-                            plugins: [
-                              "advlist",
-                              "autolink",
-                              "lists",
-                              "link",
-                              "image",
-                              "charmap",
-                              "preview",
-                              "anchor",
-                              "searchreplace",
-                              "visualblocks",
-                              "code",
-                              "fullscreen",
-                              "insertdatetime",
-                              "media",
-                              "table",
-                              "code",
-                              "help",
-                              "wordcount",
-                            ],
-                            toolbar:
-                              "undo redo | blocks | " +
-                              "bold italic forecolor | alignleft aligncenter " +
-                              "alignright alignjustify | bullist numlist outdent indent | " +
-                              "removeformat | help",
-                            content_style:
-                              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                          }}
-                          initialValue={property.property_description}
-                        />
-                        <button type="submit" className="btn btn-success mt-1">
-                          <i className="fe fe-check"></i>
-                        </button>
-                        <button
-                          onClick={handleCancelEditDescription}
-                          className="mx-3 py-2 btn btn-danger mt-1"
-                        >
-                          <i className="fe fe-x"></i>
-                        </button>
-                      </form>
+                      <div className="media-heading">
+                        <div className="d-flex justify-content-between align-items-center">
+                          <strong>Description</strong>
+                          {!showDescriptionInInput && (
+                            <div>
+                              <button
+                                onClick={() => handleEditDescription()}
+                                className="btn btn-primary ms-auto"
+                              >
+                                <i className="fe fe-edit"></i>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      {showDescriptionInInput ? (
+                        <>
+                          <form onSubmit={handleSubmit}>
+                            <Editor
+                              apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
+                              onInit={(evt, editor) =>
+                                (editorRef.current = editor)
+                              }
+                              onChange={(e) =>
+                                setDescription(editorRef.current.getContent())
+                              }
+                              onBlur={handleBlur}
+                              init={{
+                                height: 200,
+                                menubar: false,
+                                plugins: [
+                                  "advlist",
+                                  "autolink",
+                                  "lists",
+                                  "link",
+                                  "image",
+                                  "charmap",
+                                  "preview",
+                                  "anchor",
+                                  "searchreplace",
+                                  "visualblocks",
+                                  "code",
+                                  "fullscreen",
+                                  "insertdatetime",
+                                  "media",
+                                  "table",
+                                  "code",
+                                  "help",
+                                  "wordcount",
+                                ],
+                                toolbar:
+                                  "undo redo | blocks | " +
+                                  "bold italic forecolor | alignleft aligncenter " +
+                                  "alignright alignjustify | bullist numlist outdent indent | " +
+                                  "removeformat | help",
+                                content_style:
+                                  "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                              }}
+                              initialValue={property.property_description}
+                            />
+                            <button
+                              type="submit"
+                              className="btn btn-success mt-1"
+                            >
+                              <i className="fe fe-check"></i>
+                            </button>
+                            <button
+                              onClick={handleCancelEditDescription}
+                              className="mx-3 py-2 btn btn-danger mt-1"
+                            >
+                              <i className="fe fe-x"></i>
+                            </button>
+                          </form>
+                        </>
+                      ) : (
+                        <>
+                          <div>
+                            {property.property_description && (
+                              <span>
+                                {property.property_description.length >=
+                                1500 ? (
+                                  <>
+                                    <div
+                                      dangerouslySetInnerHTML={{
+                                        __html: isExpanded
+                                          ? property.property_description
+                                          : property.property_description.substring(
+                                              0,
+                                              1200
+                                            ) + "...",
+                                      }}
+                                    />
+                                    <button
+                                      onClick={toggleReadMore}
+                                      className="btn btn-primary"
+                                    >
+                                      {isExpanded ? "Read Less" : "Read More"}
+                                    </button>
+                                  </>
+                                ) : (
+                                  <div
+                                    dangerouslySetInnerHTML={{
+                                      __html: property.property_description,
+                                    }}
+                                  />
+                                )}
+                              </span>
+                            )}
+                          </div>
+                        </>
+                      )}
                     </>
                   ) : (
-                    <>
-                      <div>
-                        {property.property_description && (
-                          <span>
-                            {property.property_description.length >= 1500 ? (
-                              <>
-                                <div
-                                  dangerouslySetInnerHTML={{
-                                    __html: isExpanded
-                                      ? property.property_description
-                                      : property.property_description.substring(
-                                          0,
-                                          1200
-                                        ) + "...",
-                                  }}
-                                />
-                                <button
-                                  onClick={toggleReadMore}
-                                  className="btn btn-primary"
-                                >
-                                  {isExpanded ? "Read Less" : "Read More"}
-                                </button>
-                              </>
-                            ) : (
-                              <div
-                                dangerouslySetInnerHTML={{
-                                  __html: property.property_description,
-                                }}
-                              />
-                            )}
-                          </span>
-                        )}
-                      </div>
-                    </>
+                    <Skeleton height={200} />
                   )}
                 </Col>
               </Row>
             </Card.Body>
           </Card>
-          <PropertyImages />
+          <PropertyImages loading={loading} />
         </div>
       </div>
     </>

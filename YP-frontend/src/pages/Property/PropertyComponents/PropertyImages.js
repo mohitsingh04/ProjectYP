@@ -6,8 +6,9 @@ import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import defaultLogo from "../../../Images/defaultPropertyLogo.jpeg";
 import defaultFeature from "../../../Images/defaultPropertyFeature.jpg";
+import Skeleton from "react-loading-skeleton";
 
-export default function PropertyImages() {
+export default function PropertyImages({ loading }) {
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [previewLogo, setPreviewLogo] = useState("");
@@ -101,81 +102,138 @@ export default function PropertyImages() {
           </h5>
         </Card.Header>
         <Card.Body>
-          <Row>
-            <Col md={6} className="mb-3">
-              {!property.property_logo ? (
-                <>
-                  <strong>Logo</strong>
-                  <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <input
-                      type="file"
-                      accept="image/jpeg, image/png"
-                      name="property_logo"
-                      className="form-control"
-                      onChange={(e) => {
-                        let reader = new FileReader();
-                        reader.onload = () => {
-                          if (reader.readyState === 2) {
-                            setFieldValue("property_logo", e.target.files[0]);
-                            setPreviewLogo(reader.result);
-                          }
-                        };
-                        reader.readAsDataURL(e.target.files[0]);
-                      }}
-                      onBlur={handleBlur}
-                    />
-                    {previewLogo === "" ? (
-                      <img
-                        src={`http://localhost:5000/${LogoImage}`}
-                        width={100}
-                        height={100}
-                        className="rounded-circle"
-                        alt=""
+          {!loading ? (
+            <Row>
+              <Col md={6} className="mb-3">
+                {!property.property_logo ? (
+                  <>
+                    <strong>Logo</strong>
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                      <input
+                        type="file"
+                        accept="image/jpeg, image/png"
+                        name="property_logo"
+                        className="form-control"
+                        onChange={(e) => {
+                          let reader = new FileReader();
+                          reader.onload = () => {
+                            if (reader.readyState === 2) {
+                              setFieldValue("property_logo", e.target.files[0]);
+                              setPreviewLogo(reader.result);
+                            }
+                          };
+                          reader.readAsDataURL(e.target.files[0]);
+                        }}
+                        onBlur={handleBlur}
                       />
-                    ) : (
-                      <img
-                        src={previewLogo}
-                        width={100}
-                        height={100}
-                        className="rounded-circle mt-1"
-                        alt="Logo"
+                      {previewLogo === "" ? (
+                        <img
+                          src={`http://localhost:5000/${LogoImage}`}
+                          width={100}
+                          height={100}
+                          className="rounded-circle"
+                          alt=""
+                        />
+                      ) : (
+                        <img
+                          src={previewLogo}
+                          width={100}
+                          height={100}
+                          className="rounded-circle mt-1"
+                          alt="Logo"
+                        />
+                      )}
+                      <br />
+                      <span
+                        onClick={handleCancelEditLogo}
+                        className="btn btn-danger mt-1"
+                      >
+                        <i className="fe fe-x"></i>
+                      </span>
+                      <button
+                        type="submit"
+                        className="btn btn-success mt-1 ms-1"
+                      >
+                        <i className="fe fe-check"></i>
+                      </button>
+                    </form>
+                  </>
+                ) : showLogoInInput ? (
+                  <>
+                    <strong>Logo</strong>
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                      <input
+                        accept="image/jpeg, image/png"
+                        type="file"
+                        name="property_logo"
+                        className="form-control"
+                        onChange={(e) => {
+                          let reader = new FileReader();
+                          reader.onload = () => {
+                            if (reader.readyState === 2) {
+                              setFieldValue("property_logo", e.target.files[0]);
+                              setPreviewLogo(reader.result);
+                            }
+                          };
+                          reader.readAsDataURL(e.target.files[0]);
+                        }}
+                        onBlur={handleBlur}
                       />
-                    )}
-                    <br />
-                    <span
-                      onClick={handleCancelEditLogo}
-                      className="btn btn-danger mt-1"
-                    >
-                      <i className="fe fe-x"></i>
-                    </span>
-                    <button type="submit" className="btn btn-success mt-1 ms-1">
-                      <i className="fe fe-check"></i>
-                    </button>
-                  </form>
-                </>
-              ) : showLogoInInput ? (
-                <>
-                  <strong>Logo</strong>
-                  <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <input
-                      accept="image/jpeg, image/png"
-                      type="file"
-                      name="property_logo"
-                      className="form-control"
-                      onChange={(e) => {
-                        let reader = new FileReader();
-                        reader.onload = () => {
-                          if (reader.readyState === 2) {
-                            setFieldValue("property_logo", e.target.files[0]);
-                            setPreviewLogo(reader.result);
-                          }
-                        };
-                        reader.readAsDataURL(e.target.files[0]);
-                      }}
-                      onBlur={handleBlur}
-                    />
-                    {previewLogo === "" ? (
-                      LogoImage === null ? (
+                      {previewLogo === "" ? (
+                        LogoImage === null ? (
+                          <img
+                            src={defaultLogo}
+                            width={100}
+                            height={100}
+                            className="rounded-circle"
+                            alt=""
+                          />
+                        ) : (
+                          <img
+                            src={`http://localhost:5000/${LogoImage}`}
+                            width={100}
+                            height={100}
+                            className="rounded-circle"
+                            alt=""
+                          />
+                        )
+                      ) : (
+                        <img
+                          src={previewLogo}
+                          width={100}
+                          height={100}
+                          className="rounded-circle mt-1"
+                          alt="Logo"
+                        />
+                      )}
+                      <br />
+                      <span
+                        onClick={handleCancelEditLogo}
+                        className="btn btn-danger mt-1"
+                      >
+                        <i className="fe fe-x"></i>
+                      </span>
+                      <button
+                        type="submit"
+                        className="btn btn-success ms-1 mt-1"
+                      >
+                        <i className="fe fe-check"></i>
+                      </button>
+                    </form>
+                  </>
+                ) : (
+                  <>
+                    <div>
+                      <div className="d-flex justify-content-between">
+                        <strong>Logo</strong>
+                        <span
+                          onClick={() => handleEditLogo()}
+                          className="btn btn-primary"
+                        >
+                          <i className="fe fe-edit"></i>
+                        </span>
+                      </div>
+                      {LogoImage === null ? (
                         <img
                           src={defaultLogo}
                           width={100}
@@ -191,195 +249,164 @@ export default function PropertyImages() {
                           className="rounded-circle"
                           alt=""
                         />
-                      )
-                    ) : (
-                      <img
-                        src={previewLogo}
-                        width={100}
-                        height={100}
-                        className="rounded-circle mt-1"
-                        alt="Logo"
-                      />
-                    )}
-                    <br />
-                    <span
-                      onClick={handleCancelEditLogo}
-                      className="btn btn-danger mt-1"
-                    >
-                      <i className="fe fe-x"></i>
-                    </span>
-                    <button type="submit" className="btn btn-success ms-1 mt-1">
-                      <i className="fe fe-check"></i>
-                    </button>
-                  </form>
-                </>
-              ) : (
-                <>
-                  <div>
-                    <div className="d-flex justify-content-between">
-                      <strong>Logo</strong>
-                      <span
-                        onClick={() => handleEditLogo()}
-                        className="btn btn-primary"
-                      >
-                        <i className="fe fe-edit"></i>
-                      </span>
+                      )}
                     </div>
-                    {LogoImage === null ? (
-                      <img
-                        src={defaultLogo}
-                        width={100}
-                        height={100}
-                        className="rounded-circle"
-                        alt=""
-                      />
-                    ) : (
-                      <img
-                        src={`http://localhost:5000/${LogoImage}`}
-                        width={100}
-                        height={100}
-                        className="rounded-circle"
-                        alt=""
-                      />
-                    )}
-                  </div>
-                </>
-              )}
-            </Col>
-            <Col md={6} className="mb-3">
-              {!property.featured_image === null ? (
-                <>
-                  <strong>Featured Image</strong>
-                  <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <input
-                      type="file"
-                      accept="image/jpeg, image/png"
-                      name="featured_image"
-                      className="form-control"
-                      onChange={(e) => {
-                        let reader = new FileReader();
-                        reader.onload = () => {
-                          if (reader.readyState === 2) {
-                            setFieldValue("featured_image", e.target.files[0]);
-                            setPreviewFeaturedImage(reader.result);
-                          }
-                        };
-                        reader.readAsDataURL(e.target.files[0]);
-                      }}
-                      onBlur={handleBlur}
-                    />
-                    {previewFeaturedImage === "" ? (
-                      <img
-                        src={`http://localhost:5000/${featureImage}`}
-                        width={350}
-                        className="mt-1"
-                        alt=""
-                      />
-                    ) : (
-                      <img
-                        src={previewFeaturedImage}
-                        width={350}
-                        className="mt-1"
-                        alt="Logo"
-                      />
-                    )}
-                    <br />
-                    <button
-                      onClick={handleCancelEditFimage}
-                      className="btn btn-danger mt-1"
-                    >
-                      <i className="fe fe-x"></i>
-                    </button>
-                    <button type="submit" className="btn btn-success ms-1 mt-1">
-                      <i className="fe fe-check text-primary"></i>
-                    </button>
-                  </form>
-                </>
-              ) : showFimageInInput ? (
-                <>
-                  <strong>Featured Image</strong>
-                  <form onSubmit={handleSubmit} encType="multipart/form-data">
-                    <input
-                      type="file"
-                      name="featured_image"
-                      className="form-control"
-                      accept="image/jpeg, image/png"
-                      onChange={(e) => {
-                        let reader = new FileReader();
-                        reader.onload = () => {
-                          if (reader.readyState === 2) {
-                            setFieldValue("featured_image", e.target.files[0]);
-                            setPreviewFeaturedImage(reader.result);
-                          }
-                        };
-                        reader.readAsDataURL(e.target.files[0]);
-                      }}
-                      onBlur={handleBlur}
-                    />
-                    {previewFeaturedImage === "" ? (
-                      featureImage === null ? (
-                        <img
-                          src={defaultFeature}
-                          width={350}
-                          className="mt-1"
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          src={`http://localhost:5000/${featureImage}`}
-                          width={350}
-                          className="mt-1"
-                          alt=""
-                        />
-                      )
-                    ) : (
-                      <img
-                        src={previewFeaturedImage}
-                        className="mt-1"
-                        width={350}
-                        alt=""
-                      />
-                    )}
-                    <br />
-                    <button
-                      onClick={handleCancelEditFimage}
-                      className="btn btn-danger me-1 mt-1"
-                    >
-                      <i className="fe fe-x"></i>
-                    </button>
-                    <button type="submit" className="btn btn-success mt-1">
-                      <i className="fe fe-check"></i>
-                    </button>
-                  </form>
-                </>
-              ) : (
-                <>
+                  </>
+                )}
+              </Col>
+              <Col md={6} className="mb-3">
+                {!property.featured_image === null ? (
                   <>
-                    <div>
-                      <div className="d-flex justify-content-between">
-                        <strong>Featured Image</strong>
-                        <button
-                          onClick={() => handleEditFimage()}
-                          className="btn btn-primary"
-                        >
-                          <i className="fe fe-edit"></i>
-                        </button>
-                      </div>
-                      {featureImage === null ? (
-                        <img src={defaultFeature} width={350} alt="" />
-                      ) : (
+                    <strong>Featured Image</strong>
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                      <input
+                        type="file"
+                        accept="image/jpeg, image/png"
+                        name="featured_image"
+                        className="form-control"
+                        onChange={(e) => {
+                          let reader = new FileReader();
+                          reader.onload = () => {
+                            if (reader.readyState === 2) {
+                              setFieldValue(
+                                "featured_image",
+                                e.target.files[0]
+                              );
+                              setPreviewFeaturedImage(reader.result);
+                            }
+                          };
+                          reader.readAsDataURL(e.target.files[0]);
+                        }}
+                        onBlur={handleBlur}
+                      />
+                      {previewFeaturedImage === "" ? (
                         <img
                           src={`http://localhost:5000/${featureImage}`}
+                          width={350}
+                          className="mt-1"
+                          alt=""
+                        />
+                      ) : (
+                        <img
+                          src={previewFeaturedImage}
+                          width={350}
+                          className="mt-1"
+                          alt="Logo"
+                        />
+                      )}
+                      <br />
+                      <button
+                        onClick={handleCancelEditFimage}
+                        className="btn btn-danger mt-1"
+                      >
+                        <i className="fe fe-x"></i>
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn btn-success ms-1 mt-1"
+                      >
+                        <i className="fe fe-check text-primary"></i>
+                      </button>
+                    </form>
+                  </>
+                ) : showFimageInInput ? (
+                  <>
+                    <strong>Featured Image</strong>
+                    <form onSubmit={handleSubmit} encType="multipart/form-data">
+                      <input
+                        type="file"
+                        name="featured_image"
+                        className="form-control"
+                        accept="image/jpeg, image/png"
+                        onChange={(e) => {
+                          let reader = new FileReader();
+                          reader.onload = () => {
+                            if (reader.readyState === 2) {
+                              setFieldValue(
+                                "featured_image",
+                                e.target.files[0]
+                              );
+                              setPreviewFeaturedImage(reader.result);
+                            }
+                          };
+                          reader.readAsDataURL(e.target.files[0]);
+                        }}
+                        onBlur={handleBlur}
+                      />
+                      {previewFeaturedImage === "" ? (
+                        featureImage === null ? (
+                          <img
+                            src={defaultFeature}
+                            width={350}
+                            className="mt-1"
+                            alt=""
+                          />
+                        ) : (
+                          <img
+                            src={`http://localhost:5000/${featureImage}`}
+                            width={350}
+                            className="mt-1"
+                            alt=""
+                          />
+                        )
+                      ) : (
+                        <img
+                          src={previewFeaturedImage}
+                          className="mt-1"
                           width={350}
                           alt=""
                         />
                       )}
-                    </div>
+                      <br />
+                      <button
+                        onClick={handleCancelEditFimage}
+                        className="btn btn-danger me-1 mt-1"
+                      >
+                        <i className="fe fe-x"></i>
+                      </button>
+                      <button type="submit" className="btn btn-success mt-1">
+                        <i className="fe fe-check"></i>
+                      </button>
+                    </form>
                   </>
-                </>
-              )}
-            </Col>
-          </Row>
+                ) : (
+                  <>
+                    <>
+                      <div>
+                        <div className="d-flex justify-content-between">
+                          <strong>Featured Image</strong>
+                          <button
+                            onClick={() => handleEditFimage()}
+                            className="btn btn-primary"
+                          >
+                            <i className="fe fe-edit"></i>
+                          </button>
+                        </div>
+                        {featureImage === null ? (
+                          <img src={defaultFeature} width={350} alt="" />
+                        ) : (
+                          <img
+                            src={`http://localhost:5000/${featureImage}`}
+                            width={350}
+                            alt=""
+                          />
+                        )}
+                      </div>
+                    </>
+                  </>
+                )}
+              </Col>
+            </Row>
+          ) : (
+            <Row>
+              <Col>
+                <Skeleton circle={true} width={200} height={200} />
+              </Col>
+              <Col>
+                <Skeleton height={200} />
+              </Col>
+            </Row>
+          )}
         </Card.Body>
       </Card>
     </>

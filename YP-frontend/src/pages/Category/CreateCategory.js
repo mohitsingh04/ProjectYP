@@ -12,11 +12,11 @@ export default function CreateCategory() {
   const navigate = useNavigate();
   const editorRef = useRef(null);
   const [user, setUser] = useState("");
+  const mainUser = DataRequest();
   const [category, setCategory] = useState([]);
   const [description, setDescription] = useState("");
   const [previewIcon, setPreviewIcon] = useState("");
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
-  const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
 
   useEffect(() => {
@@ -105,17 +105,19 @@ export default function CreateCategory() {
     onSubmit: onSubmit,
   });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Create Category"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Create Category"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (

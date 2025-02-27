@@ -46,6 +46,26 @@ export const register = async (req, res) => {
   try {
     const { name, email, mobile_no, password, confirm_password } = req.body;
     const passwordHash = await bcrypt.hash(password, Salt);
+
+    const permissions = [
+      {
+        label: "Read Property",
+        value: "Read Property",
+      },
+      {
+        label: "Create Property",
+        value: "Create Property",
+      },
+      {
+        label: "Update Property",
+        value: "Update Property",
+      },
+      {
+        label: "Delete Property",
+        value: "Delete Property",
+      },
+    ];
+
     const [existEmail, existMobile] = await Promise.all([
       User.findOne({ email }),
       User.findOne({ mobile_no }),
@@ -69,6 +89,7 @@ export const register = async (req, res) => {
       email,
       mobile_no,
       password: passwordHash,
+      permissions: permissions,
     });
 
     await newUser.save();

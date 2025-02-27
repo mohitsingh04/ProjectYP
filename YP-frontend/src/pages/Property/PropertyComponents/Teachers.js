@@ -132,7 +132,7 @@ export default function Teachers() {
     onSubmit: onSubmit,
   });
 
-  const deleteStatus = (id) => {
+  const deleteTeacher = (id) => {
     try {
       Swal.fire({
         title: "Are you sure?",
@@ -218,7 +218,7 @@ export default function Teachers() {
           <button
             data-bs-toggle="tooltip"
             title="Delete"
-            onClick={() => deleteStatus(row._id)}
+            onClick={() => deleteTeacher(row._id)}
           >
             <i className="fe fe-trash-2"></i>
           </button>

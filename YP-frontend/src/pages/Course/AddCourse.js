@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import DataRequest from "../../context/DataRequest";
 import { Breadcrumb, Card, Row, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -6,15 +7,14 @@ import * as Yup from "yup";
 import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
-import DataRequest from "../../context/DataRequest";
 
 export default function AddCourse() {
   const editorRef = useRef(null);
   const navigate = useNavigate();
+  const mainUser = DataRequest();
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const [previewImage, setPreviewImage] = useState("");
-  const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
 
   useEffect(() => {
@@ -93,17 +93,19 @@ export default function AddCourse() {
     onSubmit,
   });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Create Course"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Create Course"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (

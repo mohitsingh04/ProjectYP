@@ -118,15 +118,15 @@ export const addPropertyCourse = async (req, res) => {
 
 export const deletePropertyCourse = async (req, res) => {
   try {
-    const { uniqueId } = req.params;
+    const { objectId } = req.params;
 
     const delCourse = await PropertyCourse.findOneAndDelete({
-      uniqueId: uniqueId,
+      _id: objectId,
     });
 
     if (delCourse) {
       return res
-        .statu(200)
+        .status(200)
         .json({ message: "Property Course Deleted Successfully" });
     }
   } catch (error) {

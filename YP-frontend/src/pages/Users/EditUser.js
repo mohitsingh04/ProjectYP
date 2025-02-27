@@ -13,7 +13,6 @@ export default function EditUser() {
   const navigate = useNavigate();
   const [user, setUser] = useState("");
   const [status, setStatus] = useState([]);
-
   const { objectId } = useParams();
   const [permissionData, setPermissionData] = useState([]);
   const mainUser = DataRequest();
@@ -35,6 +34,10 @@ export default function EditUser() {
     }, []);
     API.get(`/status/`).then(({ data }) => {
       setStatus(data);
+      const mainStatus = data.filter((item) => item.name === "User");
+      if (mainStatus) {
+        setStatus(mainStatus);
+      }
     }, []);
     API.get("/permissions").then(({ data }) => {
       setPermissionData(data);
@@ -138,17 +141,19 @@ export default function EditUser() {
     enableReinitialize: true,
   });
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Update User"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Update User"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   return (
@@ -385,8 +390,8 @@ export default function EditUser() {
                           >
                             <option value="">--Select--</option>
                             {status.map((item, key) => (
-                              <option key={key} value={item.name}>
-                                {item.name}
+                              <option key={key} value={item.parent_status}>
+                                {item.parent_status}
                               </option>
                             ))}
                           </select>

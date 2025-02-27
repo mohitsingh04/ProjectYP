@@ -5,6 +5,7 @@ import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import DataRequest from "../../context/DataRequest";
 import Skeleton from "react-loading-skeleton";
+import Swal from "sweetalert2";
 
 export default function ViewUser() {
   const navigate = useNavigate();
@@ -29,17 +30,46 @@ export default function ViewUser() {
     }
   }, [objectId]);
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Read User"
-  );
+  const deleteUser = (uniqueId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes delete it!",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          API.delete(`/user/${uniqueId}`).then((response) => {
+            if (response.data.message) {
+              toast.success(response.data.message);
+              navigate("/dashboard/user");
+            } else if (response.data.error) {
+              toast.error(response.data.error);
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
 
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Read User"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
 
   const UserInfoRow = ({ label, value, loading }) => (
@@ -114,21 +144,17 @@ export default function ViewUser() {
                         <div className="wideget-user-img">
                           {loading ? (
                             <Skeleton circle={true} width={128} height={128} />
-                          ) : user?.profile?.[0] ? (
-                            <img
-                              src={`http://localhost:5000/${user?.profile?.[0]}`}
-                              alt="profile-user"
-                              width={128}
-                              height={128}
-                              className=""
-                            />
                           ) : (
                             <img
-                              src={require("../../Images/DefaultProfile.jpg")}
+                              src={
+                                user?.profile?.[0]
+                                  ? `http://localhost:5000/${user?.profile?.[0]}`
+                                  : require("../../Images/DefaultProfile.jpg")
+                              }
                               alt="profile-user"
-                              className=""
                               width={128}
                               height={128}
+                              className=""
                             />
                           )}
                         </div>
@@ -185,12 +211,22 @@ export default function ViewUser() {
                         {loading ? (
                           <Skeleton width={100} height={20} />
                         ) : (
-                          <Link
-                            to={`/dashboard/user/edit/${objectId}`}
-                            className="btn btn-primary me-1"
-                          >
-                            Edit User
-                          </Link>
+                          <>
+                            <Link
+                              to={`/dashboard/user/edit/${objectId}`}
+                              className="btn btn-primary me-1"
+                            >
+                              Edit User
+                            </Link>
+                            <button
+                              className="btn btn-danger me-1"
+                              onClick={() => {
+                                deleteUser(objectId);
+                              }}
+                            >
+                              Delete User
+                            </button>
+                          </>
                         )}
                       </div>
                       <div className="mt-5">

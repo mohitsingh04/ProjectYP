@@ -71,96 +71,109 @@ export default function CourseList() {
   const columns = [
     {
       name: "S.NO",
-      selector: (row) => [row.uniqueId],
+      selector: (row) =>
+        loading ? <Skeleton height={25} width={30} /> : [row.uniqueId],
       sortable: true,
     },
     {
       name: "IMAGE",
       selector: (row) =>
-        row?.image?.[0] === null ? (
-          <img src={defaultCourse} width={53} alt={defaultCourse} />
+        loading ? (
+          <Skeleton height={25} width={53} />
         ) : (
           <img
-            src={`http://localhost:5000/${row?.image?.[0]}`}
+            src={
+              !row?.image?.[0]
+                ? defaultCourse
+                : `http://localhost:5000/${row?.image?.[0]}`
+            }
             width={53}
-            alt={"Course"}
+            alt={defaultCourse}
           />
         ),
       sortable: true,
     },
     {
       name: "NAME",
-      selector: (row) => [row.course_name],
+      selector: (row) =>
+        loading ? <Skeleton height={25} width={100} /> : [row.course_name],
       sortable: true,
     },
     {
       name: "STATUS",
-      selector: (row) => (
-        <>
-          {row.status === "Active" ? (
-            <span key={`${row._id}-active`} className="badge bg-success">
-              {row.status}
-            </span>
-          ) : row.status === "InActive" ? (
-            <span key={`${row._id}-inactive`} className="badge bg-danger">
-              {row.status}
-            </span>
-          ) : (
-            <span key={`${row._id}-other`} className="badge bg-warning">
-              {row.status}
-            </span>
-          )}
-        </>
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton width={80} height={25} />
+        ) : (
+          <span
+            key={row._id}
+            className={`badge ${
+              row.status === "Active"
+                ? "bg-success"
+                : row.status === "Suspended"
+                ? "bg-danger"
+                : row.status === "Pending"
+                ? "bg-warning"
+                : "bg-primary"
+            }`}
+          >
+            {row.status}
+          </span>
+        ),
       sortable: true,
     },
     {
       name: "ACTION",
-      selector: (row) => (
-        <>
-          {authPermissions?.some((items) => items.value === "Read Course") && (
-            <button
-              key={`${row._id}-view`}
-              data-bs-toggle="tooltip"
-              title="View"
-              className="btn btn-primary me-1"
-              onClick={() => viewCourse(row._id)}
-            >
-              <i className="fe fe-eye"></i>
-            </button>
-          )}
-          {authPermissions?.some(
-            (items) => items.value === "Update Course"
-          ) && (
-            <button
-              key={`${row._id}-edit`}
-              data-bs-toggle="tooltip"
-              title="Edit"
-              className="btn btn-success me-1"
-              onClick={() => editCourse(row._id)}
-            >
-              <i className="fe fe-edit"></i>
-            </button>
-          )}
-          {authPermissions?.some(
-            (items) => items.value === "Delete Course"
-          ) && (
-            <button
-              key={`${row._id}-delete`}
-              data-bs-toggle="tooltip"
-              title="Delete"
-              className="btn btn-danger"
-              onClick={() => deleteCourse(row._id)}
-            >
-              <i className="fe fe-trash-2"></i>
-            </button>
-          )}
-        </>
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton height={25} width={100} />
+        ) : (
+          <>
+            {authPermissions?.some(
+              (items) => items.value === "Read Course"
+            ) && (
+              <button
+                key={`${row._id}-view`}
+                data-bs-toggle="tooltip"
+                title="View"
+                className="btn btn-primary me-1"
+                onClick={() => viewCourse(row._id)}
+              >
+                <i className="fe fe-eye"></i>
+              </button>
+            )}
+            {authPermissions?.some(
+              (items) => items.value === "Update Course"
+            ) && (
+              <button
+                key={`${row._id}-edit`}
+                data-bs-toggle="tooltip"
+                title="Edit"
+                className="btn btn-success me-1"
+                onClick={() => editCourse(row._id)}
+              >
+                <i className="fe fe-edit"></i>
+              </button>
+            )}
+            {authPermissions?.some(
+              (items) => items.value === "Delete Course"
+            ) && (
+              <button
+                key={`${row._id}-delete`}
+                data-bs-toggle="tooltip"
+                title="Delete"
+                className="btn btn-danger"
+                onClick={() => deleteCourse(row._id)}
+              >
+                <i className="fe fe-trash-2"></i>
+              </button>
+            )}
+          </>
+        ),
     },
   ];
 
-  const data = course;
+  const data = loading ? Array(5).fill({}) : course;
 
   const tableData = {
     columns,
@@ -203,24 +216,20 @@ export default function CourseList() {
             <Card className="custom-card">
               <Card.Body>
                 <div className="table">
-                  {loading ? (
-                    <Skeleton height={30} count={8} className="my-2" />
-                  ) : (
-                    <DataTableExtensions {...tableData}>
-                      <DataTable
-                        columns={columns}
-                        data={data}
-                        noHeader
-                        defaultSortField="id"
-                        defaultSortAsc={false}
-                        striped={true}
-                        center={true}
-                        persistTableHead
-                        pagination
-                        highlightOnHover
-                      />
-                    </DataTableExtensions>
-                  )}
+                  <DataTableExtensions {...tableData}>
+                    <DataTable
+                      columns={columns}
+                      data={data}
+                      noHeader
+                      defaultSortField="id"
+                      defaultSortAsc={false}
+                      striped={true}
+                      center={true}
+                      persistTableHead
+                      pagination
+                      highlightOnHover
+                    />
+                  </DataTableExtensions>
                 </div>
               </Card.Body>
             </Card>

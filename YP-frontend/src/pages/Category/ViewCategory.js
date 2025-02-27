@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
+import DataRequest from "../../context/DataRequest";
 import { Breadcrumb, Row, Col, Card } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { API } from "../../context/Api";
-import DataRequest from "../../context/DataRequest";
 import defaultIcon from "../../Images/defaultcategory-compressed.webp";
 import defaultFeature from "../../Images/defaultcategoryfeature-compressed.webp";
 import Skeleton from "react-loading-skeleton";
+import Swal from "sweetalert2";
+import { toast } from "react-toastify";
 
 export default function ViewCategory() {
   const navigate = useNavigate();
   const { objectId } = useParams();
+  const mainUser = DataRequest();
   const [category, setCategory] = useState("");
   const [categoryIcon, setCategoryIcon] = useState("");
   const [featureImage, setFeatureImage] = useState("");
-  const mainUser = DataRequest();
   const [loading, setLoading] = useState(true);
   const [authPermissions, setAuthPermissions] = useState([]);
 
@@ -38,19 +40,47 @@ export default function ViewCategory() {
     setIsExpended(!isExpanded);
   };
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Read Course"
-  );
+  const deleteCategory = (uniqueId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes delete it!",
+    })
+      .then((result) => {
+        if (result.isConfirmed) {
+          API.delete(`/category/${uniqueId}`).then((response) => {
+            if (response.data.message) {
+              toast.success(response.data.message);
+              navigate(`/dashboard/category/`);
+            } else if (response.data.error) {
+              toast.success(response.data.error);
+            }
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  };
 
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length >= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Read Category"
     );
-  }
 
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
+  }
   return (
     <>
       <div>
@@ -98,6 +128,25 @@ export default function ViewCategory() {
         <Row>
           <Col lg={12} md={12}>
             <Card className="productdesc">
+              <Card.Header>
+                <h5 className="m-0 align-content-center">
+                  <strong>View Category</strong>
+                </h5>
+                <div className="ms-auto">
+                  <Link
+                    to={`/dashboard/category/edit/${objectId}`}
+                    className={`btn btn-primary me-1`}
+                  >
+                    Edit Category
+                  </Link>
+                  <button
+                    className={`btn btn-danger me-1`}
+                    onClick={() => deleteCategory(objectId)}
+                  >
+                    Delete Category
+                  </button>
+                </div>
+              </Card.Header>
               <Card.Body>
                 {!loading ? (
                   <>

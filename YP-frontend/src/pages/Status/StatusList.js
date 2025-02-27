@@ -22,13 +22,12 @@ export default function StatusList() {
 
   const getStatus = useCallback(async () => {
     try {
-      setLoading(true);
       const { data } = await API.get("/status");
       setStatus(data);
       setLoading(false);
     } catch (err) {
-      setLoading(false);
       toast.error(err.message);
+      setLoading(false);
     }
   }, []);
 
@@ -69,64 +68,73 @@ export default function StatusList() {
   const columns = [
     {
       name: "S.NO",
-      selector: (row) => row.uniqueId,
+      selector: (row) =>
+        loading ? <Skeleton width={50} height={25} /> : row.uniqueId,
       sortable: true,
     },
     {
       name: "NAME",
-      selector: (row) => row.name,
+      selector: (row) =>
+        loading ? <Skeleton width={100} height={25} /> : row.name,
       sortable: true,
     },
     {
-      name: "COLOR",
-      selector: (row) => <input type="color" value={row.color} disabled />,
+      name: "Parent Status",
+      selector: (row) =>
+        loading ? <Skeleton width={50} height={25} /> : row?.parent_status,
       sortable: true,
-      cell: (row) => <input type="color" value={row.color} disabled />,
+      cell: (row) =>
+        loading ? <Skeleton width={50} height={25} /> : row?.parent_status,
     },
     {
       name: "ACTION",
-      selector: (row) => (
-        <>
-          {authPermissions?.some((items) => items.value === "Read Status") && (
-            <button
-              data-bs-toggle="tooltip"
-              title="View"
-              className="btn btn-primary me-1"
-              onClick={() => viewStatus(row._id)}
-            >
-              <i className="fe fe-eye"></i>
-            </button>
-          )}
-          {authPermissions?.some(
-            (items) => items.value === "Update Status"
-          ) && (
-            <button
-              data-bs-toggle="tooltip"
-              title="Edit"
-              className="btn btn-success me-1"
-              onClick={() => editStatus(row._id)}
-            >
-              <i className="fe fe-edit"></i>
-            </button>
-          )}
-          {authPermissions?.some(
-            (items) => items.value === "Delete Status"
-          ) && (
-            <button
-              data-bs-toggle="tooltip"
-              title="Delete"
-              className="btn btn-danger"
-              onClick={() => deleteStatus(row._id)}
-            >
-              <i className="fe fe-trash-2"></i>
-            </button>
-          )}
-        </>
-      ),
+      selector: (row) =>
+        loading ? (
+          <Skeleton width={150} height={25} />
+        ) : (
+          <>
+            {authPermissions?.some(
+              (items) => items.value === "Read Status"
+            ) && (
+              <button
+                data-bs-toggle="tooltip"
+                title="View"
+                className="btn btn-primary me-1"
+                onClick={() => viewStatus(row._id)}
+              >
+                <i className="fe fe-eye"></i>
+              </button>
+            )}
+            {authPermissions?.some(
+              (items) => items.value === "Update Status"
+            ) && (
+              <button
+                data-bs-toggle="tooltip"
+                title="Edit"
+                className="btn btn-success me-1"
+                onClick={() => editStatus(row._id)}
+              >
+                <i className="fe fe-edit"></i>
+              </button>
+            )}
+            {authPermissions?.some(
+              (items) => items.value === "Delete Status"
+            ) && (
+              <button
+                data-bs-toggle="tooltip"
+                title="Delete"
+                className="btn btn-danger"
+                onClick={() => deleteStatus(row._id)}
+              >
+                <i className="fe fe-trash-2"></i>
+              </button>
+            )}
+          </>
+        ),
     },
   ];
 
-  const data = status;
+  const data = loading ? Array(5).fill({}) : status;
 
   const tableData = {
     columns,
@@ -173,24 +181,20 @@ export default function StatusList() {
             <Card className="custom-card">
               <Card.Body>
                 <div className="table">
-                  {loading ? (
-                    <Skeleton height={30} count={8} className="my-2" />
-                  ) : (
-                    <DataTableExtensions {...tableData}>
-                      <DataTable
-                        columns={columns}
-                        data={data}
-                        noHeader
-                        defaultSortField="id"
-                        defaultSortAsc={false}
-                        striped
-                        center
-                        persistTableHead
-                        pagination
-                        highlightOnHover
-                      />
-                    </DataTableExtensions>
-                  )}
+                  <DataTableExtensions {...tableData}>
+                    <DataTable
+                      columns={columns}
+                      data={data}
+                      noHeader
+                      defaultSortField="id"
+                      defaultSortAsc={false}
+                      striped
+                      center
+                      persistTableHead
+                      pagination
+                      highlightOnHover
+                    />
+                  </DataTableExtensions>
                 </div>
               </Card.Body>
             </Card>
