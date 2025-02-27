@@ -5,12 +5,10 @@ import * as Yup from "yup";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import DataRequest from "../../../context/DataRequest";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import { useNavigate } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
 
-export default function ChangePassword() {
-  const dispatch = useDispatch();
+export default function ChangePassword({ loading }) {
   const { User } = DataRequest();
   const [showOldPassword, setShowOldPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -38,7 +36,6 @@ export default function ChangePassword() {
   const onSubmit = async (values) => {
     try {
       values = { ...values, id: User?._id };
-      dispatch(showLoading());
       API.post("/change-password", values).then((response) => {
         if (response.data.message) {
           toast.success(response.data.message);
@@ -47,9 +44,7 @@ export default function ChangePassword() {
           toast.error(response.data.error);
         }
       });
-      dispatch(hideLoading());
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -79,103 +74,115 @@ export default function ChangePassword() {
         <Card.Header>
           <Card.Title>Edit Password</Card.Title>
         </Card.Header>
-        <Card.Body>
-          <FormGroup>
-            <Form.Label className="form-label" htmlFor="current_password">
-              Old Password
-            </Form.Label>
-            <FormControl
-              type={showOldPassword ? "text" : "password"}
-              name="current_password"
-              id="current_password"
-              placeholder="******"
-              value={values.current_password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              autoComplete="off"
-            />
-            <span
-              className="text-gray show-hide-change-password-1"
-              onClick={toggleOldPasswordVisibility}
-            >
-              {showOldPassword ? (
-                <i className="fe fe-eye"></i>
-              ) : (
-                <i className="fe fe-eye-off"></i>
-              )}
-            </span>
-            {errors.current_password && touched.current_password ? (
-              <small className="text-danger">{errors.current_password}</small>
-            ) : (
-              <span />
-            )}
-          </FormGroup>
-          <FormGroup>
-            <Form.Label className="form-label" htmlFor="new_password">
-              New Password
-            </Form.Label>
-            <Form.Control
-              type={showNewPassword ? "text" : "password"}
-              name="new_password"
-              id="new_password"
-              placeholder="******"
-              value={values.new_password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              autoComplete="off"
-            />
-            <span
-              className="text-gray show-hide-change-password-2"
-              onClick={toggleNewPasswordVisibility}
-            >
-              {showNewPassword ? (
-                <i className="fe fe-eye"></i>
-              ) : (
-                <i className="fe fe-eye-off"></i>
-              )}
-            </span>
-            {errors.new_password && touched.new_password ? (
-              <small className="text-danger">{errors.new_password}</small>
-            ) : (
-              <span />
-            )}
-          </FormGroup>
-          <FormGroup>
-            <Form.Label className="form-label" htmlFor="confirm_password">
-              Confirm Password
-            </Form.Label>
-            <Form.Control
-              type={showConfirmPassword ? "text" : "password"}
-              name="confirm_password"
-              id="confirm_password"
-              placeholder="******"
-              value={values.confirm_password}
-              onChange={handleChange}
-              onBlur={handleBlur}
-              autoComplete="off"
-            />
-            <span
-              className="text-gray show-hide-change-password-3"
-              onClick={toggleConfirmPasswordVisibility}
-            >
-              {showConfirmPassword ? (
-                <i className="fe fe-eye"></i>
-              ) : (
-                <i className="fe fe-eye-off"></i>
-              )}
-            </span>
-            {errors.confirm_password && touched.confirm_password ? (
-              <small className="text-danger">{errors.confirm_password}</small>
-            ) : (
-              <span />
-            )}
-          </FormGroup>
-        </Card.Body>
-        <Card.Footer className="">
-          <button type="submit" className="btn btn-primary">
-            Change
-          </button>
-        </Card.Footer>
+        {!loading ? (
+          <>
+            <Card.Body>
+              <FormGroup>
+                <Form.Label className="form-label" htmlFor="current_password">
+                  Old Password
+                </Form.Label>
+                <FormControl
+                  type={showOldPassword ? "text" : "password"}
+                  name="current_password"
+                  id="current_password"
+                  placeholder="******"
+                  value={values.current_password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  autoComplete="off"
+                />
+                <span
+                  className="text-gray show-hide-change-password-1"
+                  onClick={toggleOldPasswordVisibility}
+                >
+                  {showOldPassword ? (
+                    <i className="fe fe-eye"></i>
+                  ) : (
+                    <i className="fe fe-eye-off"></i>
+                  )}
+                </span>
+                {errors.current_password && touched.current_password ? (
+                  <small className="text-danger">
+                    {errors.current_password}
+                  </small>
+                ) : (
+                  <span />
+                )}
+              </FormGroup>
+              <FormGroup>
+                <Form.Label className="form-label" htmlFor="new_password">
+                  New Password
+                </Form.Label>
+                <Form.Control
+                  type={showNewPassword ? "text" : "password"}
+                  name="new_password"
+                  id="new_password"
+                  placeholder="******"
+                  value={values.new_password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  autoComplete="off"
+                />
+                <span
+                  className="text-gray show-hide-change-password-2"
+                  onClick={toggleNewPasswordVisibility}
+                >
+                  {showNewPassword ? (
+                    <i className="fe fe-eye"></i>
+                  ) : (
+                    <i className="fe fe-eye-off"></i>
+                  )}
+                </span>
+                {errors.new_password && touched.new_password ? (
+                  <small className="text-danger">{errors.new_password}</small>
+                ) : (
+                  <span />
+                )}
+              </FormGroup>
+              <FormGroup>
+                <Form.Label className="form-label" htmlFor="confirm_password">
+                  Confirm Password
+                </Form.Label>
+                <Form.Control
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirm_password"
+                  id="confirm_password"
+                  placeholder="******"
+                  value={values.confirm_password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  autoComplete="off"
+                />
+                <span
+                  className="text-gray show-hide-change-password-3"
+                  onClick={toggleConfirmPasswordVisibility}
+                >
+                  {showConfirmPassword ? (
+                    <i className="fe fe-eye"></i>
+                  ) : (
+                    <i className="fe fe-eye-off"></i>
+                  )}
+                </span>
+                {errors.confirm_password && touched.confirm_password ? (
+                  <small className="text-danger">
+                    {errors.confirm_password}
+                  </small>
+                ) : (
+                  <span />
+                )}
+              </FormGroup>
+            </Card.Body>
+            <Card.Footer className="">
+              <button type="submit" className="btn btn-primary">
+                Change
+              </button>
+            </Card.Footer>
+          </>
+        ) : (
+          <Card.Body>
+            <Skeleton count={3} height={25} className="my-2" />
+          </Card.Body>
+        )}
       </form>
     </Card>
   );

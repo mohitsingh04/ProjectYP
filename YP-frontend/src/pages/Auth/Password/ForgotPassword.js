@@ -5,11 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function ForgotPassword() {
-  const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
@@ -31,9 +28,7 @@ export default function ForgotPassword() {
 
   const onSubmit = async (values) => {
     try {
-      dispatch(showLoading());
       API.post("/forgot-password", values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           setSuccess(response.data.message);
@@ -43,7 +38,6 @@ export default function ForgotPassword() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };

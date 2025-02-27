@@ -5,11 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 
 export default function Register() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -60,7 +57,6 @@ export default function Register() {
 
   const onSubmit = async (values) => {
     try {
-      dispatch(showLoading());
       API.post("/register", values).then((response) => {
         if (response.data.message) {
           toast.success(response.data.message);
@@ -68,10 +64,8 @@ export default function Register() {
         } else {
           setError(response.data.error);
         }
-        dispatch(hideLoading());
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.success(err.message);
     }
   };

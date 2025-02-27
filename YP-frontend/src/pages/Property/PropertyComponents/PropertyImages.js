@@ -4,13 +4,10 @@ import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import defaultLogo from "../../../Images/defaultPropertyLogo.jpeg";
 import defaultFeature from "../../../Images/defaultPropertyFeature.jpg";
 
 export default function PropertyImages() {
-  const dispatch = useDispatch();
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [previewLogo, setPreviewLogo] = useState("");
@@ -19,12 +16,10 @@ export default function PropertyImages() {
   const [featureImage, setFeatureImage] = useState("");
 
   const getProperty = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/property/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   useEffect(() => {
     getProperty();
@@ -77,9 +72,7 @@ export default function PropertyImages() {
         for (let value in values) {
           formData.append(value, values[value]);
         }
-        dispatch(showLoading());
         API.patch(`/property/images/${objectId}`, formData).then((response) => {
-          dispatch(hideLoading());
           if (response.data.message) {
             toast.success(response.data.message);
           } else if (response.data.error) {
@@ -88,7 +81,6 @@ export default function PropertyImages() {
         });
       }
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };

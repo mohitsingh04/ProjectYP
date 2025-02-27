@@ -5,11 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function ResetPassword() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { token } = useParams();
   const [showPassword, setShowPassword] = useState(false);
@@ -54,9 +51,7 @@ export default function ResetPassword() {
     }
     try {
       values = { ...values, token: token };
-      dispatch(showLoading());
       const response = await API.post("/reset", values);
-      dispatch(hideLoading());
       if (response.data.message) {
         toast.success(response.data.message);
         navigate("/login");
@@ -64,7 +59,6 @@ export default function ResetPassword() {
         toast.error(response.data.error);
       }
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };

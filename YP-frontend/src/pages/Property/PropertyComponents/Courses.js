@@ -5,8 +5,6 @@ import { useFormik } from "formik";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import DataRequest from "../../../context/DataRequest";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import { Editor } from "@tinymce/tinymce-react";
 import * as Yup from "yup";
 
@@ -15,7 +13,6 @@ import DataTableExtensions from "react-data-table-component-extensions";
 import Swal from "sweetalert2";
 
 export default function Courses() {
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const { User } = DataRequest();
@@ -30,12 +27,10 @@ export default function Courses() {
   const [courseName, setCourseName] = useState([]);
 
   const getProperty = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/property/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   const getPropertyCourse = useCallback(() => {
     API.get("/property-course").then(({ data }) => {
@@ -134,7 +129,6 @@ export default function Courses() {
       toast.success(response.data.message);
       getPropertyCourse();
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.response.data.error);
       console.log(err);
     }

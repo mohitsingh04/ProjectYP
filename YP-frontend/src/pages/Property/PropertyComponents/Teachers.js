@@ -6,15 +6,12 @@ import { API } from "../../../context/Api";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import DataRequest from "../../../context/DataRequest";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import DataTable from "react-data-table-component";
 import DataTableExtensions from "react-data-table-component-extensions";
 import Swal from "sweetalert2";
 import defaultProfile from "../../../Images/DefaultProfile.jpg";
 
 export default function Teachers() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { objectId } = useParams();
   const { User } = DataRequest();
@@ -24,17 +21,13 @@ export default function Teachers() {
   const [showTeacherForm, setShowTeacherForm] = useState(true);
 
   const getProperty = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/property/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   const getTeachers = useCallback(() => {
-    dispatch(showLoading());
     API.get("/teacher").then(({ data }) => {
-      dispatch(hideLoading());
       setTeachers(data);
       setTeachers(
         data.filter(
@@ -42,7 +35,7 @@ export default function Teachers() {
         )
       );
     });
-  }, [dispatch, property]);
+  }, [property]);
 
   useEffect(() => {
     getProperty();
@@ -108,9 +101,7 @@ export default function Teachers() {
         typeof values.profile != "object"
       ) {
         formData.append("profile", values.profile);
-        dispatch(showLoading());
         API.post("/teacher", formData).then((response) => {
-          dispatch(hideLoading());
           if (response.data.message) {
             toast.success(response.data.message);
             resetForm();
@@ -123,7 +114,6 @@ export default function Teachers() {
         });
       }
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };

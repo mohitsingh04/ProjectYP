@@ -4,11 +4,8 @@ import { Link, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function OtherDetails() {
-  const dispatch = useDispatch();
   const { objectId } = useParams();
   const [status, setStatus] = useState([]);
   const [category, setCategory] = useState([]);
@@ -17,30 +14,24 @@ export default function OtherDetails() {
   const [bussinessHours, setBussinessHours] = useState([]);
 
   const getProperty = useCallback(async () => {
-    dispatch(showLoading());
     await API.get(`/property/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setProperty(data);
       setActiveCategory(data?.category);
       setEstablishmentYear(data?.est_year);
     });
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   const getCategory = useCallback(async () => {
-    dispatch(showLoading());
     API.get(`/category`).then(({ data }) => {
-      dispatch(hideLoading());
       setCategory(data);
     });
-  }, [dispatch]);
+  }, []);
 
   const getStatus = useCallback(async () => {
-    dispatch(showLoading());
     await API.get(`/status`).then(({ data }) => {
-      dispatch(hideLoading());
       setStatus(data);
     });
-  }, [dispatch]);
+  }, []);
 
   const getBussinessHours = useCallback(async () => {
     if (property) {
@@ -145,9 +136,7 @@ export default function OtherDetails() {
         saturday: formState.saturday,
         sunday: formState.sunday,
       };
-      dispatch(showLoading());
       API.post(`/business-hours`, data).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
         } else if (response.data.error) {
@@ -155,7 +144,6 @@ export default function OtherDetails() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };

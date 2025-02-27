@@ -7,13 +7,10 @@ import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { API } from "../../../context/Api";
 import { Editor } from "@tinymce/tinymce-react";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import Swal from "sweetalert2";
 
 export default function Seo() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
@@ -21,12 +18,11 @@ export default function Seo() {
   const [description, setDescription] = useState("");
 
   const getProperty = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/property/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, objectId]);
+  }, [objectId]);
+
   const getSeo = useCallback(() => {
     API.get(`/seo`).then(({ data }) => {
       setSeo(
@@ -66,9 +62,7 @@ export default function Seo() {
         property_name: property.property_name,
       };
       console.log(values);
-      dispatch(showLoading());
       API.post(`/seo`, values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           resetForm();
@@ -78,7 +72,6 @@ export default function Seo() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -110,9 +103,7 @@ export default function Seo() {
     })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(showLoading());
           API.delete(`/seo/${id}`).then((response) => {
-            dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
             } else if (response.data.error) {
@@ -123,7 +114,6 @@ export default function Seo() {
         }
       })
       .catch((error) => {
-        dispatch(hideLoading());
         toast.error(error.message);
       });
   };

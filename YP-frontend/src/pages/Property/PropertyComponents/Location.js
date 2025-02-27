@@ -5,11 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { API } from "../../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function Location() {
-  const dispatch = useDispatch();
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [city, setCity] = useState([]);
@@ -19,17 +16,14 @@ export default function Location() {
 
   const getProperty = useCallback(() => {
     try {
-      dispatch(showLoading());
       API.get(`/property/${objectId}`).then(({ data }) => {
-        dispatch(hideLoading());
         setProperty(data);
         setSelectedState(data?.property_state);
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   const getState = useCallback(async () => {
     API.get("/states").then(({ data }) => {
@@ -138,7 +132,6 @@ export default function Location() {
 
   const onSubmit = async (values) => {
     try {
-      dispatch(showLoading());
       const response = await API.patch(`/property/${objectId}`, values);
       toast.success(response.data.message);
       getProperty();
@@ -147,9 +140,7 @@ export default function Location() {
       setShowCountryInInput(false);
       setShowPincodeInInput(false);
       setShowStateInInput(false);
-      dispatch(hideLoading());
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.response.data.error);
     }
   };

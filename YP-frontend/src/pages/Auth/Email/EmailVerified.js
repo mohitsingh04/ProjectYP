@@ -3,19 +3,14 @@ import { Link, useParams } from "react-router-dom";
 import { Card } from "react-bootstrap";
 import { toast } from "react-toastify";
 import { API } from "../../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function EmailVerified() {
-  const dispatch = useDispatch();
   const { token } = useParams();
   const [message, setMessage] = useState("");
 
   useEffect(() => {
     try {
-      dispatch(showLoading());
       API.get(`/verify-email/${token}`).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           setMessage(response.data.message);
@@ -25,10 +20,9 @@ export default function EmailVerified() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       console.log(err.message);
     }
-  }, [dispatch, token]);
+  }, [token]);
 
   return (
     <>

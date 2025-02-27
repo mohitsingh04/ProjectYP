@@ -6,12 +6,9 @@ import * as Yup from "yup";
 import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
 
 export default function CreateStatus() {
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const navigate = useNavigate();
   const [description, setDescription] = useState("");
@@ -43,9 +40,7 @@ export default function CreateStatus() {
   const onSubmit = async (values) => {
     try {
       values = { ...values, description: description };
-      dispatch(showLoading());
       API.post("/status", values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           navigate("/dashboard/status");
@@ -54,7 +49,6 @@ export default function CreateStatus() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -66,19 +60,17 @@ export default function CreateStatus() {
       onSubmit: onSubmit,
     });
 
-  if (authPermissions?.length > 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Read Course"
-    );
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Update Status"
+  );
 
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
-      );
-    }
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        <h2 className="text-danger fw-bold">Access Denied</h2>
+        <p>You do not have the required permissions to access this page.</p>
+      </div>
+    );
   }
 
   return (

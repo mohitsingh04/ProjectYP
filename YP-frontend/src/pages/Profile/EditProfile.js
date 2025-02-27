@@ -15,6 +15,7 @@ import { API } from "../../context/Api";
 import ChangePassword from "../Auth/Password/ChangePassword";
 import { toast } from "react-toastify";
 import DataRequest from "../../context/DataRequest";
+import Skeleton from "react-loading-skeleton";
 
 export default function EditProfile() {
   const [user, setUser] = useState("");
@@ -25,6 +26,8 @@ export default function EditProfile() {
   const [selectedState, setSelectedState] = useState("");
   const [states, setStates] = useState([]);
   const [cities, setCities] = useState([]);
+  const [loading, setLoading] = useState(true);
+
   const getStates = async () => {
     API.get("/states").then(({ data }) => {
       const sortedStates = data.sort((a, b) => a.name.localeCompare(b.name));
@@ -52,6 +55,7 @@ export default function EditProfile() {
         setUser(data);
         setProfileImg(data?.profile?.[0]);
         setSelectedState(data?.state || "");
+        setLoading(false);
       });
     }
   }, [User]);
@@ -134,20 +138,27 @@ export default function EditProfile() {
         <div className="page-header">
           <div>
             <h1 className="page-title">Profile</h1>
-            <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item" href="#">
-                Dashboard
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-                Edit
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                href="#"
-              >
-                My Profile
-              </Breadcrumb.Item>
-            </Breadcrumb>
+            {!loading ? (
+              <Breadcrumb className="breadcrumb">
+                <Breadcrumb.Item className="breadcrumb-item" href="#">
+                  Dashboard
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="breadcrumb-item"
+                  aria-current="page"
+                >
+                  Edit
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="breadcrumb-item active breadcrumds"
+                  href="#"
+                >
+                  My Profile
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            ) : (
+              <Skeleton width={200} />
+            )}
           </div>
           <div className="ms-auto pageheader-btn">
             <Link
@@ -164,7 +175,7 @@ export default function EditProfile() {
 
         <Row>
           <Col lg={12} xl={4} md={12} sm={12}>
-            <ChangePassword />
+            <ChangePassword loading={loading} />
             <Card className="panel-theme">
               <Card.Header>
                 <div className="float-start">
@@ -173,22 +184,26 @@ export default function EditProfile() {
                 <div className="clearfix"></div>
               </Card.Header>
               <Card.Body className="no-padding">
-                <ListGroup className="no-margin">
-                  <ListGroup.Item className="list-group-item">
-                    <i className="fa fa-envelope list-contact-icons border text-center br-100"></i>
-                    <span className="contact-icons">{user.email}</span>
-                  </ListGroup.Item>
-                  <ListGroup.Item className="list-group-item">
-                    <i className="fa fa-globe list-contact-icons border text-center br-100"></i>
-                    <span className="contact-icons">
-                      {user.address}, {user.city}, {user.state}
-                    </span>
-                  </ListGroup.Item>
-                  <ListGroup.Item className="list-group-item">
-                    <i className="fa fa-phone list-contact-icons border text-center br-100"></i>
-                    <span className="contact-icons">{user.mobile_no}</span>
-                  </ListGroup.Item>
-                </ListGroup>
+                {!loading ? (
+                  <ListGroup className="no-margin">
+                    <ListGroup.Item className="list-group-item">
+                      <i className="fa fa-envelope list-contact-icons border text-center br-100"></i>
+                      <span className="contact-icons">{user.email}</span>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="list-group-item">
+                      <i className="fa fa-globe list-contact-icons border text-center br-100"></i>
+                      <span className="contact-icons">
+                        {user.address}, {user.city}, {user.state}
+                      </span>
+                    </ListGroup.Item>
+                    <ListGroup.Item className="list-group-item">
+                      <i className="fa fa-phone list-contact-icons border text-center br-100"></i>
+                      <span className="contact-icons">{user.mobile_no}</span>
+                    </ListGroup.Item>
+                  </ListGroup>
+                ) : (
+                  <Skeleton height={25} count={3} className="my-2" />
+                )}
               </Card.Body>
             </Card>
           </Col>
@@ -199,220 +214,236 @@ export default function EditProfile() {
                   <Card.Title as="h3">Edit Profile</Card.Title>
                 </Card.Header>
                 <Card.Body>
-                  <div className="d-flex mb-3">
-                    {previewProfile === "" ? (
+                  {!loading ? (
+                    <div className="d-flex mb-3">
                       <img
                         src={
-                          !user?.profile?.[0]
+                          previewProfile
+                            ? previewProfile
+                            : !user?.profile?.[0]
                             ? require("../../Images/DefaultProfile.jpg")
                             : `http://localhost:5000/${profileImg}`
                         }
                         className="rounded-circle avatar-lg me-2"
                         alt="avatar"
                       />
-                    ) : (
-                      <img
-                        src={previewProfile}
-                        className="rounded-circle avatar-lg me-2"
-                        alt="avatar"
-                      />
-                    )}
-                    <div className="ms-auto mt-xl-2 mt-lg-0 me-lg-2">
-                      <input
-                        type="file"
-                        name="profile"
-                        onChange={(e) => {
-                          let reader = new FileReader();
-                          reader.onload = () => {
-                            if (reader.readyState === 2) {
-                              setFieldValue("profile", e.target.files[0]);
-                              setPreviewProfile(reader.result);
-                            }
-                          };
-                          reader.readAsDataURL(e.target.files[0]);
-                        }}
-                        onBlur={handleBlur}
-                      />
-                      {errors.profile && touched.profile ? (
-                        <small className="text-danger">{errors.profile}</small>
-                      ) : (
-                        <span />
-                      )}
-                    </div>
-                  </div>
-                  <br />
-                  <Row>
-                    <Col lg={12} md={12}>
-                      <FormGroup>
-                        <label htmlFor="userName">First Name</label>
-                        <Form.Control
-                          type="text"
-                          name="name"
-                          className="form-control"
-                          id="userName"
-                          placeholder="First Name"
-                          value={values.name}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          autoComplete="off"
-                        />
-                        {errors.name && touched.name ? (
-                          <small className="text-danger">{errors.name}</small>
-                        ) : (
-                          <span />
-                        )}
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <FormGroup className="mt-2">
-                    <label htmlFor="email">Email address</label>
-                    <Form.Control
-                      type="email"
-                      name="email"
-                      className="form-control"
-                      id="email"
-                      placeholder="email address"
-                      value={values.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      disabled
-                      autoComplete="off"
-                    />
-                    {errors.email && touched.email ? (
-                      <small className="text-danger">{errors.email}</small>
-                    ) : (
-                      <span />
-                    )}
-                  </FormGroup>
-                  <FormGroup className="mt-2">
-                    <label htmlFor="mobile_no">Contact Number</label>
-                    <Form.Control
-                      type="number"
-                      name="mobile_no"
-                      className="form-control"
-                      id="mobile_no"
-                      placeholder="mobile number"
-                      value={values.mobile_no}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      disabled
-                      autoComplete="off"
-                    />
-                    {errors.mobile_no && touched.mobile_no ? (
-                      <small className="text-danger">{errors.mobile_no}</small>
-                    ) : (
-                      <span />
-                    )}
-                  </FormGroup>
-                  <Row className="mt-3">
-                    <Col lg={8} md={12}>
-                      <FormGroup>
-                        <label htmlFor="address">Address</label>
-                        <Form.Control
-                          type="text"
-                          name="address"
-                          className="form-control"
-                          id="address"
-                          placeholder="Address *"
-                          value={values.address}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          autoComplete="off"
-                        />
-                        {errors.address && touched.address ? (
-                          <small className="text-danger">
-                            {errors.address}
-                          </small>
-                        ) : (
-                          <span />
-                        )}
-                      </FormGroup>
-                    </Col>
-                    <Col lg={4} md={12}>
-                      <FormGroup>
-                        <label htmlFor="pincode">Pincode</label>
-                        <Form.Control
-                          type="number"
-                          name="pincode"
-                          className="form-control"
-                          id="pincode"
-                          placeholder="Pincode *"
-                          value={values.pincode}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          autoComplete="off"
-                        />
-                        {errors.pincode && touched.pincode ? (
-                          <small className="text-danger">
-                            {errors.pincode}
-                          </small>
-                        ) : (
-                          <span />
-                        )}
-                      </FormGroup>
-                    </Col>
-                  </Row>
-                  <Row className="mt-2">
-                    <Col lg={6} md={12}>
-                      <FormGroup>
-                        <label htmlFor="state">State</label>
-                        <Form.Select
-                          name="state"
-                          className="form-control"
-                          id="state"
-                          value={values.state}
+                      <div className="ms-auto mt-xl-2 mt-lg-0 me-lg-2">
+                        <input
+                          type="file"
+                          name="profile"
                           onChange={(e) => {
-                            handleChange(e);
-                            setSelectedState(e.target.value);
+                            let reader = new FileReader();
+                            reader.onload = () => {
+                              if (reader.readyState === 2) {
+                                setFieldValue("profile", e.target.files[0]);
+                                setPreviewProfile(reader.result);
+                              }
+                            };
+                            reader.readAsDataURL(e.target.files[0]);
                           }}
                           onBlur={handleBlur}
-                        >
-                          <option value="">Select State *</option>
-                          {states.map((state, index) => (
-                            <option key={index} value={state.name}>
-                              {state.name}
-                            </option>
-                          ))}
-                        </Form.Select>
-                        {errors.state && touched.state ? (
-                          <small className="text-danger">{errors.state}</small>
+                        />
+                        {errors.profile && touched.profile ? (
+                          <small className="text-danger">
+                            {errors.profile}
+                          </small>
                         ) : (
                           <span />
                         )}
-                      </FormGroup>
-                    </Col>
-                    <Col lg={6} md={12}>
-                      <FormGroup>
-                        <label htmlFor="city">City</label>
-                        <Form.Select
-                          name="city"
+                      </div>
+                    </div>
+                  ) : (
+                    <Skeleton circle={true} width={50} height={50} />
+                  )}
+                  <br />
+                  {!loading ? (
+                    <>
+                      <Row>
+                        <Col lg={12} md={12}>
+                          <FormGroup>
+                            <label htmlFor="userName">First Name</label>
+                            <Form.Control
+                              type="text"
+                              name="name"
+                              className="form-control"
+                              id="userName"
+                              placeholder="First Name"
+                              value={values.name}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              autoComplete="off"
+                            />
+                            {errors.name && touched.name ? (
+                              <small className="text-danger">
+                                {errors.name}
+                              </small>
+                            ) : (
+                              <span />
+                            )}
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <FormGroup className="mt-2">
+                        <label htmlFor="email">Email address</label>
+                        <Form.Control
+                          type="email"
+                          name="email"
                           className="form-control"
-                          id="city"
-                          value={values.city}
+                          id="email"
+                          placeholder="email address"
+                          value={values.email}
                           onChange={handleChange}
                           onBlur={handleBlur}
-                        >
-                          <option value="">Select City *</option>
-                          {cities.map((city, index) => (
-                            <option key={index} value={city.name}>
-                              {city.name}
-                            </option>
-                          ))}
-                        </Form.Select>
-                        {errors.city && touched.city ? (
-                          <small className="text-danger">{errors.city}</small>
+                          disabled
+                          autoComplete="off"
+                        />
+                        {errors.email && touched.email ? (
+                          <small className="text-danger">{errors.email}</small>
                         ) : (
                           <span />
                         )}
                       </FormGroup>
-                    </Col>
-                  </Row>
+                      <FormGroup className="mt-2">
+                        <label htmlFor="mobile_no">Contact Number</label>
+                        <Form.Control
+                          type="number"
+                          name="mobile_no"
+                          className="form-control"
+                          id="mobile_no"
+                          placeholder="mobile number"
+                          value={values.mobile_no}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                          disabled
+                          autoComplete="off"
+                        />
+                        {errors.mobile_no && touched.mobile_no ? (
+                          <small className="text-danger">
+                            {errors.mobile_no}
+                          </small>
+                        ) : (
+                          <span />
+                        )}
+                      </FormGroup>
+                      <Row className="mt-3">
+                        <Col lg={8} md={12}>
+                          <FormGroup>
+                            <label htmlFor="address">Address</label>
+                            <Form.Control
+                              type="text"
+                              name="address"
+                              className="form-control"
+                              id="address"
+                              placeholder="Address *"
+                              value={values.address}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              autoComplete="off"
+                            />
+                            {errors.address && touched.address ? (
+                              <small className="text-danger">
+                                {errors.address}
+                              </small>
+                            ) : (
+                              <span />
+                            )}
+                          </FormGroup>
+                        </Col>
+                        <Col lg={4} md={12}>
+                          <FormGroup>
+                            <label htmlFor="pincode">Pincode</label>
+                            <Form.Control
+                              type="number"
+                              name="pincode"
+                              className="form-control"
+                              id="pincode"
+                              placeholder="Pincode *"
+                              value={values.pincode}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                              autoComplete="off"
+                            />
+                            {errors.pincode && touched.pincode ? (
+                              <small className="text-danger">
+                                {errors.pincode}
+                              </small>
+                            ) : (
+                              <span />
+                            )}
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                      <Row className="mt-2">
+                        <Col lg={6} md={12}>
+                          <FormGroup>
+                            <label htmlFor="state">State</label>
+                            <Form.Select
+                              name="state"
+                              className="form-control"
+                              id="state"
+                              value={values.state}
+                              onChange={(e) => {
+                                handleChange(e);
+                                setSelectedState(e.target.value);
+                              }}
+                              onBlur={handleBlur}
+                            >
+                              <option value="">Select State *</option>
+                              {states.map((state, index) => (
+                                <option key={index} value={state.name}>
+                                  {state.name}
+                                </option>
+                              ))}
+                            </Form.Select>
+                            {errors.state && touched.state ? (
+                              <small className="text-danger">
+                                {errors.state}
+                              </small>
+                            ) : (
+                              <span />
+                            )}
+                          </FormGroup>
+                        </Col>
+                        <Col lg={6} md={12}>
+                          <FormGroup>
+                            <label htmlFor="city">City</label>
+                            <Form.Select
+                              name="city"
+                              className="form-control"
+                              id="city"
+                              value={values.city}
+                              onChange={handleChange}
+                              onBlur={handleBlur}
+                            >
+                              <option value="">Select City *</option>
+                              {cities.map((city, index) => (
+                                <option key={index} value={city.name}>
+                                  {city.name}
+                                </option>
+                              ))}
+                            </Form.Select>
+                            {errors.city && touched.city ? (
+                              <small className="text-danger">
+                                {errors.city}
+                              </small>
+                            ) : (
+                              <span />
+                            )}
+                          </FormGroup>
+                        </Col>
+                      </Row>
+                    </>
+                  ) : (
+                    <Skeleton height={25} count={8} className="my-2" />
+                  )}
                 </Card.Body>
-                <Card.Footer className="">
-                  <button type="submit" className="btn btn-success mt-1 me-2">
-                    Update
-                  </button>
-                </Card.Footer>
+                {!loading && (
+                  <Card.Footer className="">
+                    <button type="submit" className="btn btn-success mt-1 me-2">
+                      Update
+                    </button>
+                  </Card.Footer>
+                )}
               </form>
             </Card>
           </Col>

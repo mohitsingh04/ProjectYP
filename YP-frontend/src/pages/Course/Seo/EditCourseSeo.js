@@ -6,13 +6,10 @@ import * as Yup from "yup";
 import { API } from "../../../context/Api";
 import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 // import Swal from "sweetalert2";
 
 export default function EditCourseAeo() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const { uniqueId } = useParams();
   const [description, setDescription] = useState("");
@@ -49,9 +46,7 @@ export default function EditCourseAeo() {
   const onSubmit = async (values) => {
     try {
       values = { ...values, description: description };
-      dispatch(showLoading());
       API.patch(`/seo/${uniqueId}`, values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           navigate(`/dashboard/course-seo/add/${seo.course_id}`);
@@ -61,7 +56,6 @@ export default function EditCourseAeo() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };

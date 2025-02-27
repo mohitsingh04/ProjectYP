@@ -124,19 +124,17 @@ export default function EditCategory() {
     enableReinitialize: true,
   });
 
-  if (authPermissions?.length > 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Read Course"
-    );
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Update Category"
+  );
 
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
-      );
-    }
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        <h2 className="text-danger fw-bold">Access Denied</h2>
+        <p>You do not have the required permissions to access this page.</p>
+      </div>
+    );
   }
 
   return (

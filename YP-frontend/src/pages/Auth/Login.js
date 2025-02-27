@@ -5,11 +5,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 
 export default function Login() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -31,7 +28,6 @@ export default function Login() {
 
   const onSubmit = async (values) => {
     try {
-      dispatch(showLoading());
       const response = await API.post("/login", values, {
         withCredentials: true,
       });
@@ -39,10 +35,8 @@ export default function Login() {
       toast.success(response.data.message);
       navigate("/dashboard");
       window.location.reload();
-      dispatch(hideLoading());
     } catch (error) {
       console.log(error);
-      dispatch(hideLoading());
       setError(error.response.data.error);
       toast.error(error.response.data.error);
       if (error.response.data.error === "You are Not Verified.") {

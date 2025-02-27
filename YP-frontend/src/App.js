@@ -36,11 +36,9 @@ import ViewTeacher from "./pages/Teachers/ViewTeacher";
 // import ViewFaqs from "./pages/Faqs/ViewFaq";
 import EditFaqs from "./pages/Faqs/EditFaqs";
 // import Loader from "./components/Loader/Loader";
-// import { useSelector } from "react-redux";
 import VerifyEmail from "./pages/Auth/Email/VerifyEmail";
 import EmailVerified from "./pages/Auth/Email/EmailVerified";
 import EditSeo from "./pages/Seo/EditSeo";
-import EditGallery from "./pages/Gallery/EditGallery";
 import Home from "./Frontend/Home/Home";
 // import FrontPropertyList from "./Frontend/Property/PropertyList";
 import CourseList from "./pages/Course/CourseList";
@@ -67,7 +65,6 @@ const toast = Swal.mixin({
 window.toast = toast;
 
 function Root() {
-  // const { loading } = useSelector((state) => state.alerts);
 
   return (
     <>
@@ -133,7 +130,6 @@ function Root() {
             <Route path={`/dashboard/enquiry`} element={<ProtectedRoutes><Enquiry /></ProtectedRoutes>} />
             <Route path={`/dashboard/my-profile`} element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
             <Route path={`/dashboard/edit/my-profile`}element={<ProtectedRoutes><EditProfile /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/edit/gallery/:property_name/:uniqueId`}element={<ProtectedRoutes><EditGallery /></ProtectedRoutes>}/>
 
             <Route path={`/dashboard/edit/seo/:property_name/:objectId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
 

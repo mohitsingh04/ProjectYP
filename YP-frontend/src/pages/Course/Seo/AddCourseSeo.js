@@ -6,13 +6,10 @@ import * as Yup from "yup";
 import { API } from "../../../context/Api";
 import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import Swal from "sweetalert2";
 
 export default function AddCourseAeo() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const { uniqueId } = useParams();
   const [description, setDescription] = useState("");
@@ -64,9 +61,7 @@ export default function AddCourseAeo() {
         course_id: course.uniqueId,
         course_name: course.course_name,
       };
-      dispatch(showLoading());
       API.post(`/seo`, values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           window.location.reload();
@@ -75,7 +70,6 @@ export default function AddCourseAeo() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -99,9 +93,7 @@ export default function AddCourseAeo() {
     })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(showLoading());
           API.delete(`/seo/${uniqueId}`).then((response) => {
-            dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
             } else if (response.data.error) {
@@ -112,7 +104,6 @@ export default function AddCourseAeo() {
         }
       })
       .catch((error) => {
-        dispatch(hideLoading());
         toast.error(error.message);
       });
   };

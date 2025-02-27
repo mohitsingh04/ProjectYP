@@ -145,7 +145,7 @@ export default function PropertyList() {
             </button>
           )}
           {authPermissions?.some(
-            (items) => items.value === "Read Property"
+            (items) => items.value === "Delete Property"
           ) && (
             <button
               key={`delete-${row._id}`}

@@ -7,11 +7,8 @@ import { Editor } from "@tinymce/tinymce-react";
 import DataRequest from "../../context/DataRequest";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 
 export default function CreateProperty() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const editorRef = useRef(null);
   const { User } = DataRequest();
@@ -27,12 +24,10 @@ export default function CreateProperty() {
   }, [User]);
 
   const getCategory = useCallback(async () => {
-    dispatch(showLoading());
     API.get("/category").then(({ data }) => {
-      dispatch(hideLoading());
       setCategory(data);
     });
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     getCategory();
@@ -93,9 +88,7 @@ export default function CreateProperty() {
         formData.append("featured_image", values.featured_image);
       }
 
-      dispatch(showLoading());
       await API.post(`/property`, formData).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           navigate("/dashboard/property");
@@ -104,7 +97,6 @@ export default function CreateProperty() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -123,19 +115,17 @@ export default function CreateProperty() {
     onSubmit: onSubmit,
   });
 
-  if (authPermissions?.length > 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Read Course"
-    );
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Create Property"
+  );
 
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
-      );
-    }
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        <h2 className="text-danger fw-bold">Access Denied</h2>
+        <p>You do not have the required permissions to access this page.</p>
+      </div>
+    );
   }
 
   return (

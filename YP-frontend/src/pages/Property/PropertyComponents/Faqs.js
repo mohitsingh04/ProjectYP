@@ -7,12 +7,9 @@ import DataRequest from "../../../context/DataRequest";
 import { API } from "../../../context/Api";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import Swal from "sweetalert2";
 
 export default function Faqs() {
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const { objectId } = useParams();
   const { User } = DataRequest();
@@ -21,12 +18,10 @@ export default function Faqs() {
   const [answer, setAnswer] = useState("");
 
   const getProperty = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/property/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setProperty(data);
     });
-  }, [objectId, dispatch]);
+  }, [objectId]);
 
   useEffect(() => {
     getProperty();
@@ -61,9 +56,7 @@ export default function Faqs() {
         property_name: property.property_name,
         userId: User.uniqueId,
       };
-      dispatch(showLoading());
       API.post("/faqs", values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           resetForm();
@@ -74,7 +67,6 @@ export default function Faqs() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -105,9 +97,7 @@ export default function Faqs() {
     })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(showLoading());
           API.delete(`/faqs/${uniqueId}`).then((response) => {
-            dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
               getFaqs();
@@ -120,7 +110,6 @@ export default function Faqs() {
         getFaqs();
       })
       .catch((error) => {
-        dispatch(hideLoading());
         toast.error(error.message);
       });
   };

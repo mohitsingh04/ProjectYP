@@ -3,11 +3,8 @@ import { Dropdown, Navbar, Container, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 
 export function Header() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [user, setUser] = useState("");
   const [property, setProperty] = useState([]);
@@ -17,32 +14,26 @@ export function Header() {
   useEffect(() => {
     const getProfile = () => {
       try {
-        dispatch(showLoading());
         API.get("/profile").then(({ data }) => {
-          dispatch(hideLoading());
           setUser(data.user);
         }, []);
       } catch (err) {
-        dispatch(hideLoading());
         console.log(err.message);
       }
     };
     const getProperty = async () => {
       try {
-        dispatch(showLoading());
         API.get("property").then(({ data }) => {
-          dispatch(hideLoading());
           setProperty(data);
           setFilterData(data);
         });
       } catch (err) {
-        dispatch(hideLoading());
         console.log(err.message);
       }
     };
     getProfile();
     getProperty();
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     const result = property.filter((property) => {

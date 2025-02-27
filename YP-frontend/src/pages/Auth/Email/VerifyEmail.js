@@ -6,11 +6,8 @@ import * as Yup from "yup";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import DataRequest from "../../../context/DataRequest";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function VerifyEmail() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const { User } = DataRequest();
 
@@ -30,9 +27,7 @@ export default function VerifyEmail() {
 
   const onSubmit = async (values) => {
     try {
-      dispatch(showLoading());
       API.post(`/verify-email`, values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           navigate(`/send/verify-email/success/${values.email}`);

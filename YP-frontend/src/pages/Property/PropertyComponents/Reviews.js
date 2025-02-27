@@ -10,8 +10,6 @@ import StarIcon from "@mui/icons-material/Star";
 import { Rating } from "@mui/material";
 import DataRequest from "../../../context/DataRequest";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import Swal from "sweetalert2";
 import EditReview from "./ReviewComponents/EditReview";
 
@@ -20,16 +18,13 @@ export default function Reviews() {
   const [reviews, setReviews] = useState([]);
   const [property, setProperty] = useState("");
   const { User } = DataRequest();
-  const dispatch = useDispatch();
   const [isUpdating, setIsUpdating] = useState(null);
 
   const getProperty = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/property/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setProperty(data);
     });
-  }, [objectId, dispatch]);
+  }, [objectId]);
 
   useEffect(() => {
     getProperty();
@@ -37,12 +32,10 @@ export default function Reviews() {
 
   const getReviews = useCallback(async () => {
     if (property.uniqueId) {
-      dispatch(showLoading());
       const get = await API.get(`/review/property/${property.uniqueId}`);
-      dispatch(hideLoading());
       setReviews(get.data);
     }
-  }, [dispatch, property]);
+  }, [property]);
 
   useEffect(() => {
     getReviews();
@@ -120,9 +113,7 @@ export default function Reviews() {
     })
       .then((result) => {
         if (result.isConfirmed) {
-          dispatch(showLoading());
           API.delete(`/review/${uniqueId}`).then((response) => {
-            dispatch(hideLoading());
             if (response.data.message) {
               toast.success(response.data.message);
               getReviews();
@@ -133,7 +124,6 @@ export default function Reviews() {
         }
       })
       .catch((error) => {
-        dispatch(hideLoading());
         toast.error(error.message);
       });
   };

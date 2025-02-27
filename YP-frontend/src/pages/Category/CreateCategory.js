@@ -6,12 +6,9 @@ import * as Yup from "yup";
 import { Editor } from "@tinymce/tinymce-react";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
 
 export default function CreateCategory() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const editorRef = useRef(null);
   const [user, setUser] = useState("");
@@ -27,20 +24,16 @@ export default function CreateCategory() {
   }, [mainUser]);
 
   const getUser = useCallback(async () => {
-    dispatch(showLoading());
     API.get("/profile").then(({ data }) => {
-      dispatch(hideLoading());
       setUser(data.user);
     });
-  }, [dispatch]);
+  }, []);
 
   const getCategory = useCallback(async () => {
-    dispatch(showLoading());
     await API.get("/category").then(({ data }) => {
-      dispatch(hideLoading());
       setCategory(data);
     });
-  }, [dispatch]);
+  }, []);
 
   useEffect(() => {
     getUser();
@@ -85,9 +78,7 @@ export default function CreateCategory() {
 
       formData.append("userId", user.uniqueId);
 
-      dispatch(showLoading());
       await API.post(`/category`, formData).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           navigate("/dashboard/category");
@@ -96,7 +87,6 @@ export default function CreateCategory() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -115,19 +105,17 @@ export default function CreateCategory() {
     onSubmit: onSubmit,
   });
 
-  if (authPermissions?.length > 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Read Course"
-    );
+  const hasPermission = authPermissions?.some(
+    (item) => item.value === "Create Category"
+  );
 
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
-      );
-    }
+  if (!hasPermission) {
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle">
+        <h2 className="text-danger fw-bold">Access Denied</h2>
+        <p>You do not have the required permissions to access this page.</p>
+      </div>
+    );
   }
 
   return (

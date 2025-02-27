@@ -5,24 +5,19 @@ import { useFormik } from "formik";
 import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 import PropertyImages from "./PropertyImages";
 
 export default function BasicDetails() {
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [description, setDescription] = useState("");
 
   const getProperty = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/property/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setProperty(data);
     });
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   useEffect(() => {
     getProperty();
@@ -49,9 +44,7 @@ export default function BasicDetails() {
         ...values,
         property_description: description || property.property_description,
       };
-      dispatch(showLoading());
       API.patch(`/property/${objectId}`, values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           handleCancelEditDescription();
@@ -61,7 +54,6 @@ export default function BasicDetails() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };

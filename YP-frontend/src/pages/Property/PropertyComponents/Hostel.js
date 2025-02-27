@@ -5,11 +5,8 @@ import { useParams } from "react-router-dom";
 import { API } from "../../../context/Api";
 import { toast } from "react-toastify";
 import { useFormik } from "formik";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../../redux/alertSlice";
 
 export default function Hostel() {
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
@@ -17,14 +14,12 @@ export default function Hostel() {
 
   useEffect(() => {
     const getProperty = () => {
-      dispatch(showLoading());
       API.get(`/property/${objectId}`).then(({ data }) => {
-        dispatch(hideLoading());
         setProperty(data);
       });
     };
     getProperty();
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   const [showHostelTypeInInput, setShowHostelTypeInInput] = useState(false);
   const [showHostelDescriptionInInput, setShowHostelDescriptionInInput] =
@@ -55,9 +50,7 @@ export default function Hostel() {
         property_hostel_description:
           description || property.property_hostel_description,
       };
-      dispatch(showLoading());
       API.patch(`/property/${objectId}`, values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
         } else if (response.data.error) {
@@ -65,7 +58,6 @@ export default function Hostel() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };

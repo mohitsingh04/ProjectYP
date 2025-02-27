@@ -5,26 +5,24 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { Editor } from "@tinymce/tinymce-react";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { API } from "../../context/Api";
 import Dropdown from "react-dropdown-select";
+import Skeleton from "react-loading-skeleton";
 
 export default function EditSeo() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const editorRef = useRef(null);
   const { objectId } = useParams();
   const [seo, setSeo] = useState("");
   const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(true);
 
   const getSeo = useCallback(() => {
-    dispatch(showLoading());
     API.get(`/seo/${objectId}`).then(({ data }) => {
-      dispatch(hideLoading());
       setSeo(data);
+      setLoading(false);
     });
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   useEffect(() => {
     getSeo();
@@ -48,9 +46,7 @@ export default function EditSeo() {
     try {
       values = { ...values, description: description || seo.description };
       console.log(values);
-      dispatch(showLoading());
       API.patch(`/seo/${objectId}`, values).then((response) => {
-        dispatch(hideLoading());
         if (response.data.message) {
           toast.success(response.data.message);
           getSeo();
@@ -60,7 +56,6 @@ export default function EditSeo() {
         }
       });
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -86,23 +81,33 @@ export default function EditSeo() {
         <div className="page-header">
           <div>
             <h1 className="page-title">Seo</h1>
-            <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item" href="#">
-                Dashboard
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-                Edit
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-                Seo
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                aria-current="page"
-              >
-                {seo.uniqueId}
-              </Breadcrumb.Item>
-            </Breadcrumb>
+            {!loading ? (
+              <Breadcrumb className="breadcrumb">
+                <Breadcrumb.Item className="breadcrumb-item" href="#">
+                  Dashboard
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="breadcrumb-item"
+                  aria-current="page"
+                >
+                  Edit
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="breadcrumb-item"
+                  aria-current="page"
+                >
+                  Seo
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="breadcrumb-item active breadcrumds"
+                  aria-current="page"
+                >
+                  {seo.title}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            ) : (
+              <Skeleton width={200} />
+            )}
           </div>
           <div className="ms-auto pageheader-btn">
             <button onClick={() => navigate(-1)} className="btn btn-primary">
@@ -123,168 +128,174 @@ export default function EditSeo() {
             </div>
           </Card.Header>
           <Card.Body className="bg-white">
-            <form onSubmit={handleSubmit}>
-              <Row>
-                <Col md={6}>
-                  <div className="mb-3">
-                    <Form.Label>Seo Title</Form.Label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="title"
-                      placeholder="Seo title"
-                      value={values.title}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    {errors.title && touched.title ? (
-                      <span className="text-danger">{errors.title}</span>
-                    ) : (
-                      <span />
-                    )}
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="mb-3">
-                    <Form.Label>Meta Tags</Form.Label>
-                    <Dropdown
-                      options={[]}
-                      create={true}
-                      placeholder="Meta Tags ...    "
-                      searchable={true}
-                      dropdownHandle={false}
-                      multi={true}
-                      values={values.meta_tags}
-                      value={values.meta_tags}
-                      onChange={(value) => setFieldValue("meta_tags", value)}
-                      onBlur={handleBlur}
-                    />
-                    {errors.meta_tags && touched.meta_tags ? (
-                      <span className="text-danger">{errors.meta_tags}</span>
-                    ) : (
-                      <span />
-                    )}
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="mb-3">
-                    <Form.Label>Slug</Form.Label>
-                    <input
-                      type="text"
-                      className="form-control"
-                      name="slug"
-                      placeholder="Slug"
-                      value={values.slug}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                    {errors.slug && touched.slug ? (
-                      <span className="text-danger">{errors.slug}</span>
-                    ) : (
-                      <span />
-                    )}
-                  </div>
-                </Col>
-                <Col md={6}>
-                  <div className="mb-3">
-                    <Form.Label>Primary Focus Keyword</Form.Label>
-                    <Dropdown
-                      options={[]}
-                      create={true}
-                      placeholder="primary focus keyword ...    "
-                      searchable={true}
-                      dropdownHandle={false}
-                      multi={true}
-                      values={values.primary_focus_keyword}
-                      value={values.primary_focus_keyword}
-                      onChange={(value) =>
-                        setFieldValue("primary_focus_keyword", value)
-                      }
-                      onBlur={handleBlur}
-                    />
-                    {errors.primary_focus_keyword &&
-                    touched.primary_focus_keyword ? (
-                      <span className="text-danger">
-                        {errors.primary_focus_keyword}
-                      </span>
-                    ) : (
-                      <span />
-                    )}
-                  </div>
-                </Col>
-                <Col md={12}>
-                  <div className="mb-3">
-                    <Form.Label>Json Schema</Form.Label>
-                    <textarea
-                      className="form-control"
-                      name="json_schema"
-                      placeholder="Json Schema"
-                      value={values.json_schema}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                      rows="3"
-                      maxLength={200}
-                    />
-                    <small className="float-end">
-                      {values?.json_schema?.length}/200
-                    </small>
-                    {errors.json_schema && touched.json_schema ? (
-                      <span className="text-danger">{errors.json_schema}</span>
-                    ) : (
-                      <span />
-                    )}
-                  </div>
-                </Col>
-                <Col md={12}>
-                  <div className="mb-3">
-                    <Form.Label>Description</Form.Label>
-                    <Editor
-                      apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
-                      onInit={(evt, editor) => (editorRef.current = editor)}
-                      onChange={(e) =>
-                        setDescription(editorRef.current.getContent())
-                      }
-                      onBlur={handleBlur}
-                      init={{
-                        height: 250,
-                        menubar: false,
-                        plugins: [
-                          "advlist",
-                          "autolink",
-                          "lists",
-                          "link",
-                          "image",
-                          "charmap",
-                          "preview",
-                          "anchor",
-                          "searchreplace",
-                          "visualblocks",
-                          "code",
-                          "fullscreen",
-                          "insertdatetime",
-                          "media",
-                          "table",
-                          "code",
-                          "help",
-                          "wordcount",
-                        ],
-                        toolbar:
-                          "undo redo | blocks | " +
-                          "bold italic forecolor | alignleft aligncenter " +
-                          "alignright alignjustify | bullist numlist outdent indent | " +
-                          "removeformat | help",
-                        content_style:
-                          "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                      }}
-                      initialValue={seo.description}
-                    />
-                  </div>
-                </Col>
-              </Row>
-              <button type="submit" className="btn btn-primary">
-                Update
-              </button>
-            </form>
+            {!loading ? (
+              <form onSubmit={handleSubmit}>
+                <Row>
+                  <Col md={6}>
+                    <div className="mb-3">
+                      <Form.Label>Seo Title</Form.Label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="title"
+                        placeholder="Seo title"
+                        value={values.title}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      {errors.title && touched.title ? (
+                        <span className="text-danger">{errors.title}</span>
+                      ) : (
+                        <span />
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <div className="mb-3">
+                      <Form.Label>Meta Tags</Form.Label>
+                      <Dropdown
+                        options={[]}
+                        create={true}
+                        placeholder="Meta Tags ...    "
+                        searchable={true}
+                        dropdownHandle={false}
+                        multi={true}
+                        values={values.meta_tags}
+                        value={values.meta_tags}
+                        onChange={(value) => setFieldValue("meta_tags", value)}
+                        onBlur={handleBlur}
+                      />
+                      {errors.meta_tags && touched.meta_tags ? (
+                        <span className="text-danger">{errors.meta_tags}</span>
+                      ) : (
+                        <span />
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <div className="mb-3">
+                      <Form.Label>Slug</Form.Label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        name="slug"
+                        placeholder="Slug"
+                        value={values.slug}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                      />
+                      {errors.slug && touched.slug ? (
+                        <span className="text-danger">{errors.slug}</span>
+                      ) : (
+                        <span />
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={6}>
+                    <div className="mb-3">
+                      <Form.Label>Primary Focus Keyword</Form.Label>
+                      <Dropdown
+                        options={[]}
+                        create={true}
+                        placeholder="primary focus keyword ...    "
+                        searchable={true}
+                        dropdownHandle={false}
+                        multi={true}
+                        values={values.primary_focus_keyword}
+                        value={values.primary_focus_keyword}
+                        onChange={(value) =>
+                          setFieldValue("primary_focus_keyword", value)
+                        }
+                        onBlur={handleBlur}
+                      />
+                      {errors.primary_focus_keyword &&
+                      touched.primary_focus_keyword ? (
+                        <span className="text-danger">
+                          {errors.primary_focus_keyword}
+                        </span>
+                      ) : (
+                        <span />
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={12}>
+                    <div className="mb-3">
+                      <Form.Label>Json Schema</Form.Label>
+                      <textarea
+                        className="form-control"
+                        name="json_schema"
+                        placeholder="Json Schema"
+                        value={values.json_schema}
+                        onChange={handleChange}
+                        onBlur={handleBlur}
+                        rows="3"
+                        maxLength={200}
+                      />
+                      <small className="float-end">
+                        {values?.json_schema?.length}/200
+                      </small>
+                      {errors.json_schema && touched.json_schema ? (
+                        <span className="text-danger">
+                          {errors.json_schema}
+                        </span>
+                      ) : (
+                        <span />
+                      )}
+                    </div>
+                  </Col>
+                  <Col md={12}>
+                    <div className="mb-3">
+                      <Form.Label>Description</Form.Label>
+                      <Editor
+                        apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
+                        onInit={(evt, editor) => (editorRef.current = editor)}
+                        onChange={(e) =>
+                          setDescription(editorRef.current.getContent())
+                        }
+                        onBlur={handleBlur}
+                        init={{
+                          height: 250,
+                          menubar: false,
+                          plugins: [
+                            "advlist",
+                            "autolink",
+                            "lists",
+                            "link",
+                            "image",
+                            "charmap",
+                            "preview",
+                            "anchor",
+                            "searchreplace",
+                            "visualblocks",
+                            "code",
+                            "fullscreen",
+                            "insertdatetime",
+                            "media",
+                            "table",
+                            "code",
+                            "help",
+                            "wordcount",
+                          ],
+                          toolbar:
+                            "undo redo | blocks | " +
+                            "bold italic forecolor | alignleft aligncenter " +
+                            "alignright alignjustify | bullist numlist outdent indent | " +
+                            "removeformat | help",
+                          content_style:
+                            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                        }}
+                        initialValue={seo.description}
+                      />
+                    </div>
+                  </Col>
+                </Row>
+                <button type="submit" className="btn btn-primary">
+                  Update
+                </button>
+              </form>
+            ) : (
+              <Skeleton className="my-2" count={8} height={25} />
+            )}
           </Card.Body>
         </Card>
       </div>
