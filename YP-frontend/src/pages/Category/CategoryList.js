@@ -79,16 +79,17 @@ export default function CategoryList() {
     },
     {
       name: "ICON",
-      selector: (row) =>
-        row?.category_icon?.[0] === null ? (
-          <img src={defaultIcon} width={53} alt="" />
-        ) : (
-          <img
-            src={`http://localhost:5000/${row.category_icon[0]}`}
-            width={53}
-            alt=""
-          />
-        ),
+      selector: (row) => (
+        <img
+          src={
+            !row?.category_icon?.[0]
+              ? defaultIcon
+              : `http://localhost:5000/${row?.category_icon?.[0]}`
+          }
+          width={53}
+          alt=""
+        />
+      ),
       sortable: true,
     },
     {
@@ -167,7 +168,7 @@ export default function CategoryList() {
     },
   ];
 
-  const data = loading ? Array(5).fill({}) : category;
+  const data = category;
 
   const tableData = {
     columns,

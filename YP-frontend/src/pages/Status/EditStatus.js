@@ -13,32 +13,25 @@ export default function EditStatus() {
   const navigate = useNavigate();
   const editorRef = useRef(null);
   const { objectId } = useParams();
-  const [status, setStatus] = useState([]);
+  const mainUser = DataRequest();
+
+  const [status, setStatus] = useState({});
   const [error, setError] = useState("");
   const [description, setDescription] = useState("");
-  const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setAuthPermissions(mainUser?.User?.permissions);
-  }, [mainUser]);
-
-  useEffect(() => {
+    setAuthPermissions(mainUser?.User?.permissions || []);
     API.get(`/status/${objectId}`).then(({ data }) => {
       setStatus(data);
       setLoading(false);
     });
-  }, [objectId]);
-
-  const initialValues = {
-    status_name: status.name || "",
-    status_color: status.color || "#6259ca",
-  };
+  }, [mainUser, objectId]);
 
   const validationSchema = Yup.object({
     status_name: Yup.string()
-      .min(3, "Status Name must be at least 3 characters long.")
+      .min(3, "Status Name must be at least 3 characters.")
       .required("Status name is required.")
       .matches(
         /^[a-zA-Z\s]+$/,
@@ -46,33 +39,35 @@ export default function EditStatus() {
       ),
   });
 
-  const onSubmit = async (values) => {
-    try {
-      values = { ...values, description: description || status.description };
-      API.patch(`/status/${objectId}`, values).then((response) => {
+  const formik = useFormik({
+    initialValues: {
+      status_name: status.name || "",
+      status_color: status.color || "#6259ca",
+    },
+    validationSchema,
+    onSubmit: async (values) => {
+      try {
+        const payload = {
+          ...values,
+          description: description || status.description,
+        };
+        const response = await API.patch(`/status/${objectId}`, payload);
         if (response.data.message) {
           toast.success(response.data.message);
           navigate("/dashboard/status");
         } else if (response.data.error) {
           setError(response.data.error);
         }
-      });
-    } catch (err) {
-      toast.error(err.message);
-    }
-  };
+      } catch (err) {
+        toast.error(err.message);
+      }
+    },
+    enableReinitialize: true,
+  });
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-      enableReinitialize: true,
-    });
-
-  if (authPermissions?.length <= 0) {
+  if (authPermissions?.length > 0) {
     const hasPermission = authPermissions?.some(
-      (item) => item.value === "Read Course"
+      (item) => item.value === "Update Status"
     );
 
     if (!hasPermission) {
@@ -123,10 +118,7 @@ export default function EditStatus() {
             to="/dashboard/status/"
             className="btn btn-primary btn-icon text-white me-3"
           >
-            <span>
-              <i className="fe fe-arrow-left"></i>&nbsp;
-            </span>
-            Back
+            <i className="fe fe-arrow-left"></i>&nbsp;Back
           </Link>
         </div>
       </div>
@@ -145,16 +137,15 @@ export default function EditStatus() {
               {loading ? (
                 <Skeleton height={25} count={8} className="my-2" />
               ) : (
-                <form onSubmit={handleSubmit} encType="multipart/form-data">
-                  <>
-                    {error ? (
-                      <div className="alert alert-danger">
-                        <small>{error}</small>
-                      </div>
-                    ) : (
-                      <span />
-                    )}
-                  </>
+                <form
+                  onSubmit={formik.handleSubmit}
+                  encType="multipart/form-data"
+                >
+                  {error && (
+                    <div className="alert alert-danger">
+                      <small>{error}</small>
+                    </div>
+                  )}
                   <div className="form-row">
                     <div className="form-group col-md-6 mb-3">
                       <Form.Group>
@@ -165,19 +156,17 @@ export default function EditStatus() {
                           name="status_name"
                           className="form-control"
                           placeholder="Name"
-                          value={values.status_name}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          {...formik.getFieldProps("status_name")}
                         />
-                        {errors.status_name && touched.status_name ? (
-                          <span className="text-danger">
-                            {errors.status_name}
-                          </span>
-                        ) : (
-                          <span />
-                        )}
+                        {formik.touched.status_name &&
+                          formik.errors.status_name && (
+                            <span className="text-danger">
+                              {formik.errors.status_name}
+                            </span>
+                          )}
                       </Form.Group>
                     </div>
+
                     <div className="form-group col-md-1 mb-3">
                       <Form.Group>
                         <Form.Label htmlFor="status_color">Color</Form.Label>
@@ -186,19 +175,11 @@ export default function EditStatus() {
                           name="status_color"
                           id="status_color"
                           className="form-control"
-                          value={values.status_color}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          {...formik.getFieldProps("status_color")}
                         />
-                        {errors.status_color && touched.status_color ? (
-                          <span className="text-danger">
-                            {errors.status_color}
-                          </span>
-                        ) : (
-                          <span />
-                        )}
                       </Form.Group>
                     </div>
+
                     <div className="form-group col-md-12 mb-3">
                       <Form.Group>
                         <Form.Label htmlFor="description">
@@ -208,10 +189,10 @@ export default function EditStatus() {
                           id="description"
                           apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
                           onInit={(evt, editor) => (editorRef.current = editor)}
-                          onChange={(e) =>
+                          onEditorChange={() =>
                             setDescription(editorRef.current.getContent())
                           }
-                          onBlur={handleBlur}
+                          initialValue={status.description}
                           init={{
                             height: 200,
                             menubar: false,
@@ -221,29 +202,17 @@ export default function EditStatus() {
                               "lists",
                               "link",
                               "image",
-                              "charmap",
                               "preview",
-                              "anchor",
-                              "searchreplace",
-                              "visualblocks",
-                              "code",
                               "fullscreen",
-                              "insertdatetime",
                               "media",
                               "table",
-                              "code",
-                              "help",
                               "wordcount",
                             ],
                             toolbar:
-                              "undo redo | blocks | " +
-                              "bold italic forecolor | alignleft aligncenter " +
-                              "alignright alignjustify | bullist numlist outdent indent | " +
-                              "removeformat",
+                              "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat",
                             content_style:
                               "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
                           }}
-                          initialValue={status.description}
                         />
                       </Form.Group>
                     </div>

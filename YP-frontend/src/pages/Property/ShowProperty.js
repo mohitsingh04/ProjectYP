@@ -12,21 +12,20 @@ import Achievements from "./PropertyComponents/Achievements";
 import Seo from "./PropertyComponents/Seo";
 import Location from "./PropertyComponents/Location";
 import BasicDetails from "./PropertyComponents/BasicDetails";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import OtherDetails from "./PropertyComponents/OtherDetails";
 import DataRequest from "../../context/DataRequest";
 import Amenities from "./PropertyComponents/Amenities";
 import defaultLogo from "../../Images/defaultPropertyLogo.jpeg";
+import Skeleton from "react-loading-skeleton";
 
 export default function ShowProperty() {
-  const dispatch = useDispatch();
   const { objectId } = useParams();
   const [property, setProperty] = useState("");
   const [icon, setIcon] = useState("");
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions);
@@ -34,16 +33,14 @@ export default function ShowProperty() {
 
   const getProperty = useCallback(async () => {
     try {
-      dispatch(showLoading());
       const { data } = await API.get(`/property/${objectId}`);
       setProperty(data);
+      setLoading(false);
     } catch (err) {
       toast.error(err.message);
       console.log(err.message);
-    } finally {
-      dispatch(hideLoading());
     }
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   useEffect(() => {
     getProperty();
@@ -75,19 +72,23 @@ export default function ShowProperty() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Property</h1>
-          <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
-              Dashboard
-            </Breadcrumb.Item>
-            <Breadcrumb.Item
-              linkAs={Link}
-              linkProps={{ to: "/dashboard/property/" }}
-            >
-              Property
-            </Breadcrumb.Item>
-            <Breadcrumb.Item active>View</Breadcrumb.Item>
-            <Breadcrumb.Item active>{property.property_name}</Breadcrumb.Item>
-          </Breadcrumb>
+          {!loading ? (
+            <Breadcrumb className="breadcrumb">
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
+                Dashboard
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: "/dashboard/property/" }}
+              >
+                Property
+              </Breadcrumb.Item>
+              <Breadcrumb.Item active>View</Breadcrumb.Item>
+              <Breadcrumb.Item active>{property.property_name}</Breadcrumb.Item>
+            </Breadcrumb>
+          ) : (
+            <Skeleton width={200} />
+          )}
         </div>
       </div>
 
@@ -100,40 +101,51 @@ export default function ShowProperty() {
                   <Col lg={12} md={12} xl={6}>
                     <div className="wideget-user-desc d-sm-flex">
                       <div className="wideget-user-img">
-                        {icon === null ? (
+                        {!loading ? (
                           <img
-                            className=""
-                            src={defaultLogo}
+                            src={
+                              !icon
+                                ? defaultLogo
+                                : `http://localhost:5000/${icon}`
+                            }
                             width={120}
                             height={120}
                             alt="img"
                           />
                         ) : (
-                          <img
-                            className=""
-                            src={`http://localhost:5000/${icon}`}
+                          <Skeleton
                             width={120}
                             height={120}
-                            alt="img"
+                            circle={true}
+                            className="mx-2"
                           />
                         )}
                       </div>
-                      <div className="user-wrap">
-                        <h4>{property.property_name}</h4>
-                        <h6 className="text-muted mb-3">
-                          Member Since: November 2017
-                        </h6>
-                        <a href={`tel:${property.property_mobile_no}`}>
-                          <button className="btn btn-primary">
-                            <i className="fa fa-phone"></i> call
-                          </button>
-                        </a>
-                        <a href={`mailto:${property.property_email}`}>
-                          <button className="btn btn-secondary mt-1 mb-1 ms-1">
-                            <i className="fa fa-envelope"></i> E-mail
-                          </button>
-                        </a>
-                      </div>
+                      {!loading ? (
+                        <div className="user-wrap">
+                          <h4>{property.property_name}</h4>
+                          <h6 className="text-muted mb-3">
+                            Member Since: November 2017
+                          </h6>
+                          <a href={`tel:${property.property_mobile_no}`}>
+                            <button className="btn btn-primary">
+                              <i className="fa fa-phone"></i> call
+                            </button>
+                          </a>
+                          <a href={`mailto:${property.property_email}`}>
+                            <button className="btn btn-secondary mt-1 mb-1 ms-1">
+                              <i className="fa fa-envelope"></i> E-mail
+                            </button>
+                          </a>
+                        </div>
+                      ) : (
+                        <Skeleton
+                          count={3}
+                          height={25}
+                          width={150}
+                          className="my-2"
+                        />
+                      )}
                     </div>
                   </Col>
                   <Col lg={12} md={12} xl={6}>
@@ -151,37 +163,49 @@ export default function ShowProperty() {
                     <div className="mt-5">
                       <div className="main-profile-contact-list float-md-end d-md-flex">
                         <div className="me-5">
-                          <div className="media">
-                            <div className="media-icon bg-primary  me-3 mt-1">
-                              <i className="fe fe-file-plus fs-20 text-white"></i>
+                          {!loading ? (
+                            <div className="media">
+                              <div className="media-icon bg-primary  me-3 mt-1">
+                                <i className="fe fe-file-plus fs-20 text-white"></i>
+                              </div>
+                              <div className="media-body">
+                                <span className="text-muted">Enquiry</span>
+                                <div className="fw-semibold fs-25">328</div>
+                              </div>
                             </div>
-                            <div className="media-body">
-                              <span className="text-muted">Enquiry</span>
-                              <div className="fw-semibold fs-25">328</div>
-                            </div>
-                          </div>
+                          ) : (
+                            <Skeleton height={50} width={100} />
+                          )}
                         </div>
                         <div className="me-5 mt-5 mt-md-0">
-                          <div className="media">
-                            <div className="media-icon bg-success me-3 mt-1">
-                              <i className="fe fe-users  fs-20 text-white"></i>
+                          {!loading ? (
+                            <div className="media">
+                              <div className="media-icon bg-success me-3 mt-1">
+                                <i className="fe fe-users  fs-20 text-white"></i>
+                              </div>
+                              <div className="media-body">
+                                <span className="text-muted">SEO Rank</span>
+                                <div className="fw-semibold fs-25">937k</div>
+                              </div>
                             </div>
-                            <div className="media-body">
-                              <span className="text-muted">SEO Rank</span>
-                              <div className="fw-semibold fs-25">937k</div>
-                            </div>
-                          </div>
+                          ) : (
+                            <Skeleton height={50} width={100} />
+                          )}
                         </div>
                         <div className="me-0 mt-5 mt-md-0">
-                          <div className="media">
-                            <div className="media-icon bg-orange me-3 mt-1">
-                              <i className="fe fe-wifi fs-20 text-white"></i>
+                          {!loading ? (
+                            <div className="media">
+                              <div className="media-icon bg-orange me-3 mt-1">
+                                <i className="fe fe-wifi fs-20 text-white"></i>
+                              </div>
+                              <div className="media-body">
+                                <span className="text-muted">Following</span>
+                                <div className="fw-semibold fs-25">2,876</div>
+                              </div>
                             </div>
-                            <div className="media-body">
-                              <span className="text-muted">Following</span>
-                              <div className="fw-semibold fs-25">2,876</div>
-                            </div>
-                          </div>
+                          ) : (
+                            <Skeleton height={50} width={100} />
+                          )}
                         </div>
                       </div>
                     </div>
@@ -192,53 +216,61 @@ export default function ShowProperty() {
 
             <div className="border-top ">
               <div className="wideget-user-tab">
-                <div className="tab-menu-heading">
-                  <div className="tabs-menu1 profiletabs">
-                    <Tabs
-                      variant="Tabs"
-                      defaultActiveKey="Profile"
-                      id=" tab-51"
-                      className="tab-content tabesbody "
-                    >
-                      <Tab eventKey="Profile" title="Basic Details">
-                        <BasicDetails />
-                      </Tab>
-                      <Tab eventKey="Other Details" title="Other Details">
-                        <OtherDetails />
-                      </Tab>
-                      <Tab eventKey="Location" title="Location">
-                        <Location />
-                      </Tab>
-                      <Tab eventKey="Teachers" title="Teachers">
-                        <Teachers />
-                      </Tab>
-                      <Tab eventKey="Gallery" title="Gallery">
-                        <Gallery />
-                      </Tab>
-                      <Tab eventKey="Hostel" title="Hostel">
-                        <Hostel />
-                      </Tab>
-                      <Tab eventKey="Amenities" title="Amenities">
-                        <Amenities />
-                      </Tab>
-                      <Tab eventKey="Reviews" title="Reviews ">
-                        <Reviews />
-                      </Tab>
-                      <Tab eventKey="FAQ'S" title="FAQ'S">
-                        <Faqs />
-                      </Tab>
-                      <Tab eventKey="Courses" title="Courses">
-                        <Courses />
-                      </Tab>
-                      <Tab eventKey="Achievements" title="Achievements">
-                        <Achievements />
-                      </Tab>
-                      <Tab eventKey="Seo" title="Seo">
-                        <Seo />
-                      </Tab>
-                    </Tabs>
+                {!loading ? (
+                  <div className="tab-menu-heading">
+                    <div className="tabs-menu1 profiletabs">
+                      <Tabs
+                        variant="Tabs"
+                        defaultActiveKey="Profile"
+                        id=" tab-51"
+                        className="tab-content tabesbody "
+                      >
+                        <Tab eventKey="Profile" title="Basic Details">
+                          <BasicDetails />
+                        </Tab>
+                        <Tab eventKey="Other Details" title="Other Details">
+                          <OtherDetails />
+                        </Tab>
+                        <Tab eventKey="Location" title="Location">
+                          <Location />
+                        </Tab>
+                        <Tab eventKey="Teachers" title="Teachers">
+                          <Teachers />
+                        </Tab>
+                        <Tab eventKey="Gallery" title="Gallery">
+                          <Gallery />
+                        </Tab>
+                        <Tab eventKey="Hostel" title="Hostel">
+                          <Hostel />
+                        </Tab>
+                        <Tab eventKey="Amenities" title="Amenities">
+                          <Amenities />
+                        </Tab>
+                        <Tab eventKey="Reviews" title="Reviews ">
+                          <Reviews />
+                        </Tab>
+                        <Tab eventKey="FAQ'S" title="FAQ'S">
+                          <Faqs />
+                        </Tab>
+                        <Tab eventKey="Courses" title="Courses">
+                          <Courses />
+                        </Tab>
+                        <Tab eventKey="Achievements" title="Achievements">
+                          <Achievements />
+                        </Tab>
+                        <Tab eventKey="Seo" title="Seo">
+                          <Seo />
+                        </Tab>
+                      </Tabs>
+                    </div>
                   </div>
-                </div>
+                ) : (
+                  <Card className="mt-2">
+                    <Card.Body>
+                      <Skeleton count={4} height={25} className="my-2" />
+                    </Card.Body>
+                  </Card>
+                )}
               </div>
             </div>
           </Card>

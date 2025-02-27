@@ -93,7 +93,6 @@ export default function Teachers() {
         property_id: property.uniqueId,
         property_name: property.property_name,
       };
-      console.log(values);
       let formData = new FormData();
       formData.append("teacher_name", values.teacher_name);
       formData.append("property_id", values.property_id);

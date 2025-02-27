@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Breadcrumb, Card, Row, Form } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
@@ -7,13 +7,11 @@ import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../context/Api";
 import DataRequest from "../../context/DataRequest.js";
 import { toast } from "react-toastify";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice.js";
 import defaultIcon from "../../Images/defaultcategory-compressed.webp";
 import defaultFeature from "../../Images/defaultcategoryfeature-compressed.webp";
+import Skeleton from "react-loading-skeleton";
 
 export default function EditCategory() {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const editorRef = useRef(null);
   const { objectId } = useParams();
@@ -28,39 +26,36 @@ export default function EditCategory() {
   const [featureImage, setFeatureImage] = useState("");
   const { User } = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setAuthPermissions(User?.permissions);
   }, [User]);
 
+  const getCategory = useCallback(() => {
+    API.get(`/category/${objectId}`).then(({ data }) => {
+      setCategory(data);
+      setCategoryIcon(data?.category_icon[0]);
+      setFeatureImage(data?.featured_image[0]);
+      setLoading(false);
+    });
+  }, [objectId]);
+  const getCategories = useCallback(() => {
+    API.get("/category").then(({ data }) => {
+      setCategories(data);
+    });
+  }, []);
+  const getStatus = useCallback(() => {
+    API.get(`/status/`).then(({ data }) => {
+      setStatus(data);
+    });
+  }, []);
+
   useEffect(() => {
-    const getCategory = () => {
-      dispatch(showLoading());
-      API.get(`/category/${objectId}`).then(({ data }) => {
-        dispatch(hideLoading());
-        setCategory(data);
-        setCategoryIcon(data?.category_icon[0]);
-        setFeatureImage(data?.featured_image[0]);
-      });
-    };
-    const getCategories = () => {
-      dispatch(showLoading());
-      API.get("/category").then(({ data }) => {
-        dispatch(hideLoading());
-        setCategories(data);
-      });
-    };
-    const getStatus = () => {
-      dispatch(showLoading());
-      API.get(`/status/`).then(({ data }) => {
-        dispatch(hideLoading());
-        setStatus(data);
-      });
-    };
     getCategory();
     getCategories();
     getStatus();
-  }, [dispatch, objectId]);
+  }, [getCategories, getCategory, getStatus]);
 
   const initialValues = {
     category_name: category?.category_name || "",
@@ -100,9 +95,7 @@ export default function EditCategory() {
         for (let value in values) {
           formData.append(value, values[value]);
         }
-        dispatch(showLoading());
         API.patch(`/category/${objectId}`, formData).then((response) => {
-          dispatch(hideLoading());
           if (response.data.message) {
             toast.success(response.data.message);
             navigate("/dashboard/category");
@@ -112,7 +105,6 @@ export default function EditCategory() {
         });
       }
     } catch (err) {
-      dispatch(hideLoading());
       toast.error(err.message);
     }
   };
@@ -152,29 +144,33 @@ export default function EditCategory() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Category</h1>
-          <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/dashboard/` }}>
-              Dashboard
-            </Breadcrumb.Item>
-            <Breadcrumb.Item
-              linkAs={Link}
-              linkProps={{ to: `/dashboard/category/` }}
-            >
-              Category
-            </Breadcrumb.Item>
-            <Breadcrumb.Item
-              className="breadcrumb-item active"
-              aria-current="page"
-            >
-              Edit
-            </Breadcrumb.Item>
-            <Breadcrumb.Item
-              className="breadcrumb-item active breadcrumds"
-              aria-current="page"
-            >
-              {category.category_name}
-            </Breadcrumb.Item>
-          </Breadcrumb>
+          {!loading ? (
+            <Breadcrumb className="breadcrumb">
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/dashboard/` }}>
+                Dashboard
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                linkAs={Link}
+                linkProps={{ to: `/dashboard/category/` }}
+              >
+                Category
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                className="breadcrumb-item active"
+                aria-current="page"
+              >
+                Edit
+              </Breadcrumb.Item>
+              <Breadcrumb.Item
+                className="breadcrumb-item active breadcrumds"
+                aria-current="page"
+              >
+                {category.category_name}
+              </Breadcrumb.Item>
+            </Breadcrumb>
+          ) : (
+            <Skeleton width={200} />
+          )}
         </div>
         <div className="ms-auto pageheader-btn">
           <button onClick={() => navigate(-1)} className="btn btn-primary">
@@ -193,247 +189,230 @@ export default function EditCategory() {
               <h3 className="card-title">Edit Category</h3>
             </Card.Header>
             <Card.Body>
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
-                {error ? (
-                  <div className="alert alert-danger">
-                    <small>{error}</small>
-                  </div>
-                ) : (
-                  <span />
-                )}
-                <div className="form-row">
-                  <div className="form-group col-md-6 mb-3">
-                    <Form.Group>
-                      <Form.Label htmlFor="category_name">
-                        Category Name
-                      </Form.Label>
-                      <input
-                        type="text"
-                        name="category_name"
-                        id="category_name"
-                        className="form-control"
-                        placeholder="Category Name"
-                        value={values.category_name}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      />
-                      {errors.category_name && touched.category_name ? (
-                        <span className="text-danger">
-                          {errors.category_name}
-                        </span>
-                      ) : (
-                        <span />
-                      )}
-                    </Form.Group>
-                  </div>
-                  <div className="form-group col-md-6 mb-3">
-                    <Form.Group>
-                      <Form.Label htmlFor="parent_category">
-                        Parent Category
-                      </Form.Label>
-                      <select
-                        name="parent_category"
-                        id="parent_category"
-                        className="farms form-control"
-                        value={values.parent_category}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      >
-                        <option value="">--Select--</option>
-                        {categories.map((item, key) => (
-                          <option key={key} value={item.category_name}>
-                            {item.category_name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.parent_category && touched.parent_category ? (
-                        <span className="text-danger">
-                          {errors.parent_category}
-                        </span>
-                      ) : (
-                        <span />
-                      )}
-                    </Form.Group>
-                  </div>
-                  <div className="form-group col-md-12 mb-3">
-                    <Form.Group>
-                      <Form.Label htmlFor="description">Description</Form.Label>
-                      <Editor
-                        id="description"
-                        apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
-                        onInit={(evt, editor) => (editorRef.current = editor)}
-                        onChange={() =>
-                          setDescription(editorRef.current.getContent())
-                        }
-                        onBlur={handleBlur}
-                        init={{
-                          height: 200,
-                          menubar: false,
-                          plugins: [
-                            "advlist",
-                            "autolink",
-                            "lists",
-                            "link",
-                            "image",
-                            "charmap",
-                            "preview",
-                            "anchor",
-                            "searchreplace",
-                            "visualblocks",
-                            "code",
-                            "fullscreen",
-                            "insertdatetime",
-                            "media",
-                            "table",
-                            "code",
-                            "help",
-                            "wordcount",
-                          ],
-                          toolbar:
-                            "undo redo | blocks | " +
-                            "bold italic forecolor | alignleft aligncenter " +
-                            "alignright alignjustify | bullist numlist outdent indent | " +
-                            "removeformat | help",
-                          content_style:
-                            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
-                        }}
-                        initialValue={category.description}
-                      />
-                      {/* {errors.category_description && touched.category_description ? <span className='text-danger'>{errors.category_description}</span> : <span />} */}
-                    </Form.Group>
-                  </div>
-                  <div className="form-group col-md-6 mb-3">
-                    <Form.Group>
-                      <Form.Label className="category_icon">Icon</Form.Label>
-                      <input
-                        type="file"
-                        accept="image/jpeg, image/png"
-                        name="category_icon"
-                        id="category_icon"
-                        className="form-control"
-                        onChange={(e) => {
-                          let reader = new FileReader();
-                          reader.onload = () => {
-                            if (reader.readyState === 2) {
-                              setFieldValue("category_icon", e.target.files[0]);
-                              setPreviewIcon(reader.result);
-                            }
-                          };
-                          reader.readAsDataURL(e.target.files[0]);
-                        }}
-                        onBlur={handleBlur}
-                      />
-                      {!previewIcon ? (
-                        categoryIcon === null ? (
-                          <img
-                            src={defaultIcon}
-                            className="mt-1"
-                            width="100"
-                            alt=""
-                          />
+              {!loading ? (
+                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                  {error ? (
+                    <div className="alert alert-danger">
+                      <small>{error}</small>
+                    </div>
+                  ) : (
+                    <span />
+                  )}
+                  <div className="form-row">
+                    <div className="form-group col-md-6 mb-3">
+                      <Form.Group>
+                        <Form.Label htmlFor="category_name">
+                          Category Name
+                        </Form.Label>
+                        <input
+                          type="text"
+                          name="category_name"
+                          id="category_name"
+                          className="form-control"
+                          placeholder="Category Name"
+                          value={values.category_name}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        />
+                        {errors.category_name && touched.category_name ? (
+                          <span className="text-danger">
+                            {errors.category_name}
+                          </span>
                         ) : (
-                          <img
-                            src={`http://localhost:5000/${categoryIcon}`}
-                            className="mt-1"
-                            width="100"
-                            alt=""
-                          />
-                        )
-                      ) : (
+                          <span />
+                        )}
+                      </Form.Group>
+                    </div>
+                    <div className="form-group col-md-6 mb-3">
+                      <Form.Group>
+                        <Form.Label htmlFor="parent_category">
+                          Parent Category
+                        </Form.Label>
+                        <select
+                          name="parent_category"
+                          id="parent_category"
+                          className="farms form-control"
+                          value={values.parent_category}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        >
+                          <option value="">--Select--</option>
+                          {categories.map((item, key) => (
+                            <option key={key} value={item.category_name}>
+                              {item.category_name}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.parent_category && touched.parent_category ? (
+                          <span className="text-danger">
+                            {errors.parent_category}
+                          </span>
+                        ) : (
+                          <span />
+                        )}
+                      </Form.Group>
+                    </div>
+                    <div className="form-group col-md-12 mb-3">
+                      <Form.Group>
+                        <Form.Label htmlFor="description">
+                          Description
+                        </Form.Label>
+                        <Editor
+                          id="description"
+                          apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
+                          onInit={(evt, editor) => (editorRef.current = editor)}
+                          onChange={() =>
+                            setDescription(editorRef.current.getContent())
+                          }
+                          onBlur={handleBlur}
+                          init={{
+                            height: 200,
+                            menubar: false,
+                            plugins: [
+                              "advlist",
+                              "autolink",
+                              "lists",
+                              "link",
+                              "image",
+                              "charmap",
+                              "preview",
+                              "anchor",
+                              "searchreplace",
+                              "visualblocks",
+                              "code",
+                              "fullscreen",
+                              "insertdatetime",
+                              "media",
+                              "table",
+                              "code",
+                              "help",
+                              "wordcount",
+                            ],
+                            toolbar:
+                              "undo redo | blocks | " +
+                              "bold italic forecolor | alignleft aligncenter " +
+                              "alignright alignjustify | bullist numlist outdent indent | " +
+                              "removeformat | help",
+                            content_style:
+                              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                          }}
+                          initialValue={category.description}
+                        />
+                      </Form.Group>
+                    </div>
+                    <div className="form-group col-md-6 mb-3">
+                      <Form.Group>
+                        <Form.Label className="category_icon">Icon</Form.Label>
+                        <input
+                          type="file"
+                          accept="image/jpeg, image/png"
+                          name="category_icon"
+                          id="category_icon"
+                          className="form-control"
+                          onChange={(e) => {
+                            let reader = new FileReader();
+                            reader.onload = () => {
+                              if (reader.readyState === 2) {
+                                setFieldValue(
+                                  "category_icon",
+                                  e.target.files[0]
+                                );
+                                setPreviewIcon(reader.result);
+                              }
+                            };
+                            reader.readAsDataURL(e.target.files[0]);
+                          }}
+                          onBlur={handleBlur}
+                        />
                         <img
-                          src={previewIcon}
+                          src={
+                            previewIcon
+                              ? previewIcon
+                              : categories
+                              ? `http://localhost:5000/${categoryIcon}`
+                              : defaultIcon
+                          }
                           className="mt-1"
                           width="100"
                           alt=""
                         />
-                      )}
-                      {/* {errors.category_icon && touched.category_icon ? <span className='text-danger'>{errors.category_icon}</span> : <span />} */}
-                    </Form.Group>
-                  </div>
-                  <div className="form-group col-md-6 mb-3">
-                    <Form.Group>
-                      <Form.Label htmlFor="featured_image">
-                        Featured Image
-                      </Form.Label>
-                      <input
-                        type="file"
-                        name="featured_image"
-                        id="featured_image"
-                        accept="image/jpeg, image/png"
-                        className="form-control"
-                        onChange={(e) => {
-                          let reader = new FileReader();
-                          reader.onload = () => {
-                            if (reader.readyState === 2) {
-                              setFieldValue(
-                                "featured_image",
-                                e.target.files[0]
-                              );
-                              setPreviewFeaturedImage(reader.result);
-                            }
-                          };
-                          reader.readAsDataURL(e.target.files[0]);
-                        }}
-                        onBlur={handleBlur}
-                      />
-                      {!previewFeaturedImage ? (
-                        featureImage === null ? (
-                          <img
-                            src={defaultFeature}
-                            className="mt-1"
-                            width="100"
-                            alt=""
-                          />
-                        ) : (
-                          <img
-                            src={`http://localhost:5000/${featureImage}`}
-                            className="mt-1"
-                            width="100"
-                            alt=""
-                          />
-                        )
-                      ) : (
+                      </Form.Group>
+                    </div>
+                    <div className="form-group col-md-6 mb-3">
+                      <Form.Group>
+                        <Form.Label htmlFor="featured_image">
+                          Featured Image
+                        </Form.Label>
+                        <input
+                          type="file"
+                          name="featured_image"
+                          id="featured_image"
+                          accept="image/jpeg, image/png"
+                          className="form-control"
+                          onChange={(e) => {
+                            let reader = new FileReader();
+                            reader.onload = () => {
+                              if (reader.readyState === 2) {
+                                setFieldValue(
+                                  "featured_image",
+                                  e.target.files[0]
+                                );
+                                setPreviewFeaturedImage(reader.result);
+                              }
+                            };
+                            reader.readAsDataURL(e.target.files[0]);
+                          }}
+                          onBlur={handleBlur}
+                        />
                         <img
-                          src={previewFeaturedImage}
+                          src={
+                            previewFeaturedImage
+                              ? previewFeaturedImage
+                              : featureImage
+                              ? `http://localhost:5000/${featureImage}`
+                              : defaultFeature
+                          }
                           className="mt-1"
                           width="100"
                           alt=""
                         />
-                      )}
-                    </Form.Group>
+                      </Form.Group>
+                    </div>
+                    <div className="form-group col-md-6 mb-3">
+                      <Form.Group>
+                        <Form.Label htmlFor="status">Status</Form.Label>
+                        <select
+                          name="status"
+                          id="status"
+                          className="form-control"
+                          value={values.status}
+                          onChange={handleChange}
+                          onBlur={handleBlur}
+                        >
+                          <option value="">--Select--</option>
+                          {status.map((item, key) => (
+                            <option key={key} value={item.name}>
+                              {item.name}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.status && touched.status ? (
+                          <small className="text-danger">{errors.status}</small>
+                        ) : (
+                          <span />
+                        )}
+                      </Form.Group>
+                    </div>
                   </div>
-                  <div className="form-group col-md-6 mb-3">
-                    <Form.Group>
-                      <Form.Label htmlFor="status">Status</Form.Label>
-                      <select
-                        name="status"
-                        id="status"
-                        className="form-control"
-                        value={values.status}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                      >
-                        <option value="">--Select--</option>
-                        {status.map((item, key) => (
-                          <option key={key} value={item.name}>
-                            {item.name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.status && touched.status ? (
-                        <small className="text-danger">{errors.status}</small>
-                      ) : (
-                        <span />
-                      )}
-                    </Form.Group>
+                  <div className="form-footer mt-2">
+                    <button type="submit" className="btn btn-primary">
+                      Update
+                    </button>
                   </div>
-                </div>
-                <div className="form-footer mt-2">
-                  <button type="submit" className="btn btn-primary">
-                    Update
-                  </button>
-                </div>
-              </form>
+                </form>
+              ) : (
+                <Skeleton count={8} height={25} className="my-2" />
+              )}
             </Card.Body>
           </Card>
         </div>

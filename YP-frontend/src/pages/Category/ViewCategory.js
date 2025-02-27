@@ -2,20 +2,19 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Row, Col, Card } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { API } from "../../context/Api";
-import { useDispatch } from "react-redux";
-import { hideLoading, showLoading } from "../../redux/alertSlice";
 import DataRequest from "../../context/DataRequest";
 import defaultIcon from "../../Images/defaultcategory-compressed.webp";
 import defaultFeature from "../../Images/defaultcategoryfeature-compressed.webp";
+import Skeleton from "react-loading-skeleton";
 
 export default function ViewCategory() {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
   const { objectId } = useParams();
   const [category, setCategory] = useState("");
   const [categoryIcon, setCategoryIcon] = useState("");
   const [featureImage, setFeatureImage] = useState("");
   const mainUser = DataRequest();
+  const [loading, setLoading] = useState(true);
   const [authPermissions, setAuthPermissions] = useState([]);
 
   useEffect(() => {
@@ -24,16 +23,15 @@ export default function ViewCategory() {
 
   useEffect(() => {
     const getCategory = () => {
-      dispatch(showLoading());
       API.get(`/category/${objectId}`).then(({ data }) => {
-        dispatch(hideLoading());
         setCategory(data);
         setCategoryIcon(data?.category_icon[0]);
         setFeatureImage(data?.featured_image[0]);
+        setLoading(false);
       });
     };
     getCategory();
-  }, [dispatch, objectId]);
+  }, [objectId]);
 
   const [isExpanded, setIsExpended] = useState(false);
   const toggleReadMore = () => {
@@ -60,26 +58,33 @@ export default function ViewCategory() {
         <div className="page-header">
           <div>
             <h1 className="page-title">Category</h1>
-            <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item">
-                <Link to="/dashboard/">Dashboard</Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-                <Link to="/dashboard/category/">Category</Link>
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active"
-                aria-current="page"
-              >
-                View
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                aria-current="page"
-              >
-                {category.category_name}
-              </Breadcrumb.Item>
-            </Breadcrumb>
+            {loading ? (
+              <Skeleton width={200} />
+            ) : (
+              <Breadcrumb className="breadcrumb">
+                <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/dashboard` }}>
+                  Dashboard
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  linkAs={Link}
+                  linkProps={{ to: `/dashboard/category/` }}
+                >
+                  Category
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="breadcrumb-item active"
+                  aria-current="page"
+                >
+                  View
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="breadcrumb-item active breadcrumds"
+                  aria-current="page"
+                >
+                  {category.category_name}
+                </Breadcrumb.Item>
+              </Breadcrumb>
+            )}
           </div>
           <div className="ms-auto pageheader-btn">
             <button onClick={() => navigate(-1)} className="btn btn-primary">
@@ -95,87 +100,101 @@ export default function ViewCategory() {
           <Col lg={12} md={12}>
             <Card className="productdesc">
               <Card.Body>
-                <div className="text-center">
-                  <div className="bg-light-gray p-5">
-                    {categoryIcon === null ? (
-                      <img
-                        className="position-absolute bottom-0 start-0"
-                        alt="Product"
-                        src={defaultIcon}
-                        width={100}
-                        style={{ margin: "165px 26px" }}
-                      />
-                    ) : (
-                      <img
-                        className="position-absolute bottom-0 start-0"
-                        alt="Product"
-                        src={`http://localhost:5000/${categoryIcon}`}
-                        width={100}
-                        style={{ margin: "165px 26px" }}
-                      />
-                    )}
-                    {featureImage === null ? (
-                      <img alt="Product" src={defaultFeature} width={200} />
-                    ) : (
-                      <img
-                        alt="Product"
-                        src={`http://localhost:5000/${featureImage}`}
-                        width={200}
-                      />
-                    )}
-                  </div>
-                </div>
-                <hr />
-                <div className="mt-4 mb-4">
-                  <p className="float-end">
-                    {category.status === "Active" ? (
-                      <span className="badge bg-success">
-                        {category.status}
-                      </span>
-                    ) : category.status === "InActive" ? (
-                      <span className="badge bg-danger">{category.status}</span>
-                    ) : (
-                      <span className="badge bg-warning">
-                        {category.status}
-                      </span>
-                    )}
-                  </p>
-                  <h3>{category.category_name}</h3>
-                  {category.description ? (
-                    <strong className="fs-6">Description: </strong>
-                  ) : (
-                    <strong className="fs-6">Description: Not Available</strong>
-                  )}
-
-                  {category.description && (
-                    <span>
-                      {category.description.length >= 1500 ? (
-                        <>
-                          <p
-                            dangerouslySetInnerHTML={{
-                              __html: isExpanded
-                                ? category.description
-                                : category.description.substring(0, 1200) +
-                                  "...",
-                            }}
-                          />
-                          <button
-                            onClick={toggleReadMore}
-                            className="text-primary m-0 p-0 text-decoration-underline"
-                          >
-                            {isExpanded ? "Read Less" : "Read More"}
-                          </button>
-                        </>
-                      ) : (
-                        <p
-                          dangerouslySetInnerHTML={{
-                            __html: category.description,
-                          }}
+                {!loading ? (
+                  <>
+                    <div className="text-center">
+                      <div className="bg-light-gray p-5">
+                        <img
+                          className="position-absolute bottom-0 start-0"
+                          alt="Product"
+                          src={
+                            !categoryIcon
+                              ? defaultIcon
+                              : `http://localhost:5000/${categoryIcon}`
+                          }
+                          width={100}
+                          style={{ margin: "165px 26px" }}
                         />
+                        <img
+                          alt="Product"
+                          src={
+                            !featureImage
+                              ? defaultFeature
+                              : `http://localhost:5000/${featureImage}`
+                          }
+                          width={200}
+                        />
+                      </div>
+                    </div>
+                    <hr />
+                    <div className="mt-4 mb-4">
+                      <p className="float-end">
+                        {category.status === "Active" ? (
+                          <span className="badge bg-success">
+                            {category.status}
+                          </span>
+                        ) : category.status === "InActive" ? (
+                          <span className="badge bg-danger">
+                            {category.status}
+                          </span>
+                        ) : (
+                          <span className="badge bg-warning">
+                            {category.status}
+                          </span>
+                        )}
+                      </p>
+                      <h3>{category.category_name}</h3>
+                      {category.description ? (
+                        <strong className="fs-6">Description: </strong>
+                      ) : (
+                        <strong className="fs-6">
+                          Description: Not Available
+                        </strong>
                       )}
-                    </span>
-                  )}
-                </div>
+
+                      {category.description && (
+                        <span>
+                          {category.description.length >= 1500 ? (
+                            <>
+                              <p
+                                dangerouslySetInnerHTML={{
+                                  __html: isExpanded
+                                    ? category.description
+                                    : category.description.substring(0, 1200) +
+                                      "...",
+                                }}
+                              />
+                              <button
+                                onClick={toggleReadMore}
+                                className="text-primary m-0 p-0 text-decoration-underline"
+                              >
+                                {isExpanded ? "Read Less" : "Read More"}
+                              </button>
+                            </>
+                          ) : (
+                            <p
+                              dangerouslySetInnerHTML={{
+                                __html: category.description,
+                              }}
+                            />
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Skeleton height={250} />
+                    <Row>
+                      <Col md={6}>
+                        <Skeleton count={3} height={20} className="my-2" />
+                      </Col>
+                      <Col md={6}>
+                        <Skeleton count={2} height={20} className="my-2" />
+                      </Col>
+                    </Row>
+                  </>
+                )}
               </Card.Body>
             </Card>
           </Col>

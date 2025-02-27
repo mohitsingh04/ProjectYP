@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Breadcrumb, Row, Col, Card, Table } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { API } from "../../context/Api";
-// import { useDispatch } from "react-redux";
-// import { hideLoading, showLoading } from "../../redux/alertSlice";
 import { toast } from "react-toastify";
 import DataRequest from "../../context/DataRequest";
 import defaultCourse from "../../Images/defaultcourse.webp";
@@ -11,12 +9,12 @@ import Skeleton from "react-loading-skeleton";
 
 export default function ViewCourse() {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
   const [course, setCourse] = useState("");
   const { objectId } = useParams();
   const [courseImage, setCourseImage] = useState("");
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions);
@@ -27,6 +25,7 @@ export default function ViewCourse() {
       API.get(`/course/${objectId}`).then(({ data }) => {
         setCourse(data);
         setCourseImage(data?.image?.[0]);
+        setLoading(false);
       });
     } catch (err) {
       toast.error(err.message);
@@ -59,26 +58,31 @@ export default function ViewCourse() {
         <div className="page-header">
           <div>
             <h1 className="page-title">Course</h1>
-            <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
-                Dashboard
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                linkAs={Link}
-                linkProps={{ to: "/dashboard/course/" }}
-              >
-                Course
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active"
-                aria-current="page"
-              >
-                View
-              </Breadcrumb.Item>
-              <Breadcrumb.Item>
-                {course?.course_name || <Skeleton className="w-100" />}
-              </Breadcrumb.Item>
-            </Breadcrumb>
+            {loading ? (
+              <Skeleton width={200} />
+            ) : (
+              <Breadcrumb className="breadcrumb">
+                <Breadcrumb.Item
+                  linkAs={Link}
+                  linkProps={{ to: "/dashboard/" }}
+                >
+                  Dashboard
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  linkAs={Link}
+                  linkProps={{ to: "/dashboard/course/" }}
+                >
+                  Course
+                </Breadcrumb.Item>
+                <Breadcrumb.Item
+                  className="breadcrumb-item active"
+                  aria-current="page"
+                >
+                  View
+                </Breadcrumb.Item>
+                <Breadcrumb.Item>{course?.course_name}</Breadcrumb.Item>
+              </Breadcrumb>
+            )}
           </div>
           <div className="ms-auto pageheader-btn">
             <button onClick={() => navigate(-1)} className="btn btn-primary">
@@ -93,7 +97,7 @@ export default function ViewCourse() {
         <Row>
           <Col md={12}>
             <Card>
-              {course ? (
+              {!loading ? (
                 <>
                   <Card.Header>
                     <div className="media-heading">
@@ -102,7 +106,6 @@ export default function ViewCourse() {
                       </h5>
                     </div>
                   </Card.Header>
-                  {/* <hr className="mt-5" /> */}
                   <Card.Body>
                     <div className="table-responsive p-1">
                       <div>
@@ -146,7 +149,7 @@ export default function ViewCourse() {
                           <tr>
                             <td>
                               <strong>Duration : </strong>
-                              {course.duration || <Skeleton />}
+                              {course.duration}
                             </td>
                           </tr>
                         </tbody>
@@ -154,7 +157,7 @@ export default function ViewCourse() {
                     </div>
                     <Row className="row profie-img">
                       <Col md={12}>
-                        <p className="mb-0">
+                        <div className="mb-0">
                           {course.description ? (
                             <strong className="fs-6">Description: </strong>
                           ) : (
@@ -193,7 +196,7 @@ export default function ViewCourse() {
                               )}
                             </span>
                           )}
-                        </p>
+                        </div>
                       </Col>
                     </Row>
                   </Card.Body>

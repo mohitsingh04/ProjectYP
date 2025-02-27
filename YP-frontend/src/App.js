@@ -111,7 +111,7 @@ function Root() {
             <Route path={`/dashboard/course/add`}element={<ProtectedRoutes><AddCourse /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course/view/:objectId`} element={<ProtectedRoutes><ViewCourse/></ProtectedRoutes>}/>
             <Route path={`/dashboard/course/edit/:objectId`} element={<ProtectedRoutes><EditCourse/></ProtectedRoutes>} />
-            
+
             <Route path={`/dashboard/category`}element={<ProtectedRoutes><CategoryList /></ProtectedRoutes>}/>
             <Route path={`/dashboard/category/add`}element={<ProtectedRoutes><CreateCategory /></ProtectedRoutes>}/>
             <Route path={`/dashboard/category/edit/:objectId`}element={<ProtectedRoutes><EditCategory /></ProtectedRoutes>}/>

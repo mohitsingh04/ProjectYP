@@ -29,18 +29,34 @@ export default function ViewUser() {
     }
   }, [objectId]);
 
-  const hasPermission = authPermissions?.some(
-    (item) => item.value === "Read Course"
-  );
-
-  if (!hasPermission) {
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle">
-        <h2 className="text-danger fw-bold">Access Denied</h2>
-        <p>You do not have the required permissions to access this page.</p>
-      </div>
+  if (authPermissions?.length <= 0) {
+    const hasPermission = authPermissions?.some(
+      (item) => item.value === "Read Course"
     );
+
+    if (!hasPermission) {
+      return (
+        <div className="position-absolute top-50 start-50 translate-middle">
+          <h2 className="text-danger fw-bold">Access Denied</h2>
+          <p>You do not have the required permissions to access this page.</p>
+        </div>
+      );
+    }
   }
+
+  const UserInfoRow = ({ label, value, loading }) => (
+    <tr>
+      <td>
+        {loading ? (
+          <Skeleton width={200} height={20} />
+        ) : (
+          <>
+            <strong>{label} :</strong> {value}
+          </>
+        )}
+      </td>
+    </tr>
+  );
 
   return (
     <>
@@ -245,85 +261,43 @@ export default function ViewUser() {
                 <div className="table-responsive p-1">
                   <Table className="table row table-borderless">
                     <tbody className="col-lg-12 col-xl-6 p-0">
-                      <tr>
-                        <td>
-                          {loading ? (
-                            <Skeleton width={200} height={20} />
-                          ) : (
-                            <>
-                              <strong>Full Name :</strong> {user?.name}
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          {loading ? (
-                            <Skeleton width={200} height={20} />
-                          ) : (
-                            <>
-                              <strong>Phone :</strong> {user?.mobile_no}
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          {loading ? (
-                            <Skeleton width={200} height={20} />
-                          ) : (
-                            <>
-                              <strong>Pincode :</strong> {user?.pincode}
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          {loading ? (
-                            <Skeleton width={200} height={20} />
-                          ) : (
-                            <>
-                              <strong>State :</strong> {user?.state}
-                            </>
-                          )}
-                        </td>
-                      </tr>
+                      <UserInfoRow
+                        label="Full Name"
+                        value={user?.name}
+                        loading={loading}
+                      />
+                      <UserInfoRow
+                        label="Phone"
+                        value={user?.mobile_no}
+                        loading={loading}
+                      />
+                      <UserInfoRow
+                        label="Pincode"
+                        value={user?.pincode}
+                        loading={loading}
+                      />
+                      <UserInfoRow
+                        label="State"
+                        value={user?.state}
+                        loading={loading}
+                      />
                     </tbody>
                     <tbody className="col-lg-12 col-xl-6 p-0">
-                      <tr>
-                        <td>
-                          {loading ? (
-                            <Skeleton width={200} height={20} />
-                          ) : (
-                            <>
-                              <strong>Email :</strong> {user?.email}
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          {loading ? (
-                            <Skeleton width={200} height={20} />
-                          ) : (
-                            <>
-                              <strong>Address :</strong> {user?.address}
-                            </>
-                          )}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          {loading ? (
-                            <Skeleton width={200} height={20} />
-                          ) : (
-                            <>
-                              <strong>City :</strong> {user?.city}
-                            </>
-                          )}
-                        </td>
-                      </tr>
+                      <UserInfoRow
+                        label="Email"
+                        value={user?.email}
+                        loading={loading}
+                      />
+                      <UserInfoRow
+                        label="Address"
+                        value={user?.address}
+                        loading={loading}
+                      />
+                      <UserInfoRow
+                        label="City"
+                        value={user?.city}
+                        loading={loading}
+                      />
                     </tbody>
                   </Table>
                 </div>
