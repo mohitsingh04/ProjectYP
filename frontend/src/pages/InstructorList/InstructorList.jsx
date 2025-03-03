@@ -1,5 +1,5 @@
 import React from "react";
-import BreadCrumbs from "./InstructorComponents/BreadCrumbs";
+// import BreadCrumbs from "./InstructorComponents/BreadCrumbs";
 import user from "../../img/user/user4.jpg";
 import book from "../../img/icon/icon-01.svg";
 import clock from "../../img/icon/icon-02.svg";
@@ -8,7 +8,7 @@ import userIcon from "../../img/icon/user-icon.svg";
 export default function InstructorList() {
   return (
     <>
-      <BreadCrumbs />
+      {/* <BreadCrumbs /> */}
       <div className="page-content">
         <div className="container">
           <div className="row">

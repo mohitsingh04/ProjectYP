@@ -21,6 +21,17 @@ export const getFaqById = async (req, res) => {
   }
 };
 
+export const getFaqByPropertyId = async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    console.log(req.params);
+    const faqs = await Faqs.find({ property_id: propertyId });
+    return res.status(200).json(faqs);
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error!" });
+  }
+};
+
 export const addFaq = async (req, res) => {
   try {
     const { userId, question, answer, property_id, property_name } = req.body;

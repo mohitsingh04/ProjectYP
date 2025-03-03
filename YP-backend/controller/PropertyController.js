@@ -21,6 +21,17 @@ export const getProperty = async (req, res) => {
   }
 };
 
+export const getPropertyByUniqueId = async (req, res) => {
+  try {
+    const { uniqueId } = req.params;
+    const property = await Property.findOne({ uniqueId: uniqueId });
+    return res.status(200).json(property);
+  } catch (err) {
+    console.log(err.message);
+    return res.send({ error: "Internal Server Error." });
+  }
+};
+
 export const getPropertyById = async (req, res) => {
   try {
     const objectId = req.params.objectId;

@@ -44,6 +44,7 @@ import {
   getProperty,
   getPropertyById,
   getPropertyBySlug,
+  getPropertyByUniqueId,
   updateProperty,
   updatePropertyImages,
 } from "../controller/PropertyController.js";
@@ -67,6 +68,7 @@ import {
   deleteFaq,
   getFaq,
   getFaqById,
+  getFaqByPropertyId,
   updateFaq,
 } from "../controller/FaqsController.js";
 import {
@@ -191,6 +193,7 @@ const propertyUpload = upload.fields([
   { name: "featured_image", maxCount: 1 },
 ]);
 router.get("/property", getProperty);
+router.get("/property/uniqueId/:uniqueId", getPropertyByUniqueId);
 router.post("/property", propertyUpload, processImage, addProperty);
 router.patch(
   "/property/:objectId",
@@ -239,6 +242,7 @@ router.post("/faqs", addFaq);
 router.patch("/faqs/:objectId", updateFaq);
 router.delete("/faqs/:uniqueId", deleteFaq);
 router.get("/faqs/:objectId", getFaqById);
+router.get("/property/faq/:propertyId", getFaqByPropertyId);
 
 // Seo Route
 router.get("/seo", getSeo);
