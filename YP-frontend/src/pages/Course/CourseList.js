@@ -88,7 +88,7 @@ export default function CourseList() {
                 : `http://localhost:5000/${row?.image?.[0]}`
             }
             width={53}
-            alt={defaultCourse}
+            alt={!row?.image?.[0] ? defaultCourse : row?.image?.[0]}
           />
         ),
       sortable: true,

@@ -180,7 +180,7 @@ export default function PropertyImages({ loading }) {
                         onBlur={handleBlur}
                       />
                       {previewLogo === "" ? (
-                        LogoImage === null ? (
+                        !LogoImage ? (
                           <img
                             src={defaultLogo}
                             width={100}
@@ -233,7 +233,7 @@ export default function PropertyImages({ loading }) {
                           <i className="fe fe-edit"></i>
                         </span>
                       </div>
-                      {LogoImage === null ? (
+                      {!LogoImage ? (
                         <img
                           src={defaultLogo}
                           width={100}
@@ -334,7 +334,7 @@ export default function PropertyImages({ loading }) {
                         onBlur={handleBlur}
                       />
                       {previewFeaturedImage === "" ? (
-                        featureImage === null ? (
+                        !featureImage ? (
                           <img
                             src={defaultFeature}
                             width={350}
@@ -382,7 +382,7 @@ export default function PropertyImages({ loading }) {
                             <i className="fe fe-edit"></i>
                           </button>
                         </div>
-                        {featureImage === null ? (
+                        {!featureImage ? (
                           <img src={defaultFeature} width={350} alt="" />
                         ) : (
                           <img

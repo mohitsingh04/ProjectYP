@@ -21,6 +21,17 @@ export const getTeacherById = async (req, res) => {
   }
 };
 
+export const getTeacherByPropertyId = async (req, res) => {
+  try {
+    const propertyId = req.params.propertyId;
+    const teachers = await Teachers.find({ property_id: propertyId });
+    return res.status(200).json(teachers);
+  } catch (err) {
+    console.log(err.message);
+    return res.send({ error: "Internal server error!" });
+  }
+};
+
 export const addTeacher = async (req, res) => {
   try {
     const {

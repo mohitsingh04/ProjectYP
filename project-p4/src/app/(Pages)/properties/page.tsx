@@ -1,12 +1,77 @@
-import React from "react";
-import user from "../../../img/user/user4.jpg";
-import book from "../../../img/icon/icon-01.svg";
-import clock from "../../../img/icon/icon-02.svg";
-import userIcon from "../../../img/icon/user-icon.svg";
-import Image from "next/image";
-import BreadCrumbs from "./(instructor-components)/BreadCrumbs";
+"use client";
+import React, { useEffect, useState } from "react";
+import BreadCrumbs from "./_instructor-components/BreadCrumbs";
+import {
+  FaAngleDown,
+  FaAngleLeft,
+  FaAngleRight,
+  FaFilter,
+  FaList,
+} from "react-icons/fa";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import axios from "axios";
+import PropertyCard from "./_instructor-components/PropertyCards/PropertyCard";
 
 export default function InstructorList() {
+  const [property, setProperty] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [allCategoires, setAllCategories] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
+  const getProperty = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/property`);
+      const data = response.data;
+      const activeProperties = data.filter((item) => item.status === "Active");
+
+      setProperty(activeProperties);
+      setFilteredData(activeProperties);
+
+      const categoryCountMap = activeProperties.reduce((acc, item) => {
+        acc[item.category] = (acc[item.category] || 0) + 1;
+        return acc;
+      }, {});
+
+      const categoryObjects = Object.keys(categoryCountMap).map((category) => ({
+        label: category,
+        count: categoryCountMap[category],
+      }));
+
+      setAllCategories(categoryObjects);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // console.log(allCategoires);
+
+  useEffect(() => {
+    getProperty();
+  }, []);
+
+  useEffect(() => {
+    const filtered = property.filter((item) =>
+      item.property_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredData(filtered);
+    setCurrentPage(1);
+  }, [searchQuery, property]);
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const changePage = (newPage) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
   return (
     <>
       <BreadCrumbs />
@@ -19,18 +84,19 @@ export default function InstructorList() {
                   <div className="col-lg-6">
                     <div className="d-flex align-items-center">
                       <div className="view-icons">
-                        <a href="instructor-grid.html" className="grid-view">
-                          <i className="fa fa-border-all"></i>
-                        </a>
-                        <a
-                          href="instructor-list.html"
-                          className="list-view active"
-                        >
-                          <i className="fa fa-list"></i>
+                        <a className="list-view active">
+                          <FaList />
                         </a>
                       </div>
                       <div className="show-result">
-                        <h4>Showing 1-9 of 50 results</h4>
+                        <h4>
+                          Showing {itemsPerPage * (currentPage - 1) + 1}-
+                          {Math.min(
+                            itemsPerPage * currentPage,
+                            filteredData.length
+                          )}{" "}
+                          of {filteredData.length} results
+                        </h4>
                       </div>
                     </div>
                   </div>
@@ -40,12 +106,14 @@ export default function InstructorList() {
                         <div className="row gx-2 align-items-center">
                           <div className="col-md-6 col-item">
                             <div className="search-group">
-                              <i className="fa fa-magnifying-glass"></i>
+                              <FaMagnifyingGlass className="icon" />
                               <input
                                 type="text"
                                 id="search"
                                 className="form-control"
-                                placeholder="Search our courses"
+                                placeholder="Search by name"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
                               />
                             </div>
                           </div>
@@ -70,90 +138,62 @@ export default function InstructorList() {
               </div>
 
               <div className="row">
-                {Array(5)
-                  .fill({})
-                  .map((_, index) => (
-                    <div className="col-lg-12 d-flex" key={index}>
-                      <div className="instructor-list flex-fill">
-                        <div className="instructor-img">
-                          <a href="instructor-profile.html">
-                            <Image className="img-fluid" alt="Img" src={user} />
-                          </a>
-                        </div>
-                        <div className="instructor-content">
-                          <h5>
-                            <a href="instructor-profile.html">Rolands R</a>
-                          </h5>
-                          <h6>Instructor</h6>
-                          <div className="instructor-info">
-                            <div className="rating-img d-flex align-items-center">
-                              <Image src={book} className="me-1" alt="Img" />
-                              <p>12+ Lessons</p>
-                            </div>
-                            <div className="course-view d-flex align-items-center ms-0">
-                              <Image src={clock} className="me-1" alt="Img" />
-                              <p>9hr 30min</p>
-                            </div>
-                            <div className="rating-img d-flex align-items-center">
-                              <Image
-                                src={userIcon}
-                                className="me-1"
-                                alt="Img"
-                              />
-                              <p>50 Students</p>
-                            </div>
-                            <div className="rating">
-                              <i className="fas fa-star filled"></i>
-                              <i className="fas fa-star filled"></i>
-                              <i className="fas fa-star filled"></i>
-                              <i className="fas fa-star filled"></i>
-                              <i className="fas fa-star"></i>
-                              <span className="d-inline-block average-rating">
-                                <span>4.0</span> (15)
-                              </span>
-                            </div>
-                            <a href="#rate" className="rating-count">
-                              <i className="fa fa-heart"></i>
-                            </a>
-                          </div>
-                          <div className="instructor-badge">
-                            <span className="web-badge">Web Design</span>
-                            <span className="web-badge">Web Development</span>
-                            <span className="web-badge">UI Design</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                {paginatedData.map((item, index) => (
+                  <PropertyCard property={item} key={index} />
+                ))}
               </div>
 
               <div className="row">
                 <div className="col-md-12">
-                  <ul className="pagination lms-page lms-pagination">
-                    <li className="page-item prev">
-                      <a
-                        className="page-link"
-                        href="javascript:void(0);"
-                        tabIndex={-1}
-                      >
-                        <i className="fas fa-angle-left"></i>
-                      </a>
-                    </li>
-                    {[1, 2, 3, 4, 5].map((num) => (
+                  <ul className="pagination lms-page lms-pagination flex-wrap gap-1">
+                    {currentPage !== 1 && (
                       <li
-                        key={num}
-                        className={`page-item ${num === 1 ? "active" : ""}`}
+                        className={`page-item ${
+                          currentPage === 1 ? "disabled" : ""
+                        }`}
                       >
-                        <a className="page-link" href="javascript:void(0);">
-                          {num}
+                        <a
+                          className="page-link"
+                          href="#"
+                          onClick={() => changePage(currentPage - 1)}
+                        >
+                          <FaAngleLeft />
+                        </a>
+                      </li>
+                    )}
+
+                    {Array.from({ length: totalPages }, (_, index) => (
+                      <li
+                        key={index}
+                        className={`page-item ${
+                          currentPage === index + 1 ? "active" : ""
+                        }`}
+                      >
+                        <a
+                          className="page-link"
+                          href="#"
+                          onClick={() => changePage(index + 1)}
+                        >
+                          {index + 1}
                         </a>
                       </li>
                     ))}
-                    <li className="page-item next">
-                      <a className="page-link" href="javascript:void(0);">
-                        <i className="fas fa-angle-right"></i>
-                      </a>
-                    </li>
+
+                    {totalPages > 1 && (
+                      <li
+                        className={`page-item ${
+                          currentPage === totalPages ? "disabled" : ""
+                        }`}
+                      >
+                        <a
+                          className="page-link"
+                          href="#"
+                          onClick={() => changePage(currentPage + 1)}
+                        >
+                          <FaAngleRight />
+                        </a>
+                      </li>
+                    )}
                   </ul>
                 </div>
               </div>
@@ -163,7 +203,7 @@ export default function InstructorList() {
               <div className="filter-clear">
                 <div className="clear-filter d-flex align-items-center">
                   <h4>
-                    <i className="fa fa-filter"></i> Filters
+                    <FaFilter /> Filters
                   </h4>
                   <div className="clear-text">
                     <p>CLEAR</p>
@@ -174,19 +214,10 @@ export default function InstructorList() {
                   <div className="card-body">
                     <div className="filter-widget mb-0">
                       <div className="categories-head d-flex align-items-center">
-                        <h4>Course categories</h4>
-                        <i className="fas fa-angle-down"></i>
+                        <h4>Property Categories</h4>
+                        <FaAngleDown className="icon" />
                       </div>
-                      {[
-                        { label: "Backend", count: 3 },
-                        { label: "CSS", count: 2 },
-                        { label: "Frontend", count: 2 },
-                        { label: "General", count: 2, checked: true },
-                        { label: "IT & Software", count: 2, checked: true },
-                        { label: "Photography", count: 2 },
-                        { label: "Programming Language", count: 3 },
-                        { label: "Technology", count: 2 },
-                      ].map((category, idx) => (
+                      {allCategoires.map((category, idx) => (
                         <div key={idx}>
                           <label className="custom_check">
                             <input
@@ -207,7 +238,7 @@ export default function InstructorList() {
                     <div className="filter-widget mb-0">
                       <div className="categories-head d-flex align-items-center">
                         <h4>Instructor</h4>
-                        <i className="fas fa-angle-down"></i>
+                        <FaAngleDown className="icon" />
                       </div>
                       {[
                         { label: "Keny White", count: 10 },
@@ -236,7 +267,7 @@ export default function InstructorList() {
                     <div className="filter-widget mb-0">
                       <div className="categories-head d-flex align-items-center">
                         <h4>Price</h4>
-                        <i className="fas fa-angle-down"></i>
+                        <FaAngleDown className="icon" />
                       </div>
                       {[
                         { label: "All", count: 18, checked: true },

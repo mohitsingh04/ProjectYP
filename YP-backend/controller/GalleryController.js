@@ -20,6 +20,16 @@ export const getGalleryById = async (req, res) => {
     return res.send({ error: "Internal Server Error!" });
   }
 };
+export const getGalleryByPropertyId = async (req, res) => {
+  try {
+    const propertyId = req.params.propertyId;
+    const gallery = await Gallery.find({ propertyId: propertyId });
+    return res.status(200).json(gallery);
+  } catch (err) {
+    console.log(err.message);
+    return res.send({ error: "Internal Server Error!" });
+  }
+};
 
 export const addGallery = async (req, res) => {
   try {

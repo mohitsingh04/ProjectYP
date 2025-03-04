@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import Image from "next/image";
-import play from "../../../../../img/icon/play.svg";
 
 interface FAQ {
   question: string;
@@ -22,7 +20,10 @@ export default function FAQs({ faq }: FAQsProps) {
           data-bs-toggle="collapse"
           href="#collapseOne"
           aria-expanded={isOpen}
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={(e) => {
+            e.preventDefault();
+            setIsOpen(!isOpen);
+          }}
         >
           {faq?.question}
         </a>
@@ -31,8 +32,8 @@ export default function FAQs({ faq }: FAQsProps) {
         id="collapseOne"
         className={`card-collapse collapse ${isOpen ? "show" : ""}`}
       >
-        <div className="d-flex">
-          <Image src={play} alt="Img" className="me-2" />
+        <div className="d-flex align-items-center mb-3">
+          <img src="/img/icon/play.svg" alt="Img" className="me-2" />
           <p
             dangerouslySetInnerHTML={{
               __html: faq.answer,

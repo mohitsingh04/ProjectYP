@@ -12773,8 +12773,8 @@ input[type="password"]::-ms-clear {
   margin-right: 10px;
 }
 .abt-instructor-img img {
-  width: 50px;
-  height: 50px;
+  width: 100px;
+  height: 100px;
   border: 1px solid #e3e3e3;
   border-radius: 50%;
 }
@@ -13403,17 +13403,18 @@ input[type="password"]::-ms-clear {
   display: inline-block;
   margin: 0 20px 10px 0;
 }
-.category-tab ul li a {
+.category-tab ul li a,.category-tab ul li .nav-link {
   background: #e0e0e0;
   color: #0b0b0b;
   padding: 10px 15px;
   display: inline-block;
   text-align: center;
-  font-size: 24px;
+  font-size: 16px;
   font-weight: 600;
 }
 .category-tab ul li a.active,
-.category-tab ul li a:hover {
+.category-tab ul li a:hover,.category-tab ul li .nav-link.active,
+.category-tab ul li .nav-link:hover {
   background: #ff5364;
   color: #fff;
 }
@@ -15903,12 +15904,12 @@ input[type="password"]::-ms-clear {
   align-items: center;
   position: relative;
 }
-.show-filter .search-group i {
+.show-filter .search-group .icon {
   position: absolute;
   left: 9px;
   color: #f66962;
 }
-.categories-head i {
+.categories-head .icon {
   margin-left: auto;
   margin-bottom: 15px;
 }
@@ -30153,4 +30154,8 @@ a.ck.ck-button:not(.ck-disabled):hover {
   .settings-pg-links li {
     width: 100%;
   }
+}
+
+.course-card p{
+  margin: 0 !important;
 }

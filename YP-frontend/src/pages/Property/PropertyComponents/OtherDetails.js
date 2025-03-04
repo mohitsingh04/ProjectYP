@@ -109,6 +109,7 @@ export default function OtherDetails() {
   const [showEstDateInInput, setShowEstDateInInput] = useState(false);
 
   const handleEditCategory = () => {
+    console.log("Edit")
     setShowCategoryInInput(true);
   };
   const handleCancelEditCategory = () => {
@@ -197,7 +198,6 @@ export default function OtherDetails() {
     };
 
     try {
-      console.log("ok");
       const response = await API.patch(`/property/${objectId}`, data);
       console.log(response);
       toast.success(response.data.message);

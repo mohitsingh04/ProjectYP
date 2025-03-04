@@ -163,7 +163,7 @@ export default function Teachers() {
     {
       name: "Teacher Name",
       selector: (row) =>
-        row.profile[0] === null ? (
+        !row.profile[0] ? (
           <img src={defaultProfile} width={53} alt={row.profile} />
         ) : (
           <img

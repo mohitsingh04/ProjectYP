@@ -8,6 +8,15 @@ export const getAmenities = async (req, res) => {
     return res.json({ error: error.message });
   }
 };
+export const getAmenitiesByPropertyId = async (req, res) => {
+  try {
+    const { propertyId } = req.params;
+    const amenities = await Amenities.findOne({ propertyId: propertyId });
+    return res.json(amenities);
+  } catch (error) {
+    return res.json({ error: error.message });
+  }
+};
 
 export const addAmenities = async (req, res) => {
   try {

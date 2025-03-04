@@ -2,9 +2,19 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import axios from "axios";
-import FAQs from "./_propertyComponents/FAQs";
+import FAQs from "./_propertyComponents/FAQs/FAQs";
 import { FaHeart, FaPlay, FaShare, FaStar } from "react-icons/fa";
-import { RiCornerDownLeftLine } from "react-icons/ri";
+import PropertyBanner from "./_propertyComponents/PropertyBanner/PropertyBanner";
+import Review from "./_propertyComponents/Review/Review";
+import Teachers from "./_propertyComponents/Teachers/Teachers";
+import CommentsForm from "./_propertyComponents/Comments/CommentsForm";
+import BussinessHours from "./_propertyComponents/BussinessHours/BussinessHours";
+import { Tab, Tabs } from "react-bootstrap";
+import Gallery from "./_propertyComponents/Gallery/Gallery";
+import Achievements from "./_propertyComponents/Achievements/Achievements";
+import Hostel from "./_propertyComponents/Hostels/Hostel";
+import Amenities from "./_propertyComponents/Amenities/Amenities";
+import Courses from "./_propertyComponents/Courses/Courses";
 
 interface Property {
   uniqueId: string;
@@ -14,12 +24,20 @@ interface Property {
   property_city: string;
   property_pincode: string;
   property_state: string;
-  property_decription?: string;
+  property_description?: string;
+  property_hostel_type: string[];
 }
 
 export default function CourseDetails() {
   const [property, setProperty] = useState<Property | null>(null);
   const [faqs, setFaqs] = useState([]);
+  const [teachers, setTeachers] = useState([]);
+  const [reviews, setReviews] = useState([]);
+  const [bussinessHours, setBussinessHours] = useState([]);
+  const [gallery, setGallery] = useState([]);
+  const [achievements, setAchievements] = useState([]);
+  const [amenities, setAmenities] = useState([]);
+  const [courses, setCourses] = useState([]);
   const { uniqueId } = useParams();
 
   const getProperty = async () => {
@@ -34,10 +52,90 @@ export default function CourseDetails() {
   };
 
   const getFaqs = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/property/faq/${property?.uniqueId}`
+      );
+      setFaqs(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getTeachers = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/property/teacher/${property?.uniqueId}`
+      );
+      setTeachers(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getReviews = async () => {
     const response = await axios.get(
-      `http://localhost:5000/property/faq/${property?.uniqueId}`
+      `http://localhost:5000/review/property/${property?.uniqueId}`
     );
-    setFaqs(response.data);
+    setReviews(response.data);
+    try {
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getBussinessHours = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/business-hours/${property?.uniqueId}`
+      );
+      setBussinessHours(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getGallery = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/property/gallery/${property?.uniqueId}`
+      );
+      setGallery(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAchievements = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/achievements/${property?.uniqueId}`
+      );
+      setAchievements(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getAmenities = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/property/amenities/${property?.uniqueId}`
+      );
+      setAmenities(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getCourses = async () => {
+    try {
+      const response = await axios.get(
+        `http://localhost:5000/property/property-course/${property?.uniqueId}`
+      );
+      setCourses(response.data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -47,6 +145,13 @@ export default function CourseDetails() {
   useEffect(() => {
     if (property) {
       getFaqs();
+      getTeachers();
+      getReviews();
+      getBussinessHours();
+      getGallery();
+      getAchievements();
+      getAmenities();
+      getCourses();
     }
   }, [property]);
 
@@ -78,249 +183,93 @@ export default function CourseDetails() {
           </div>
         </div>
       </div>
-      <div className="inner-banner">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-8">
-              <div className="instructor-wrap border-bottom-0 m-0">
-                <div className="about-instructor align-items-center">
-                  <div className="abt-instructor-img">
-                    <a href="instructor-profile.html">
-                      <img
-                        src={`${process.env.NEXT_PUBLIC_API_URL}${property?.property_logo?.[0]}`}
-                        alt="img"
-                        className="img-fluid"
-                      />
-                    </a>
-                  </div>
-                </div>
-                <span className="web-badge mb-3">WEB DEVELPMENT</span>
-              </div>
-              <h2>{property?.property_name}</h2>
-              <p>
-                {property?.property_address}, {property?.property_city},{" "}
-                {property?.property_pincode} ,{property?.property_state}
-              </p>
-              <div className="rating mb-2">
-                <FaStar className="star filled" />
-                <FaStar className="star filled" />
-                <FaStar className="star filled" />
-                <FaStar className="star filled" />
-                <FaStar className="star" />
-                <span className="d-inline-block average-rating">
-                  <span>4.5</span> (15)
-                </span>
-              </div>
-              <div className="course-info d-flex align-items-center border-bottom-0 m-0 p-0">
-                <div className="cou-info">
-                  <img src="/img/icon/icon-01.svg" alt="Img" />
-                  <p>12+ Lesson</p>
-                </div>
-                <div className="cou-info">
-                  <img src="/img/icon/timer-icon.svg" alt="Img" />
-                  <p>9hr 30min</p>
-                </div>
-                <div className="cou-info">
-                  <img src="/img/icon/people.svg" alt="Img" />
-                  <p>32 students enrolled</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PropertyBanner property={property} />
       <section className="page-content course-sec">
         <div className="container">
           <div className="row">
-            <div className="col-lg-8">
-              <div className="card overview-sec">
-                <div className="card-body">
-                  <h5 className="subs-title">Overview</h5>
-                  <h6>Property Description</h6>
-                  <p
-                    dangerouslySetInnerHTML={{
-                      __html: property?.property_decription ?? "",
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="card content-sec">
-                <div className="card-body">
-                  <div className="row">
-                    <div className="col-sm-6">
-                      <h5 className="subs-title">Course Content</h5>
-                    </div>
-                    <div className="col-sm-6 text-sm-end">
-                      <h6>92 Lectures 10:56:11</h6>
+            <div className="col-lg-8 category-tab">
+              <Tabs
+                variant="Tabs"
+                defaultActiveKey="Overview"
+                id=" tab-51"
+                className="tab-content tabesbody "
+              >
+                <Tab eventKey="Overview" title="Overview">
+                  <div className="tab-pane show">
+                    <div className="card overview-sec">
+                      <div className="card-body">
+                        <h5 className="subs-title">Property Description</h5>
+                        <p
+                          dangerouslySetInnerHTML={{
+                            __html: property?.property_description ?? "",
+                          }}
+                        />
+                      </div>
                     </div>
                   </div>
-                  {faqs.map((item, index) => (
-                    <FAQs key={index} faq={item} />
+                </Tab>
+                <Tab eventKey="Faqs" title="Faqs">
+                  <div className="card content-sec">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col-sm-6">
+                          <h5 className="subs-title">Property FAQs</h5>
+                        </div>
+                        <div className="col-sm-6 text-sm-end">
+                          <h6>92 Lectures 10:56:11</h6>
+                        </div>
+                      </div>
+                      {faqs.map((item, index) => (
+                        <FAQs key={index} faq={item} />
+                      ))}
+                    </div>
+                  </div>
+                </Tab>
+                <Tab eventKey="Review" title="Review">
+                  {reviews.map((review, index) => (
+                    <div className="card review-sec" key={index}>
+                      <Review review={review} />
+                    </div>
                   ))}
-                </div>
-              </div>
-              <div className="card instructor-sec">
-                <div className="card-body">
-                  <h5 className="subs-title">About the instructor</h5>
-                  <div className="instructor-wrap">
-                    <div className="about-instructor">
-                      <div className="abt-instructor-img">
-                        <a href="instructor-profile.html">
-                          <img
-                            src="/img/user/user2.jpg"
-                            alt="img"
-                            className="img-fluid"
-                          />
-                        </a>
+                </Tab>
+                <Tab eventKey="Gallery" title="Gallery">
+                  {gallery.map((item, index) => (
+                    <Gallery gallery={item} key={index} />
+                  ))}
+                </Tab>
+                <Tab eventKey="Achievements" title="Achievements">
+                  <Achievements achievements={achievements} />
+                </Tab>
+                <Tab eventKey="Hostel" title="Hostel">
+                  <Hostel property={property} />
+                </Tab>
+                <Tab eventKey="Teachers" title="Teachers">
+                  {teachers?.map((teacher, index) => (
+                    <Teachers teacher={teacher} key={index} />
+                  ))}
+                </Tab>
+                <Tab eventKey="Amenities" title="Amenities">
+                  <Amenities amenities={amenities} />
+                </Tab>
+                <Tab eventKey="Courses" title="Courses">
+                  <div className="card">
+                    <div className="card-body">
+                      <h5 className="subs-title">Courses</h5>
+                      <div className="row">
+                        {courses.map((course, index) => (
+                          <Courses course={course} key={index} />
+                        ))}
                       </div>
-                      <div className="instructor-detail">
-                        <h5>
-                          <a href="instructor-profile.html">Nicole Brown</a>
-                        </h5>
-                        <p>UX/UI Designer</p>
-                      </div>
-                    </div>
-                    <div className="rating">
-                      <FaStar className="star filled" />
-                      <FaStar className="star filled" />
-                      <FaStar className="star filled" />
-                      <FaStar className="star filled" />
-                      <FaStar className="star" />
-                      <span className="d-inline-block average-rating">
-                        4.5 Instructor Rating
-                      </span>
                     </div>
                   </div>
-                  <div className="course-info d-flex align-items-center">
-                    <div className="cou-info">
-                      <img src="/img/icon/play.svg" alt="Img" />
-                      <p>5 Courses</p>
-                    </div>
-                    <div className="cou-info">
-                      <img src="/img/icon/icon-01.svg" alt="Img" />
-                      <p>12+ Lesson</p>
-                    </div>
-                    <div className="cou-info">
-                      <img src="/img/icon/timer-icon.svg" alt="Img" />
-                      <p>9hr 30min</p>
-                    </div>
-                    <div className="cou-info">
-                      <img src="/img/icon/people.svg" alt="Img" />
-                      <p>270,866 students enrolled</p>
-                    </div>
-                  </div>
-                  <p>
-                    UI/UX Designer, with 7+ Years Experience. Guarantee of High
-                    Quality Work.
-                  </p>
-                  <p>
-                    Skills: Web Design, UI Design, UX/UI Design, Mobile Design,
-                    User Interface Design, Sketch, Photoshop, GUI, Html, Css,
-                    Grid Systems, Typography, Minimal, Template, English,
-                    Bootstrap, Responsive Web Design, Pixel Perfect, Graphic
-                    Design, Corporate, Creative, Flat, Luxury and much more.
-                  </p>
-
-                  <p>Available for:</p>
-                  <ul>
-                    <li>1. Full Time Office Work</li>
-                    <li>2. Remote Work</li>
-                    <li>3. Freelance</li>
-                    <li>4. Contract</li>
-                    <li>5. Worldwide</li>
-                  </ul>
-                </div>
-              </div>
-              <div className="card review-sec">
-                <div className="card-body">
-                  <h5 className="subs-title">Reviews</h5>
-                  <div className="instructor-wrap">
-                    <div className="about-instructor">
-                      <div className="abt-instructor-img">
-                        <a href="instructor-profile.html">
-                          <img
-                            src="/img/user/user2.jpg"
-                            alt="img"
-                            className="img-fluid"
-                          />
-                        </a>
-                      </div>
-                      <div className="instructor-detail">
-                        <h5>
-                          <a href="instructor-profile.html">Nicole Brown</a>
-                        </h5>
-                        <p>UX/UI Designer</p>
-                      </div>
-                    </div>
-                    <div className="rating">
-                      <FaStar className="star filled" />
-                      <FaStar className="star filled" />
-                      <FaStar className="star filled" />
-                      <FaStar className="star filled" />
-                      <FaStar className="star" />
-                      <span className="d-inline-block average-rating">
-                        4.5 Instructor Rating
-                      </span>
-                    </div>
-                  </div>
-                  <p className="rev-info">
-                    “ This is the second Photoshop course I have completed with
-                    Cristian. Worth every penny and recommend it highly. To get
-                    the most out of this course, its best to to take the
-                    Beginner to Advanced course first. The sound and video
-                    quality is of a good standard. Thank you Cristian. “
-                  </p>
-                  <a href="javascript:void(0);" className="btn btn-reply">
-                    <RiCornerDownLeftLine /> Reply
-                  </a>
-                </div>
-              </div>
-              <div className="card comment-sec">
-                <div className="card-body">
-                  <h5 className="subs-title">Post A comment</h5>
-                  <form>
-                    <div className="row">
-                      <div className="col-md-6">
-                        <div className="input-block">
-                          <input
-                            type="text"
-                            className="form-control"
-                            placeholder="Full Name"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-md-6">
-                        <div className="input-block">
-                          <input
-                            type="email"
-                            className="form-control"
-                            placeholder="Email"
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="input-block">
-                      <input
-                        type="email"
-                        className="form-control"
-                        placeholder="Subject"
-                      />
-                    </div>
-                    <div className="input-block">
-                      <textarea
-                        rows={4}
-                        className="form-control"
-                        placeholder="Your Comments"
-                      ></textarea>
-                    </div>
-                    <div className="submit-section">
-                      <button className="btn submit-btn" type="submit">
-                        Submit
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
+                </Tab>
+                <Tab eventKey="BussinessHours" title="BussinessHours">
+                  <BussinessHours bussinessHours={bussinessHours} />
+                </Tab>
+                <Tab eventKey="CommentsForm" title="Comments Form">
+                  <CommentsForm />
+                </Tab>
+              </Tabs>
             </div>
 
             <div className="col-lg-4">
@@ -439,7 +388,7 @@ export default function CourseDetails() {
                       <li>
                         <img
                           src="/img/user/user2.jpg"
-                          className="me-2"
+                          className="me-2 img-fluid"
                           alt="Img"
                         />{" "}
                         Enrolled: <span>32 students</span>

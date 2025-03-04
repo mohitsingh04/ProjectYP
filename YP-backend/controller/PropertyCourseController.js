@@ -20,6 +20,18 @@ export const getPropertyCourseById = async (req, res) => {
     console.log(err.message);
   }
 };
+export const getPropertyCourseByPropertyId = async (req, res) => {
+  try {
+    const propertyId = req.params.propertyId;
+    const propertyCourse = await PropertyCourse.find({
+      property_id: propertyId,
+    });
+    return res.status(200).json(propertyCourse);
+  } catch (err) {
+    res.send({ error: "Internal Server Error!" });
+    console.log(err.message);
+  }
+};
 
 export const updatePropertyCourse = async (req, res) => {
   try {

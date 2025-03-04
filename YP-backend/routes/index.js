@@ -53,6 +53,7 @@ import {
   deleteTeacher,
   getTeacher,
   getTeacherById,
+  getTeacherByPropertyId,
   updateTeacher,
 } from "../controller/TeachersController.js";
 import {
@@ -83,6 +84,7 @@ import {
   deleteGallery,
   getGallery,
   getGalleryById,
+  getGalleryByPropertyId,
   updateGallery,
 } from "../controller/GalleryController.js";
 import {
@@ -98,6 +100,7 @@ import {
   deletePropertyCourse,
   getPropertyCourse,
   getPropertyCourseById,
+  getPropertyCourseByPropertyId,
   updatePropertyCourse,
 } from "../controller/PropertyCourseController.js";
 import {
@@ -117,6 +120,7 @@ import { getPermissions } from "../controller/PermissionsControllers.js";
 import {
   addAmenities,
   getAmenities,
+  getAmenitiesByPropertyId,
   updateAmenities,
 } from "../controller/AmenitesController.js";
 
@@ -218,6 +222,7 @@ router.post("/teacher", teacherProfile, processImage, addTeacher);
 router.patch("/teacher/:objectId", teacherProfile, processImage, updateTeacher);
 router.delete("/teacher/:objectId", deleteTeacher);
 router.get("/teacher/:objectId", getTeacherById);
+router.get("/property/teacher/:propertyId", getTeacherByPropertyId);
 
 // Review Route
 router.get("/review", getReview);
@@ -234,7 +239,8 @@ router.get("/gallery", getGallery);
 router.post("/gallery", gallery, processImage, addGallery);
 router.patch("/gallery/:uniqueId", galleryUpdate, processImage, updateGallery);
 router.delete("/gallery/:uniqueId", deleteGallery);
-router.get("/gallery/:uniqueId", gallery, getGalleryById);
+router.get("/gallery/:uniqueId", getGalleryById);
+router.get("/property/gallery/:propertyId", getGalleryByPropertyId);
 
 // Faqs Route
 router.get("/faqs", getFaq);
@@ -260,6 +266,10 @@ router.get("/property-course", getPropertyCourse);
 router.post("/property-course", courseUpload, addPropertyCourse);
 router.patch("/property-course/:objectId", courseUpload, updatePropertyCourse);
 router.get("/property-course/:objectId", getPropertyCourseById);
+router.get(
+  "/property/property-course/:propertyId",
+  getPropertyCourseByPropertyId
+);
 router.delete("/property-course/:objectId", deletePropertyCourse);
 
 // Business Hours
@@ -284,6 +294,7 @@ router.get("/achievements/:property_id", getAchievementsByPropertyId);
 
 router.post("/amenities", addAmenities);
 router.get("/amenities", getAmenities);
+router.get("/property/amenities/:propertyId", getAmenitiesByPropertyId);
 router.put("/amenities/:uniqueId", updateAmenities);
 
 export default router;
