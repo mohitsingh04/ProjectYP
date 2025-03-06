@@ -79,15 +79,7 @@ export default function AddCourse() {
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
+  const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit,
@@ -113,28 +105,23 @@ export default function AddCourse() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Course</h1>
-          <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item className="breadcrumb-item">
-              <Link to="/dashboard/">Dashboard</Link>
+          <Breadcrumb>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard" }}>
+              Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item
-              className="breadcrumb-item active breadcrumds"
-              aria-current="page"
+              linkAs={Link}
+              linkProps={{ to: "/dashboard/course" }}
             >
-              <Link to="/dashboard/course/">Course</Link>
+              Course
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-              Add
-            </Breadcrumb.Item>
+            <Breadcrumb.Item>Add</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className="ms-auto pageheader-btn">
-          <Link
-            to="/dashboard/course/"
-            className="btn btn-primary btn-icon text-white me-3"
-          >
+          <Link to="/dashboard/course/" className="btn btn-primary">
             <span>
-              <i className="fe fe-arrow-left"></i>&nbsp;
+              <i className="fe fe-arrow-left me-1"></i>
             </span>
             Back to Course
           </Link>
@@ -148,7 +135,10 @@ export default function AddCourse() {
               <h3 className="card-title">Add Course</h3>
             </Card.Header>
             <Card.Body>
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
+              <form
+                onSubmit={formik.handleSubmit}
+                encType="multipart/form-data"
+              >
                 {error && (
                   <div className="alert alert-danger">
                     <small>{error}</small>
@@ -162,9 +152,9 @@ export default function AddCourse() {
                         name="course_type"
                         id="course_type"
                         className="form-control"
-                        value={values.course_type}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.course_type}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       >
                         <option value="">--Select Type--</option>
                         <option value="Diploma">Diploma</option>
@@ -172,11 +162,12 @@ export default function AddCourse() {
                         <option value="Degree">Degree</option>
                         <option value="Bachlore">Bachlore</option>
                       </select>
-                      {errors.course_type && touched.course_type && (
-                        <span className="text-danger">
-                          {errors.course_type}
-                        </span>
-                      )}
+                      {formik.errors.course_type &&
+                        formik.touched.course_type && (
+                          <span className="text-danger">
+                            {formik.errors.course_type}
+                          </span>
+                        )}
                     </Form.Group>
                   </div>
                   <div className="form-group col-md-6 mb-3">
@@ -190,15 +181,16 @@ export default function AddCourse() {
                         id="course_name"
                         className="form-control"
                         placeholder="Course Full Name"
-                        value={values.course_name}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.course_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
-                      {errors.course_name && touched.course_name && (
-                        <span className="text-danger">
-                          {errors.course_name}
-                        </span>
-                      )}
+                      {formik.errors.course_name &&
+                        formik.touched.course_name && (
+                          <span className="text-danger">
+                            {formik.errors.course_name}
+                          </span>
+                        )}
                     </Form.Group>
                   </div>
                   <div className="form-group col-md-6 mb-3">
@@ -212,14 +204,14 @@ export default function AddCourse() {
                         id="course_short_name"
                         className="form-control"
                         placeholder="Course Short Name"
-                        value={values.course_short_name}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.course_short_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
-                      {errors.course_short_name &&
-                        touched.course_short_name && (
+                      {formik.errors.course_short_name &&
+                        formik.touched.course_short_name && (
                           <span className="text-danger">
-                            {errors.course_short_name}
+                            {formik.errors.course_short_name}
                           </span>
                         )}
                     </Form.Group>
@@ -229,30 +221,25 @@ export default function AddCourse() {
                       <Form.Label htmlFor="duration_value">
                         Course Duration
                       </Form.Label>
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                        }}
-                      >
+                      <div className="d-flex justify-content-between">
                         <input
                           type="number"
                           name="duration_value"
                           id="duration_value"
                           className="form-control"
                           placeholder="Course Duration"
-                          value={values.duration_value}
-                          onChange={handleChange}
+                          value={formik.values.duration_value}
+                          onChange={formik.handleChange}
                           min={0}
-                          onBlur={handleBlur}
+                          onBlur={formik.handleBlur}
                           style={{ marginRight: "10px" }}
                         />
                         <select
                           name="duration_unit"
                           className="form-control"
-                          value={values.duration_unit}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.duration_unit}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         >
                           <option value="">--Select Type--</option>
                           <option value="Hours">Hours</option>
@@ -262,19 +249,20 @@ export default function AddCourse() {
                           <option value="Year">Year</option>
                         </select>
                       </div>
-                      {errors.duration_value && touched.duration_value && (
-                        <span className="text-danger">
-                          {errors.duration_value}
-                        </span>
-                      )}
-                      {errors.duration_unit && touched.duration_unit && (
-                        <span className="text-danger float-end">
-                          {errors.duration_unit}
-                        </span>
-                      )}
+                      {formik.errors.duration_value &&
+                        formik.touched.duration_value && (
+                          <span className="text-danger">
+                            {formik.errors.duration_value}
+                          </span>
+                        )}
+                      {formik.errors.duration_unit &&
+                        formik.touched.duration_unit && (
+                          <span className="text-danger float-end">
+                            {formik.errors.duration_unit}
+                          </span>
+                        )}
                     </Form.Group>
                   </div>
-
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
                       <Form.Label htmlFor="course_level">
@@ -284,20 +272,21 @@ export default function AddCourse() {
                         name="course_level"
                         id="course_level"
                         className="form-control"
-                        value={values.course_level}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.course_level}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       >
                         <option value="">--Select Level--</option>
                         <option value="Beginner">Beginner</option>
                         <option value="Intermediate">Intermediate</option>
                         <option value="Advanced">Advanced</option>
                       </select>
-                      {errors.course_level && touched.course_level && (
-                        <span className="text-danger">
-                          {errors.course_level}
-                        </span>
-                      )}
+                      {formik.errors.course_level &&
+                        formik.touched.course_level && (
+                          <span className="text-danger">
+                            {formik.errors.course_level}
+                          </span>
+                        )}
                     </Form.Group>
                   </div>
                   <div className="form-group col-md-12 mb-3">
@@ -310,37 +299,14 @@ export default function AddCourse() {
                         onChange={() =>
                           setDescription(editorRef.current.getContent())
                         }
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                         init={{
                           height: 200,
                           menubar: false,
-                          plugins: [
-                            "advlist",
-                            "autolink",
-                            "lists",
-                            "link",
-                            "image",
-                            "charmap",
-                            "preview",
-                            "anchor",
-                            "searchreplace",
-                            "visualblocks",
-                            "code",
-                            "fullscreen",
-                            "insertdatetime",
-                            "media",
-                            "table",
-                            "code",
-                            "help",
-                            "wordcount",
-                          ],
-                          toolbar:
-                            "undo redo | blocks | " +
-                            "bold italic forecolor | alignleft aligncenter " +
-                            "alignright alignjustify | bullist numlist outdent indent | " +
-                            "removeformat",
-                          content_style:
-                            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                          plugins:
+                            process.env.REACT_APP_TINYEDITORPLUGINS?.split(" "),
+                          toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
+                          content_style: process.env.REACT_APP_TINYEDITORSTYLE,
                         }}
                       />
                     </Form.Group>
@@ -359,24 +325,23 @@ export default function AddCourse() {
                           let reader = new FileReader();
                           reader.onload = () => {
                             if (reader.readyState === 2) {
-                              setFieldValue("image", file);
+                              formik.setFieldValue("image", file);
                               setPreviewImage(reader.result);
                             }
                           };
                           reader.readAsDataURL(file);
                         }}
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                       />
                       {previewImage && (
-                        <img
-                          src={previewImage}
-                          className="mt-1"
-                          width="100"
-                          alt="Preview"
-                        />
+                        <div className="col-md-3 p-0">
+                          <img src={previewImage} alt="Preview" />
+                        </div>
                       )}
-                      {errors.image && touched.image && (
-                        <span className="text-danger">{errors.image}</span>
+                      {formik.errors.image && formik.touched.image && (
+                        <span className="text-danger">
+                          {formik.errors.image}
+                        </span>
                       )}
                     </Form.Group>
                   </div>

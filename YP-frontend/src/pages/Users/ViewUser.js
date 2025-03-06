@@ -108,25 +108,15 @@ export default function ViewUser() {
                 >
                   User
                 </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="breadcrumb-item active breadcrumds"
-                  aria-current="page"
-                >
-                  View
-                </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="breadcrumb-item active breadcrumds"
-                  aria-current="page"
-                >
-                  {user.name}
-                </Breadcrumb.Item>
+                <Breadcrumb.Item>View</Breadcrumb.Item>
+                <Breadcrumb.Item>{user.name}</Breadcrumb.Item>
               </Breadcrumb>
             )}
           </div>
           <div className="ms-auto pageheader-btn">
             <button onClick={() => navigate(-1)} className="btn btn-primary">
               <span>
-                <i className="fe fe-arrow-left"></i>&nbsp;
+                <i className="fe fe-arrow-left me-1"></i>
               </span>
               Back
             </button>
@@ -189,15 +179,12 @@ export default function ViewUser() {
                             />
                           ) : (
                             <>
-                              <Link
-                                to="#"
-                                className="btn btn-primary mt-1 mb-1 "
-                              >
+                              <Link to="#" className="btn btn-primary">
                                 <i className="fa fa-rss"></i> Follow
                               </Link>
                               <Link
                                 to={`${process.env.PUBLIC_URL}/pages/mailInbox/`}
-                                className="btn btn-secondary mt-1 mb-1 ms-1"
+                                className="btn btn-secondary ms-1"
                               >
                                 <i className="fa fa-envelope"></i> E-mail
                               </Link>

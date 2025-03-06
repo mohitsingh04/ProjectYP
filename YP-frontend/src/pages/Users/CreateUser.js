@@ -46,7 +46,7 @@ export default function CreateUser() {
       setBtnText("Sending Mail...");
       const response = await API.post("/user/new", values);
       toast.success(response.data.message);
-      resetForm();
+      formik.resetForm();
       navigate("/dashboard/user");
     } catch (error) {
       console.log(error);
@@ -55,16 +55,7 @@ export default function CreateUser() {
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    handleBlur,
-    handleChange,
-    handleSubmit,
-    setFieldValue,
-    resetForm,
-  } = useFormik({
+  const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: handleAddUser,
@@ -75,28 +66,18 @@ export default function CreateUser() {
         <div className="page-header">
           <div>
             <h1 className="page-title">User</h1>
-            <Breadcrumb className="breadcrumb">
-              <Breadcrumb.Item className="breadcrumb-item" href="#">
+            <Breadcrumb>
+              <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard" }}>
                 Dashboard
               </Breadcrumb.Item>
-              <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-                Add
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                aria-current="page"
-              >
-                User
-              </Breadcrumb.Item>
+              <Breadcrumb.Item>Add</Breadcrumb.Item>
+              <Breadcrumb.Item>User</Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="ms-auto pageheader-btn">
-            <Link
-              to="/dashboard/user/"
-              className="btn btn-primary btn-icon text-white me-3"
-            >
+            <Link to="/dashboard/user/" className="btn btn-primary">
               <span>
-                <i className="fe fe-arrow-left"></i>&nbsp;
+                <i className="fe fe-arrow-left me-1"></i>
               </span>
               Back
             </Link>
@@ -110,7 +91,10 @@ export default function CreateUser() {
                 <h3 className="card-title">Add User</h3>
               </Card.Header>
               <Card.Body>
-                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <form
+                  onSubmit={formik.handleSubmit}
+                  encType="multipart/form-data"
+                >
                   {error ? (
                     <div className="alert alert-danger">
                       <small>{error}</small>
@@ -128,13 +112,15 @@ export default function CreateUser() {
                           id="name"
                           className="form-control"
                           placeholder="User Name"
-                          value={values.name}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.name}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           autoComplete="name"
                         />
-                        {errors.name && touched.name ? (
-                          <span className="text-danger">{errors.name}</span>
+                        {formik.errors.name && formik.touched.name ? (
+                          <span className="text-danger">
+                            {formik.errors.name}
+                          </span>
                         ) : (
                           <span />
                         )}
@@ -149,13 +135,15 @@ export default function CreateUser() {
                           name="email"
                           className="form-control"
                           placeholder="User Email"
-                          value={values.email}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.email}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                           autoComplete="email"
                         />
-                        {errors.email && touched.email ? (
-                          <span className="text-danger">{errors.email}</span>
+                        {formik.errors.email && formik.touched.email ? (
+                          <span className="text-danger">
+                            {formik.errors.email}
+                          </span>
                         ) : (
                           <span />
                         )}
@@ -172,13 +160,13 @@ export default function CreateUser() {
                           id="mobile_no"
                           className="form-control"
                           placeholder="User Phone Number"
-                          value={values.mobile_no}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.mobile_no}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
-                        {errors.mobile_no && touched.mobile_no ? (
+                        {formik.errors.mobile_no && formik.touched.mobile_no ? (
                           <span className="text-danger">
-                            {errors.mobile_no}
+                            {formik.errors.mobile_no}
                           </span>
                         ) : (
                           <span />
@@ -192,20 +180,24 @@ export default function CreateUser() {
                           name="role"
                           className="form-control"
                           id="role"
-                          value={values.role}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.role}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         >
                           <option value="">--Select Role--</option>
-                          <option value="Super Admin">Super Admin</option>
-                          <option value="Editor">Editor</option>
-                          <option value="Property Manager">
-                            Property Manager
-                          </option>
-                          <option value="User">User</option>
+                          {[
+                            "Super Admin",
+                            "Editor",
+                            "Property Manager",
+                            "User",
+                          ].map((item, index) => (
+                            <option value={item}>{item}</option>
+                          ))}
                         </select>
-                        {errors.role && touched.role ? (
-                          <small className="text-danger">{errors.role}</small>
+                        {formik.errors.role && formik.touched.role ? (
+                          <small className="text-danger">
+                            {formik.errors.role}
+                          </small>
                         ) : (
                           <span />
                         )}
@@ -224,15 +216,16 @@ export default function CreateUser() {
                           id="permissions"
                           multi={true}
                           placeholder="Choose Permissions"
-                          value={values.permission}
+                          value={formik.values.permission}
                           onChange={(value) =>
-                            setFieldValue("permission", value)
+                            formik.setFieldValue("permission", value)
                           }
-                          onBlur={handleBlur}
+                          onBlur={formik.handleBlur}
                         />
-                        {errors.permission && touched.permission ? (
+                        {formik.errors.permission &&
+                        formik.touched.permission ? (
                           <small className="text-danger">
-                            {errors.permission}
+                            {formik.errors.permission}
                           </small>
                         ) : (
                           <span />

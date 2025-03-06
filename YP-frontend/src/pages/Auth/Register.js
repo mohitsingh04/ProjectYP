@@ -5,18 +5,13 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
+import logo from "../../assets/custom-logo/logo.png";
 
 export default function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  // useEffect(() => {
-  //   if (accessToken) {
-  //     navigate("/dashboard");
-  //   }
-  // }, [navigate]);
 
   const initialValues = {
     name: "",
@@ -70,12 +65,11 @@ export default function Register() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-    });
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -92,11 +86,7 @@ export default function Register() {
           <div className="col col-login mx-auto">
             <div className="text-center">
               <Link to="/home">
-                <img
-                  src={require("../../assets/custom-logo/logo.png")}
-                  className="header-brand-img"
-                  alt=""
-                />
+                <img src={logo} className="header-brand-img" alt="" />
               </Link>
             </div>
           </div>
@@ -104,16 +94,14 @@ export default function Register() {
             <div className="wrap-login100 p-0">
               <Card.Body>
                 <form
-                  onSubmit={handleSubmit}
+                  onSubmit={formik.handleSubmit}
                   className="login100-form validate-form"
                 >
                   <span className="login100-form-title">Registration</span>
-                  {error ? (
+                  {error && (
                     <div className="alert alert-danger">
                       <small>{error}</small>
                     </div>
-                  ) : (
-                    <span />
                   )}
                   <div className="wrap-input100 validate-input">
                     <input
@@ -121,23 +109,18 @@ export default function Register() {
                       name="name"
                       className="input100"
                       placeholder="Full Name"
-                      value={values.name}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      value={formik.values.name}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
                     <span className="focus-input100"></span>
                     <span className="symbol-input100">
-                      {errors.name && touched.name ? (
-                        <i
-                          className="mdi mdi-account fixed-icon"
-                          aria-hidden="true"
-                        ></i>
-                      ) : (
-                        <i className="mdi mdi-account" aria-hidden="true"></i>
-                      )}
+                      <i className="mdi mdi-account"></i>
                     </span>
-                    {errors.name && touched.name ? (
-                      <small className="text-danger">{errors.name}</small>
+                    {formik.errors.name && formik.touched.name ? (
+                      <small className="text-danger">
+                        {formik.errors.name}
+                      </small>
                     ) : (
                       <span />
                     )}
@@ -148,23 +131,18 @@ export default function Register() {
                       name="email"
                       className="input100"
                       placeholder="Email"
-                      value={values.email}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      value={formik.values.email}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
                     <span className="focus-input100"></span>
                     <span className="symbol-input100">
-                      {errors.email && touched.email ? (
-                        <i
-                          className="zmdi zmdi-email fixed-icon"
-                          aria-hidden="true"
-                        ></i>
-                      ) : (
-                        <i className="zmdi zmdi-email" aria-hidden="true"></i>
-                      )}
+                      <i className="zmdi zmdi-email"></i>
                     </span>
-                    {errors.email && touched.email ? (
-                      <small className="text-danger">{errors.email}</small>
+                    {formik.errors.email && formik.touched.email ? (
+                      <small className="text-danger">
+                        {formik.errors.email}
+                      </small>
                     ) : (
                       <span />
                     )}
@@ -175,23 +153,18 @@ export default function Register() {
                       name="mobile_no"
                       className="input100"
                       placeholder="Mobile number"
-                      value={values.mobile_no}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      value={formik.values.mobile_no}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
                     <span className="focus-input100"></span>
                     <span className="symbol-input100">
-                      {errors.mobile_no && touched.mobile_no ? (
-                        <i
-                          className="zmdi zmdi-phone fixed-icon"
-                          aria-hidden="true"
-                        ></i>
-                      ) : (
-                        <i className="zmdi zmdi-phone" aria-hidden="true"></i>
-                      )}
+                      <i className="zmdi zmdi-phone"></i>
                     </span>
-                    {errors.mobile_no && touched.mobile_no ? (
-                      <small className="text-danger">{errors.mobile_no}</small>
+                    {formik.errors.mobile_no && formik.touched.mobile_no ? (
+                      <small className="text-danger">
+                        {formik.errors.mobile_no}
+                      </small>
                     ) : (
                       <span />
                     )}
@@ -202,9 +175,9 @@ export default function Register() {
                       name="password"
                       className="input100"
                       placeholder="Password"
-                      value={values.password}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      value={formik.values.password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       autoComplete="off"
                     />
                     <span
@@ -219,17 +192,12 @@ export default function Register() {
                     </span>
                     <span className="focus-input100"></span>
                     <span className="symbol-input100">
-                      {errors.password && touched.password ? (
-                        <i
-                          className="zmdi zmdi-lock fixed-icon"
-                          aria-hidden="true"
-                        ></i>
-                      ) : (
-                        <i className="zmdi zmdi-lock" aria-hidden="true"></i>
-                      )}
+                      <i className="zmdi zmdi-lock"></i>
                     </span>
-                    {errors.password && touched.password ? (
-                      <small className="text-danger">{errors.password}</small>
+                    {formik.errors.password && formik.touched.password ? (
+                      <small className="text-danger">
+                        {formik.errors.password}
+                      </small>
                     ) : (
                       <span />
                     )}
@@ -240,9 +208,9 @@ export default function Register() {
                       name="confirm_password"
                       className="input100"
                       placeholder="Confirm Password"
-                      value={values.confirm_password}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      value={formik.values.confirm_password}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                       autoComplete="off"
                     />
                     <span
@@ -257,18 +225,12 @@ export default function Register() {
                     </span>
                     <span className="focus-input100"></span>
                     <span className="symbol-input100">
-                      {errors.confirm_password && touched.confirm_password ? (
-                        <i
-                          className="zmdi zmdi-lock fixed-icon"
-                          aria-hidden="true"
-                        ></i>
-                      ) : (
-                        <i className="zmdi zmdi-lock" aria-hidden="true"></i>
-                      )}
+                      <i className="zmdi zmdi-lock " aria-hidden="true"></i>
                     </span>
-                    {errors.confirm_password && touched.confirm_password ? (
+                    {formik.errors.confirm_password &&
+                    formik.touched.confirm_password ? (
                       <small className="text-danger">
-                        {errors.confirm_password}
+                        {formik.errors.confirm_password}
                       </small>
                     ) : (
                       <span />

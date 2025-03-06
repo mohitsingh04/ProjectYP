@@ -24,14 +24,12 @@ export default function EditStatus() {
   const getAllStatus = async () => {
     try {
       const response = await API.get("/status");
-
       const uniqueStatus = Object.values(
         response.data.reduce((acc, item) => {
           acc[item.parent_status] = item;
           return acc;
         }, {})
       );
-
       setAllStatus(uniqueStatus);
     } catch (error) {
       console.log(error);
@@ -109,7 +107,7 @@ export default function EditStatus() {
           {loading ? (
             <Skeleton width={200} />
           ) : (
-            <Breadcrumb className="breadcrumb">
+            <Breadcrumb>
               <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
                 Dashboard
               </Breadcrumb.Item>
@@ -119,31 +117,17 @@ export default function EditStatus() {
               >
                 Status
               </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active"
-                aria-current="page"
-              >
-                Edit
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                aria-current="page"
-              >
-                {status.name}
-              </Breadcrumb.Item>
+              <Breadcrumb.Item>Edit</Breadcrumb.Item>
+              <Breadcrumb.Item>{status.name}</Breadcrumb.Item>
             </Breadcrumb>
           )}
         </div>
         <div className="ms-auto pageheader-btn">
-          <Link
-            to="/dashboard/status/"
-            className="btn btn-primary btn-icon text-white me-3"
-          >
-            <i className="fe fe-arrow-left"></i>&nbsp;Back
+          <Link to="/dashboard/status/" className="btn btn-primary">
+            <i className="fe fe-arrow-left me-1"></i>Back
           </Link>
         </div>
       </div>
-
       <Row>
         <div className="col-md-12 col-lg-12">
           <Card>
@@ -184,11 +168,18 @@ export default function EditStatus() {
                             --Select Category--
                           </option>
                           <option value={`uncategorized`}>Uncategorized</option>
-                          {allStatus.map((item, index) => (
-                            <option key={index} value={item.parent_status}>
-                              {item.parent_status}
-                            </option>
-                          ))}
+                          {allStatus
+                            .filter(
+                              (item) =>
+                                !["Active", "Pending", "Suspended"].includes(
+                                  item.parent_status
+                                )
+                            )
+                            .map((item, index) => (
+                              <option key={index} value={item.parent_status}>
+                                {item.parent_status}
+                              </option>
+                            ))}
                         </Form.Select>
                       </Form.Group>
                     </div>
@@ -213,7 +204,6 @@ export default function EditStatus() {
                           )}
                       </Form.Group>
                     </div>
-
                     <div className="form-group col-md-12 mb-3">
                       <Form.Group>
                         <Form.Label htmlFor="description">
@@ -230,22 +220,13 @@ export default function EditStatus() {
                           init={{
                             height: 200,
                             menubar: false,
-                            plugins: [
-                              "advlist",
-                              "autolink",
-                              "lists",
-                              "link",
-                              "image",
-                              "preview",
-                              "fullscreen",
-                              "media",
-                              "table",
-                              "wordcount",
-                            ],
-                            toolbar:
-                              "undo redo | bold italic | alignleft aligncenter alignright | bullist numlist outdent indent | removeformat",
+                            plugins:
+                              process.env.REACT_APP_TINYEDITORPLUGINS?.split(
+                                " "
+                              ),
+                            toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
                             content_style:
-                              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                              process.env.REACT_APP_TINYEDITORSTYLE,
                           }}
                         />
                       </Form.Group>

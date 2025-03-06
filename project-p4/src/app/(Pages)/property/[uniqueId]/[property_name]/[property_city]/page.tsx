@@ -1,20 +1,31 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import {
+  notFound,
+  useParams,
+  usePathname,
+  useSearchParams,
+  useRouter,
+} from "next/navigation";
 import axios from "axios";
-import FAQs from "./_propertyComponents/FAQs/FAQs";
 import { FaHeart, FaPlay, FaShare, FaStar } from "react-icons/fa";
-import PropertyBanner from "./_propertyComponents/PropertyBanner/PropertyBanner";
-import Review from "./_propertyComponents/Review/Review";
-import Teachers from "./_propertyComponents/Teachers/Teachers";
-import CommentsForm from "./_propertyComponents/Comments/CommentsForm";
-import BussinessHours from "./_propertyComponents/BussinessHours/BussinessHours";
+import PropertyBanner from "../../../_propertyComponents/PropertyBanner/PropertyBanner";
 import { Tab, Tabs } from "react-bootstrap";
-import Gallery from "./_propertyComponents/Gallery/Gallery";
-import Achievements from "./_propertyComponents/Achievements/Achievements";
-import Hostel from "./_propertyComponents/Hostels/Hostel";
-import Amenities from "./_propertyComponents/Amenities/Amenities";
-import Courses from "./_propertyComponents/Courses/Courses";
+import FAQs from "../../../_propertyComponents/FAQs/FAQs";
+import Review from "../../../_propertyComponents/Review/Review";
+import Gallery from "../../../_propertyComponents/Gallery/Gallery";
+import Achievements from "../../../_propertyComponents/Achievements/Achievements";
+import Hostel from "../../../_propertyComponents/Hostels/Hostel";
+import Amenities from "../../../_propertyComponents/Amenities/Amenities";
+import Courses from "../../../_propertyComponents/Courses/Courses";
+import CommentsForm from "../../../_propertyComponents/Comments/CommentsForm";
+import Teachers from "../../../_propertyComponents/Teachers/Teachers";
+import BusinessHours from "../../../_propertyComponents/BussinessHours/BussinessHours";
+import dynamic from "next/dynamic";
+
+const OwlCarousel = dynamic(() => import("react-owl-carousel3"), {
+  ssr: false,
+});
 
 interface Property {
   uniqueId: string;
@@ -38,7 +49,31 @@ export default function CourseDetails() {
   const [achievements, setAchievements] = useState([]);
   const [amenities, setAmenities] = useState([]);
   const [courses, setCourses] = useState([]);
-  const { uniqueId } = useParams();
+  const { uniqueId, property_name, property_city } = useParams();
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const activeTab = searchParams.get("tab") || "overview";
+
+  const handleTabSelect = (selectedTab) => {
+    const params = new URLSearchParams(searchParams); // Clone existing params
+    params.set("tab", selectedTab); // Update the 'tab' param
+
+    router.push(`${pathname}?${params.toString()}`); // Update the URL
+  };
+
+  const options: Record<string, unknown> = {
+    margin: 24,
+    nav: false,
+    dots: true,
+    loop: true,
+    responsive: {
+      0: { items: 1 },
+      768: { items: 2 },
+      1170: { items: 3 },
+    },
+  };
 
   const getProperty = async () => {
     try {
@@ -50,6 +85,21 @@ export default function CourseDetails() {
       console.log(error);
     }
   };
+
+  const name = property_name.replace(/-/g, " ");
+  const city = property_city.replace(/-/g, " ");
+  useEffect(() => {
+    if (property?.property_name) {
+      const formattedName = property.property_name.toLowerCase();
+      const formattedCity = property.property_city.toLowerCase();
+      if (formattedName !== name.toLowerCase()) {
+        notFound();
+      }
+      if (formattedCity !== city.toLowerCase()) {
+        notFound();
+      }
+    }
+  }, [property?.property_name]);
 
   const getFaqs = async () => {
     try {
@@ -190,11 +240,12 @@ export default function CourseDetails() {
             <div className="col-lg-8 category-tab">
               <Tabs
                 variant="Tabs"
-                defaultActiveKey="Overview"
+                defaultActiveKey={activeTab}
                 id=" tab-51"
+                onSelect={handleTabSelect}
                 className="tab-content tabesbody "
               >
-                <Tab eventKey="Overview" title="Overview">
+                <Tab eventKey="overview" title="Overview">
                   <div className="tab-pane show">
                     <div className="card overview-sec">
                       <div className="card-body">
@@ -208,7 +259,7 @@ export default function CourseDetails() {
                     </div>
                   </div>
                 </Tab>
-                <Tab eventKey="Faqs" title="Faqs">
+                <Tab eventKey="faqs" title="Faqs">
                   <div className="card content-sec">
                     <div className="card-body">
                       <div className="row">
@@ -225,33 +276,39 @@ export default function CourseDetails() {
                     </div>
                   </div>
                 </Tab>
-                <Tab eventKey="Review" title="Review">
+                <Tab eventKey="review" title="Review">
+                  <h5>Reviews</h5>
                   {reviews.map((review, index) => (
                     <div className="card review-sec" key={index}>
                       <Review review={review} />
                     </div>
                   ))}
                 </Tab>
-                <Tab eventKey="Gallery" title="Gallery">
+                <Tab eventKey="gallery" title="Gallery">
+                  <h5>Gallery</h5>
                   {gallery.map((item, index) => (
                     <Gallery gallery={item} key={index} />
                   ))}
                 </Tab>
-                <Tab eventKey="Achievements" title="Achievements">
+                <Tab eventKey="achievements" title="Achievements">
                   <Achievements achievements={achievements} />
                 </Tab>
-                <Tab eventKey="Hostel" title="Hostel">
+                <Tab eventKey="hostel" title="Hostel">
                   <Hostel property={property} />
                 </Tab>
-                <Tab eventKey="Teachers" title="Teachers">
-                  {teachers?.map((teacher, index) => (
-                    <Teachers teacher={teacher} key={index} />
-                  ))}
+                <Tab eventKey="teachers" title="Teachers">
+                  <h5>Teachers</h5>
+                  <OwlCarousel {...(options as any)}>
+                    {teachers?.map((teacher, index) => (
+                      <Teachers teacher={teacher} key={index} />
+                    ))}
+                  </OwlCarousel>
                 </Tab>
-                <Tab eventKey="Amenities" title="Amenities">
+                <Tab eventKey="amenities" title="Amenities">
+                  <h5>Amenities</h5>
                   <Amenities amenities={amenities} />
                 </Tab>
-                <Tab eventKey="Courses" title="Courses">
+                <Tab eventKey="courses" title="Courses">
                   <div className="card">
                     <div className="card-body">
                       <h5 className="subs-title">Courses</h5>
@@ -263,10 +320,10 @@ export default function CourseDetails() {
                     </div>
                   </div>
                 </Tab>
-                <Tab eventKey="BussinessHours" title="BussinessHours">
-                  <BussinessHours bussinessHours={bussinessHours} />
+                <Tab eventKey="bussinessHours" title="BussinessHours">
+                  <BusinessHours bussinessHours={bussinessHours} />
                 </Tab>
-                <Tab eventKey="CommentsForm" title="Comments Form">
+                <Tab eventKey="commentsForm" title="Comments Form">
                   <CommentsForm />
                 </Tab>
               </Tabs>

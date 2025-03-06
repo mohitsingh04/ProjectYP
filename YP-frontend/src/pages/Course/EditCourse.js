@@ -119,15 +119,7 @@ export default function EditCourse() {
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    handleChange,
-    setFieldValue,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
+  const formik = useFormik({
     initialValues,
     validationSchema,
     onSubmit,
@@ -167,26 +159,13 @@ export default function EditCourse() {
               >
                 Course
               </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active"
-                aria-current="page"
-              >
-                Edit
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active"
-                aria-current="page"
-              >
-                {course.course_name}
-              </Breadcrumb.Item>
+              <Breadcrumb.Item>Edit</Breadcrumb.Item>
+              <Breadcrumb.Item>{course.course_name}</Breadcrumb.Item>
             </Breadcrumb>
           )}
         </div>
         <div className="ms-auto pageheader-btn">
-          <Link
-            to="/dashboard/course/"
-            className="btn btn-primary btn-icon text-white me-3"
-          >
+          <Link to="/dashboard/course/" className="btn btn-primary">
             <span>
               <i className="fe fe-arrow-left"></i>&nbsp;
             </span>
@@ -194,7 +173,6 @@ export default function EditCourse() {
           </Link>
         </div>
       </div>
-
       <Row>
         <div className="col-md-12 col-lg-12">
           <Card>
@@ -215,7 +193,10 @@ export default function EditCourse() {
             </Card.Header>
             <Card.Body>
               {!loading ? (
-                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <form
+                  onSubmit={formik.handleSubmit}
+                  encType="multipart/form-data"
+                >
                   {error && (
                     <div className="alert alert-danger">
                       <small>{error}</small>
@@ -231,9 +212,9 @@ export default function EditCourse() {
                           id="courseType"
                           name="course_type"
                           className="form-control"
-                          value={values.course_type}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.course_type}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         >
                           <option value="">--Select Type--</option>
                           <option value="Diploma">Diploma</option>
@@ -254,15 +235,16 @@ export default function EditCourse() {
                           id="course_name"
                           className="form-control"
                           placeholder="Course Full Name"
-                          value={values.course_name}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.course_name}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
-                        {errors.course_name && touched.course_name && (
-                          <span className="text-danger">
-                            {errors.course_name}
-                          </span>
-                        )}
+                        {formik.errors.course_name &&
+                          formik.touched.course_name && (
+                            <span className="text-danger">
+                              {formik.errors.course_name}
+                            </span>
+                          )}
                       </Form.Group>
                     </div>
                     <div className="form-group col-md-6 mb-3">
@@ -276,14 +258,14 @@ export default function EditCourse() {
                           id="course_short_name"
                           className="form-control"
                           placeholder="Course Short Name"
-                          value={values.course_short_name}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.course_short_name}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
-                        {errors.course_short_name &&
-                          touched.course_short_name && (
+                        {formik.errors.course_short_name &&
+                          formik.touched.course_short_name && (
                             <span className="text-danger">
-                              {errors.course_short_name}
+                              {formik.errors.course_short_name}
                             </span>
                           )}
                       </Form.Group>
@@ -300,18 +282,18 @@ export default function EditCourse() {
                             id="course_duration"
                             className="form-control"
                             placeholder="Course Duration"
-                            value={values.duration_value}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.duration_value}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             min={0}
                             style={{ marginRight: "10px" }}
                           />
                           <select
                             name="duration_unit"
                             className="form-control"
-                            value={values.duration_unit}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.duration_unit}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           >
                             <option value="Hours">Hours</option>
                             <option value="Days">Days</option>
@@ -319,16 +301,18 @@ export default function EditCourse() {
                             <option value="Month">Month</option>
                           </select>
                         </div>
-                        {errors.duration_value && touched.duration_value && (
-                          <span className="text-danger">
-                            {errors.duration_value}
-                          </span>
-                        )}
-                        {errors.duration_unit && touched.duration_unit && (
-                          <span className="text-danger">
-                            {errors.duration_unit}
-                          </span>
-                        )}
+                        {formik.errors.duration_value &&
+                          formik.touched.duration_value && (
+                            <span className="text-danger">
+                              {formik.errors.duration_value}
+                            </span>
+                          )}
+                        {formik.errors.duration_unit &&
+                          formik.touched.duration_unit && (
+                            <span className="text-danger">
+                              {formik.errors.duration_unit}
+                            </span>
+                          )}
                       </Form.Group>
                     </div>
                     <div className="form-group col-md-6 mb-3">
@@ -341,20 +325,21 @@ export default function EditCourse() {
                           id="course_level"
                           className="form-control"
                           placeholder="Course Level"
-                          value={values.course_level}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.course_level}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         >
                           <option value="">--Select Level--</option>
                           <option value="Beginner">Beginner</option>
                           <option value="Intermediate">Intermediate</option>
                           <option value="Advanced">Advanced</option>
                         </select>
-                        {errors.course_level && touched.course_level && (
-                          <span className="text-danger">
-                            {errors.course_level}
-                          </span>
-                        )}
+                        {formik.errors.course_level &&
+                          formik.touched.course_level && (
+                            <span className="text-danger">
+                              {formik.errors.course_level}
+                            </span>
+                          )}
                       </Form.Group>
                     </div>
                     <div className="form-group col-md-12 mb-3">
@@ -369,37 +354,17 @@ export default function EditCourse() {
                             setDescription(editorRef.current.getContent())
                           }
                           id={`description`}
-                          onBlur={handleBlur}
+                          onBlur={formik.handleBlur}
                           init={{
                             height: 200,
                             menubar: false,
-                            plugins: [
-                              "advlist",
-                              "autolink",
-                              "lists",
-                              "link",
-                              "image",
-                              "charmap",
-                              "preview",
-                              "anchor",
-                              "searchreplace",
-                              "visualblocks",
-                              "code",
-                              "fullscreen",
-                              "insertdatetime",
-                              "media",
-                              "table",
-                              "code",
-                              "help",
-                              "wordcount",
-                            ],
-                            toolbar:
-                              "undo redo | blocks | " +
-                              "bold italic forecolor | alignleft aligncenter " +
-                              "alignright alignjustify | bullist numlist outdent indent | " +
-                              "removeformat",
+                            plugins:
+                              process.env.REACT_APP_TINYEDITORPLUGINS?.split(
+                                " "
+                              ),
+                            toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
                             content_style:
-                              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                              process.env.REACT_APP_TINYEDITORSTYLE,
                           }}
                           initialValue={course.description}
                         />
@@ -419,13 +384,13 @@ export default function EditCourse() {
                             let reader = new FileReader();
                             reader.onload = () => {
                               if (reader.readyState === 2) {
-                                setFieldValue("image", file);
+                                formik.setFieldValue("image", file);
                                 setPreviewImage(reader.result);
                               }
                             };
                             reader.readAsDataURL(file);
                           }}
-                          onBlur={handleBlur}
+                          onBlur={formik.handleBlur}
                         />
                         <img
                           src={
@@ -439,8 +404,10 @@ export default function EditCourse() {
                           width="100"
                           alt="Preview"
                         />
-                        {errors.image && touched.image && (
-                          <span className="text-danger">{errors.image}</span>
+                        {formik.errors.image && formik.touched.image && (
+                          <span className="text-danger">
+                            {formik.errors.image}
+                          </span>
                         )}
                       </Form.Group>
                     </div>
@@ -451,9 +418,9 @@ export default function EditCourse() {
                           name="status"
                           id="status"
                           className="form-control"
-                          value={values.status}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.status}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         >
                           {status.map((item, key) => (
                             <option key={key} value={item.parent_status}>
@@ -461,8 +428,10 @@ export default function EditCourse() {
                             </option>
                           ))}
                         </select>
-                        {errors.status && touched.status ? (
-                          <small className="text-danger">{errors.status}</small>
+                        {formik.errors.status && formik.touched.status ? (
+                          <small className="text-danger">
+                            {formik.errors.status}
+                          </small>
                         ) : (
                           <span />
                         )}

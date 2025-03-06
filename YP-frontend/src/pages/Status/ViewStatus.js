@@ -82,7 +82,7 @@ export default function ViewStatus() {
             {loading ? (
               <Skeleton width={200} />
             ) : (
-              <Breadcrumb className="breadcrumb">
+              <Breadcrumb>
                 <Breadcrumb.Item
                   linkAs={Link}
                   linkProps={{ to: "/dashboard/" }}
@@ -95,25 +95,15 @@ export default function ViewStatus() {
                 >
                   Status
                 </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="breadcrumb-item active"
-                  aria-current="page"
-                >
-                  View
-                </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="breadcrumb-item active breadcrumds"
-                  aria-current="page"
-                >
-                  {status.name}
-                </Breadcrumb.Item>
+                <Breadcrumb.Item>View</Breadcrumb.Item>
+                <Breadcrumb.Item>{status.name}</Breadcrumb.Item>
               </Breadcrumb>
             )}
           </div>
           <div className="ms-auto pageheader-btn">
             <button onClick={() => navigate(-1)} className="btn btn-primary">
               <span>
-                <i className="fe fe-arrow-left"></i>&nbsp;
+                <i className="fe fe-arrow-left me-1"></i>&nbsp;
               </span>
               Back
             </button>

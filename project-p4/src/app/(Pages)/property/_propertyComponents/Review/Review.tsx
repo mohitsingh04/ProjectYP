@@ -33,7 +33,9 @@ export default function Review({ review }: ReviewProps) {
             .map((_, index) => (
               <FaStar className="star" key={index} />
             ))}
-          <span className="d-inline-block average-rating">4.5 Rating</span>
+          <span className="d-inline-block average-rating">
+            {review?.rating}/5 Rating
+          </span>
         </div>
       </div>
       <p className="rev-info">“ {review.review} “</p>

@@ -71,45 +71,30 @@ export default function Location() {
   const handleEditAddress = () => {
     setShowAddressInInput(true);
   };
-  // const handleUpdateAddress = () => {
-  //   setShowAddressInInput(false);
-  // };
   const handleCancelEditAddress = () => {
     setShowAddressInInput(false);
   };
   const handleEditCity = () => {
     setShowCityInInput(true);
   };
-  // const handleUpdateCity = () => {
-  //   setShowCityInInput(false);
-  // };
   const handleCancelEditCity = () => {
     setShowCityInInput(false);
   };
   const handleEditPincode = () => {
     setShowPincodeInInput(true);
   };
-  // const handleUpdatePincode = () => {
-  //   setShowPincodeInInput(false);
-  // };
   const handleCancelEditPincode = () => {
     setShowPincodeInInput(false);
   };
   const handleEditState = () => {
     setShowStateInInput(true);
   };
-  // const handleUpdateState = () => {
-  //   setShowStateInInput(false);
-  // };
   const handleCancelEditState = () => {
     setShowStateInInput(false);
   };
   const handleEditCountry = () => {
     setShowCountryInInput(true);
   };
-  // const handleUpdateCountry = () => {
-  //   setShowCountryInInput(false);
-  // };
   const handleCancelEditCountry = () => {
     setShowCountryInInput(false);
   };
@@ -145,13 +130,12 @@ export default function Location() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-      enableReinitialize: true,
-    });
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+    enableReinitialize: true,
+  });
 
   return (
     <>
@@ -172,15 +156,18 @@ export default function Location() {
                         <strong>Address :</strong>
                         {!property.property_address ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <input
                                 type="text"
                                 name="property_address"
                                 className="form-control"
                                 placeholder="Enter Address..."
-                                value={values.property_address}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_address}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               />
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
@@ -189,15 +176,18 @@ export default function Location() {
                           </>
                         ) : showAddressInInput ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <input
                                 type="text"
                                 name="property_address"
                                 className="form-control"
                                 placeholder="Enter Address..."
-                                value={values.property_address}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_address}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               />
                               <span
                                 onClick={handleCancelEditAddress}
@@ -231,17 +221,19 @@ export default function Location() {
                         <strong>State :</strong>{" "}
                         {!property.property_state ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <select
                                 name="property_state"
                                 className="form-control"
-                                value={values.property_state}
-                                // onChange={(e) => setFilteredState(e.target.value)}
+                                value={formik.values.property_state}
                                 onChange={(e) => {
-                                  handleChange(e);
+                                  formik.handleChange(e);
                                   setSelectedState(e.target.value);
                                 }}
-                                onBlur={handleBlur}
+                                onBlur={formik.handleBlur}
                               >
                                 <option value="">--Select--</option>
                                 {state.map((item) => (
@@ -257,14 +249,16 @@ export default function Location() {
                           </>
                         ) : showStateInInput ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <select
                                 name="property_state"
                                 className="form-control"
-                                value={values.property_state}
-                                // onChange={(e) => setFilteredState(e.target.value)}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_state}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               >
                                 <option value="">--Select--</option>
                                 {state.map((item, index) => (
@@ -305,13 +299,16 @@ export default function Location() {
                         <strong>Country : </strong>
                         {!property.property_country ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <select
                                 name="property_country"
                                 className="form-control"
-                                value={values.property_country}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_country}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               >
                                 <option value="">--Select--</option>
                                 {country.map((item) => (
@@ -320,7 +317,6 @@ export default function Location() {
                                   </option>
                                 ))}
                               </select>
-                              {/* <span onClick={handleCancelEditCountry} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
@@ -328,13 +324,16 @@ export default function Location() {
                           </>
                         ) : showCountryInInput ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <select
                                 name="property_country"
                                 className="form-control"
-                                value={values.property_country}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_country}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               >
                                 <option value="">--Select--</option>
                                 {country.map((item) => (
@@ -377,25 +376,27 @@ export default function Location() {
                         <strong>Pincode :</strong>
                         {!property.property_pincode ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <input
                                 type="text"
                                 name="property_pincode"
                                 className="form-control"
                                 placeholder="Enter Pincode..."
-                                value={values.property_pincode}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_pincode}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               />
-                              {/* <span onClick={handleCancelEditPincode} className="mx-3 py-2"><i className="fe fe-x"></i></span> */}
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
                             </form>
-                            {errors.property_pincode &&
-                            touched.property_pincode ? (
+                            {formik.errors.property_pincode &&
+                            formik.touched.property_pincode ? (
                               <small className="text-danger">
-                                {errors.property_pincode}
+                                {formik.errors.property_pincode}
                               </small>
                             ) : (
                               <span />
@@ -403,15 +404,18 @@ export default function Location() {
                           </>
                         ) : showPincodeInInput ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <input
                                 type="text"
                                 name="property_pincode"
                                 className="form-control"
                                 placeholder="Enter Pincode..."
-                                value={values.property_pincode}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_pincode}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               />
                               <span
                                 onClick={handleCancelEditPincode}
@@ -423,10 +427,10 @@ export default function Location() {
                                 <i className="fe fe-check text-primary"></i>
                               </button>
                             </form>
-                            {errors.property_pincode &&
-                            touched.property_pincode ? (
+                            {formik.errors.property_pincode &&
+                            formik.touched.property_pincode ? (
                               <small className="text-danger">
-                                {errors.property_pincode}
+                                {formik.errors.property_pincode}
                               </small>
                             ) : (
                               <span />
@@ -453,14 +457,17 @@ export default function Location() {
                         <strong>City : </strong>{" "}
                         {!property.property_city ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <select
                                 name="property_city"
                                 className="form-control"
                                 placeholder="Enter City..."
-                                value={values.property_city}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_city}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               >
                                 <option value="">--Select--</option>
                                 {city.map((item) => (
@@ -476,14 +483,17 @@ export default function Location() {
                           </>
                         ) : showCityInInput ? (
                           <>
-                            <form onSubmit={handleSubmit} className="d-flex">
+                            <form
+                              onSubmit={formik.handleSubmit}
+                              className="d-flex"
+                            >
                               <select
                                 name="property_city"
                                 className="form-control"
                                 placeholder="Enter City..."
-                                value={values.property_city}
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                value={formik.values.property_city}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
                               >
                                 <option value="">--Select--</option>
                                 {city.map((item) => (

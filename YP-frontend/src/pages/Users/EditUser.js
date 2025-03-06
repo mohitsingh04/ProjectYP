@@ -80,8 +80,6 @@ export default function EditUser() {
     permission: user.permissions || [],
   };
 
-  console.log(selectedState);
-
   const validationSchema = Yup.object({
     name: Yup.string()
       .min(3, "Full Name must be at least 3 characters long.")
@@ -121,20 +119,12 @@ export default function EditUser() {
         navigate("/dashboard/user");
       } else if (response.data.error) {
         toast.error(response.data.error);
-        console.log(errors);
+        console.log(formik.errors);
       }
     });
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
+  const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: onSubmit,
@@ -178,15 +168,8 @@ export default function EditUser() {
                 >
                   User
                 </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="breadcrumb-item active"
-                  aria-current="page"
-                >
-                  Edit
-                </Breadcrumb.Item>
-                <Breadcrumb.Item className="breadcrumb-item active" href="#">
-                  {user.name}
-                </Breadcrumb.Item>
+                <Breadcrumb.Item>Edit</Breadcrumb.Item>
+                <Breadcrumb.Item>{user.name}</Breadcrumb.Item>
               </Breadcrumb>
             )}
           </div>
@@ -212,7 +195,7 @@ export default function EditUser() {
               </Card.Header>
               <Card.Body>
                 {!loading ? (
-                  <form onSubmit={handleSubmit}>
+                  <form onSubmit={formik.handleSubmit}>
                     <Row>
                       <Col lg={12} md={12}>
                         <FormGroup>
@@ -223,13 +206,15 @@ export default function EditUser() {
                             className="form-control"
                             id="name"
                             placeholder="First Name"
-                            value={values.name}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.name}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             autoComplete="name"
                           />
-                          {errors.name && touched.name ? (
-                            <small className="text-danger">{errors.name}</small>
+                          {formik.errors.name && formik.touched.name ? (
+                            <small className="text-danger">
+                              {formik.errors.name}
+                            </small>
                           ) : (
                             <span />
                           )}
@@ -244,10 +229,10 @@ export default function EditUser() {
                         className="form-control"
                         id="email"
                         placeholder="email address"
-                        value={values.email}
-                        onChange={handleChange}
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
                         autoComplete="email"
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                         disabled
                       />
                     </FormGroup>
@@ -259,15 +244,15 @@ export default function EditUser() {
                         className="form-control"
                         id="mobile_no"
                         placeholder="mobile number"
-                        value={values.mobile_no}
-                        onChange={handleChange}
+                        value={formik.values.mobile_no}
+                        onChange={formik.handleChange}
                         autoComplete="mobile_no"
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                         disabled
                       />
-                      {errors.mobile_no && touched.mobile_no ? (
+                      {formik.errors.mobile_no && formik.touched.mobile_no ? (
                         <small className="text-danger">
-                          {errors.mobile_no}
+                          {formik.errors.mobile_no}
                         </small>
                       ) : (
                         <span />
@@ -283,14 +268,14 @@ export default function EditUser() {
                             className="form-control"
                             id="address"
                             placeholder="Address *"
-                            value={values.address}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.address}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                             autoComplete="address"
                           />
-                          {errors.address && touched.address ? (
+                          {formik.errors.address && formik.touched.address ? (
                             <small className="text-danger">
-                              {errors.address}
+                              {formik.errors.address}
                             </small>
                           ) : (
                             <span />
@@ -306,13 +291,13 @@ export default function EditUser() {
                             className="form-control"
                             id="pincode"
                             placeholder="Pincode *"
-                            value={values.pincode}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.pincode}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           />
-                          {errors.pincode && touched.pincode ? (
+                          {formik.errors.pincode && formik.touched.pincode ? (
                             <small className="text-danger">
-                              {errors.pincode}
+                              {formik.errors.pincode}
                             </small>
                           ) : (
                             <span />
@@ -328,12 +313,12 @@ export default function EditUser() {
                             name="state"
                             className="form-control"
                             id="state"
-                            value={values.state}
+                            value={formik.values.state}
                             onChange={(e) => {
-                              handleChange(e);
+                              formik.handleChange(e);
                               setSelectedState(e.target.value);
                             }}
-                            onBlur={handleBlur}
+                            onBlur={formik.handleBlur}
                           >
                             <option value="">Select State *</option>
                             {state.map((state, index) => (
@@ -343,9 +328,9 @@ export default function EditUser() {
                             ))}
                           </Form.Select>
 
-                          {errors.state && touched.state ? (
+                          {formik.errors.state && formik.touched.state ? (
                             <small className="text-danger">
-                              {errors.state}
+                              {formik.errors.state}
                             </small>
                           ) : (
                             <span />
@@ -359,9 +344,9 @@ export default function EditUser() {
                             name="city"
                             className="form-control"
                             id="city"
-                            value={values.city}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.city}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           >
                             <option value="">Select City *</option>
                             {city.map((city, index) => (
@@ -370,8 +355,10 @@ export default function EditUser() {
                               </option>
                             ))}
                           </Form.Select>
-                          {errors.city && touched.city ? (
-                            <small className="text-danger">{errors.city}</small>
+                          {formik.errors.city && formik.touched.city ? (
+                            <small className="text-danger">
+                              {formik.errors.city}
+                            </small>
                           ) : (
                             <span />
                           )}
@@ -384,9 +371,9 @@ export default function EditUser() {
                             name="status"
                             className="form-control"
                             id="status"
-                            value={values.status}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.status}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           >
                             <option value="">--Select--</option>
                             {status.map((item, key) => (
@@ -395,9 +382,9 @@ export default function EditUser() {
                               </option>
                             ))}
                           </select>
-                          {errors.status && touched.status ? (
+                          {formik.errors.status && formik.touched.status ? (
                             <small className="text-danger">
-                              {errors.status}
+                              {formik.errors.status}
                             </small>
                           ) : (
                             <span />
@@ -411,9 +398,9 @@ export default function EditUser() {
                             name="role"
                             className="form-control"
                             id="role"
-                            value={values.role}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.role}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           >
                             <option value="">--Select Role--</option>
                             <option value="Super Admin">Super Admin</option>
@@ -423,8 +410,10 @@ export default function EditUser() {
                             </option>
                             <option value="User">User</option>
                           </select>
-                          {errors.role && touched.role ? (
-                            <small className="text-danger">{errors.role}</small>
+                          {formik.errors.role && formik.touched.role ? (
+                            <small className="text-danger">
+                              {formik.errors.role}
+                            </small>
                           ) : (
                             <span />
                           )}
@@ -445,16 +434,17 @@ export default function EditUser() {
                             id="permissions"
                             multi={true}
                             placeholder="Choose Permissions"
-                            value={values.permission}
+                            value={formik.values.permission}
                             values={user?.permissions}
                             onChange={(value) =>
-                              setFieldValue("permission", value)
+                              formik.setFieldValue("permission", value)
                             }
-                            onBlur={handleBlur}
+                            onBlur={formik.handleBlur}
                           />
-                          {errors.permission && touched.permission ? (
+                          {formik.errors.permission &&
+                          formik.touched.permission ? (
                             <small className="text-danger">
-                              {errors.permission}
+                              {formik.errors.permission}
                             </small>
                           ) : (
                             <span />

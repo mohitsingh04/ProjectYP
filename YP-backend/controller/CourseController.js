@@ -20,6 +20,16 @@ export const getCourseById = async (req, res) => {
     return res.send({ error: "Internal Server Error!" });
   }
 };
+export const getCourseByUniqueId = async (req, res) => {
+  try {
+    const uniqueId = req.params.uniqueId;
+    const course = await Course.findOne({ uniqueId: uniqueId });
+    return res.status(200).json(course);
+  } catch (err) {
+    console.log(err.message);
+    return res.send({ error: "Internal Server Error!" });
+  }
+};
 
 export const addCourse = async (req, res) => {
   try {

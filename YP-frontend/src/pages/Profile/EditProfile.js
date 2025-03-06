@@ -96,7 +96,6 @@ export default function EditProfile() {
     address: Yup.string().required("Address is required."),
     city: Yup.string().required("City is required."),
     state: Yup.string().required("State is required."),
-    profile: Yup.string().required("Profile image is required."),
   });
 
   const onSubmit = async (values) => {

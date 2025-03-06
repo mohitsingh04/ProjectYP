@@ -49,12 +49,11 @@ export default function ChangePassword({ loading }) {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-    });
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
 
   const toggleOldPasswordVisibility = () => {
     setShowOldPassword((prev) => !prev);
@@ -70,7 +69,7 @@ export default function ChangePassword({ loading }) {
 
   return (
     <Card className="profile-edit">
-      <form onSubmit={handleSubmit} autoComplete="off">
+      <form onSubmit={formik.handleSubmit} autoComplete="off">
         <Card.Header>
           <Card.Title>Edit Password</Card.Title>
         </Card.Header>
@@ -86,9 +85,9 @@ export default function ChangePassword({ loading }) {
                   name="current_password"
                   id="current_password"
                   placeholder="******"
-                  value={values.current_password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  value={formik.values.current_password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   autoComplete="off"
                 />
                 <span
@@ -101,9 +100,10 @@ export default function ChangePassword({ loading }) {
                     <i className="fe fe-eye-off"></i>
                   )}
                 </span>
-                {errors.current_password && touched.current_password ? (
+                {formik.errors.current_password &&
+                formik.touched.current_password ? (
                   <small className="text-danger">
-                    {errors.current_password}
+                    {formik.errors.current_password}
                   </small>
                 ) : (
                   <span />
@@ -118,9 +118,9 @@ export default function ChangePassword({ loading }) {
                   name="new_password"
                   id="new_password"
                   placeholder="******"
-                  value={values.new_password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  value={formik.values.new_password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   autoComplete="off"
                 />
                 <span
@@ -133,8 +133,10 @@ export default function ChangePassword({ loading }) {
                     <i className="fe fe-eye-off"></i>
                   )}
                 </span>
-                {errors.new_password && touched.new_password ? (
-                  <small className="text-danger">{errors.new_password}</small>
+                {formik.errors.new_password && formik.touched.new_password ? (
+                  <small className="text-danger">
+                    {formik.errors.new_password}
+                  </small>
                 ) : (
                   <span />
                 )}
@@ -148,9 +150,9 @@ export default function ChangePassword({ loading }) {
                   name="confirm_password"
                   id="confirm_password"
                   placeholder="******"
-                  value={values.confirm_password}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
+                  value={formik.values.confirm_password}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
                   autoComplete="off"
                 />
                 <span
@@ -163,9 +165,10 @@ export default function ChangePassword({ loading }) {
                     <i className="fe fe-eye-off"></i>
                   )}
                 </span>
-                {errors.confirm_password && touched.confirm_password ? (
+                {formik.errors.confirm_password &&
+                formik.touched.confirm_password ? (
                   <small className="text-danger">
-                    {errors.confirm_password}
+                    {formik.errors.confirm_password}
                   </small>
                 ) : (
                   <span />

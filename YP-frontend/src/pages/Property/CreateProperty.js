@@ -54,18 +54,15 @@ export default function CreateProperty() {
         /^[a-zA-Z\s]+$/,
         "Property Name can only contain alphabets and spaces."
       ),
-
     property_email: Yup.string()
       .email("Please enter a valid email address.")
       .required("Email address is required."),
-
     property_mobile_no: Yup.string()
       .matches(
         /^[0-9]{10}$/,
         "Mobile number must be a positive 10-digit number."
       )
       .required("Mobile number is required."),
-
     property_logo: Yup.string(),
     featured_image: Yup.string(),
     category: Yup.string().required("Category is required."),
@@ -105,15 +102,7 @@ export default function CreateProperty() {
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
+  const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: onSubmit,
@@ -139,28 +128,20 @@ export default function CreateProperty() {
         <div>
           <h1 className="page-title">Property</h1>
           <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item className="breadcrumb-item" href="#">
-              <Link to="/dashboard/">Dashboard</Link>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard" }}>
+              Dashboard
             </Breadcrumb.Item>
             <Breadcrumb.Item
-              className="breadcrumb-item breadcrumds"
-              ria-current="page"
+              linkAs={Link}
+              linkProps={{ to: "/dashboard/property" }}
             >
-              <Link to="/dashboard/property/">Property</Link>
+              Property
             </Breadcrumb.Item>
-            <Breadcrumb.Item
-              className="breadcrumb-item active"
-              ria-current="page"
-            >
-              Add
-            </Breadcrumb.Item>
+            <Breadcrumb.Item>Add</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className="ms-auto pageheader-btn">
-          <Link
-            to="/dashboard/property"
-            className="btn btn-primary btn-icon text-white me-3"
-          >
+          <Link to="/dashboard/property" className="btn btn-primary">
             <span>
               <i className="fe fe-arrow-left"></i>&nbsp;
             </span>
@@ -196,7 +177,10 @@ export default function CreateProperty() {
                   </Col>
                 </Row>
               )}
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
+              <form
+                onSubmit={formik.handleSubmit}
+                encType="multipart/form-data"
+              >
                 {error ? (
                   <div className="alert alert-danger">
                     <small>{error}</small>
@@ -205,7 +189,6 @@ export default function CreateProperty() {
                   <span />
                 )}
                 <div className="row">
-                  {/* Property Name */}
                   <div className="col-md-6">
                     <label className="form-label" htmlFor="property_name">
                       Property Name
@@ -216,19 +199,19 @@ export default function CreateProperty() {
                       id="property_name"
                       className="form-control"
                       placeholder="Property Name"
-                      value={values.property_name}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
+                      value={formik.values.property_name}
+                      onChange={formik.handleChange}
+                      onBlur={formik.handleBlur}
                     />
-                    {errors.property_name && touched.property_name ? (
+                    {formik.errors.property_name &&
+                    formik.touched.property_name ? (
                       <span className="text-danger">
-                        {errors.property_name}
+                        {formik.errors.property_name}
                       </span>
                     ) : (
                       <span />
                     )}
                   </div>
-                  {/* Property Email */}
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label className="form-label" htmlFor="property_email">
@@ -240,20 +223,20 @@ export default function CreateProperty() {
                         id="property_email"
                         className="form-control"
                         placeholder="Email"
-                        value={values.property_email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.property_email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
-                      {errors.property_email && touched.property_email ? (
+                      {formik.errors.property_email &&
+                      formik.touched.property_email ? (
                         <span className="text-danger">
-                          {errors.property_email}
+                          {formik.errors.property_email}
                         </span>
                       ) : (
                         <span />
                       )}
                     </div>
                   </div>
-                  {/* Property Mobile */}
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label
@@ -268,21 +251,20 @@ export default function CreateProperty() {
                         id="property_mobile_no"
                         className="form-control"
                         placeholder="Mobile no."
-                        value={values.property_mobile_no}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.property_mobile_no}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
-                      {errors.property_mobile_no &&
-                      touched.property_mobile_no ? (
+                      {formik.errors.property_mobile_no &&
+                      formik.touched.property_mobile_no ? (
                         <span className="text-danger">
-                          {errors.property_mobile_no}
+                          {formik.errors.property_mobile_no}
                         </span>
                       ) : (
                         <span />
                       )}
                     </div>
                   </div>
-                  {/* Property Alternate Mobile */}
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label className="form-label" htmlFor="category">
@@ -292,9 +274,9 @@ export default function CreateProperty() {
                         name="category"
                         id="category"
                         className="form-control"
-                        value={values.category}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.category}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       >
                         <option value="">--Select Category--</option>
                         {category.map((item, key) => (
@@ -303,14 +285,15 @@ export default function CreateProperty() {
                           </option>
                         ))}
                       </select>
-                      {errors.category && touched.category ? (
-                        <span className="text-danger">{errors.category}</span>
+                      {formik.errors.category && formik.touched.category ? (
+                        <span className="text-danger">
+                          {formik.errors.category}
+                        </span>
                       ) : (
                         <span />
                       )}
                     </div>
                   </div>
-                  {/* Property Description */}
                   <div className="col-md-12">
                     <div className="mb-3">
                       <label
@@ -325,50 +308,26 @@ export default function CreateProperty() {
                         onChange={(e) =>
                           setDescription(editorRef.current.getContent())
                         }
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                         init={{
                           height: 200,
                           menubar: false,
-                          plugins: [
-                            "advlist",
-                            "autolink",
-                            "lists",
-                            "link",
-                            "image",
-                            "charmap",
-                            "preview",
-                            "anchor",
-                            "searchreplace",
-                            "visualblocks",
-                            "code",
-                            "fullscreen",
-                            "insertdatetime",
-                            "media",
-                            "table",
-                            "code",
-                            "help",
-                            "wordcount",
-                          ],
-                          toolbar:
-                            "undo redo | blocks | " +
-                            "bold italic forecolor | alignleft aligncenter " +
-                            "alignright alignjustify | bullist numlist outdent indent | " +
-                            "removeformat | help",
-                          content_style:
-                            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                          plugins:
+                            process.env.REACT_APP_TINYEDITORPLUGINS?.split(" "),
+                          toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
+                          content_style: process.env.REACT_APP_TINYEDITORSTYLE,
                         }}
                       />
-                      {errors.property_description &&
-                      touched.property_description ? (
+                      {formik.errors.property_description &&
+                      formik.touched.property_description ? (
                         <span className="text-danger">
-                          {errors.property_description}
+                          {formik.errors.property_description}
                         </span>
                       ) : (
                         <span />
                       )}
                     </div>
                   </div>
-                  {/* Property Icon */}
                   <div className="col-md-6">
                     <div className="mb-3">
                       <label className="form-label" htmlFor="property_logo">
@@ -384,23 +343,24 @@ export default function CreateProperty() {
                           let reader = new FileReader();
                           reader.onload = () => {
                             if (reader.readyState === 2) {
-                              setFieldValue("property_logo", e.target.files[0]);
+                              formik.setFieldValue(
+                                "property_logo",
+                                e.target.files[0]
+                              );
                               setPreviewLogo(reader.result);
                             }
                           };
                           reader.readAsDataURL(e.target.files[0]);
                         }}
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                       />
-                      <img
-                        src={previewLogo}
-                        className="mt-1"
-                        width="100"
-                        alt=""
-                      />
-                      {errors.property_logo && touched.property_logo ? (
+                      <div className="col-md-3 p-0 pt-1">
+                        <img src={previewLogo} alt="" />
+                      </div>
+                      {formik.errors.property_logo &&
+                      formik.touched.property_logo ? (
                         <span className="text-danger">
-                          {errors.property_logo}
+                          {formik.errors.property_logo}
                         </span>
                       ) : (
                         <span />
@@ -422,7 +382,7 @@ export default function CreateProperty() {
                           let reader = new FileReader();
                           reader.onload = () => {
                             if (reader.readyState === 2) {
-                              setFieldValue(
+                              formik.setFieldValue(
                                 "featured_image",
                                 e.target.files[0]
                               );
@@ -431,17 +391,15 @@ export default function CreateProperty() {
                           };
                           reader.readAsDataURL(e.target.files[0]);
                         }}
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                       />
-                      <img
-                        src={previewFeaturedImage}
-                        className="mt-1"
-                        width="100"
-                        alt=""
-                      />
-                      {errors.featured_image && touched.featured_image ? (
+                      <div className="col-md-3">
+                        <img src={previewFeaturedImage} alt="" />
+                      </div>
+                      {formik.errors.featured_image &&
+                      formik.touched.featured_image ? (
                         <span className="text-danger">
-                          {errors.featured_image}
+                          {formik.errors.featured_image}
                         </span>
                       ) : (
                         <span />

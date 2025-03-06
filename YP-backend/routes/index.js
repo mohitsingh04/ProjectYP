@@ -77,6 +77,7 @@ import {
   deleteCourse,
   getCourse,
   getCourseById,
+  getCourseByUniqueId,
   updateCourse,
 } from "../controller/CourseController.js";
 import {
@@ -173,6 +174,7 @@ router.post("/course", courseUpload, processImage, addCourse);
 router.patch("/course/:uniqueId", courseUpload, processImage, updateCourse);
 router.delete("/course/:uniqueId", deleteCourse);
 router.get("/course/:objectId", getCourseById);
+router.get("/course-detail/:uniqueId", getCourseByUniqueId);
 
 // Category Route
 const categoryUpload = upload.fields([

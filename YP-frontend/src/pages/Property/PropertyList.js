@@ -182,37 +182,25 @@ export default function PropertyList() {
     : mainUser?.User?.role === "Property Manager"
     ? property.filter((item) => item.userId === mainUser?.User?.uniqueId)
     : property;
-
-  const tableData = {
-    columns,
-    data,
-  };
+  const tableData = { columns, data };
 
   return (
     <div>
       <div className="page-header">
         <div>
           <h1 className="page-title">Property</h1>
-          <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item className="breadcrumb-item" href="#">
+          <Breadcrumb>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard" }}>
               Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item
-              className="breadcrumb-item active breadcrumds"
-              aria-current="page"
-            >
-              Property List
-            </Breadcrumb.Item>
+            <Breadcrumb.Item>Property List</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className="ms-auto pageheader-btn">
           {authPermissions?.some(
             (items) => items.value === "Create Property"
           ) && (
-            <Link
-              to="/dashboard/property/add/"
-              className="btn btn-primary btn-icon text-white me-3"
-            >
+            <Link to="/dashboard/property/add/" className="btn btn-primary">
               <span>
                 <i className="fe fe-plus"></i>&nbsp;
               </span>
@@ -221,7 +209,6 @@ export default function PropertyList() {
           )}
         </div>
       </div>
-
       <Row className="row-sm">
         <Col lg={12}>
           <Card className="custom-card">

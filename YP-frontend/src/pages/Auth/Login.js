@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import { API } from "../../context/Api";
+import logo from "../../assets/custom-logo/logo.png";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -28,12 +29,8 @@ export default function Login() {
 
   const onSubmit = async (values) => {
     try {
-      const response = await API.post("/login", values, {
-        withCredentials: true,
-      });
-      console.log(response);
+      const response = await API.post("/login", values);
       toast.success(response.data.message);
-      navigate("/dashboard");
       window.location.reload();
     } catch (error) {
       console.log(error);
@@ -45,12 +42,11 @@ export default function Login() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-    });
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -65,11 +61,7 @@ export default function Login() {
             <div className="col col-login mx-auto">
               <div className="text-center">
                 <Link to="/home">
-                  <img
-                    src={require("../../assets/custom-logo/logo.png")}
-                    className="header-brand-img"
-                    alt=""
-                  />
+                  <img src={logo} className="header-brand-img" alt="" />
                 </Link>
               </div>
             </div>
@@ -77,16 +69,14 @@ export default function Login() {
               <div className="wrap-login100 p-0">
                 <Card.Body>
                   <form
-                    onSubmit={handleSubmit}
+                    onSubmit={formik.handleSubmit}
                     className="login100-form validate-form"
                   >
                     <span className="login100-form-title">Login</span>
-                    {error ? (
+                    {error && (
                       <div className="alert alert-danger">
                         <small>{error}</small>
                       </div>
-                    ) : (
-                      <span />
                     )}
                     <div className="wrap-input100 validate-input">
                       <input
@@ -94,24 +84,18 @@ export default function Login() {
                         name="email"
                         className="input100"
                         placeholder="Email"
-                        value={values.email}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.email}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
                       <span className="focus-input100"></span>
                       <span className="symbol-input100">
-                        {errors.email && touched.email ? (
-                          <i
-                            className="zmdi zmdi-email"
-                            style={{ marginBottom: "20px" }}
-                            aria-hidden="true"
-                          ></i>
-                        ) : (
-                          <i className="zmdi zmdi-email" aria-hidden="true"></i>
-                        )}
+                        <i className="zmdi zmdi-email"></i>
                       </span>
-                      {errors.email && touched.email ? (
-                        <small className="text-danger">{errors.email}</small>
+                      {formik.errors.email && formik.touched.email ? (
+                        <small className="text-danger">
+                          {formik.errors.email}
+                        </small>
                       ) : (
                         <span />
                       )}
@@ -122,21 +106,14 @@ export default function Login() {
                         name="password"
                         className="input100"
                         placeholder="Password"
-                        value={values.password}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.password}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                         autoComplete="off"
                       />
                       <span className="focus-input100"></span>
                       <span className="symbol-input100">
-                        {errors.password && touched.password ? (
-                          <i
-                            className="zmdi zmdi-lock fixed-icon"
-                            aria-hidden="true"
-                          ></i>
-                        ) : (
-                          <i className="zmdi zmdi-lock" aria-hidden="true"></i>
-                        )}
+                        <i className="zmdi zmdi-lock"></i>
                       </span>
                       <span
                         className="text-gray show-hide-password"
@@ -148,8 +125,10 @@ export default function Login() {
                           <i className="fe fe-eye-off"></i>
                         )}
                       </span>
-                      {errors.password && touched.password ? (
-                        <small className="text-danger">{errors.password}</small>
+                      {formik.errors.password && formik.touched.password ? (
+                        <small className="text-danger">
+                          {formik.errors.password}
+                        </small>
                       ) : (
                         <span />
                       )}

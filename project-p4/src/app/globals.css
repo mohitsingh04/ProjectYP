@@ -16294,7 +16294,7 @@ input[type="password"]::-ms-clear {
 .category-widget .categories li a:hover {
   color: #f66962;
 }
-.category-widget .categories > li > a > i {
+.category-widget .categories > li > a > .icon {
   color: #f66962;
   font-size: 18px;
   margin-right: 19px;
@@ -30159,3 +30159,18 @@ a.ck.ck-button:not(.ck-disabled):hover {
 .course-card p{
   margin: 0 !important;
 }
+.modalCloseBtn{
+position: absolute;
+right: 15px;
+top: 50%;
+transform:translateY(-50%);
+background: transparent;
+}
+.serachBarCustom{
+  height: 60px;
+  padding: 0 50px 0 20px; 
+  /* background: #f2f2f2 !important; */
+  outline: none;
+  box-shadow: none;
+  border-bottom: 2px solid #ccc !important;
+} 

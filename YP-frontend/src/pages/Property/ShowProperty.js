@@ -1,6 +1,11 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Tabs, Tab, Breadcrumb, Card, Row, Col } from "react-bootstrap";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import { API } from "../../context/Api";
 import Teachers from "./PropertyComponents/Teachers";
 import Gallery from "./PropertyComponents/Gallery";
@@ -11,9 +16,9 @@ import Courses from "./PropertyComponents/Courses";
 import Achievements from "./PropertyComponents/Achievements";
 import Seo from "./PropertyComponents/Seo";
 import Location from "./PropertyComponents/Location";
-import BasicDetails from "./PropertyComponents/BasicDetails";
+import BasicDetails from "./PropertyComponents/BasicDetails/BasicDetails";
 import { toast } from "react-toastify";
-import OtherDetails from "./PropertyComponents/OtherDetails";
+import OtherDetails from "./PropertyComponents/OtherDetails/OtherDetails";
 import DataRequest from "../../context/DataRequest";
 import Amenities from "./PropertyComponents/Amenities";
 import defaultLogo from "../../Images/defaultPropertyLogo.jpeg";
@@ -28,6 +33,12 @@ export default function ShowProperty() {
   const [authPermissions, setAuthPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const activeTab = searchParams.get("tab") || "Profile";
+
+  const handleTabSelect = (selectedTab) => {
+    setSearchParams({ tab: selectedTab });
+  };
 
   useEffect(() => {
     setAuthPermissions(mainUser?.User?.permissions);
@@ -255,8 +266,9 @@ export default function ShowProperty() {
                     <div className="tabs-menu1 profiletabs">
                       <Tabs
                         variant="Tabs"
-                        defaultActiveKey="Profile"
+                        defaultActiveKey={activeTab}
                         id=" tab-51"
+                        onSelect={handleTabSelect}
                         className="tab-content tabesbody "
                       >
                         <Tab eventKey="Profile" title="Basic Details">

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaRegHeart, FaStar } from "react-icons/fa";
 
 export default function Courses({ course }) {
@@ -6,7 +7,7 @@ export default function Courses({ course }) {
       <div className="course-box d-flex aos" data-aos="fade-up">
         <div className="product">
           <div className="product-img">
-            <a href="course-details.html">
+            <Link href={`/course/${course?.uniqueId}`}>
               <img
                 className="img-fluid"
                 alt="Course"
@@ -17,7 +18,7 @@ export default function Courses({ course }) {
                 }
                 style={{ aspectRatio: "4/3", objectFit: "cover" }}
               />
-            </a>
+            </Link>
             <div className="price">
               <h3>
                 ${course?.price} <span>${course?.price}</span>
@@ -39,7 +40,9 @@ export default function Courses({ course }) {
               </div>
             </div>
             <h3 className="title instructor-text">
-              <a href="course-details.html">{course?.course_name}</a>
+              <Link href={`/course/${course?.uniqueId}`}>
+                {course?.course_name}
+              </Link>
             </h3>
             <div className="course-info d-flex align-items-center">
               <div className="rating-img d-flex align-items-center">
@@ -63,7 +66,7 @@ export default function Courses({ course }) {
                 </span>
               </div>
               <div className="all-btn all-category d-flex align-items-center">
-                <a href="checkout.html" className="btn btn-primary">
+                <a href="#" className="btn btn-primary">
                   BUY NOW
                 </a>
               </div>

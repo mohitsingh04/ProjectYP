@@ -61,7 +61,7 @@ export const addProperty = async (req, res) => {
 
     // const baseFolder = path.join(__dirname, "../Folders");
 
-    const {
+    let {
       userId,
       property_name,
       property_email,
@@ -69,6 +69,10 @@ export const addProperty = async (req, res) => {
       category,
       property_description,
     } = req.body;
+
+    if (property_name) {
+      property_name = property_name.trim().replace(/\s+/g, " ");
+    }
 
     const slug = property_name.replace(/ /g, "-").toLowerCase();
 
@@ -135,7 +139,8 @@ export const addProperty = async (req, res) => {
 export const updateProperty = async (req, res) => {
   try {
     const objectId = req.params.objectId;
-    const {
+    let {
+      property_id,
       property_name,
       property_email,
       property_mobile_no,
@@ -158,7 +163,11 @@ export const updateProperty = async (req, res) => {
       property_courses,
     } = req.body;
 
-    const property = await Property.findOne({ property_name: property_name });
+    if (property_name) {
+      property_name = property_name.trim().replace(/\s+/g, " ");
+    }
+
+    const property = await Property.findOne({ uniqueId: property_id });
     if (property) {
       await Property.findOneAndUpdate(
         { _id: objectId },

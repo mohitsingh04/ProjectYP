@@ -55,7 +55,6 @@ export default function CreateCategory() {
         /^[a-zA-Z\s]+$/,
         "Category Name can only contain alphabets and spaces."
       ),
-
     parent_category: Yup.string().required("Parent category is required."),
     category_icon: Yup.string(),
     featured_image: Yup.string(),
@@ -67,16 +66,13 @@ export default function CreateCategory() {
       formData.append("category_name", values.category_name);
       formData.append("parent_category", values.parent_category);
       formData.append("category_description", description);
-
+      formData.append("userId", user.uniqueId);
       if (values.category_icon) {
         formData.append("category_icon", values.category_icon);
       }
-
       if (values.featured_image) {
         formData.append("featured_image", values.featured_image);
       }
-
-      formData.append("userId", user.uniqueId);
 
       await API.post(`/category`, formData).then((response) => {
         if (response.data.message) {
@@ -91,15 +87,7 @@ export default function CreateCategory() {
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
+  const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: onSubmit,
@@ -135,12 +123,7 @@ export default function CreateCategory() {
             >
               Category
             </Breadcrumb.Item>
-            <Breadcrumb.Item
-              className="breadcrumb-item active breadcrumds"
-              aria-current="page"
-            >
-              Add
-            </Breadcrumb.Item>
+            <Breadcrumb.Item>Add</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className="ms-auto pageheader-btn">
@@ -152,7 +135,6 @@ export default function CreateCategory() {
           </button>
         </div>
       </div>
-
       <Row>
         <div className="col-md-12 col-lg-12">
           <Card>
@@ -160,7 +142,10 @@ export default function CreateCategory() {
               <h3 className="card-title">Add Category</h3>
             </Card.Header>
             <Card.Body>
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
+              <form
+                onSubmit={formik.handleSubmit}
+                encType="multipart/form-data"
+              >
                 <div className="form-row">
                   <div className="form-group col-md-6 mb-3">
                     <Form.Group>
@@ -173,13 +158,14 @@ export default function CreateCategory() {
                         id="category_name"
                         className="form-control"
                         placeholder="Category Name"
-                        value={values.category_name}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.category_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
-                      {errors.category_name && touched.category_name ? (
+                      {formik.errors.category_name &&
+                      formik.touched.category_name ? (
                         <span className="text-danger">
-                          {errors.category_name}
+                          {formik.errors.category_name}
                         </span>
                       ) : (
                         <span />
@@ -197,9 +183,9 @@ export default function CreateCategory() {
                             id="parent_category"
                             name="parent_category"
                             className="farms form-control"
-                            value={values.parent_category}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.parent_category}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           >
                             <option value="">--Select--</option>
                             {category.map((item, key) => (
@@ -215,15 +201,16 @@ export default function CreateCategory() {
                             type="text"
                             name="parent_category"
                             className="farms form-control"
-                            value={values.parent_category}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.parent_category}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           />
                         </>
                       )}
-                      {errors.parent_category && touched.parent_category ? (
+                      {formik.errors.parent_category &&
+                      formik.touched.parent_category ? (
                         <span className="text-danger">
-                          {errors.parent_category}
+                          {formik.errors.parent_category}
                         </span>
                       ) : (
                         <span />
@@ -240,43 +227,20 @@ export default function CreateCategory() {
                         onChange={() =>
                           setDescription(editorRef.current.getContent())
                         }
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                         init={{
                           height: 200,
                           menubar: false,
-                          plugins: [
-                            "advlist",
-                            "autolink",
-                            "lists",
-                            "link",
-                            "image",
-                            "charmap",
-                            "preview",
-                            "anchor",
-                            "searchreplace",
-                            "visualblocks",
-                            "code",
-                            "fullscreen",
-                            "insertdatetime",
-                            "media",
-                            "table",
-                            "code",
-                            "help",
-                            "wordcount",
-                          ],
-                          toolbar:
-                            "undo redo | blocks | " +
-                            "bold italic forecolor | alignleft aligncenter " +
-                            "alignright alignjustify | bullist numlist outdent indent | " +
-                            "removeformat | help",
-                          content_style:
-                            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                          plugins:
+                            process.env.REACT_APP_TINYEDITORPLUGINS?.split(" "),
+                          toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
+                          content_style: process.env.REACT_APP_TINYEDITORSTYLE,
                         }}
                       />
-                      {errors.category_description &&
-                      touched.category_description ? (
+                      {formik.errors.category_description &&
+                      formik.touched.category_description ? (
                         <span className="text-danger">
-                          {errors.category_description}
+                          {formik.errors.category_description}
                         </span>
                       ) : (
                         <span />
@@ -296,23 +260,24 @@ export default function CreateCategory() {
                           let reader = new FileReader();
                           reader.onload = () => {
                             if (reader.readyState === 2) {
-                              setFieldValue("category_icon", e.target.files[0]);
+                              formik.setFieldValue(
+                                "category_icon",
+                                e.target.files[0]
+                              );
                               setPreviewIcon(reader.result);
                             }
                           };
                           reader.readAsDataURL(e.target.files[0]);
                         }}
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                       />
-                      <img
-                        src={previewIcon}
-                        className="mt-1"
-                        width="100"
-                        alt=""
-                      />
-                      {errors.category_icon && touched.category_icon ? (
+                      <div className="col-md-3 p-0 pt-1">
+                        <img src={previewIcon} alt="" />
+                      </div>
+                      {formik.errors.category_icon &&
+                      formik.touched.category_icon ? (
                         <span className="text-danger">
-                          {errors.category_icon}
+                          {formik.errors.category_icon}
                         </span>
                       ) : (
                         <span />
@@ -334,7 +299,7 @@ export default function CreateCategory() {
                           let reader = new FileReader();
                           reader.onload = () => {
                             if (reader.readyState === 2) {
-                              setFieldValue(
+                              formik.setFieldValue(
                                 "featured_image",
                                 e.target.files[0]
                               );
@@ -343,17 +308,15 @@ export default function CreateCategory() {
                           };
                           reader.readAsDataURL(e.target.files[0]);
                         }}
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                       />
-                      <img
-                        src={previewFeaturedImage}
-                        className="mt-1"
-                        width="100"
-                        alt=""
-                      />
-                      {errors.featured_image && touched.featured_image ? (
+                      <div className="col-md-3 p-0 pt-1">
+                        <img src={previewFeaturedImage} alt="" />
+                      </div>
+                      {formik.errors.featured_image &&
+                      formik.touched.featured_image ? (
                         <span className="text-danger">
-                          {errors.featured_image}
+                          {formik.errors.featured_image}
                         </span>
                       ) : (
                         <span />

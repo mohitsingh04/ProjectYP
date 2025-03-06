@@ -2,10 +2,10 @@ import React, { useEffect, useState, useCallback } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import { useParams } from "react-router-dom";
 import { useFormik } from "formik";
-import { API } from "../../../context/Api";
+import { API } from "../../../../context/Api";
 import { toast } from "react-toastify";
-import defaultLogo from "../../../Images/defaultPropertyLogo.jpeg";
-import defaultFeature from "../../../Images/defaultPropertyFeature.jpg";
+import defaultLogo from "../../../../Images/defaultPropertyLogo.jpeg";
+import defaultFeature from "../../../../Images/defaultPropertyFeature.jpg";
 import Skeleton from "react-loading-skeleton";
 
 export default function PropertyImages({ loading }) {
@@ -39,18 +39,12 @@ export default function PropertyImages({ loading }) {
   const handleEditLogo = () => {
     setShowLogoInInput(true);
   };
-  // const handleUpdateLogo = () => {
-  //   setShowLogoInInput(false);
-  // };
   const handleCancelEditLogo = () => {
     setShowLogoInInput(false);
   };
   const handleEditFimage = () => {
     setShowFimageInInput(true);
   };
-  // const handleUpdateFimage = () => {
-  //   setShowFimageInInput(false);
-  // };
   const handleCancelEditFimage = () => {
     setShowFimageInInput(false);
   };
@@ -88,7 +82,6 @@ export default function PropertyImages({ loading }) {
 
   const { setFieldValue, handleBlur, handleSubmit } = useFormik({
     initialValues: initialValues,
-    // validationSchema: validationSchema,
     onSubmit: onSubmit,
     enableReinitialize: true,
   });
@@ -126,23 +119,17 @@ export default function PropertyImages({ loading }) {
                         }}
                         onBlur={handleBlur}
                       />
-                      {previewLogo === "" ? (
-                        <img
-                          src={`http://localhost:5000/${LogoImage}`}
-                          width={100}
-                          height={100}
-                          className="rounded-circle"
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          src={previewLogo}
-                          width={100}
-                          height={100}
-                          className="rounded-circle mt-1"
-                          alt="Logo"
-                        />
-                      )}
+                      <img
+                        src={
+                          !previewLogo
+                            ? `http://localhost:5000/${LogoImage}`
+                            : previewLogo
+                        }
+                        width={100}
+                        height={100}
+                        className="rounded-circle"
+                        alt=""
+                      />
                       <br />
                       <span
                         onClick={handleCancelEditLogo}
@@ -179,33 +166,19 @@ export default function PropertyImages({ loading }) {
                         }}
                         onBlur={handleBlur}
                       />
-                      {previewLogo === "" ? (
-                        !LogoImage ? (
-                          <img
-                            src={defaultLogo}
-                            width={100}
-                            height={100}
-                            className="rounded-circle"
-                            alt=""
-                          />
-                        ) : (
-                          <img
-                            src={`http://localhost:5000/${LogoImage}`}
-                            width={100}
-                            height={100}
-                            className="rounded-circle"
-                            alt=""
-                          />
-                        )
-                      ) : (
-                        <img
-                          src={previewLogo}
-                          width={100}
-                          height={100}
-                          className="rounded-circle mt-1"
-                          alt="Logo"
-                        />
-                      )}
+                      <img
+                        src={
+                          previewLogo
+                            ? previewLogo
+                            : LogoImage
+                            ? `http://localhost:5000/${LogoImage}`
+                            : defaultLogo
+                        }
+                        width={100}
+                        height={100}
+                        className="rounded-circle"
+                        alt=""
+                      />
                       <br />
                       <span
                         onClick={handleCancelEditLogo}
@@ -233,23 +206,17 @@ export default function PropertyImages({ loading }) {
                           <i className="fe fe-edit"></i>
                         </span>
                       </div>
-                      {!LogoImage ? (
-                        <img
-                          src={defaultLogo}
-                          width={100}
-                          height={100}
-                          className="rounded-circle"
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          src={`http://localhost:5000/${LogoImage}`}
-                          width={100}
-                          height={100}
-                          className="rounded-circle"
-                          alt=""
-                        />
-                      )}
+                      <img
+                        src={
+                          LogoImage
+                            ? `http://localhost:5000/${LogoImage}`
+                            : defaultLogo
+                        }
+                        width={100}
+                        height={100}
+                        className="rounded-circle"
+                        alt=""
+                      />
                     </div>
                   </>
                 )}
@@ -279,21 +246,16 @@ export default function PropertyImages({ loading }) {
                         }}
                         onBlur={handleBlur}
                       />
-                      {previewFeaturedImage === "" ? (
-                        <img
-                          src={`http://localhost:5000/${featureImage}`}
-                          width={350}
-                          className="mt-1"
-                          alt=""
-                        />
-                      ) : (
-                        <img
-                          src={previewFeaturedImage}
-                          width={350}
-                          className="mt-1"
-                          alt="Logo"
-                        />
-                      )}
+                      <img
+                        src={
+                          previewFeaturedImage
+                            ? previewFeaturedImage
+                            : `http://localhost:5000/${featureImage}`
+                        }
+                        width={350}
+                        className="mt-1"
+                        alt=""
+                      />
                       <br />
                       <button
                         onClick={handleCancelEditFimage}
@@ -333,30 +295,18 @@ export default function PropertyImages({ loading }) {
                         }}
                         onBlur={handleBlur}
                       />
-                      {previewFeaturedImage === "" ? (
-                        !featureImage ? (
-                          <img
-                            src={defaultFeature}
-                            width={350}
-                            className="mt-1"
-                            alt=""
-                          />
-                        ) : (
-                          <img
-                            src={`http://localhost:5000/${featureImage}`}
-                            width={350}
-                            className="mt-1"
-                            alt=""
-                          />
-                        )
-                      ) : (
-                        <img
-                          src={previewFeaturedImage}
-                          className="mt-1"
-                          width={350}
-                          alt=""
-                        />
-                      )}
+                      <img
+                        src={
+                          previewFeaturedImage
+                            ? previewFeaturedImage
+                            : featureImage
+                            ? `http://localhost:5000/${featureImage}`
+                            : defaultFeature
+                        }
+                        width={350}
+                        className="mt-1"
+                        alt=""
+                      />
                       <br />
                       <button
                         onClick={handleCancelEditFimage}
@@ -382,15 +332,15 @@ export default function PropertyImages({ loading }) {
                             <i className="fe fe-edit"></i>
                           </button>
                         </div>
-                        {!featureImage ? (
-                          <img src={defaultFeature} width={350} alt="" />
-                        ) : (
-                          <img
-                            src={`http://localhost:5000/${featureImage}`}
-                            width={350}
-                            alt=""
-                          />
-                        )}
+                        <img
+                          src={
+                            featureImage
+                              ? `http://localhost:5000/${featureImage}`
+                              : defaultFeature
+                          }
+                          width={350}
+                          alt=""
+                        />
                       </div>
                     </>
                   </>

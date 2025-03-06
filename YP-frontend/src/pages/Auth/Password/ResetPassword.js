@@ -63,12 +63,11 @@ export default function ResetPassword() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-    });
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
 
   const togglePasswordVisibility = () => {
     setShowPassword((prev) => !prev);
@@ -144,7 +143,10 @@ export default function ResetPassword() {
           <div className="container-login100">
             <Row>
               <Col className="col-login w-100 mx-5">
-                <form onSubmit={handleSubmit} className="card shadow-none">
+                <form
+                  onSubmit={formik.handleSubmit}
+                  className="card shadow-none"
+                >
                   <Card.Body>
                     <div className="text-center">
                       <span className="login100-form-title">
@@ -162,9 +164,9 @@ export default function ResetPassword() {
                           className="form-control"
                           placeholder="Password"
                           name="new_password"
-                          value={values.new_password}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.new_password}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
                         <span
                           className="text-gray show-hide-reset-password-1"
@@ -176,9 +178,10 @@ export default function ResetPassword() {
                             <i className="fe fe-eye-off"></i>
                           )}
                         </span>
-                        {errors.new_password && touched.new_password ? (
+                        {formik.errors.new_password &&
+                        formik.touched.new_password ? (
                           <small className="text-danger">
-                            {errors.new_password}
+                            {formik.errors.new_password}
                           </small>
                         ) : (
                           <span />
@@ -191,9 +194,9 @@ export default function ResetPassword() {
                           className="form-control"
                           placeholder="Confirm Password"
                           name="confirm_password"
-                          value={values.confirm_password}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.confirm_password}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
                         <span
                           className="text-gray show-hide-reset-password-2"
@@ -205,9 +208,10 @@ export default function ResetPassword() {
                             <i className="fe fe-eye-off"></i>
                           )}
                         </span>
-                        {errors.confirm_password && touched.confirm_password ? (
+                        {formik.errors.confirm_password &&
+                        formik.touched.confirm_password ? (
                           <small className="text-danger">
-                            {errors.confirm_password}
+                            {formik.errors.confirm_password}
                           </small>
                         ) : (
                           <span />

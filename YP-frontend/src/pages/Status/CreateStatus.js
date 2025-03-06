@@ -68,12 +68,11 @@ export default function CreateStatus() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-    });
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
 
   if (authPermissions?.length >= 0) {
     const hasPermission = authPermissions?.some(
@@ -95,28 +94,18 @@ export default function CreateStatus() {
       <div className="page-header">
         <div>
           <h1 className="page-title">Status</h1>
-          <Breadcrumb className="breadcrumb">
-            <Breadcrumb.Item className="breadcrumb-item" href="#">
+          <Breadcrumb>
+            <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard" }}>
               Dashboard
             </Breadcrumb.Item>
-            <Breadcrumb.Item className="breadcrumb-item" aria-current="page">
-              Add
-            </Breadcrumb.Item>
-            <Breadcrumb.Item
-              className="breadcrumb-item active breadcrumds"
-              aria-current="page"
-            >
-              Status
-            </Breadcrumb.Item>
+            <Breadcrumb.Item>Add</Breadcrumb.Item>
+            <Breadcrumb.Item>Status</Breadcrumb.Item>
           </Breadcrumb>
         </div>
         <div className="ms-auto pageheader-btn">
-          <Link
-            to="/dashboard/status/"
-            className="btn btn-primary btn-icon text-white me-3"
-          >
+          <Link to="/dashboard/status/" className="btn btn-primary">
             <span>
-              <i className="fe fe-arrow-left"></i>&nbsp;
+              <i className="fe fe-arrow-left me-1"></i>
             </span>
             Back
           </Link>
@@ -130,7 +119,10 @@ export default function CreateStatus() {
               <h3 className="card-title">Add Status</h3>
             </Card.Header>
             <Card.Body>
-              <form onSubmit={handleSubmit} encType="multipart/form-data">
+              <form
+                onSubmit={formik.handleSubmit}
+                encType="multipart/form-data"
+              >
                 {error ? (
                   <div className="alert alert-danger">
                     <small>{error}</small>
@@ -146,23 +138,31 @@ export default function CreateStatus() {
                         className="form-select"
                         id="status_name"
                         name="status_name"
-                        onChange={handleChange}
-                        onBlur={handleBlur}
-                        value={values.status_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                        value={formik.values.status_name}
                       >
                         <option value="" disabled>
                           --Select Category--
                         </option>
                         <option value={`uncategorized`}>Uncategorized</option>
-                        {status.map((item, index) => (
-                          <option key={index} value={item.parent_status}>
-                            {item.parent_status}
-                          </option>
-                        ))}
+                        {status
+                          .filter(
+                            (item) =>
+                              !["Active", "Pending", "Suspended"].includes(
+                                item.parent_status
+                              )
+                          )
+                          .map((item, index) => (
+                            <option key={index} value={item.parent_status}>
+                              {item.parent_status}
+                            </option>
+                          ))}
                       </select>
-                      {errors.status_name && touched.status_name ? (
+                      {formik.errors.status_name &&
+                      formik.touched.status_name ? (
                         <span className="text-danger">
-                          {errors.status_name}
+                          {formik.errors.status_name}
                         </span>
                       ) : (
                         <span />
@@ -180,13 +180,14 @@ export default function CreateStatus() {
                         id="parent_status"
                         className="form-control"
                         placeholder="Status Name"
-                        value={values.parent_status}
-                        onChange={handleChange}
-                        onBlur={handleBlur}
+                        value={formik.values.parent_status}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
                       />
-                      {errors.parent_status && touched.parent_status ? (
+                      {formik.errors.parent_status &&
+                      formik.touched.parent_status ? (
                         <span className="text-danger">
-                          {errors.parent_status}
+                          {formik.errors.parent_status}
                         </span>
                       ) : (
                         <span />
@@ -204,40 +205,16 @@ export default function CreateStatus() {
                           setDescription(editorRef.current.getContent())
                         }
                         id="description"
-                        onBlur={handleBlur}
+                        onBlur={formik.handleBlur}
                         init={{
                           height: 200,
                           menubar: false,
-                          plugins: [
-                            "advlist",
-                            "autolink",
-                            "lists",
-                            "link",
-                            "image",
-                            "charmap",
-                            "preview",
-                            "anchor",
-                            "searchreplace",
-                            "visualblocks",
-                            "code",
-                            "fullscreen",
-                            "insertdatetime",
-                            "media",
-                            "table",
-                            "code",
-                            "help",
-                            "wordcount",
-                          ],
-                          toolbar:
-                            "undo redo | blocks | " +
-                            "bold italic forecolor | alignleft aligncenter " +
-                            "alignright alignjustify | bullist numlist outdent indent | " +
-                            "removeformat",
-                          content_style:
-                            "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                          plugins:
+                            process.env.REACT_APP_TINYEDITORPLUGINS?.split(" "),
+                          toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
+                          content_style: process.env.REACT_APP_TINYEDITORSTYLE,
                         }}
                       />
-                      {/* {errors.description && touched.description ? <span className='text-danger'>{errors.description}</span> : <span />} */}
                     </Form.Group>
                   </div>
                 </div>

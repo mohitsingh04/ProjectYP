@@ -135,11 +135,7 @@ export default function StatusList() {
   ];
 
   const data = loading ? Array(5).fill({}) : status;
-
-  const tableData = {
-    columns,
-    data,
-  };
+  const tableData = { columns, data };
 
   return (
     <>
@@ -151,24 +147,16 @@ export default function StatusList() {
               <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
                 Dashboard
               </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                aria-current="page"
-              >
-                Status List
-              </Breadcrumb.Item>
+              <Breadcrumb.Item>Status List</Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="ms-auto pageheader-btn">
             {authPermissions?.some(
               (items) => items.value === "Create Status"
             ) && (
-              <Link
-                to="/dashboard/status/add/"
-                className="btn btn-primary btn-icon text-white me-3"
-              >
+              <Link to="/dashboard/status/add/" className="btn btn-primary">
                 <span>
-                  <i className="fe fe-plus"></i>&nbsp;
+                  <i className="fe fe-plus me-1"></i>
                 </span>
                 Add Status
               </Link>

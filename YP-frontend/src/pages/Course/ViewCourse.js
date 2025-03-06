@@ -85,7 +85,7 @@ export default function ViewCourse() {
             {loading ? (
               <Skeleton width={200} />
             ) : (
-              <Breadcrumb className="breadcrumb">
+              <Breadcrumb>
                 <Breadcrumb.Item
                   linkAs={Link}
                   linkProps={{ to: "/dashboard/" }}
@@ -98,12 +98,7 @@ export default function ViewCourse() {
                 >
                   Course
                 </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="breadcrumb-item active"
-                  aria-current="page"
-                >
-                  View
-                </Breadcrumb.Item>
+                <Breadcrumb.Item>View</Breadcrumb.Item>
                 <Breadcrumb.Item>{course?.course_name}</Breadcrumb.Item>
               </Breadcrumb>
             )}
@@ -151,8 +146,7 @@ export default function ViewCourse() {
                               ? `http://localhost:5000/${courseImage}`
                               : defaultCourse
                           }
-                          width={`100%`}
-                          height={`50%`}
+                          className="w-100 img-fluid"
                           alt="defaultCourse"
                         />
                       </div>
@@ -165,7 +159,7 @@ export default function ViewCourse() {
                           </tr>
                           <tr>
                             <td>
-                              <strong>Course Level : </strong>{" "}
+                              <strong>Course Level : </strong>
                               {course.course_level}
                             </td>
                           </tr>

@@ -77,7 +77,6 @@ export default function EditCategory() {
         /^[a-zA-Z\s]+$/,
         "Category Name can only contain alphabets and spaces."
       ),
-
     parent_category: Yup.string().required("Parent category is required."),
     status: Yup.string().required("Status is required."),
   });
@@ -113,15 +112,7 @@ export default function EditCategory() {
     }
   };
 
-  const {
-    values,
-    errors,
-    touched,
-    setFieldValue,
-    handleChange,
-    handleBlur,
-    handleSubmit,
-  } = useFormik({
+  const formik = useFormik({
     initialValues: initialValues,
     validationSchema: validationSchema,
     onSubmit: onSubmit,
@@ -149,7 +140,7 @@ export default function EditCategory() {
         <div>
           <h1 className="page-title">Category</h1>
           {!loading ? (
-            <Breadcrumb className="breadcrumb">
+            <Breadcrumb>
               <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/dashboard/` }}>
                 Dashboard
               </Breadcrumb.Item>
@@ -159,18 +150,8 @@ export default function EditCategory() {
               >
                 Category
               </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active"
-                aria-current="page"
-              >
-                Edit
-              </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                aria-current="page"
-              >
-                {category.category_name}
-              </Breadcrumb.Item>
+              <Breadcrumb.Item>Edit</Breadcrumb.Item>
+              <Breadcrumb.Item>{category.category_name}</Breadcrumb.Item>
             </Breadcrumb>
           ) : (
             <Skeleton width={200} />
@@ -185,7 +166,6 @@ export default function EditCategory() {
           </button>
         </div>
       </div>
-
       <Row>
         <div className="col-md-12 col-lg-12">
           <Card>
@@ -194,7 +174,10 @@ export default function EditCategory() {
             </Card.Header>
             <Card.Body>
               {!loading ? (
-                <form onSubmit={handleSubmit} encType="multipart/form-data">
+                <form
+                  onSubmit={formik.handleSubmit}
+                  encType="multipart/form-data"
+                >
                   {error ? (
                     <div className="alert alert-danger">
                       <small>{error}</small>
@@ -214,13 +197,14 @@ export default function EditCategory() {
                           id="category_name"
                           className="form-control"
                           placeholder="Category Name"
-                          value={values.category_name}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.category_name}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         />
-                        {errors.category_name && touched.category_name ? (
+                        {formik.errors.category_name &&
+                        formik.touched.category_name ? (
                           <span className="text-danger">
-                            {errors.category_name}
+                            {formik.errors.category_name}
                           </span>
                         ) : (
                           <span />
@@ -236,9 +220,9 @@ export default function EditCategory() {
                           name="parent_category"
                           id="parent_category"
                           className="farms form-control"
-                          value={values.parent_category}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.parent_category}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         >
                           <option value="">--Select--</option>
                           {categories.map((item, key) => (
@@ -247,9 +231,10 @@ export default function EditCategory() {
                             </option>
                           ))}
                         </select>
-                        {errors.parent_category && touched.parent_category ? (
+                        {formik.errors.parent_category &&
+                        formik.touched.parent_category ? (
                           <span className="text-danger">
-                            {errors.parent_category}
+                            {formik.errors.parent_category}
                           </span>
                         ) : (
                           <span />
@@ -268,37 +253,17 @@ export default function EditCategory() {
                           onChange={() =>
                             setDescription(editorRef.current.getContent())
                           }
-                          onBlur={handleBlur}
+                          onBlur={formik.handleBlur}
                           init={{
                             height: 200,
                             menubar: false,
-                            plugins: [
-                              "advlist",
-                              "autolink",
-                              "lists",
-                              "link",
-                              "image",
-                              "charmap",
-                              "preview",
-                              "anchor",
-                              "searchreplace",
-                              "visualblocks",
-                              "code",
-                              "fullscreen",
-                              "insertdatetime",
-                              "media",
-                              "table",
-                              "code",
-                              "help",
-                              "wordcount",
-                            ],
-                            toolbar:
-                              "undo redo | blocks | " +
-                              "bold italic forecolor | alignleft aligncenter " +
-                              "alignright alignjustify | bullist numlist outdent indent | " +
-                              "removeformat | help",
+                            plugins:
+                              process.env.REACT_APP_TINYEDITORPLUGINS?.split(
+                                " "
+                              ),
+                            toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
                             content_style:
-                              "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                              process.env.REACT_APP_TINYEDITORSTYLE,
                           }}
                           initialValue={category.description}
                         />
@@ -317,7 +282,7 @@ export default function EditCategory() {
                             let reader = new FileReader();
                             reader.onload = () => {
                               if (reader.readyState === 2) {
-                                setFieldValue(
+                                formik.setFieldValue(
                                   "category_icon",
                                   e.target.files[0]
                                 );
@@ -326,20 +291,20 @@ export default function EditCategory() {
                             };
                             reader.readAsDataURL(e.target.files[0]);
                           }}
-                          onBlur={handleBlur}
+                          onBlur={formik.handleBlur}
                         />
-                        <img
-                          src={
-                            previewIcon
-                              ? previewIcon
-                              : categories
-                              ? `http://localhost:5000/${categoryIcon}`
-                              : defaultIcon
-                          }
-                          className="mt-1"
-                          width="100"
-                          alt=""
-                        />
+                        <div className="col-md-3 p-0 pt-1">
+                          <img
+                            src={
+                              previewIcon
+                                ? previewIcon
+                                : categoryIcon
+                                ? `http://localhost:5000/${categoryIcon}`
+                                : defaultIcon
+                            }
+                            alt=""
+                          />
+                        </div>
                       </Form.Group>
                     </div>
                     <div className="form-group col-md-6 mb-3">
@@ -357,7 +322,7 @@ export default function EditCategory() {
                             let reader = new FileReader();
                             reader.onload = () => {
                               if (reader.readyState === 2) {
-                                setFieldValue(
+                                formik.setFieldValue(
                                   "featured_image",
                                   e.target.files[0]
                                 );
@@ -366,20 +331,20 @@ export default function EditCategory() {
                             };
                             reader.readAsDataURL(e.target.files[0]);
                           }}
-                          onBlur={handleBlur}
+                          onBlur={formik.handleBlur}
                         />
-                        <img
-                          src={
-                            previewFeaturedImage
-                              ? previewFeaturedImage
-                              : featureImage
-                              ? `http://localhost:5000/${featureImage}`
-                              : defaultFeature
-                          }
-                          className="mt-1"
-                          width="100"
-                          alt=""
-                        />
+                        <div className="col-md-3 p-0 pt-1">
+                          <img
+                            src={
+                              previewFeaturedImage
+                                ? previewFeaturedImage
+                                : featureImage
+                                ? `http://localhost:5000/${featureImage}`
+                                : defaultFeature
+                            }
+                            alt=""
+                          />
+                        </div>
                       </Form.Group>
                     </div>
                     <div className="form-group col-md-6 mb-3">
@@ -389,9 +354,9 @@ export default function EditCategory() {
                           name="status"
                           id="status"
                           className="form-control"
-                          value={values.status}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
+                          value={formik.values.status}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
                         >
                           <option value="">--Select--</option>
                           {status.map((item, key) => (
@@ -400,8 +365,10 @@ export default function EditCategory() {
                             </option>
                           ))}
                         </select>
-                        {errors.status && touched.status ? (
-                          <small className="text-danger">{errors.status}</small>
+                        {formik.errors.status && formik.touched.status ? (
+                          <small className="text-danger">
+                            {formik.errors.status}
+                          </small>
                         ) : (
                           <span />
                         )}

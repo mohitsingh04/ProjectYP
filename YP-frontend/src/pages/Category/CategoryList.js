@@ -183,11 +183,7 @@ export default function CategoryList() {
   ];
 
   const data = loading ? Array(5).fill({}) : category;
-
-  const tableData = {
-    columns,
-    data,
-  };
+  const tableData = { columns, data };
 
   return (
     <>
@@ -195,31 +191,22 @@ export default function CategoryList() {
         <div className="page-header">
           <div>
             <h1 className="page-title">Category</h1>
-            <Breadcrumb className="breadcrumb">
+            <Breadcrumb>
               <Breadcrumb.Item linkAs={Link} linkProps={{ to: "/dashboard/" }}>
                 Dashboard
               </Breadcrumb.Item>
-              <Breadcrumb.Item
-                className="breadcrumb-item active breadcrumds"
-                aria-current="page"
-              >
-                Category List
-              </Breadcrumb.Item>
+              <Breadcrumb.Item>Category List</Breadcrumb.Item>
             </Breadcrumb>
           </div>
           <div className="ms-auto pageheader-btn">
-            <Link
-              to="/dashboard/category/add/"
-              className="btn btn-primary btn-icon text-white me-3"
-            >
+            <Link to="/dashboard/category/add/" className="btn btn-primary">
               <span>
-                <i className="fe fe-plus"></i>&nbsp;
+                <i className="fe fe-plus me-1"></i>
               </span>
               Add Category
             </Link>
           </div>
         </div>
-
         <Row className="row-sm">
           <Col lg={12}>
             <Card className="custom-card">

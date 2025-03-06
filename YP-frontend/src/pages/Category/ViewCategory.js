@@ -90,7 +90,7 @@ export default function ViewCategory() {
             {loading ? (
               <Skeleton width={200} />
             ) : (
-              <Breadcrumb className="breadcrumb">
+              <Breadcrumb>
                 <Breadcrumb.Item linkAs={Link} linkProps={{ to: `/dashboard` }}>
                   Dashboard
                 </Breadcrumb.Item>
@@ -100,18 +100,8 @@ export default function ViewCategory() {
                 >
                   Category
                 </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="breadcrumb-item active"
-                  aria-current="page"
-                >
-                  View
-                </Breadcrumb.Item>
-                <Breadcrumb.Item
-                  className="breadcrumb-item active breadcrumds"
-                  aria-current="page"
-                >
-                  {category.category_name}
-                </Breadcrumb.Item>
+                <Breadcrumb.Item>View</Breadcrumb.Item>
+                <Breadcrumb.Item>{category.category_name}</Breadcrumb.Item>
               </Breadcrumb>
             )}
           </div>
@@ -124,7 +114,6 @@ export default function ViewCategory() {
             </button>
           </div>
         </div>
-
         <Row>
           <Col lg={12} md={12}>
             <Card className="productdesc">
@@ -192,15 +181,8 @@ export default function ViewCategory() {
                         )}
                       </p>
                       <h3>{category.category_name}</h3>
+                      <strong className="fs-6">Description: </strong>
                       {category.description ? (
-                        <strong className="fs-6">Description: </strong>
-                      ) : (
-                        <strong className="fs-6">
-                          Description: Not Available
-                        </strong>
-                      )}
-
-                      {category.description && (
                         <span>
                           {category.description.length >= 1500 ? (
                             <>
@@ -227,6 +209,8 @@ export default function ViewCategory() {
                             />
                           )}
                         </span>
+                      ) : (
+                        <strong>Not Available</strong>
                       )}
                     </div>
                   </>

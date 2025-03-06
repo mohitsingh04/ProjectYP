@@ -1,7 +1,31 @@
-import React from "react";
+"use client";
+import axios from "axios";
+import Link from "next/link";
+import React, { useEffect, useState } from "react";
 import { FaRegHeart, FaStar } from "react-icons/fa";
 
 export default function FeaturesCourse() {
+  const [courses, setCourses] = useState([]);
+
+  // Function to shuffle the array
+  const shuffleArray = (array) => {
+    return array.sort(() => Math.random() - 0.5);
+  };
+
+  const getCourses = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/course");
+      // Shuffle and pick 6 random courses
+      setCourses(shuffleArray(response.data).slice(0, 6));
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getCourses();
+  }, []);
+
   return (
     <section className="section new-course">
       <div className="container">
@@ -25,7 +49,7 @@ export default function FeaturesCourse() {
         </div>
         <div className="course-feature">
           <div className="row">
-            {Array.from({ length: 6 }).map((_, index) => (
+            {courses.map((course, index) => (
               <div key={index} className="col-lg-4 col-md-6 d-flex">
                 <div className="course-box d-flex aos" data-aos="fade-up">
                   <div className="product">
@@ -34,7 +58,11 @@ export default function FeaturesCourse() {
                         <img
                           className="img-fluid"
                           alt="Course"
-                          src="/img/course/course-01.jpg"
+                          src={
+                            course?.image?.[0]
+                              ? `${process.env.NEXT_PUBLIC_API_URL}${course?.image?.[0]}`
+                              : "/img/course/course-01.jpg"
+                          }
                         />
                       </a>
                       <div className="price">
@@ -46,18 +74,9 @@ export default function FeaturesCourse() {
                     <div className="product-content">
                       <div className="course-group d-flex">
                         <div className="course-group-img d-flex">
-                          <a href="instructor-profile.html">
-                            <img
-                              src="/img/user/user1.jpg"
-                              alt="Instructor"
-                              className="img-fluid"
-                            />
-                          </a>
                           <div className="course-name">
-                            <h4>
-                              <a href="instructor-profile.html">Nicole Brown</a>
-                            </h4>
-                            <p>Instructor</p>
+                            <h4>{course?.course_short_name}</h4>
+                            <p>{course?.course_type}</p>
                           </div>
                         </div>
                         <div className="course-share d-flex align-items-center justify-content-center">
@@ -67,18 +86,18 @@ export default function FeaturesCourse() {
                         </div>
                       </div>
                       <h3 className="title instructor-text">
-                        <a href="course-details.html">
-                          Information About UI/UX Design Degree
-                        </a>
+                        <Link href={`/course/${course?.uniqueId}`}>
+                          {course?.course_name}
+                        </Link>
                       </h3>
                       <div className="course-info d-flex align-items-center">
                         <div className="rating-img d-flex align-items-center">
                           <img src="/img/icon/icon-01.svg" alt="Lessons" />
-                          <p>12+ Lesson</p>
+                          <p>{course?.course_level}</p>
                         </div>
                         <div className="course-view d-flex align-items-center">
                           <img src="/img/icon/icon-02.svg" alt="Duration" />
-                          <p>9hr 30min</p>
+                          <p>{course?.duration}</p>
                         </div>
                       </div>
                       <div className="d-flex align-items-center justify-content-between">

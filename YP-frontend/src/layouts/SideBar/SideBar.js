@@ -134,200 +134,36 @@ const Sidebar = () => {
                     <li className="sub-category">
                       <h3>Pages</h3>
                     </li>
-                    {User?.role === "Super Admin" ? (
-                      <>
-                        <li
-                          className={`slide ${
-                            activeIndex === 1 ? "is-expanded" : ""
+
+                    {User?.role === "Super Admin" && (
+                      <li
+                        className={`slide ${
+                          activeIndex === 1 ? "is-expanded" : ""
+                        }`}
+                        onClick={() => toggleActiveIndex(1)}
+                      >
+                        <div
+                          className={`side-menu__item ${
+                            isActive === "user" ? "active" : ""
                           }`}
-                          onClick={() => toggleActiveIndex(1)}
                         >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "user" ? "active" : ""
-                            }`}
-                          >
-                            <i className={`side-menu__icon fe fe-users`}></i>
-                            <span className="side-menu__label">Users</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/user"}
-                                className="slide-item"
-                              >
-                                User List
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                        <li
-                          className={`slide ${
-                            activeIndex === 2 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(2)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "status" ? "active" : ""
-                            }`}
-                          >
-                            <i className={`side-menu__icon fe fe-cpu`}></i>
-                            <span className="side-menu__label">Status</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/status"}
-                                className="slide-item"
-                              >
-                                Status List
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to={"/dashboard/status/add"}
-                                className="slide-item"
-                              >
-                                Add Status
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                        <li
-                          className={`slide ${
-                            activeIndex === 3 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(3)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "course" ? "active" : ""
-                            }`}
-                          >
-                            <i className={`side-menu__icon fe fe-database`}></i>
-                            <span className="side-menu__label">Course</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/course"}
-                                className="slide-item"
-                              >
-                                Course List
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to={"/dashboard/course/add"}
-                                className="slide-item"
-                              >
-                                Add Course
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                        <li
-                          className={`slide ${
-                            activeIndex === 4 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(4)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "category" ? "active" : ""
-                            }`}
-                          >
-                            <i className={`side-menu__icon fe fe-database`}></i>
-                            <span className="side-menu__label">Category</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/category"}
-                                className="slide-item"
-                              >
-                                Category List
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to={"/dashboard/category/add"}
-                                className="slide-item"
-                              >
-                                Add Category
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                        <li
-                          className={`slide ${
-                            activeIndex === 5 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(5)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "property" ? "active" : ""
-                            }`}
-                          >
-                            <i className={`side-menu__icon fe fe-grid`}></i>
-                            <span className="side-menu__label">Property</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/property"}
-                                className="slide-item"
-                              >
-                                Property List
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to={"/dashboard/property/add"}
-                                className="slide-item"
-                              >
-                                Add Property
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                        <li
-                          className={`slide ${
-                            activeIndex === 6 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(6)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "enquiry" ? "active" : ""
-                            }`}
-                          >
-                            <i
-                              className={`side-menu__icon fe fe-align-justify`}
-                            ></i>
-                            <span className="side-menu__label">Enquiry</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/enquiry"}
-                                className="slide-item"
-                              >
-                                Enquiry
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                      </>
-                    ) : User?.role === "Editor" ? (
+                          <i className={`side-menu__icon fe fe-users`}></i>
+                          <span className="side-menu__label">Users</span>
+                          <i className={`fa angle fa-angle-right `}></i>
+                        </div>
+                        <ul className="slide-menu">
+                          <li>
+                            <NavLink
+                              to={"/dashboard/user"}
+                              className="slide-item"
+                            >
+                              User List
+                            </NavLink>
+                          </li>
+                        </ul>
+                      </li>
+                    )}
+                    {User?.role === "Super Admin" || User?.role === "Editor" ? (
                       <>
                         <li
                           className={`slide ${
@@ -427,165 +263,6 @@ const Sidebar = () => {
                                 className="slide-item"
                               >
                                 Add Category
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                        <li
-                          className={`slide ${
-                            activeIndex === 5 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(5)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "property" ? "active" : ""
-                            }`}
-                          >
-                            <i className={`side-menu__icon fe fe-grid`}></i>
-                            <span className="side-menu__label">Property</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/property"}
-                                className="slide-item"
-                              >
-                                Property List
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to={"/dashboard/property/add"}
-                                className="slide-item"
-                              >
-                                Add Property
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                        <li
-                          className={`slide ${
-                            activeIndex === 6 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(6)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "enquiry" ? "active" : ""
-                            }`}
-                          >
-                            <i
-                              className={`side-menu__icon fe fe-align-justify`}
-                            ></i>
-                            <span className="side-menu__label">Enquiry</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/enquiry"}
-                                className="slide-item"
-                              >
-                                Enquiry
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                      </>
-                    ) : User?.role === "Property Manager" ? (
-                      <>
-                        <li
-                          className={`slide ${
-                            activeIndex === 5 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(5)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "property" ? "active" : ""
-                            }`}
-                          >
-                            <i className={`side-menu__icon fe fe-grid`}></i>
-                            <span className="side-menu__label">Property</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/property"}
-                                className="slide-item"
-                              >
-                                Property List
-                              </NavLink>
-                            </li>
-                            <li>
-                              <NavLink
-                                to={"/dashboard/property/add"}
-                                className="slide-item"
-                              >
-                                Add Property
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                        <li
-                          className={`slide ${
-                            activeIndex === 6 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(6)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "enquiry" ? "active" : ""
-                            }`}
-                          >
-                            <i
-                              className={`side-menu__icon fe fe-align-justify`}
-                            ></i>
-                            <span className="side-menu__label">Enquiry</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/enquiry"}
-                                className="slide-item"
-                              >
-                                Enquiry
-                              </NavLink>
-                            </li>
-                          </ul>
-                        </li>
-                      </>
-                    ) : User?.role === "User" ? (
-                      <>
-                        {" "}
-                        <li
-                          className={`slide ${
-                            activeIndex === 6 ? "is-expanded" : ""
-                          }`}
-                          onClick={() => toggleActiveIndex(6)}
-                        >
-                          <div
-                            className={`side-menu__item ${
-                              isActive === "enquiry" ? "active" : ""
-                            }`}
-                          >
-                            <i
-                              className={`side-menu__icon fe fe-align-justify`}
-                            ></i>
-                            <span className="side-menu__label">Enquiry</span>
-                            <i className={`fa angle fa-angle-right `}></i>
-                          </div>
-                          <ul className="slide-menu">
-                            <li>
-                              <NavLink
-                                to={"/dashboard/enquiry"}
-                                className="slide-item"
-                              >
-                                Enquiry
                               </NavLink>
                             </li>
                           </ul>
@@ -594,6 +271,77 @@ const Sidebar = () => {
                     ) : (
                       ""
                     )}
+                    {User?.role === "Super Admin" ||
+                    User?.role === "Editor" ||
+                    User?.role === "Property Manager" ? (
+                      <>
+                        {" "}
+                        <li
+                          className={`slide ${
+                            activeIndex === 5 ? "is-expanded" : ""
+                          }`}
+                          onClick={() => toggleActiveIndex(5)}
+                        >
+                          <div
+                            className={`side-menu__item ${
+                              isActive === "property" ? "active" : ""
+                            }`}
+                          >
+                            <i className={`side-menu__icon fe fe-grid`}></i>
+                            <span className="side-menu__label">Property</span>
+                            <i className={`fa angle fa-angle-right `}></i>
+                          </div>
+                          <ul className="slide-menu">
+                            <li>
+                              <NavLink
+                                to={"/dashboard/property"}
+                                className="slide-item"
+                              >
+                                Property List
+                              </NavLink>
+                            </li>
+                            <li>
+                              <NavLink
+                                to={"/dashboard/property/add"}
+                                className="slide-item"
+                              >
+                                Add Property
+                              </NavLink>
+                            </li>
+                          </ul>
+                        </li>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                    <li
+                      className={`slide ${
+                        activeIndex === 6 ? "is-expanded" : ""
+                      }`}
+                      onClick={() => toggleActiveIndex(6)}
+                    >
+                      <div
+                        className={`side-menu__item ${
+                          isActive === "enquiry" ? "active" : ""
+                        }`}
+                      >
+                        <i
+                          className={`side-menu__icon fe fe-align-justify`}
+                        ></i>
+                        <span className="side-menu__label">Enquiry</span>
+                        <i className={`fa angle fa-angle-right `}></i>
+                      </div>
+                      <ul className="slide-menu">
+                        <li>
+                          <NavLink
+                            to={"/dashboard/enquiry"}
+                            className="slide-item"
+                          >
+                            Enquiry
+                          </NavLink>
+                        </li>
+                      </ul>
+                    </li>
                   </Fragment>
                 </ul>
                 <div className="slide-right" id="slide-right">

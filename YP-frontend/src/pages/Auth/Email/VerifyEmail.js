@@ -40,12 +40,11 @@ export default function VerifyEmail() {
     }
   };
 
-  const { values, errors, touched, handleChange, handleBlur, handleSubmit } =
-    useFormik({
-      initialValues: initialValues,
-      validationSchema: validationSchema,
-      onSubmit: onSubmit,
-    });
+  const formik = useFormik({
+    initialValues: initialValues,
+    validationSchema: validationSchema,
+    onSubmit: onSubmit,
+  });
 
   return (
     <>
@@ -67,7 +66,10 @@ export default function VerifyEmail() {
             <div className="container-login100">
               <Row>
                 <Col className=" col-login mx-auto">
-                  <form onSubmit={handleSubmit} className="card shadow-none">
+                  <form
+                    onSubmit={formik.handleSubmit}
+                    className="card shadow-none"
+                  >
                     <Card.Body>
                       <div className="text-center">
                         <span className="login100-form-title">
@@ -85,13 +87,13 @@ export default function VerifyEmail() {
                             placeholder="Enter Your Email"
                             type="email"
                             name="email"
-                            value={values.email}
-                            onChange={handleChange}
-                            onBlur={handleBlur}
+                            value={formik.values.email}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
                           />
-                          {errors.email && touched.email ? (
+                          {formik.errors.email && formik.touched.email ? (
                             <small className="text-danger">
-                              {errors.email}
+                              {formik.errors.email}
                             </small>
                           ) : (
                             <span />

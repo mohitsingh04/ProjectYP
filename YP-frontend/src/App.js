@@ -80,6 +80,7 @@ function Root() {
           {/* non Login Paths */}
           <Route path="/login" element={<ProtectedRoutes><Login /></ProtectedRoutes>} />
           <Route path="/register" element={<ProtectedRoutes><Register /></ProtectedRoutes>} />
+
           <Route path="/send/verify-email/success/:email"element={<SendVerifyEmail />}/>
           <Route path="/verify-email" element={<ProtectedRoutes><VerifyEmail /></ProtectedRoutes>} />
           <Route path="/verify-user/:token" element={<ProtectedRoutes><VerificationEmail /></ProtectedRoutes>} />

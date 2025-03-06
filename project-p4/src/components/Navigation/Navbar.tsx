@@ -2,11 +2,15 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import logo from "../../img/logo.svg";
-import { FaMoon, FaSun, FaTimes } from "react-icons/fa";
+import { FaSun, FaTimes } from "react-icons/fa";
 import { BiChevronDown } from "react-icons/bi";
+import { FaMagnifyingGlass } from "react-icons/fa6";
+import SearchModal from "./SearchModal";
+import Link from "next/link";
 
 export default function Navbar() {
   const [openedMeun, setOpenedMeun] = useState(false);
+  const [show, setShow] = useState(false);
   const [openedDropDown, setOpenedDropDown] = useState<number | null>(null);
   const [openedSubDropDown, setOpenedSubDropDown] = useState<number | null>(
     null
@@ -50,15 +54,15 @@ export default function Navbar() {
                   <span></span>
                 </span>
               </button>
-              <a href="index.html" className="navbar-brand logo">
+              <Link href="/" className="navbar-brand logo">
                 <Image src={logo} className="img-fluid" alt="Logo" />
-              </a>
+              </Link>
             </div>
             <div className="main-menu-wrapper">
               <div className="menu-header">
-                <a href="index.html" className="menu-logo">
+                <Link href="/" className="menu-logo">
                   <Image src={logo} className="img-fluid" alt="Logo" />
-                </a>
+                </Link>
                 <button
                   id="menu_close"
                   className="menu-close btn"
@@ -68,70 +72,15 @@ export default function Navbar() {
                 </button>
               </div>
               <ul className="main-nav">
-                <li className="has-submenu active">
-                  <a
-                    className="submenu"
-                    onClick={() =>
-                      setOpenedDropDown(openedDropDown === 0 ? null : 0)
-                    }
-                  >
-                    Home <BiChevronDown size={24} />
-                  </a>
-                  <ul
-                    className={`${openedDropDown === 0 ? "submenu" : ""}`}
-                    style={{ display: openedDropDown === 0 ? "block" : "none" }}
-                  >
-                    <li className="active">
-                      <a href="index.html">Home</a>
-                    </li>
-                    <li>
-                      <a href="index-two.html">Home Two</a>
-                    </li>
-                  </ul>
+                <li className="active">
+                  <Link href="/" className="submenu">
+                    Home
+                  </Link>
                 </li>
-                <li className="has-submenu">
-                  <a
-                    className="submenu"
-                    onClick={() =>
-                      setOpenedDropDown(openedDropDown === 1 ? null : 1)
-                    }
-                  >
-                    Instructor <BiChevronDown size={24} />
-                  </a>
-                  <ul
-                    className={`${openedDropDown === 1 ? "submenu" : ""}`}
-                    style={{ display: openedDropDown === 1 ? "block" : "none" }}
-                  >
-                    <li className="has-submenu">
-                      <a
-                        onClick={() =>
-                          setOpenedSubDropDown(
-                            openedSubDropDown === 0 ? null : 0
-                          )
-                        }
-                      >
-                        Instructor
-                      </a>
-                      <ul
-                        className={`${
-                          openedSubDropDown === 0 ? "submenu" : ""
-                        }`}
-                        style={{
-                          display: openedSubDropDown === 0 ? "block" : "none",
-                        }}
-                      >
-                        <li>
-                          <a href="instructor-list.html">List</a>
-                        </li>
-                        <li>
-                          <a href="instructor-grid.html">Grid</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li>
-                      <a href="instructor-dashboard.html">Dashboard</a>
-                    </li>
-                  </ul>
+                <li>
+                  <Link href={`/properties`} className="submenu">
+                    Properties
+                  </Link>
                 </li>
                 <li className="has-submenu">
                   <a
@@ -256,8 +205,9 @@ export default function Navbar() {
                   <button
                     id="dark-mode-toggle"
                     className="dark-mode-toggle activate justify-content-center"
+                    onClick={() => setShow(!show)}
                   >
-                    <FaMoon />
+                    <FaMagnifyingGlass />
                   </button>
                   <button id="light-mode-toggle" className="dark-mode-toggle ">
                     <FaSun />
@@ -279,6 +229,7 @@ export default function Navbar() {
         </nav>
         <div className={`sidebar-overlay ${openedMeun ? "opened" : ""}`}></div>
       </div>
+      <SearchModal show={show} setShow={setShow} />
     </header>
   );
 }

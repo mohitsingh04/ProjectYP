@@ -19,7 +19,7 @@ export default function Courses() {
   const { objectId } = useParams();
   const [courses, setCourses] = useState([]);
   const [courseTypes, setCourseTypes] = useState([]);
-  const [selectedCourse, setSelectedCourse] = useState();
+  const [selectedCourse, setSelectedCourse] = useState("");
   const [property, setProperty] = useState("");
   const [showCourseForm, setShowCourseForm] = useState(true);
   const [propertyCourse, setPropertyCourse] = useState([]);
@@ -132,6 +132,8 @@ export default function Courses() {
       setShowCourseForm(true);
       toast.success(response.data.message);
       getPropertyCourse();
+      selectedCourse("");
+      formik.resetForm();
     } catch (err) {
       toast.error(err.response.data.error);
       console.log(err);
@@ -521,33 +523,10 @@ export default function Courses() {
                       init={{
                         height: 200,
                         menubar: false,
-                        plugins: [
-                          "advlist",
-                          "autolink",
-                          "lists",
-                          "link",
-                          "image",
-                          "charmap",
-                          "preview",
-                          "anchor",
-                          "searchreplace",
-                          "visualblocks",
-                          "code",
-                          "fullscreen",
-                          "insertdatetime",
-                          "media",
-                          "table",
-                          "code",
-                          "help",
-                          "wordcount",
-                        ],
-                        toolbar:
-                          "undo redo | blocks | " +
-                          "bold italic forecolor | alignleft aligncenter " +
-                          "alignright alignjustify | bullist numlist outdent indent | " +
-                          "removeformat",
-                        content_style:
-                          "body { font-family:Helvetica,Arial,sans-serif; font-size:14px }",
+                        plugins:
+                          process.env.REACT_APP_TINYEDITORPLUGINS?.split(" "),
+                        toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
+                        content_style: process.env.REACT_APP_TINYEDITORSTYLE,
                       }}
                       initialValue={description}
                     />

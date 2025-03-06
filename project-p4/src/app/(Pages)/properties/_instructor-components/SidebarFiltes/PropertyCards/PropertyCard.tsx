@@ -3,10 +3,21 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaRegHeart, FaStar } from "react-icons/fa";
 
-export default function PropertyCard({ property }) {
-  const [rating, setRating] = useState(0);
-  const [ratingLength, setRatingLength] = useState(0);
-  const [coursesLength, setCoursesLength] = useState(0);
+interface Property {
+  uniqueId: number;
+  property_name: string;
+  category?: string;
+  featured_image?: string[];
+  property_logo?: string[];
+  property_address?: string;
+  property_city?: string;
+  property_state?: string;
+}
+
+export default function PropertyCard({ property }: { property: Property }) {
+  const [rating, setRating] = useState<number>(0);
+  const [ratingLength, setRatingLength] = useState<number>(0);
+  const [coursesLength, setCoursesLength] = useState<number>(0);
 
   useEffect(() => {
     if (!property?.uniqueId) return;
@@ -29,7 +40,8 @@ export default function PropertyCard({ property }) {
         );
 
         const totalRating = data.reduce(
-          (sum, review) => sum + (review.rating || 0),
+          (sum: number, review: { rating?: number }) =>
+            sum + (review.rating || 0),
           0
         );
 
@@ -54,21 +66,45 @@ export default function PropertyCard({ property }) {
         <div className="instructor-img">
           <img
             src={
-              property?.property_logo?.[0]
-                ? `${process.env.NEXT_PUBLIC_API_URL}${property.property_logo[0]}`
+              property?.featured_image?.[0]
+                ? `${process.env.NEXT_PUBLIC_API_URL}${property.featured_image[0]}`
                 : "/img/course/course-01.jpg"
             }
             alt={property?.property_name || "Property Image"}
+            style={{ aspectRatio: "1/1", objectFit: "cover" }}
             className="img-fluid"
           />
         </div>
         <div className="instructor-content">
-          <h5>
-            <Link href={`/property/${property?.uniqueId}`}>
-              {property?.property_name}
-            </Link>
-          </h5>
-          <h6>{property?.category}</h6>
+          <div className="d-flex mb-2">
+            <img
+              src={
+                property?.property_logo?.[0]
+                  ? `${process.env.NEXT_PUBLIC_API_URL}${property.property_logo[0]}`
+                  : "/img/course/course-01.jpg"
+              }
+              alt={property?.property_name || "Property Image"}
+              width={"50px"}
+              style={{ aspectRatio: "1/1", objectFit: "cover" }}
+              className="img-fluid m-1 rounded-circle"
+            />
+            <div className="align-content-center">
+              <h5>
+                <Link
+                  href={`/property/${
+                    property.uniqueId
+                  }/${property?.property_name
+                    .replace(/\s+/g, "-")
+                    .toLowerCase()}/${property?.property_city
+                    .replace(/\s+/g, "-")
+                    .toLowerCase()}`}
+                >
+                  {property?.property_name}
+                </Link>
+              </h5>
+              <h6 className="m-0">{property?.category}</h6>
+            </div>
+          </div>
           <div className="instructor-info">
             <div className="rating-img d-flex align-items-center">
               <img src="/img/icon/icon-01.svg" className="me-1" alt="Courses" />

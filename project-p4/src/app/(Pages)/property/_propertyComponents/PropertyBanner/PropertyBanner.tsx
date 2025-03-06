@@ -17,10 +17,16 @@ interface PropertyBannerProps {
 
 export default function PropertyBanner({ property }: PropertyBannerProps) {
   const style = {
-    background: `url(${process.env.NEXT_PUBLIC_API_URL}${
-      property?.featured_image?.[0] || ""
-    }) no-repeat center center`,
+    backgroundImage: `url(${
+      property?.featured_image?.[0]
+        ? process.env.NEXT_PUBLIC_API_URL + property?.featured_image?.[0]
+        : "/img/blog/blog-04.jpg"
+    })`,
+    backgroundRepeat: "no-repeat",
+    backgroundPosition: "center",
+    backgroundSize: "cover",
   };
+
   return (
     <div className="inner-banner" style={style}>
       <div className="container">
@@ -31,9 +37,11 @@ export default function PropertyBanner({ property }: PropertyBannerProps) {
                 <div className="about-instructor align-items-center">
                   <div className="abt-instructor-img">
                     <img
-                      src={`${process.env.NEXT_PUBLIC_API_URL}${
-                        property?.property_logo?.[0] || ""
-                      }`}
+                      src={
+                        property?.property_logo?.[0]
+                          ? `${process.env.NEXT_PUBLIC_API_URL}${property?.property_logo?.[0]}`
+                          : "/img/profiles/avatar-01.jpg"
+                      }
                       alt="img"
                       className="img-fluid"
                     />
