@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import { Card, Row, Col } from "react-bootstrap";
 import { Editor } from "@tinymce/tinymce-react";
 import { useParams } from "react-router-dom";
@@ -12,14 +12,19 @@ export default function Hostel() {
   const [property, setProperty] = useState("");
   const [description, setDescription] = useState("");
 
-  useEffect(() => {
-    const getProperty = () => {
-      API.get(`/property/${objectId}`).then(({ data }) => {
+  const getProperty = useCallback(() => {
+    API.get(`/property/${objectId}`)
+      .then(({ data }) => {
         setProperty(data);
+        console.log(data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
-    };
-    getProperty();
   }, [objectId]);
+  useEffect(() => {
+    getProperty();
+  }, [getProperty]);
 
   const [showHostelTypeInInput, setShowHostelTypeInInput] = useState(false);
   const [showHostelDescriptionInInput, setShowHostelDescriptionInInput] =
@@ -39,8 +44,9 @@ export default function Hostel() {
   };
 
   const initialValues = {
-    property_name: property.property_name || "",
-    property_hostel_type: property.property_hostel_type || [],
+    property_id: property?.uniqueId || "",
+    property_name: property?.property_name || "",
+    property_hostel_type: property?.property_hostel_type || [],
   };
 
   const onSubmit = async (values) => {
@@ -53,6 +59,9 @@ export default function Hostel() {
       API.patch(`/property/${objectId}`, values).then((response) => {
         if (response.data.message) {
           toast.success(response.data.message);
+          getProperty();
+          handleCancelEditHostelType();
+          handleCancelEditHostelDescription();
         } else if (response.data.error) {
           toast.error(response.data.error);
         }

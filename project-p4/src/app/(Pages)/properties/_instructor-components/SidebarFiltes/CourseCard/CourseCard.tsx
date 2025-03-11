@@ -4,7 +4,6 @@ import { FaAngleDown } from "react-icons/fa";
 
 export default function CourseCard({
   properties,
-  setFilteredProperty,
   selectedCourses,
   setSelectedCourses,
   courses,
@@ -19,9 +18,8 @@ export default function CourseCard({
         const count = properties.filter(
           (property) => property.uniqueId === course.property_id
         ).length;
-        if (count > 0) {
-          counts[course.course_name] = count; // Store only courses with count > 0
-        }
+
+        counts[course.course_name] = count;
       });
       setCourseCounts(counts);
     }

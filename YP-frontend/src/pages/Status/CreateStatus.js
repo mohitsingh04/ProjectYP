@@ -1,21 +1,39 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Breadcrumb, Card, Row, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import DataRequest from "../../context/DataRequest";
 
 export default function CreateStatus() {
-  const editorRef = useRef(null);
   const navigate = useNavigate();
-  const [description, setDescription] = useState("");
   const [error, setError] = useState("");
   const mainUser = DataRequest();
   const [authPermissions, setAuthPermissions] = useState([]);
   const [status, setStatus] = useState([]);
+  const [authUser, setAuthUser] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const getUser = useCallback(async () => {
+    try {
+      if (!mainUser?.User?._id) return;
+      const response = await API.get(`/user/${mainUser.User._id}`);
+      setAuthUser(response.data);
+      setAuthLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [mainUser?.User?._id]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    setAuthPermissions(authUser?.permissions);
+  }, [authUser]);
 
   const getStatus = async () => {
     const response = await API.get("/status");
@@ -31,13 +49,10 @@ export default function CreateStatus() {
     getStatus();
   }, []);
 
-  useEffect(() => {
-    setAuthPermissions(mainUser?.User?.permissions);
-  }, [mainUser]);
-
   const initialValues = {
     parent_status: "",
     status_name: "",
+    description: "",
   };
 
   const validationSchema = Yup.object({
@@ -54,7 +69,6 @@ export default function CreateStatus() {
 
   const onSubmit = async (values) => {
     try {
-      values = { ...values, description: description };
       API.post("/status", values).then((response) => {
         if (response.data.message) {
           toast.success(response.data.message);
@@ -69,23 +83,25 @@ export default function CreateStatus() {
   };
 
   const formik = useFormik({
-    initialValues: initialValues,
-    validationSchema: validationSchema,
-    onSubmit: onSubmit,
+    initialValues,
+    validationSchema,
+    onSubmit,
   });
 
-  if (authPermissions?.length >= 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Create Status"
-    );
-
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
+  if (!authLoading) {
+    if (authPermissions?.length >= 0) {
+      const hasPermission = authPermissions?.some(
+        (item) => item.value === "Create Status"
       );
+
+      if (!hasPermission) {
+        return (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <h2 className="text-danger fw-bold">Access Denied</h2>
+            <p>You do not have the required permissions to access this page.</p>
+          </div>
+        );
+      }
     }
   }
 
@@ -123,12 +139,10 @@ export default function CreateStatus() {
                 onSubmit={formik.handleSubmit}
                 encType="multipart/form-data"
               >
-                {error ? (
+                {error && (
                   <div className="alert alert-danger">
                     <small>{error}</small>
                   </div>
-                ) : (
-                  <span />
                 )}
                 <div className="form-row">
                   <div className="form-group col-md-2 mb-3">
@@ -145,7 +159,7 @@ export default function CreateStatus() {
                         <option value="" disabled>
                           --Select Category--
                         </option>
-                        <option value={`uncategorized`}>Uncategorized</option>
+                        <option value="uncategorized">Uncategorized</option>
                         {status
                           .filter(
                             (item) =>
@@ -160,13 +174,11 @@ export default function CreateStatus() {
                           ))}
                       </select>
                       {formik.errors.status_name &&
-                      formik.touched.status_name ? (
-                        <span className="text-danger">
-                          {formik.errors.status_name}
-                        </span>
-                      ) : (
-                        <span />
-                      )}
+                        formik.touched.status_name && (
+                          <span className="text-danger">
+                            {formik.errors.status_name}
+                          </span>
+                        )}
                     </Form.Group>
                   </div>
                   <div className="form-group col-md-6 mb-3">
@@ -185,36 +197,29 @@ export default function CreateStatus() {
                         onBlur={formik.handleBlur}
                       />
                       {formik.errors.parent_status &&
-                      formik.touched.parent_status ? (
-                        <span className="text-danger">
-                          {formik.errors.parent_status}
-                        </span>
-                      ) : (
-                        <span />
-                      )}
+                        formik.touched.parent_status && (
+                          <span className="text-danger">
+                            {formik.errors.parent_status}
+                          </span>
+                        )}
                     </Form.Group>
                   </div>
-
                   <div className="form-group col-md-12 mb-3">
                     <Form.Group>
                       <Form.Label htmlFor="description">Description</Form.Label>
-                      <Editor
-                        apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
-                        onInit={(evt, editor) => (editorRef.current = editor)}
-                        onChange={(e) =>
-                          setDescription(editorRef.current.getContent())
-                        }
+                      <textarea
                         id="description"
+                        className="form-control"
+                        rows="5"
+                        placeholder="Enter description (max 200 characters)"
+                        value={formik.values.description}
+                        onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
-                        init={{
-                          height: 200,
-                          menubar: false,
-                          plugins:
-                            process.env.REACT_APP_TINYEDITORPLUGINS?.split(" "),
-                          toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
-                          content_style: process.env.REACT_APP_TINYEDITORSTYLE,
-                        }}
-                      />
+                        maxLength={200}
+                      ></textarea>
+                      <small className="float-end">
+                        {formik.values?.description?.length}/200
+                      </small>
                     </Form.Group>
                   </div>
                 </div>

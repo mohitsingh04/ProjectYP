@@ -100,7 +100,7 @@ export default function Courses() {
   const validationSchema = Yup.object({
     course_type: Yup.string().required("Course type is required."),
     course_name: Yup.string().required("Course name is required."),
-    shortName: Yup.string().required("Course Short Name is required."),
+    shortName: Yup.string(),
     courseDuration: Yup.number()
       .typeError("Duration must be a number.")
       .required("Course duration is required.")
@@ -262,10 +262,13 @@ export default function Courses() {
   return (
     <>
       <Card>
-        <Card.Header>
-          <h5>
+        <Card.Header className="d-flex justify-content-between align-content-center">
+          <h5 className="m-0">
             <strong>Courses</strong>
           </h5>
+          <button className="btn btn-primary" onClick={() => handleAddCourse()}>
+            Add Course
+          </button>
         </Card.Header>
         <Card.Body>
           {showCourseForm ? (
@@ -289,12 +292,6 @@ export default function Courses() {
                             highlightOnHover
                           />
                         </DataTableExtensions>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => handleAddCourse()}
-                        >
-                          Add Course
-                        </button>
                       </div>
                     </span>
                   </div>

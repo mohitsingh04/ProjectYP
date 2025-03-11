@@ -11,23 +11,34 @@ import DataRequest from "../../context/DataRequest";
 export default function CreateCategory() {
   const navigate = useNavigate();
   const editorRef = useRef(null);
-  const [user, setUser] = useState("");
   const mainUser = DataRequest();
   const [category, setCategory] = useState([]);
   const [description, setDescription] = useState("");
   const [previewIcon, setPreviewIcon] = useState("");
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
   const [authPermissions, setAuthPermissions] = useState([]);
-
-  useEffect(() => {
-    setAuthPermissions(mainUser?.User?.permissions);
-  }, [mainUser]);
+  const [authUser, setAuthUser] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
 
   const getUser = useCallback(async () => {
-    API.get("/profile").then(({ data }) => {
-      setUser(data.user);
-    });
-  }, []);
+    if (!mainUser?.User?._id) return;
+    try {
+      const response = await API.get(`/user/${mainUser.User._id}`);
+      setAuthUser(response.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setAuthLoading(false);
+    }
+  }, [mainUser?.User?._id]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    setAuthPermissions(authUser?.permissions);
+  }, [authUser]);
 
   const getCategory = useCallback(async () => {
     await API.get("/category").then(({ data }) => {
@@ -66,7 +77,7 @@ export default function CreateCategory() {
       formData.append("category_name", values.category_name);
       formData.append("parent_category", values.parent_category);
       formData.append("category_description", description);
-      formData.append("userId", user.uniqueId);
+      formData.append("userId", authUser.uniqueId);
       if (values.category_icon) {
         formData.append("category_icon", values.category_icon);
       }
@@ -93,18 +104,20 @@ export default function CreateCategory() {
     onSubmit: onSubmit,
   });
 
-  if (authPermissions?.length >= 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Create Category"
-    );
-
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
+  if (!authLoading) {
+    if (authPermissions?.length >= 0) {
+      const hasPermission = authPermissions?.some(
+        (item) => item.value === "Create Category"
       );
+
+      if (!hasPermission) {
+        return (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <h2 className="text-danger fw-bold">Access Denied</h2>
+            <p>You do not have the required permissions to access this page.</p>
+          </div>
+        );
+      }
     }
   }
 

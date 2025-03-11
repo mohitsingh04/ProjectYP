@@ -17,6 +17,7 @@ export default function OtherDetails() {
       setActiveCategory(data?.category);
       setEstablishmentYear(data?.est_year);
       setActiveStatus(data?.status);
+      setPropertyType(data?.property_type);
     });
   }, [objectId]);
 
@@ -52,13 +53,19 @@ export default function OtherDetails() {
   const [showCategoryInInput, setShowCategoryInInput] = useState(false);
   const [showStatusInInput, setShowStatusInInput] = useState(false);
   const [showEstDateInInput, setShowEstDateInInput] = useState(false);
+  const [showPropertyType, setShowPropertyType] = useState(false);
 
   const handleEditCategory = () => {
-    console.log("Edit");
     setShowCategoryInInput(true);
   };
   const handleCancelEditCategory = () => {
     setShowCategoryInInput(false);
+  };
+  const handleEditPropertyType = () => {
+    setShowPropertyType(true);
+  };
+  const handleCancelEditPropertyType = () => {
+    setShowPropertyType(false);
   };
   const handleEditStatus = () => {
     setShowStatusInInput(true);
@@ -81,6 +88,7 @@ export default function OtherDetails() {
   const [activeCategory, setActiveCategory] = useState("");
   const [activeStatus, setActiveStatus] = useState("");
   const [establishmentYear, setEstablishmentYear] = useState("");
+  const [propertyType, setPropertyType] = useState("");
   const [error, setError] = useState("");
   const handleCateogory = async (e) => {
     e.preventDefault();
@@ -100,18 +108,20 @@ export default function OtherDetails() {
       category: activeCategory,
       status: activeStatus,
       est_year: establishmentYear,
+      property_type: propertyType,
     };
 
     try {
       const response = await API.patch(`/property/${objectId}`, data);
-      console.log(response);
       toast.success(response.data.message);
       setActiveCategory("");
       await getProperty();
       handleCancelEditCategory();
+      handleCancelEditPropertyType();
+      handleCancelEditEstDate();
+      handleCancelEditStatus();
     } catch (error) {
       toast.error(error.response.data.error);
-      console.log(error);
     }
   };
 
@@ -186,6 +196,53 @@ export default function OtherDetails() {
                           {property.category}
                           <button
                             onClick={() => handleEditCategory()}
+                            className="btn btn-primary"
+                          >
+                            <i className="fe fe-edit"></i>
+                          </button>
+                        </div>
+                      </>
+                    </>
+                  )}
+                </Col>
+                <Col md={6} className="mb-3">
+                  <strong>Property Type :</strong>
+                  {property.property_type && showPropertyType ? (
+                    <>
+                      <form onSubmit={handleCateogory} className="d-flex">
+                        <div className="input-group">
+                          <select
+                            name="category"
+                            id="category"
+                            className="form-control"
+                            value={propertyType}
+                            onChange={(e) => setPropertyType(e.target.value)}
+                          >
+                            <option value="">--Select Type--</option>
+                            <option value="Goverment">Goverment</option>
+                            <option value="Semigoverment">Semigoverment</option>
+                            <option value="private">private</option>
+                            <option value="Organization">Organization</option>
+                          </select>
+                          <button type="submit" className="btn btn-success">
+                            <i className="fe fe-check"></i>
+                          </button>
+                          <button
+                            onClick={handleCancelEditPropertyType}
+                            className="btn btn-danger"
+                          >
+                            <i className="fe fe-x"></i>
+                          </button>
+                        </div>
+                      </form>
+                    </>
+                  ) : (
+                    <>
+                      <>
+                        <div className="d-flex justify-content-between align-items-center">
+                          {property.property_type}
+                          <button
+                            onClick={() => handleEditPropertyType()}
                             className="btn btn-primary"
                           >
                             <i className="fe fe-edit"></i>

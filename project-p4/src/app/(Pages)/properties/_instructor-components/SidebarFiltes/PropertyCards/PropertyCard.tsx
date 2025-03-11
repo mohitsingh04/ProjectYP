@@ -94,10 +94,10 @@ export default function PropertyCard({ property }: { property: Property }) {
                   href={`/property/${
                     property.uniqueId
                   }/${property?.property_name
-                    .replace(/\s+/g, "-")
-                    .toLowerCase()}/${property?.property_city
-                    .replace(/\s+/g, "-")
-                    .toLowerCase()}`}
+                    ?.replace(/\s+/g, "-")
+                    ?.toLowerCase()}/${property?.property_city
+                    ?.replace(/\s+/g, "-")
+                    ?.toLowerCase()}`}
                 >
                   {property?.property_name}
                 </Link>
@@ -121,14 +121,20 @@ export default function PropertyCard({ property }: { property: Property }) {
                 <span>{averageRating}</span> ({ratingLength})
               </span>
             </div>
-            <a href="#rate" className="rating-count">
+            <a href="/" className="rating-count">
               <FaRegHeart />
             </a>
           </div>
           <div className="instructor-badge">
-            <span className="web-badge">{property?.property_address}</span>
-            <span className="web-badge">{property?.property_city}</span>
-            <span className="web-badge">{property?.property_state}</span>
+            {property?.property_address && (
+              <span className="web-badge">{property?.property_address}</span>
+            )}
+            {property?.property_city && (
+              <span className="web-badge">{property?.property_city}</span>
+            )}
+            {property?.property_state && (
+              <span className="web-badge">{property?.property_state}</span>
+            )}
           </div>
         </div>
       </div>

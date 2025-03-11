@@ -100,6 +100,7 @@ export default function Location() {
   };
 
   const initialValues = {
+    property_id: property.uniqueId || "",
     property_name: property.property_name || "",
     property_address: property.property_address || "",
     property_pincode: property.property_pincode || "",
@@ -172,6 +173,12 @@ export default function Location() {
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
+                              {formik.errors.property_address &&
+                                formik.touched.property_address && (
+                                  <span className="text-danger">
+                                    {formik.errors.property_address}
+                                  </span>
+                                )}
                             </form>
                           </>
                         ) : showAddressInInput ? (
@@ -198,6 +205,12 @@ export default function Location() {
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
+                              {formik.errors.property_address &&
+                                formik.touched.property_address && (
+                                  <span className="text-danger">
+                                    {formik.errors.property_address}
+                                  </span>
+                                )}
                             </form>
                           </>
                         ) : (
@@ -245,6 +258,12 @@ export default function Location() {
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
+                              {formik.errors.property_state &&
+                                formik.touched.property_state && (
+                                  <span className="text-danger">
+                                    {formik.errors.property_state}
+                                  </span>
+                                )}
                             </form>
                           </>
                         ) : showStateInInput ? (
@@ -276,6 +295,12 @@ export default function Location() {
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
+                              {formik.errors.property_state &&
+                                formik.touched.property_state && (
+                                  <span className="text-danger">
+                                    {formik.errors.property_state}
+                                  </span>
+                                )}
                             </form>
                           </>
                         ) : (
@@ -320,6 +345,12 @@ export default function Location() {
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
+                              {formik.errors.property_country &&
+                                formik.touched.property_country && (
+                                  <span className="text-danger">
+                                    {formik.errors.property_country}
+                                  </span>
+                                )}
                             </form>
                           </>
                         ) : showCountryInInput ? (
@@ -351,6 +382,12 @@ export default function Location() {
                               <button type="submit" className="btn">
                                 <i className="fe fe-check text-primary"></i>
                               </button>
+                              {formik.errors.property_country &&
+                                formik.touched.property_country && (
+                                  <span className="text-danger">
+                                    {formik.errors.property_country}
+                                  </span>
+                                )}
                             </form>
                           </>
                         ) : (
@@ -395,9 +432,9 @@ export default function Location() {
                             </form>
                             {formik.errors.property_pincode &&
                             formik.touched.property_pincode ? (
-                              <small className="text-danger">
+                              <span className="text-danger">
                                 {formik.errors.property_pincode}
-                              </small>
+                              </span>
                             ) : (
                               <span />
                             )}
@@ -429,9 +466,9 @@ export default function Location() {
                             </form>
                             {formik.errors.property_pincode &&
                             formik.touched.property_pincode ? (
-                              <small className="text-danger">
+                              <span className="text-danger">
                                 {formik.errors.property_pincode}
-                              </small>
+                              </span>
                             ) : (
                               <span />
                             )}

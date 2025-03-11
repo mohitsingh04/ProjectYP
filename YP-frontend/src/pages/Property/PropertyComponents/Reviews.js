@@ -249,7 +249,7 @@ export default function Reviews() {
                         <Form.Label htmlFor="phone_number">Phone</Form.Label>
                         <Form.Group className="form-group">
                           <Form.Control
-                            type="number"
+                            type="tel"
                             id="phone_number"
                             name="phone_number"
                             className="form-control"

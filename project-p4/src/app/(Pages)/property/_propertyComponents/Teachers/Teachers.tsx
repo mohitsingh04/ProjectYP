@@ -11,17 +11,6 @@ interface TeacherProps {
 }
 
 export default function Teachers({ teacher }: TeacherProps) {
-  const options: Record<string, unknown> = {
-    margin: 24,
-    nav: false,
-    dots: true,
-    loop: true,
-    responsive: {
-      0: { items: 1 },
-      768: { items: 2 },
-      1170: { items: 3 },
-    },
-  };
   return (
     <>
       <div className="instructors-widget">

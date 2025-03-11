@@ -9,26 +9,32 @@ export default function StatesCard({
 }) {
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Create a state map to store unique states
+  // Create a state map to store unique states (excluding empty names)
   const stateMap = {};
   property.forEach((item) => {
-    const lowerCaseState = item.property_state.toLowerCase();
-    if (!stateMap[lowerCaseState]) {
-      stateMap[lowerCaseState] = item.property_state;
+    const stateName = item?.property_state?.trim();
+    if (stateName) {
+      const lowerCaseState = stateName.toLowerCase();
+      if (!stateMap[lowerCaseState]) {
+        stateMap[lowerCaseState] = stateName;
+      }
     }
   });
 
   // Count occurrences of states in filteredProperty
   const stateCounts = filteredProperty.reduce((acc, item) => {
-    const stateLower = item.property_state.toLowerCase();
-    acc[stateLower] = (acc[stateLower] || 0) + 1;
+    const stateName = item?.property_state?.trim();
+    if (stateName) {
+      const stateLower = stateName.toLowerCase();
+      acc[stateLower] = (acc[stateLower] || 0) + 1;
+    }
     return acc;
   }, {});
 
-  // Sort states by count (descending) and filter out those with zero count
+  // Sort states by count (descending) and remove empty ones
   const sortedStates = Object.keys(stateCounts)
-    .sort((a, b) => stateCounts[b] - stateCounts[a])
-    .filter((state) => stateCounts[state] > 0);
+    .filter((state) => stateCounts[state] > 0 && stateMap[state]) // Exclude empty states
+    .sort((a, b) => stateCounts[b] - stateCounts[a]);
 
   // Apply search filter
   const filteredStates = sortedStates.filter((state) =>

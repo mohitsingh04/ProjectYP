@@ -1,9 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Breadcrumb, Card, Row, Form } from "react-bootstrap";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Editor } from "@tinymce/tinymce-react";
 import { API } from "../../context/Api";
 import { toast } from "react-toastify";
 import DataRequest from "../../context/DataRequest";
@@ -11,15 +10,34 @@ import Skeleton from "react-loading-skeleton";
 
 export default function EditStatus() {
   const navigate = useNavigate();
-  const editorRef = useRef(null);
   const { objectId } = useParams();
   const mainUser = DataRequest();
   const [allStatus, setAllStatus] = useState([]);
   const [status, setStatus] = useState({});
   const [error, setError] = useState("");
-  const [description, setDescription] = useState("");
   const [authPermissions, setAuthPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authUser, setAuthUser] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const getUser = useCallback(async () => {
+    try {
+      if (!mainUser?.User?._id) return;
+      const response = await API.get(`/user/${mainUser.User._id}`);
+      setAuthUser(response.data);
+      setAuthLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [mainUser?.User?._id]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    setAuthPermissions(authUser?.permissions);
+  }, [authUser]);
 
   const getAllStatus = async () => {
     try {
@@ -41,12 +59,11 @@ export default function EditStatus() {
   }, []);
 
   useEffect(() => {
-    setAuthPermissions(mainUser?.User?.permissions || []);
     API.get(`/status/${objectId}`).then(({ data }) => {
       setStatus(data);
       setLoading(false);
     });
-  }, [mainUser, objectId]);
+  }, [objectId]);
 
   const validationSchema = Yup.object({
     parent_status: Yup.string()
@@ -62,15 +79,12 @@ export default function EditStatus() {
     initialValues: {
       parent_status: status.parent_status || "",
       status_name: status.name || "",
+      description: status.description || "",
     },
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const payload = {
-          ...values,
-          description: description || status.description,
-        };
-        const response = await API.patch(`/status/${objectId}`, payload);
+        const response = await API.patch(`/status/${objectId}`, values);
         if (response.data.message) {
           toast.success(response.data.message);
           navigate("/dashboard/status");
@@ -84,18 +98,20 @@ export default function EditStatus() {
     enableReinitialize: true,
   });
 
-  if (authPermissions?.length >= 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Update Status"
-    );
-
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
+  if (!authLoading) {
+    if (authPermissions?.length >= 0) {
+      const hasPermission = authPermissions?.some(
+        (item) => item.value === "Update Status"
       );
+
+      if (!hasPermission) {
+        return (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <h2 className="text-danger fw-bold">Access Denied</h2>
+            <p>You do not have the required permissions to access this page.</p>
+          </div>
+        );
+      }
     }
   }
 
@@ -209,26 +225,19 @@ export default function EditStatus() {
                         <Form.Label htmlFor="description">
                           Description
                         </Form.Label>
-                        <Editor
+                        <textarea
                           id="description"
-                          apiKey={process.env.REACT_APP_TINYEDITORAPIKEY}
-                          onInit={(evt, editor) => (editorRef.current = editor)}
-                          onEditorChange={() =>
-                            setDescription(editorRef.current.getContent())
-                          }
-                          initialValue={status.description}
-                          init={{
-                            height: 200,
-                            menubar: false,
-                            plugins:
-                              process.env.REACT_APP_TINYEDITORPLUGINS?.split(
-                                " "
-                              ),
-                            toolbar: process.env.REACT_APP_TINYEDITORTOOLBAR,
-                            content_style:
-                              process.env.REACT_APP_TINYEDITORSTYLE,
-                          }}
-                        />
+                          className="form-control"
+                          rows="5"
+                          placeholder="Enter description (max 200 characters)"
+                          value={formik.values.description}
+                          onChange={formik.handleChange}
+                          onBlur={formik.handleBlur}
+                          maxLength={200}
+                        ></textarea>
+                        <small className="float-end">
+                          {formik.values?.description?.length}/200
+                        </small>
                       </Form.Group>
                     </div>
                   </div>

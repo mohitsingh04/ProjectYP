@@ -44,6 +44,9 @@ const CourseSchema = new mongoose.Schema({
     type: String,
     default: "Pending",
   },
+  certification_type: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

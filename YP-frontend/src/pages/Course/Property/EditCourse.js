@@ -67,7 +67,7 @@ export default function EditPropertyCourse() {
   const validationSchema = Yup.object({
     course_type: Yup.string().required("Course type is required."),
     course_name: Yup.string().required("Course name is required."),
-    shortName: Yup.string().required("Course Short Name is required."),
+    shortName: Yup.string(),
     courseDuration: Yup.number()
       .typeError("Duration must be a number.")
       .required("Course duration is required.")

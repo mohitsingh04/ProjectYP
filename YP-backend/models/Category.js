@@ -15,15 +15,12 @@ const CategorySchema = new mongoose.Schema({
   },
   category_icon: {
     type: Array,
-    required: true,
   },
   featured_image: {
     type: Array,
-    required: true,
   },
   description: {
     type: String,
-    required: true,
   },
   parent_category: {
     type: String,

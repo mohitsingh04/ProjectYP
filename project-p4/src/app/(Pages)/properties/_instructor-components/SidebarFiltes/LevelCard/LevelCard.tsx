@@ -33,7 +33,7 @@ export default function LevelCard({
       return false;
     }).length;
 
-    if (count > 0) acc[lowerCaseLevel] = count; // Store only levels with count > 0
+    acc[lowerCaseLevel] = count;
     return acc;
   }, {});
 
@@ -81,7 +81,8 @@ export default function LevelCard({
                       checked={SelectedLevel.includes(level)}
                       onChange={() => handleLevelChange(level)}
                     />
-                    <span className="checkmark"></span> {level.charAt(0).toUpperCase() + level.slice(1)} (
+                    <span className="checkmark"></span>{" "}
+                    {level.charAt(0).toUpperCase() + level.slice(1)} (
                     {levelCounts[level]})
                   </label>
                 </div>

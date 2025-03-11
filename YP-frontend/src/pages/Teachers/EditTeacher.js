@@ -24,8 +24,12 @@ export default function EditTeacher() {
   }, [objectId]);
 
   const getStatus = useCallback(() => {
-    API.get(`/status`).then(({ data }) => {
+    API.get(`/status/`).then(({ data }) => {
       setStatus(data);
+      const mainStatus = data.filter((item) => item.name === "Category");
+      if (mainStatus) {
+        setStatus(mainStatus);
+      }
     });
   }, []);
 
@@ -266,8 +270,8 @@ export default function EditTeacher() {
                         >
                           <option value="">--Select Status--</option>
                           {status.map((item, key) => (
-                            <option key={key} value={item.name}>
-                              {item.name}
+                            <option key={key} value={item.parent_status}>
+                              {item.parent_status}
                             </option>
                           ))}
                         </select>

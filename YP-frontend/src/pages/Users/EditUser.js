@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Col, Row, Card, Form, FormGroup, Breadcrumb } from "react-bootstrap";
 import { useFormik } from "formik";
@@ -21,10 +21,26 @@ export default function EditUser() {
   const [state, setState] = useState([]);
   const [authPermissions, setAuthPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authUser, setAuthUser] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const getUser = useCallback(async () => {
+    try {
+      const response = await API.get(`/user/${mainUser?.User?._id}`);
+      setAuthUser(response.data);
+      setAuthLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [mainUser]);
 
   useEffect(() => {
-    setAuthPermissions(mainUser?.User?.permissions);
-  }, [mainUser]);
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    setAuthPermissions(authUser?.permissions);
+  }, [authUser]);
 
   useEffect(() => {
     API.get(`/user/${objectId}`).then(({ data }) => {
@@ -131,18 +147,20 @@ export default function EditUser() {
     enableReinitialize: true,
   });
 
-  if (authPermissions?.length >= 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Update User"
-    );
-
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
+  if (!authLoading) {
+    if (authPermissions?.length >= 0) {
+      const hasPermission = authPermissions?.some(
+        (item) => item.value === "Update User"
       );
+
+      if (!hasPermission) {
+        return (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <h2 className="text-danger fw-bold">Access Denied</h2>
+            <p>You do not have the required permissions to access this page.</p>
+          </div>
+        );
+      }
     }
   }
 

@@ -40,7 +40,11 @@ export default function Courses({ course }) {
               </div>
             </div>
             <h3 className="title instructor-text">
-              <Link href={`/course/${course?.uniqueId}`}>
+              <Link
+                href={`/course/${course?.uniqueId}/${course?.course_name
+                  .replace(/\s+/g, "-")
+                  .toLowerCase()}`}
+              >
                 {course?.course_name}
               </Link>
             </h3>

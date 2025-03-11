@@ -85,6 +85,7 @@ export default function Businesshours({ property }) {
       API.post(`/business-hours`, data).then((response) => {
         if (response.data.message) {
           toast.success(response.data.message);
+          setIsUpdating(false);
         } else if (response.data.error) {
           toast.error(response.data.error);
         }

@@ -44,6 +44,7 @@ export const addCourse = async (req, res) => {
       price,
       duration,
       description,
+      certification_type,
     } = req.body;
 
     let course_image = req?.files["image"]?.[0]?.path;
@@ -69,6 +70,7 @@ export const addCourse = async (req, res) => {
         duration,
         description,
         course_slug: courseSlug,
+        certification_type,
       });
       if (await newCourse.save()) {
         res.send({ message: "Course added." });
@@ -94,6 +96,7 @@ export const updateCourse = async (req, res) => {
       duration,
       description,
       status,
+      certification_type,
     } = req.body;
     const course = await Course.findOne({ _id: uniqueId });
 
@@ -119,6 +122,7 @@ export const updateCourse = async (req, res) => {
             course_level,
             description,
             status,
+            certification_type,
           },
         }
       )

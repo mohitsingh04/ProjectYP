@@ -24,6 +24,7 @@ import Amenities from "./PropertyComponents/Amenities";
 import defaultLogo from "../../Images/defaultPropertyLogo.jpeg";
 import Skeleton from "react-loading-skeleton";
 import Swal from "sweetalert2";
+import AllEnquiry from "./PropertyComponents/Enquiry/AllEnquiry";
 
 export default function ShowProperty() {
   const { objectId } = useParams();
@@ -34,15 +35,33 @@ export default function ShowProperty() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get("tab") || "Profile";
+  const activeTab = searchParams.get("tab") || "Enquiry";
+  const [authUser, setAuthUser] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const getUser = useCallback(async () => {
+    if (!mainUser?.User?._id) return;
+
+    try {
+      const response = await API.get(`/user/${mainUser.User._id}`);
+      setAuthUser(response.data);
+      setAuthLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [mainUser?.User?._id]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    setAuthPermissions(authUser?.permissions);
+  }, [authUser]);
 
   const handleTabSelect = (selectedTab) => {
     setSearchParams({ tab: selectedTab });
   };
-
-  useEffect(() => {
-    setAuthPermissions(mainUser?.User?.permissions);
-  }, [mainUser]);
 
   const getProperty = useCallback(async () => {
     try {
@@ -92,18 +111,20 @@ export default function ShowProperty() {
       });
   };
 
-  if (authPermissions?.length >= 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Read Property"
-    );
-
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
+  if (!authLoading) {
+    if (authPermissions?.length >= 0) {
+      const hasPermission = authPermissions?.some(
+        (item) => item.value === "Read Property"
       );
+
+      if (!hasPermission) {
+        return (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <h2 className="text-danger fw-bold">Access Denied</h2>
+            <p>You do not have the required permissions to access this page.</p>
+          </div>
+        );
+      }
     }
   }
 
@@ -271,6 +292,9 @@ export default function ShowProperty() {
                         onSelect={handleTabSelect}
                         className="tab-content tabesbody "
                       >
+                        <Tab eventKey="Enquiry" title="Enquiry">
+                          <AllEnquiry />
+                        </Tab>
                         <Tab eventKey="Profile" title="Basic Details">
                           <BasicDetails />
                         </Tab>

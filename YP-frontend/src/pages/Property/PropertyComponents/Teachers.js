@@ -243,10 +243,16 @@ export default function Teachers() {
               <Row>
                 <Col md={12}>
                   <Card>
-                    <Card.Header>
+                    <Card.Header className="d-flex justify-content-between">
                       <h5>
                         <strong>Teachers</strong>
                       </h5>
+                      <button
+                        className="btn btn-primary"
+                        onClick={() => setShowTeacherForm(false)}
+                      >
+                        Add Teacher
+                      </button>
                     </Card.Header>
                     <Card.Body>
                       <div className="tab-pane " id="tab-61">
@@ -266,12 +272,6 @@ export default function Teachers() {
                             />
                           </DataTableExtensions>
                         </span>
-                        <button
-                          className="btn btn-primary"
-                          onClick={() => setShowTeacherForm(false)}
-                        >
-                          Add Teacher
-                        </button>
                       </div>
                     </Card.Body>
                   </Card>

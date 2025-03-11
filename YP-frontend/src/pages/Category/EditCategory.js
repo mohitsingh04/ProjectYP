@@ -27,10 +27,26 @@ export default function EditCategory() {
   const [featureImage, setFeatureImage] = useState("");
   const [authPermissions, setAuthPermissions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [authUser, setAuthUser] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const getUser = useCallback(async () => {
+    try {
+      const response = await API.get(`/user/${User?._id}`);
+      setAuthUser(response.data);
+      setAuthLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [User]);
 
   useEffect(() => {
-    setAuthPermissions(User?.permissions);
-  }, [User]);
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    setAuthPermissions(authUser?.permissions);
+  }, [authUser]);
 
   const getCategory = useCallback(() => {
     API.get(`/category/${objectId}`).then(({ data }) => {
@@ -119,18 +135,20 @@ export default function EditCategory() {
     enableReinitialize: true,
   });
 
-  if (authPermissions?.length >= 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Update Category"
-    );
-
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
+  if (!authLoading) {
+    if (authPermissions?.length >= 0) {
+      const hasPermission = authPermissions?.some(
+        (item) => item.value === "Update Category"
       );
+
+      if (!hasPermission) {
+        return (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <h2 className="text-danger fw-bold">Access Denied</h2>
+            <p>You do not have the required permissions to access this page.</p>
+          </div>
+        );
+      }
     }
   }
 

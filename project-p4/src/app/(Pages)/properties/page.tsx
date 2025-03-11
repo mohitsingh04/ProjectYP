@@ -13,6 +13,7 @@ import CourseCard from "./_instructor-components/SidebarFiltes/CourseCard/Course
 import { useRouter } from "next/navigation";
 import LevelCard from "./_instructor-components/SidebarFiltes/LevelCard/LevelCard";
 import FilterTags from "./_instructor-components/SidebarFiltes/FilterTags/FilterTags";
+import CourseTypeCard from "./_instructor-components/SidebarFiltes/CourseTypeCard/CourseTypeCard";
 
 export default function InstructorList() {
   const [property, setProperty] = useState([]);
@@ -30,6 +31,7 @@ export default function InstructorList() {
   const [courses, setCourses] = useState([]);
   const [filteredCourses, setFilteredCourses] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState([]);
+  const [selectedType, setSelectedType] = useState([]);
 
   const getCourses = async () => {
     try {
@@ -56,9 +58,16 @@ export default function InstructorList() {
         )
       );
     }
+    if (selectedType.length > 0) {
+      filtered = courses.filter((item) =>
+        selectedType.some(
+          (type) => type.toLowerCase() === item.course_type.toLowerCase()
+        )
+      );
+    }
 
     setFilteredCourses(filtered);
-  }, [selectedLevel]);
+  }, [selectedLevel, selectedType]);
 
   const getProperty = async () => {
     try {
@@ -112,6 +121,11 @@ export default function InstructorList() {
         "level",
         newFilters.selectedLevel.map((level) => level.toLowerCase()).join(",")
       );
+    if (newFilters.selectedType.length)
+      params.set(
+        "type",
+        newFilters.selectedType.map((type) => type.toLowerCase()).join(",")
+      );
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
@@ -123,6 +137,7 @@ export default function InstructorList() {
       selectedCity,
       selectedCourses,
       selectedLevel,
+      selectedType,
     });
   }, [
     searchQuery,
@@ -131,6 +146,7 @@ export default function InstructorList() {
     selectedCity,
     selectedCourses,
     selectedLevel,
+    selectedType,
   ]);
 
   useEffect(() => {
@@ -153,12 +169,16 @@ export default function InstructorList() {
     const level = params.get("level")
       ? params.get("level").toLowerCase().split(",")
       : [];
+    const type = params.get("type")
+      ? params.get("type").toLowerCase().split(",")
+      : [];
     setSearchQuery(search);
     setSelectedCategory(category);
     setSelectedState(state);
     setSelectedCity(city);
     setSelectedCourses(course);
     setSelectedLevel(level);
+    setSelectedType(type);
   }, []);
 
   useEffect(() => {
@@ -207,6 +227,14 @@ export default function InstructorList() {
                 course.property_id === item.uniqueId
             )
           : true;
+      const matchesTypes =
+        selectedType.length > 0
+          ? courses.some(
+              (course) =>
+                selectedType.includes(course.course_type?.toLowerCase()) &&
+                course.property_id === item.uniqueId
+            )
+          : true;
 
       return (
         matchesSearch &&
@@ -214,7 +242,8 @@ export default function InstructorList() {
         matchesState &&
         matchesCity &&
         matchesCourses &&
-        matchesLevel
+        matchesLevel &&
+        matchesTypes
       );
     });
 
@@ -228,6 +257,7 @@ export default function InstructorList() {
     selectedCity,
     selectedCourses,
     selectedLevel,
+    selectedType,
     courses,
   ]);
 
@@ -306,95 +336,106 @@ export default function InstructorList() {
     setSelectedState([]);
     setSelectedCourses(new Set());
     setSelectedLevel([]);
+    setSelectedType([]);
     setSearchQuery("");
     router.push("?", { scroll: false });
   };
 
   return (
     <>
-      <BreadCrumbs />
       <div className="page-content">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-9 ">
-              <div className="showing-list">
-                <Serachbar
-                  itemsPerPage={itemsPerPage}
-                  filteredProperty={filteredProperty}
-                  searchQuery={searchQuery}
-                  setSearchQuery={setSearchQuery}
-                  currentPage={currentPage}
-                />
-              </div>
-              <div className="row">
-                {paginatedData.map((item, index) => (
-                  <PropertyCard property={item} key={index} />
-                ))}
-              </div>
-              <Pagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                changePage={changePage}
-              />
-            </div>
-            <div className="col-lg-3">
-              <div className="filter-clear">
-                <div className="clear-filter d-flex align-items-center">
-                  <h4>
-                    <FaFilter /> Filters
-                  </h4>
-                  <div className="clear-text">
-                    <p
-                      style={{ cursor: "pointer" }}
-                      onClick={handleClearFilters}
-                    >
-                      CLEAR
-                    </p>
+        <BreadCrumbs />
+        <div className="course-content">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-3">
+                <div className="filter-clear">
+                  <div className="clear-filter d-flex align-items-center">
+                    <h4>
+                      <FaFilter /> Filters
+                    </h4>
+                    <div className="clear-text">
+                      <p
+                        style={{ cursor: "pointer" }}
+                        onClick={handleClearFilters}
+                      >
+                        CLEAR
+                      </p>
+                    </div>
                   </div>
-                </div>
-                <FilterTags
-                  selectedCategory={selectedCategory}
-                  selectedCity={selectedCity}
-                  selectedCourses={selectedCourses}
-                  selectedLevel={selectedLevel}
-                  selectedState={selectedState}
-                  setSelectedCategory={setSelectedCategory}
-                  setSelectedCity={setSelectedCity}
-                  setSelectedLevel={setSelectedLevel}
-                  setSelectedCourses={setSelectedCourses}
-                  setSelectedState={setSelectedState}
-                />
+                  <FilterTags
+                    selectedCategory={selectedCategory}
+                    selectedCity={selectedCity}
+                    selectedCourses={selectedCourses}
+                    selectedLevel={selectedLevel}
+                    selectedState={selectedState}
+                    setSelectedCategory={setSelectedCategory}
+                    setSelectedCity={setSelectedCity}
+                    setSelectedLevel={setSelectedLevel}
+                    setSelectedCourses={setSelectedCourses}
+                    setSelectedState={setSelectedState}
+                  />
 
-                <CategoryCard
-                  filteredProperty={filteredProperty}
-                  property={categoryData}
-                  selectedCategory={selectedCategory}
-                  setSelectedCategory={setSelectedCategory}
-                />
-                <CourseCard
-                  properties={filteredProperty}
-                  selectedCourses={selectedCourses}
-                  setSelectedCourses={setSelectedCourses}
-                  setFilteredProperty={setFilteredProperty}
-                  courses={filteredCourses}
-                />
-                <LevelCard
-                  properties={filteredProperty}
-                  courses={filteredCourses}
-                  SelectedLevel={selectedLevel}
-                  setSelectedLevel={setSelectedLevel}
-                />
-                <StatesCard
-                  filteredProperty={filteredProperty}
-                  property={stateData}
-                  selectedState={selectedState}
-                  setSelectedState={setSelectedState}
-                />
-                <CityCard
-                  filteredProperty={filteredProperty}
-                  property={cityData}
-                  selectedCity={selectedCity}
-                  setSelectedCity={setSelectedCity}
+                  {/* <CategoryCard
+                    filteredProperty={filteredProperty}
+                    property={categoryData}
+                    selectedCategory={selectedCategory}
+                    setSelectedCategory={setSelectedCategory}
+                  /> */}
+                  <CourseCard
+                    properties={filteredProperty}
+                    selectedCourses={selectedCourses}
+                    setSelectedCourses={setSelectedCourses}
+                    setFilteredProperty={setFilteredProperty}
+                    courses={filteredCourses}
+                    allCourses={courses}
+                  />
+                  <LevelCard
+                    properties={filteredProperty}
+                    courses={filteredCourses}
+                    SelectedLevel={selectedLevel}
+                    setSelectedLevel={setSelectedLevel}
+                  />
+                  <CourseTypeCard
+                    allCourses={courses}
+                    properties={filteredProperty}
+                    courses={filteredCourses}
+                    selectedType={selectedType}
+                    setSelectedType={setSelectedType}
+                  />
+                  <StatesCard
+                    filteredProperty={filteredProperty}
+                    property={stateData}
+                    selectedState={selectedState}
+                    setSelectedState={setSelectedState}
+                  />
+                  <CityCard
+                    filteredProperty={filteredProperty}
+                    property={cityData}
+                    selectedCity={selectedCity}
+                    setSelectedCity={setSelectedCity}
+                  />
+                </div>
+              </div>
+              <div className="col-lg-9 ">
+                <div className="showing-list">
+                  <Serachbar
+                    itemsPerPage={itemsPerPage}
+                    filteredProperty={filteredProperty}
+                    searchQuery={searchQuery}
+                    setSearchQuery={setSearchQuery}
+                    currentPage={currentPage}
+                  />
+                </div>
+                <div className="row">
+                  {paginatedData.map((item, index) => (
+                    <PropertyCard property={item} key={index} />
+                  ))}
+                </div>
+                <Pagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  changePage={changePage}
                 />
               </div>
             </div>

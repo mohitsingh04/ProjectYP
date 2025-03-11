@@ -124,6 +124,17 @@ import {
   getAmenitiesByPropertyId,
   updateAmenities,
 } from "../controller/AmenitesController.js";
+import {
+  addEnquiry,
+  deleteArchiveEnquiry,
+  getAllArchiveEnquiry,
+  getAllEnquiry,
+  getArchiveEnquiryByObjectId,
+  getArchiveEnquiryByPropertyId,
+  getEnquiryByObjectId,
+  getEnquiryByPropertyId,
+  softDeleteEnquiry,
+} from "../controller/EnqiryControllers.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
@@ -193,7 +204,6 @@ router.delete("/category/:objectId", deleteCategory);
 router.get("/category/:objectId", getCategoryById);
 
 // Property Route
-
 const propertyUpload = upload.fields([
   { name: "property_logo", maxCount: 1 },
   { name: "featured_image", maxCount: 1 },
@@ -299,4 +309,16 @@ router.get("/amenities", getAmenities);
 router.get("/property/amenities/:propertyId", getAmenitiesByPropertyId);
 router.put("/amenities/:uniqueId", updateAmenities);
 
+router.post("/add/enquiry", addEnquiry);
+router.get("/archive/enquiry", getAllArchiveEnquiry);
+router.get("/enquiry", getAllEnquiry);
+router.get("/property/enquiry/:property_id", getEnquiryByPropertyId);
+router.get(
+  "/property/archive/enquiry/:property_id",
+  getArchiveEnquiryByPropertyId
+);
+router.get("/enquiry/:objectId", getEnquiryByObjectId);
+router.get("/archive/enquiry/:objectId", getArchiveEnquiryByObjectId);
+router.delete("/enquiry/soft/:objectId", softDeleteEnquiry);
+router.delete("/archive/enquiry/:objectId", deleteArchiveEnquiry);
 export default router;

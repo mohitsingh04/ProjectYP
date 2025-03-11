@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Form, Button } from "react-bootstrap";
-import { FaX } from "react-icons/fa6";
 import PropertyResults from "./_SearchComponents/PropertyResults";
 import CourseResults from "./_SearchComponents/CourseResults";
+import { useRouter } from "next/navigation";
+import { FaX } from "react-icons/fa6";
+import axios from "axios";
 
 export default function SearchModal({ show, setShow }) {
   const [search, setSearch] = useState("");
@@ -10,6 +12,7 @@ export default function SearchModal({ show, setShow }) {
   const [courseResults, setCourseResults] = useState([]);
   const [properties, setProperties] = useState([]);
   const [courses, setCourses] = useState([]);
+  const router = useRouter();
 
   const trendingSearches = [
     "Luxury Apartments",
@@ -23,12 +26,12 @@ export default function SearchModal({ show, setShow }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const propertyRes = await fetch("http://localhost:5000/property");
-        const propertyData = await propertyRes.json();
-        setProperties(propertyData);
+        const propertyRes = await axios("http://localhost:5000/property");
+        const propertyData = propertyRes.data;
+        setProperties(propertyData.filter((item) => item.status === "Active"));
 
-        const courseRes = await fetch("http://localhost:5000/course");
-        const courseData = await courseRes.json();
+        const courseRes = await axios("http://localhost:5000/course");
+        const courseData = courseRes.data;
 
         const uniqueCourses = Array.from(
           new Set(courseData.map((course) => course.course_name))
@@ -36,7 +39,7 @@ export default function SearchModal({ show, setShow }) {
           courseData.find((course) => course.course_name === name)
         );
 
-        setCourses(uniqueCourses);
+        setCourses(uniqueCourses.filter((item) => item.status === "Active"));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -80,6 +83,13 @@ export default function SearchModal({ show, setShow }) {
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" && search.length >= 3) {
+      router.push(`/search/${search}`);
+      handleClose();
+    }
+  };
+
   return (
     <Modal show={show} onHide={handleClose} fullscreen>
       <Modal.Body className="bg-white p-0">
@@ -89,6 +99,7 @@ export default function SearchModal({ show, setShow }) {
             placeholder="Search..."
             value={search}
             onChange={handleSearch}
+            onKeyDown={handleKeyDown}
             className="border-0 fs-5 w-100 serachBarCustom bg-light rounded-0"
             autoFocus
           />

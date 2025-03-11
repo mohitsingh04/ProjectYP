@@ -1,5 +1,8 @@
 import Achievements from "../models/Achievements.js";
+import Amenities from "../models/Ameniteis.js";
+import ArchiveEnquiry from "../models/ArchiveEnquiry.js";
 import BusinessHour from "../models/BusinessHour.js";
+import Enquiry from "../models/Enquiry.js";
 import Faqs from "../models/Faqs.js";
 import Gallery from "../models/Gallery.js";
 import Property from "../models/Property.js";
@@ -67,6 +70,7 @@ export const addProperty = async (req, res) => {
       property_email,
       property_mobile_no,
       category,
+      property_type,
       property_description,
     } = req.body;
 
@@ -119,6 +123,7 @@ export const addProperty = async (req, res) => {
         property_email,
         property_mobile_no,
         category,
+        property_type,
         property_logo: [property_logo, orignal_property_logo],
         featured_image: [featured_image, orignal_feature_image],
         property_description,
@@ -161,6 +166,7 @@ export const updateProperty = async (req, res) => {
       category,
       status,
       property_courses,
+      property_type,
     } = req.body;
 
     if (property_name) {
@@ -193,6 +199,7 @@ export const updateProperty = async (req, res) => {
             category,
             status,
             property_courses,
+            property_type,
           },
         }
       )
@@ -204,7 +211,7 @@ export const updateProperty = async (req, res) => {
           return res.send({ error: "Internal Server Error." });
         });
     } else {
-      return res.send({ error: "Property not found!" });
+      return res.status(400).json({ error: "Property not found!" });
     }
   } catch (err) {
     console.log(err.message);
@@ -226,6 +233,9 @@ export const deleteProperty = async (req, res) => {
       await Faqs.deleteMany({ property_id: property.uniqueId });
       await Achievements.deleteMany({ property_id: property.uniqueId });
       await BusinessHour.deleteMany({ property_id: property.uniqueId });
+      await Enquiry.deleteMany({ property_id: property.uniqueId });
+      await ArchiveEnquiry.deleteMany({ property_id: property.uniqueId });
+      await Amenities.deleteMany({ propertyId: property.uniqueId });
 
       res.send({ message: "Property Deleted." });
     }

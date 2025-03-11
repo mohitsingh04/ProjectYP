@@ -85,6 +85,9 @@ const PropertySchema = new mongoose.Schema({
     type: String,
     default: "Pending",
   },
+  property_type: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

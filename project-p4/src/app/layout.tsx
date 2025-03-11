@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./globals.css";
 import Navbar from "@/components/Navigation/Navbar";
 import Footer from "@/components/Footer/Footer";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -32,6 +33,7 @@ export default function RootLayout({
         <script src="https://kit.fontawesome.com/87f0afa689.js"></script>
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
+        <ToastContainer />
         <Navbar />
         {children}
         <Footer />

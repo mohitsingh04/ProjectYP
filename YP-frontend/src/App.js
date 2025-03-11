@@ -53,6 +53,9 @@ import VerificationEmail from "./pages/Auth/Email/VerificationEmail";
 import SendVerifyEmail from "./pages/Auth/Email/SendVerifyEmail";
 import ProtectedRoutes from "./helper/ProtectedRoutes/ProtectedRoutes";
 import CreateUser from "./pages/Users/CreateUser";
+import ArchiveEnquiry from "./pages/Enquiry/ArchiveEnquires";
+import EnquiryView from "./pages/Enquiry/EnquiryView";
+import ArchiveEnquiryView from "./pages/Enquiry/ArchiveEnquiryView";
 
 window.Swal = Swal;
 const toast = Swal.mixin({
@@ -94,6 +97,9 @@ function Root() {
           <Route path="/" element={<Home />} />
           <Route path="/dashboard" element={<App />}>
             <Route index element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>}/>
+            
+            <Route path={`/dashboard/my-profile`} element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
+            <Route path={`/dashboard/edit/my-profile`}element={<ProtectedRoutes><EditProfile /></ProtectedRoutes>}/>
 
             <Route path={`/dashboard/user`} element={<ProtectedRoutes><UserList /></ProtectedRoutes>} />
             <Route path={`/dashboard/user/add`}element={<ProtectedRoutes><CreateUser/></ProtectedRoutes>}/>
@@ -119,20 +125,19 @@ function Root() {
             <Route path={`/dashboard/property/add`}element={<ProtectedRoutes><CreateProperty /></ProtectedRoutes>}/>
             <Route path={`/dashboard/property/view/:objectId`}element={<ProtectedRoutes><ShowProperty /></ProtectedRoutes>}/>
             
-            <Route path={`/dashboard/edit/teacher/:property_name/:objectId`}element={<ProtectedRoutes><EditTeacher /></ProtectedRoutes>}/>
-            <Route path={`/dashboard/view/teacher/:property_name/:objectId`}element={<ProtectedRoutes><ViewTeacher /></ProtectedRoutes>}/>
-
-            <Route path={`/dashboard/edit/faqs/:property_name/:objectId`}element={<ProtectedRoutes><EditFaqs /></ProtectedRoutes>}/>
-
             <Route path={`/dashboard/edit/course/:property_name/:objectId`}element={<ProtectedRoutes><EditPropertyCourse /></ProtectedRoutes>}/>
             <Route path={`/dashboard/view/course/:property_name/:objectId`}element={<ProtectedRoutes><ViewPropertyCourse /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/teacher/:property_name/:objectId`}element={<ProtectedRoutes><EditTeacher /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/view/teacher/:property_name/:objectId`}element={<ProtectedRoutes><ViewTeacher /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/faqs/:property_name/:objectId`}element={<ProtectedRoutes><EditFaqs /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/edit/seo/:property_name/:objectId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
 
             <Route path={`/dashboard/test/:id`} element={<ProtectedRoutes><YourComponent /></ProtectedRoutes>} />
-            <Route path={`/dashboard/enquiry`} element={<ProtectedRoutes><Enquiry /></ProtectedRoutes>} />
-            <Route path={`/dashboard/my-profile`} element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
-            <Route path={`/dashboard/edit/my-profile`}element={<ProtectedRoutes><EditProfile /></ProtectedRoutes>}/>
 
-            <Route path={`/dashboard/edit/seo/:property_name/:objectId`}element={<ProtectedRoutes><EditSeo /></ProtectedRoutes>}/>
+            <Route path={`/dashboard/enquiry`} element={<ProtectedRoutes><Enquiry /></ProtectedRoutes>} />
+            <Route path={`/dashboard/archive/enquiry`} element={<ProtectedRoutes><ArchiveEnquiry /></ProtectedRoutes>} />
+            <Route path={`/dashboard/archive/enquiry/:objectId`} element={<ProtectedRoutes><ArchiveEnquiryView /></ProtectedRoutes>} />
+            <Route path={`/dashboard/enquiry/:objectId`} element={<ProtectedRoutes><EnquiryView /></ProtectedRoutes>} />
 
             <Route path={`/dashboard/course-seo/add/:uniqueId`} element={<ProtectedRoutes><AddCourseSeo /></ProtectedRoutes>}/>
             <Route path={`/dashboard/course-seo/edit/:uniqueId`} element={<ProtectedRoutes><EditCourseSeo /></ProtectedRoutes>}/>

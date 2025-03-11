@@ -1,0 +1,162 @@
+[
+  {
+    "id": 1,
+    "title": "Learn JavaScript and Express to become a professional JavaScript Developer",
+    "image": "/img/course/course-01.jpg",
+    "price": "$200",
+    "discountedPrice": "$99.00",
+    "lessons": "4+ Lessons",
+    "duration": "1hr 3min",
+    "rating": 4.0,
+    "reviews": 15,
+    "instructor": {
+      "name": "John Michael",
+      "profileImage": "/img/user/user1.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Master Python for Data Science and Machine Learning",
+    "image": "/img/course/course-02.jpg",
+    "price": "$250",
+    "discountedPrice": "$129.00",
+    "lessons": "6+ Lessons",
+    "duration": "2hr 15min",
+    "rating": 4.5,
+    "reviews": 20,
+    "instructor": {
+      "name": "Sarah Connor",
+      "profileImage": "/img/user/user2.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 3,
+    "title": "Complete Web Development Bootcamp",
+    "image": "/img/course/course-03.jpg",
+    "price": "$300",
+    "discountedPrice": "$149.00",
+    "lessons": "10+ Lessons",
+    "duration": "3hr 30min",
+    "rating": 4.8,
+    "reviews": 30,
+    "instructor": {
+      "name": "Robert Downey",
+      "profileImage": "/img/user/user3.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 4,
+    "title": "React Native - Build Mobile Apps with React and JavaScript",
+    "image": "/img/course/course-04.jpg",
+    "price": "$220",
+    "discountedPrice": "$119.00",
+    "lessons": "8+ Lessons",
+    "duration": "2hr 45min",
+    "rating": 4.2,
+    "reviews": 18,
+    "instructor": {
+      "name": "Emma Watson",
+      "profileImage": "/img/user/user4.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 5,
+    "title": "The Ultimate Guide to UI/UX Design with Figma",
+    "image": "/img/course/course-05.jpg",
+    "price": "$180",
+    "discountedPrice": "$89.00",
+    "lessons": "5+ Lessons",
+    "duration": "1hr 50min",
+    "rating": 4.7,
+    "reviews": 25,
+    "instructor": {
+      "name": "Chris Evans",
+      "profileImage": "/img/user/user5.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 6,
+    "title": "Node.js and MongoDB: Build a Web Application",
+    "image": "/img/course/course-06.jpg",
+    "price": "$230",
+    "discountedPrice": "$109.00",
+    "lessons": "7+ Lessons",
+    "duration": "2hr 20min",
+    "rating": 4.6,
+    "reviews": 22,
+    "instructor": {
+      "name": "Elon Musk",
+      "profileImage": "/img/user/user6.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 7,
+    "title": "Data Structures & Algorithms with Java",
+    "image": "/img/course/course-07.jpg",
+    "price": "$270",
+    "discountedPrice": "$139.00",
+    "lessons": "9+ Lessons",
+    "duration": "3hr 10min",
+    "rating": 4.9,
+    "reviews": 35,
+    "instructor": {
+      "name": "Tony Stark",
+      "profileImage": "/img/user/user7.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 8,
+    "title": "Cyber Security & Ethical Hacking for Beginners",
+    "image": "/img/course/course-08.jpg",
+    "price": "$290",
+    "discountedPrice": "$159.00",
+    "lessons": "12+ Lessons",
+    "duration": "4hr 5min",
+    "rating": 4.3,
+    "reviews": 19,
+    "instructor": {
+      "name": "Natasha Romanoff",
+      "profileImage": "/img/user/user8.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 9,
+    "title": "Artificial Intelligence & Deep Learning with Python",
+    "image": "/img/course/course-09.jpg",
+    "price": "$320",
+    "discountedPrice": "$179.00",
+    "lessons": "15+ Lessons",
+    "duration": "5hr 30min",
+    "rating": 4.8,
+    "reviews": 40,
+    "instructor": {
+      "name": "Stephen Hawking",
+      "profileImage": "/img/user/user9.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  },
+  {
+    "id": 10,
+    "title": "Digital Marketing & SEO Mastery Course",
+    "image": "/img/course/course-10.jpg",
+    "price": "$150",
+    "discountedPrice": "$79.00",
+    "lessons": "4+ Lessons",
+    "duration": "1hr 20min",
+    "rating": 4.5,
+    "reviews": 16,
+    "instructor": {
+      "name": "Mark Zuckerberg",
+      "profileImage": "/img/user/user10.jpg",
+      "profileLink": "instructor-profile.html"
+    }
+  }
+]

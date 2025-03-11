@@ -11,7 +11,8 @@ export default function CityCard({
 
   // Create a mapping of lowercase cities to their original form
   const cityMap = property.reduce((acc, item) => {
-    acc[item.property_city.toLowerCase()] = item.property_city;
+    const city = item?.property_city?.trim(); // Trim to avoid accidental spaces
+    if (city) acc[city.toLowerCase()] = city; // Only add if city is not empty
     return acc;
   }, {});
 
@@ -20,14 +21,14 @@ export default function CityCard({
 
   // Count occurrences of each city (using lowercase keys)
   const cityCounts = filteredProperty.reduce((acc, item) => {
-    const cityLower = item.property_city.toLowerCase();
-    acc[cityLower] = (acc[cityLower] || 0) + 1;
+    const cityLower = item?.property_city?.trim().toLowerCase();
+    if (cityLower) acc[cityLower] = (acc[cityLower] || 0) + 1;
     return acc;
   }, {});
 
-  // Sort cities based on frequency
+  // Sort cities based on frequency and exclude empty city names
   const sortedCities = uniqueCities
-    .filter((city) => cityCounts[city] > 0) // Hide cities with count = 0
+    .filter((city) => cityCounts[city] > 0 && city !== "") // Exclude empty city names
     .sort((a, b) => (cityCounts[b] || 0) - (cityCounts[a] || 0));
 
   // Filter cities based on search query

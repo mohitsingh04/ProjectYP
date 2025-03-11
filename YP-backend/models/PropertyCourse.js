@@ -33,7 +33,7 @@ const PropertyCourseSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    default: "Pending",
+    default: "Active",
   },
   property_id: {
     type: Number,

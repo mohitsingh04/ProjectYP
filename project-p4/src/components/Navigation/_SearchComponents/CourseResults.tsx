@@ -14,7 +14,12 @@ export default function CourseResults({ Results, handleClose }) {
             className="border-0 p-0"
             style={{ fontSize: "18px" }}
           >
-            <Link href={`/course/${item.uniqueId}`} onClick={handleClose}>
+            <Link
+              href={`/course/${item?.uniqueId}/${item?.course_name
+                .replace(/\s+/g, "-")
+                .toLowerCase()}`}
+              onClick={handleClose}
+            >
               <div className="bg-light p-2 border d-flex justify-content-between">
                 <div className="d-flex">
                   <img
@@ -30,7 +35,7 @@ export default function CourseResults({ Results, handleClose }) {
                   />
                   <div>
                     <p className="m-0">
-                      {item.course_name} - [{item?.course_short_name}]
+                      {item.course_name}{item.course_short_name?(` - [${item?.course_short_name}]`):""}
                     </p>
                     <span className="text-muted">(Course)</span>
                   </div>

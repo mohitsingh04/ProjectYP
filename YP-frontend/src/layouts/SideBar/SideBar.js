@@ -314,34 +314,46 @@ const Sidebar = () => {
                     ) : (
                       ""
                     )}
-                    <li
-                      className={`slide ${
-                        activeIndex === 6 ? "is-expanded" : ""
-                      }`}
-                      onClick={() => toggleActiveIndex(6)}
-                    >
-                      <div
-                        className={`side-menu__item ${
-                          isActive === "enquiry" ? "active" : ""
+                    {User.role === "Super Admin" ? (
+                      <li
+                        className={`slide ${
+                          activeIndex === 6 ? "is-expanded" : ""
                         }`}
+                        onClick={() => toggleActiveIndex(6)}
                       >
-                        <i
-                          className={`side-menu__icon fe fe-align-justify`}
-                        ></i>
-                        <span className="side-menu__label">Enquiry</span>
-                        <i className={`fa angle fa-angle-right `}></i>
-                      </div>
-                      <ul className="slide-menu">
-                        <li>
-                          <NavLink
-                            to={"/dashboard/enquiry"}
-                            className="slide-item"
-                          >
-                            Enquiry
-                          </NavLink>
-                        </li>
-                      </ul>
-                    </li>
+                        <div
+                          className={`side-menu__item ${
+                            isActive === "enquiry" ? "active" : ""
+                          }`}
+                        >
+                          <i
+                            className={`side-menu__icon fe fe-align-justify`}
+                          ></i>
+                          <span className="side-menu__label">Enquiry</span>
+                          <i className={`fa angle fa-angle-right `}></i>
+                        </div>
+                        <ul className="slide-menu">
+                          <li>
+                            <NavLink
+                              to={"/dashboard/enquiry"}
+                              className="slide-item"
+                            >
+                              Enquiry
+                            </NavLink>
+                          </li>
+                          <li>
+                            <NavLink
+                              to={"/dashboard/archive/enquiry"}
+                              className="slide-item"
+                            >
+                              Archive Enquiry
+                            </NavLink>
+                          </li>
+                        </ul>
+                      </li>
+                    ) : (
+                      ""
+                    )}
                   </Fragment>
                 </ul>
                 <div className="slide-right" id="slide-right">

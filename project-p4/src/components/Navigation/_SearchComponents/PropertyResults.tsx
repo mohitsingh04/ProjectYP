@@ -16,10 +16,10 @@ export default function PropertyResults({ Results, handleClose }) {
           >
             <Link
               href={`/property/${item.uniqueId}/${item?.property_name
-                .replace(/\s+/g, "-")
-                .toLowerCase()}/${item?.property_city
-                .replace(/\s+/g, "-")
-                .toLowerCase()}`}
+                ?.replace(/\s+/g, "-")
+                ?.toLowerCase()}/${item?.property_city
+                ?.replace(/\s+/g, "-")
+                ?.toLowerCase()}`}
               onClick={handleClose}
             >
               <div className="bg-light p-2 border d-flex justify-content-between">
@@ -37,8 +37,11 @@ export default function PropertyResults({ Results, handleClose }) {
                   />
                   <div>
                     <p className="m-0">{item.property_name}</p>
+                    <span className="text-muted fs-6 me-2">
+                      {item?.property_city}
+                    </span>
                     <span className="text-muted fs-6">
-                      {item?.property_city}, {item?.property_state}
+                      {item?.property_state}
                     </span>
                   </div>
                 </div>

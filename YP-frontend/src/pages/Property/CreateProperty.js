@@ -18,10 +18,26 @@ export default function CreateProperty() {
   const [previewFeaturedImage, setPreviewFeaturedImage] = useState("");
   const [category, setCategory] = useState([]);
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [authUser, setAuthUser] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const getUser = useCallback(async () => {
+    try {
+      const response = await API.get(`/user/${User?._id}`);
+      setAuthUser(response.data);
+      setAuthLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [User]);
 
   useEffect(() => {
-    setAuthPermissions(User?.permissions);
-  }, [User]);
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    setAuthPermissions(authUser?.permissions);
+  }, [authUser]);
 
   const getCategory = useCallback(async () => {
     API.get("/category").then(({ data }) => {
@@ -43,6 +59,7 @@ export default function CreateProperty() {
     property_mobile_no: "",
     category: "",
     property_logo: "",
+    property_type: "",
     featured_image: "",
   };
 
@@ -66,6 +83,7 @@ export default function CreateProperty() {
     property_logo: Yup.string(),
     featured_image: Yup.string(),
     category: Yup.string().required("Category is required."),
+    property_type: Yup.string().required("Property Type is required."),
   });
 
   const onSubmit = async (values) => {
@@ -80,6 +98,7 @@ export default function CreateProperty() {
       formData.append("property_email", values.property_email);
       formData.append("property_mobile_no", values.property_mobile_no);
       formData.append("category", values.category);
+      formData.append("property_type", values.property_type);
       formData.append("property_description", description);
       formData.append("userId", User.uniqueId);
       if (values.property_logo) {
@@ -108,18 +127,20 @@ export default function CreateProperty() {
     onSubmit: onSubmit,
   });
 
-  if (authPermissions?.length >= 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Create Property"
-    );
-
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
+  if (!authLoading) {
+    if (authPermissions?.length >= 0) {
+      const hasPermission = authPermissions?.some(
+        (item) => item.value === "Create Property"
       );
+
+      if (!hasPermission) {
+        return (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <h2 className="text-danger fw-bold">Access Denied</h2>
+            <p>You do not have the required permissions to access this page.</p>
+          </div>
+        );
+      }
     }
   }
   return (
@@ -288,6 +309,35 @@ export default function CreateProperty() {
                       {formik.errors.category && formik.touched.category ? (
                         <span className="text-danger">
                           {formik.errors.category}
+                        </span>
+                      ) : (
+                        <span />
+                      )}
+                    </div>
+                  </div>
+                  <div className="col-md-6">
+                    <div className="mb-3">
+                      <label className="form-label" htmlFor="property_type">
+                        Property Type
+                      </label>
+                      <select
+                        name="property_type"
+                        id="property_type"
+                        className="form-control"
+                        value={formik.values.property_type}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      >
+                        <option value="">--Select Type--</option>
+                        <option value="Goverment">Goverment</option>
+                        <option value="Semigoverment">Semigoverment</option>
+                        <option value="private">private</option>
+                        <option value="Organization">Organization</option>
+                      </select>
+                      {formik.errors.property_type &&
+                      formik.touched.property_type ? (
+                        <span className="text-danger">
+                          {formik.errors.property_type}
                         </span>
                       ) : (
                         <span />

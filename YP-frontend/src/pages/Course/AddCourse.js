@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import DataRequest from "../../context/DataRequest";
 import { Breadcrumb, Card, Row, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
@@ -16,10 +16,26 @@ export default function AddCourse() {
   const [error, setError] = useState("");
   const [previewImage, setPreviewImage] = useState("");
   const [authPermissions, setAuthPermissions] = useState([]);
+  const [authUser, setAuthUser] = useState("");
+  const [authLoading, setAuthLoading] = useState(true);
+
+  const getUser = useCallback(async () => {
+    try {
+      const response = await API.get(`/user/${mainUser?.User?._id}`);
+      setAuthUser(response.data);
+      setAuthLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [mainUser]);
 
   useEffect(() => {
-    setAuthPermissions(mainUser?.User?.permissions);
-  }, [mainUser]);
+    getUser();
+  }, [getUser]);
+
+  useEffect(() => {
+    setAuthPermissions(authUser?.permissions);
+  }, [authUser]);
 
   const initialValues = {
     course_type: "",
@@ -28,16 +44,20 @@ export default function AddCourse() {
     duration_value: "",
     duration_unit: "",
     image: "",
+    certification_type: "",
     course_level: "",
   };
 
   const validationSchema = Yup.object({
     course_type: Yup.string().required("Course type is required."),
+    certification_type: Yup.string().required(
+      "Certification type is required."
+    ),
     course_name: Yup.string()
       .min(3, "Course Name must be at least 3 characters long.")
       .required("Course Name is required."),
 
-    course_short_name: Yup.string().required("Course Short Name is required."),
+    course_short_name: Yup.string(),
     duration_value: Yup.number()
       .typeError("Duration must be a number.")
       .required("Course duration is required.")
@@ -60,6 +80,7 @@ export default function AddCourse() {
       formData.append("description", description);
       formData.append("image", values.image);
       formData.append("course_level", values.course_level);
+      formData.append("certification_type", values.certification_type);
 
       const response = await API.post("/course", formData, {
         headers: {
@@ -85,21 +106,22 @@ export default function AddCourse() {
     onSubmit,
   });
 
-  if (authPermissions?.length >= 0) {
-    const hasPermission = authPermissions?.some(
-      (item) => item.value === "Create Course"
-    );
-
-    if (!hasPermission) {
-      return (
-        <div className="position-absolute top-50 start-50 translate-middle">
-          <h2 className="text-danger fw-bold">Access Denied</h2>
-          <p>You do not have the required permissions to access this page.</p>
-        </div>
+  if (!authLoading) {
+    if (authPermissions?.length >= 0) {
+      const hasPermission = authPermissions?.some(
+        (item) => item.value === "Create Course"
       );
+
+      if (!hasPermission) {
+        return (
+          <div className="position-absolute top-50 start-50 translate-middle">
+            <h2 className="text-danger fw-bold">Access Denied</h2>
+            <p>You do not have the required permissions to access this page.</p>
+          </div>
+        );
+      }
     }
   }
-
   return (
     <div>
       <div className="page-header">
@@ -157,10 +179,9 @@ export default function AddCourse() {
                         onBlur={formik.handleBlur}
                       >
                         <option value="">--Select Type--</option>
-                        <option value="Diploma">Diploma</option>
-                        <option value="Certificate">Certificate</option>
-                        <option value="Degree">Degree</option>
-                        <option value="Bachlore">Bachlore</option>
+                        <option value="Yoga">Yoga</option>
+                        <option value="Retreat">Retreat</option>
+                        <option value="Teacher Traning">Teacher Traning</option>
                       </select>
                       {formik.errors.course_type &&
                         formik.touched.course_type && (
@@ -285,6 +306,33 @@ export default function AddCourse() {
                         formik.touched.course_level && (
                           <span className="text-danger">
                             {formik.errors.course_level}
+                          </span>
+                        )}
+                    </Form.Group>
+                  </div>
+                  <div className="form-group col-md-6 mb-3">
+                    <Form.Group>
+                      <Form.Label htmlFor="certification_type">
+                        Certification Type
+                      </Form.Label>
+                      <select
+                        name="certification_type"
+                        id="certification_type"
+                        className="form-control"
+                        value={formik.values.certification_type}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      >
+                        <option value="">--Select Level--</option>
+                        <option value="Diploma">Diploma</option>
+                        <option value="Certificate">Certificate</option>
+                        <option value="Degree">Degree</option>
+                        <option value="Bachlore">Bachlore</option>
+                      </select>
+                      {formik.errors.certification_type &&
+                        formik.touched.certification_type && (
+                          <span className="text-danger">
+                            {formik.errors.certification_type}
                           </span>
                         )}
                     </Form.Group>

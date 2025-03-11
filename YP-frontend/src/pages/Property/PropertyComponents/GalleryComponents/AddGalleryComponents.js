@@ -61,6 +61,7 @@ export default function AddGallery({ getGallery, property }) {
       formik.resetForm();
       setImages([]);
       window.scrollTo(0, 0);
+
       window.location.reload();
     } catch (error) {
       console.log(error);
