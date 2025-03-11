@@ -1,73 +1,280 @@
 import fs from "fs/promises";
 import path from "path";
 import { fileURLToPath } from "url";
-import Course from "../../models/Courses.js";
 import User from "../../models/Users.js";
+import Course from "../../models/Courses.js";
 import Category from "../../models/Category.js";
 import Property from "../../models/Property.js";
-import Teachers from "../../models/Teachers.js";
 import Gallery from "../../models/Gallery.js";
 import Achievements from "../../models/Achievements.js";
+import Teachers from "../../models/Teachers.js";
 
-const handleFolderCleaner = async (req, res) => {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export const UserFolderCleaners = async () => {
   try {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+    const allUsers = await User.find();
 
-    const unKnownFiles = path.join(__dirname, "../../images");
-    const AllCourse = await Course.find();
-    const AllUsers = await User.find();
-    const AllCategories = await Category.find();
-    const AllProperties = await Property.find();
-    const AllTeachers = await Teachers.find();
-    const AllGallery = await Gallery.find();
-    const AllAchievements = await Achievements.find();
-
-    const files = AllCourse.map((file) => path.basename(file.image));
-    AllCategories.map((file) => {
-      files.push(file.category_icon);
-      files.push(file.featured_image);
-    });
-    AllUsers.map((file) => {
-      files.push(file.profile);
-    });
-    AllUsers.map((file) => {
-      files.push(file.profile);
-    });
-    AllTeachers.map((file) => {
-      files.push(file.profile);
-    });
-
-    AllGallery.map((file) => {
-      file.gallery.map((img) => {
-        const x = img.split(`\\`);
-        files.push(x[1]);
-      });
-    });
-
-    AllProperties.map((file) => {
-      files.push(file.property_logo);
-      files.push(file.featured_image);
-    });
-    AllAchievements.map((file) => {
-      file.achievements.map((item) => {
-        const x = item.split(`\\`);
-        files.push(x[1]);
-      });
-    });
-
-    const filesInFolder = await fs.readdir(unKnownFiles);
-
-    for (const file of filesInFolder) {
-      if (!files.includes(file)) {
-        const filePath = path.join(unKnownFiles, file);
-        await fs.unlink(filePath);
-        console.log(`Deleting Uploaded File: ${filePath}`);
+    const profileImages = new Set();
+    allUsers.forEach((user) => {
+      if (user.profile && Array.isArray(user.profile)) {
+        user.profile.forEach((img) => profileImages.add(img));
       }
-    }
+    });
+
+    const userMediaFolder = path.join(__dirname, "../../media/users");
+
+    const filesInFolder = await fs.readdir(userMediaFolder);
+
+    await Promise.all(
+      filesInFolder.map(async (file) => {
+        const filePath = `media/users/${file}`;
+
+        if (!profileImages.has(filePath)) {
+          await fs.unlink(path.join(userMediaFolder, file));
+          console.log(`Deleted: ${filePath}`);
+        }
+      })
+    );
   } catch (error) {
-    console.log(error);
+    console.error("Error during cleanup:", error.message);
   }
 };
 
-export default handleFolderCleaner;
+export const courseFolderCleaners = async () => {
+  try {
+    const allCourses = await Course.find();
+
+    const courseImages = new Set();
+    allCourses.forEach((course) => {
+      if (course.image && Array.isArray(course.image)) {
+        course.image.forEach((img) => {
+          if (img) courseImages.add(img);
+        });
+      }
+    });
+
+    const courseMediaFolder = path.join(__dirname, "../../media/course");
+
+    const filesInFolder = await fs.readdir(courseMediaFolder);
+
+    await Promise.all(
+      filesInFolder.map(async (file) => {
+        const filePath = `media/courses/${file}`;
+
+        if (!courseImages.has(filePath)) {
+          await fs.unlink(path.join(courseMediaFolder, file));
+          console.log(`Deleted: ${filePath}`);
+        }
+      })
+    );
+  } catch (error) {
+    console.error("Error during cleanup:", error.message);
+  }
+};
+
+export const categoryFolderCleaners = async () => {
+  try {
+    const allCategories = await Category.find();
+
+    const categoryImages = new Set();
+    allCategories.forEach((category) => {
+      if (category.category_icon && Array.isArray(category.category_icon)) {
+        category.category_icon.forEach((icon) => {
+          if (icon) categoryImages.add(icon);
+        });
+      }
+
+      if (category.featured_image && Array.isArray(category.featured_image)) {
+        category.featured_image.forEach((image) => {
+          if (image) categoryImages.add(image);
+        });
+      }
+    });
+
+    const categoryMediaFolder = path.join(__dirname, "../../media/category");
+
+    const filesInFolder = await fs.readdir(categoryMediaFolder);
+
+    await Promise.all(
+      filesInFolder.map(async (file) => {
+        const filePath = `media/category/${file}`;
+
+        if (!categoryImages.has(filePath)) {
+          await fs.unlink(path.join(categoryMediaFolder, file));
+          console.log(`Deleted: ${filePath}`);
+        }
+      })
+    );
+  } catch (error) {
+    console.error("Error during cleanup:", error.message);
+  }
+};
+
+export const propertyMainFolderCleaners = async () => {
+  try {
+    const allProperties = await Property.find();
+
+    for (const property of allProperties) {
+      const uniqueId = property.uniqueId;
+      const propertyFolder = path.join(
+        __dirname,
+        `../../media/${uniqueId}/main`
+      );
+
+      try {
+        const filesInFolder = await fs.readdir(propertyFolder);
+
+        const validImages = new Set();
+
+        if (property.property_logo && Array.isArray(property.property_logo)) {
+          property.property_logo.forEach((logo) => {
+            if (logo) validImages.add(logo);
+          });
+        }
+
+        if (property.featured_image && Array.isArray(property.featured_image)) {
+          property.featured_image.forEach((image) => {
+            if (image) validImages.add(image);
+          });
+        }
+        await Promise.all(
+          filesInFolder.map(async (file) => {
+            const filePath = `media/${uniqueId}/main/${file}`;
+
+            if (!validImages.has(filePath)) {
+              await fs.unlink(path.join(propertyFolder, file));
+              console.log(`Deleted: ${filePath}`);
+            }
+          })
+        );
+      } catch (error) {
+        console.warn(
+          `Skipping cleanup for property ID ${uniqueId}: ${error.message}`
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error during property folder cleanup:", error.message);
+  }
+};
+
+export const propertyGalleryFolderCleaners = async () => {
+  try {
+    const allGalleries = await Gallery.find();
+
+    for (const gallery of allGalleries) {
+      const uniqueId = gallery.uniqueId;
+      const galleryFolder = path.join(
+        __dirname,
+        `../../media/${uniqueId}/gallery`
+      );
+
+      try {
+        const filesInFolder = await fs.readdir(galleryFolder);
+
+        const validImages = new Set(gallery.gallery || []);
+
+        await Promise.all(
+          filesInFolder.map(async (file) => {
+            const filePath = `media/${gallery?.propertyId}/gallery/${file}`;
+
+            if (!validImages.has(filePath)) {
+              await fs.unlink(path.join(galleryFolder, file));
+              console.log(`Deleted: ${filePath}`);
+            }
+          })
+        );
+      } catch (error) {
+        console.warn(
+          `Skipping gallery cleanup for property ID ${uniqueId}: ${error.message}`
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error during property gallery cleanup:", error.message);
+  }
+};
+
+export const propertyAchievementsFolderCleaners = async () => {
+  try {
+    const allAchievements = await Achievements.find();
+
+    for (const achievement of allAchievements) {
+      const uniqueId = achievement.uniqueId;
+      const achievementsFolder = path.join(
+        __dirname,
+        `../../media/${uniqueId}/achievements`
+      );
+
+      try {
+        const filesInFolder = await fs.readdir(achievementsFolder);
+
+        const validImages = new Set(achievement.achievements || []);
+
+        await Promise.all(
+          filesInFolder.map(async (file) => {
+            const filePath = `media/${achievement?.property_id}/achievements/${file}`;
+
+            if (!validImages.has(filePath)) {
+              await fs.unlink(path.join(achievementsFolder, file));
+              console.log(`Deleted: ${filePath}`);
+            }
+          })
+        );
+      } catch (error) {
+        console.warn(
+          `Skipping achievements cleanup for property ID ${uniqueId}: ${error.message}`
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error during achievements cleanup:", error.message);
+  }
+};
+
+export const teacherProfileFolderCleaners = async () => {
+  try {
+    const allTeachers = await Teachers.find();
+
+    for (const teacher of allTeachers) {
+      const { property_id, profile } = teacher;
+
+      if (!property_id) {
+        console.warn(
+          `Skipping teacher with missing property_id: ${teacher._id}`
+        );
+        continue;
+      }
+
+      const teacherFolder = path.join(
+        __dirname,
+        `../../media/${property_id}/teachers`
+      );
+
+      try {
+        const filesInFolder = await fs.readdir(teacherFolder);
+
+        const validImages = new Set(profile.filter((img) => img !== null));
+
+        await Promise.all(
+          filesInFolder.map(async (file) => {
+            const filePath = `media/${property_id}/teachers/${file}`;
+
+            if (!validImages.has(filePath)) {
+              await fs.unlink(path.join(teacherFolder, file));
+              console.log(`Deleted: ${filePath}`);
+            }
+          })
+        );
+      } catch (error) {
+        console.warn(
+          `Skipping teacher profile cleanup for property ID ${property_id}: ${error.message}`
+        );
+      }
+    }
+  } catch (error) {
+    console.error("Error during teacher profile cleanup:", error.message);
+  }
+};

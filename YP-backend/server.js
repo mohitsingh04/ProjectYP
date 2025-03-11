@@ -16,6 +16,15 @@ import {
   UserImageMover,
 } from "./helper/FolderCleaners/PropertyImageMover.js";
 import cookieParser from "cookie-parser";
+import {
+  categoryFolderCleaners,
+  courseFolderCleaners,
+  propertyAchievementsFolderCleaners,
+  propertyGalleryFolderCleaners,
+  propertyMainFolderCleaners,
+  teacherProfileFolderCleaners,
+  UserFolderCleaners,
+} from "./helper/FolderCleaners/FolderCleaners.js";
 
 const app = express();
 dotenv.config();
@@ -47,6 +56,13 @@ setInterval(() => {
   CourseImageMover();
   CategoryImageMover();
   UserImageMover();
+  UserFolderCleaners();
+  courseFolderCleaners();
+  categoryFolderCleaners();
+  propertyMainFolderCleaners();
+  propertyGalleryFolderCleaners();
+  propertyAchievementsFolderCleaners();
+  teacherProfileFolderCleaners();
 }, 2000);
 
 mongoose
