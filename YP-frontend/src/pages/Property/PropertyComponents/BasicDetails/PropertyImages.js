@@ -131,16 +131,10 @@ export default function PropertyImages({ loading }) {
                         alt=""
                       />
                       <br />
-                      <span
-                        onClick={handleCancelEditLogo}
-                        className="btn btn-danger mt-1"
-                      >
+                      <span onClick={handleCancelEditLogo} className="mt-1">
                         <i className="fe fe-x"></i>
                       </span>
-                      <button
-                        type="submit"
-                        className="btn btn-success mt-1 ms-1"
-                      >
+                      <button type="submit" className="mt-1 ms-1">
                         <i className="fe fe-check"></i>
                       </button>
                     </form>
@@ -180,16 +174,10 @@ export default function PropertyImages({ loading }) {
                         alt=""
                       />
                       <br />
-                      <span
-                        onClick={handleCancelEditLogo}
-                        className="btn btn-danger mt-1"
-                      >
+                      <span onClick={handleCancelEditLogo} className="mt-1">
                         <i className="fe fe-x"></i>
                       </span>
-                      <button
-                        type="submit"
-                        className="btn btn-success ms-1 mt-1"
-                      >
+                      <button type="submit" className="ms-1 mt-1">
                         <i className="fe fe-check"></i>
                       </button>
                     </form>
@@ -197,12 +185,9 @@ export default function PropertyImages({ loading }) {
                 ) : (
                   <>
                     <div>
-                      <div className="d-flex justify-content-between">
+                      <div className="d-flex gap-2">
                         <strong>Logo</strong>
-                        <span
-                          onClick={() => handleEditLogo()}
-                          className="btn btn-primary"
-                        >
+                        <span onClick={() => handleEditLogo()}>
                           <i className="fe fe-edit"></i>
                         </span>
                       </div>
@@ -222,7 +207,7 @@ export default function PropertyImages({ loading }) {
                 )}
               </Col>
               <Col md={6} className="mb-3">
-                {!property.featured_image === null ? (
+                {!property.featured_image ? (
                   <>
                     <strong>Featured Image</strong>
                     <form onSubmit={handleSubmit} encType="multipart/form-data">
@@ -257,16 +242,10 @@ export default function PropertyImages({ loading }) {
                         alt=""
                       />
                       <br />
-                      <button
-                        onClick={handleCancelEditFimage}
-                        className="btn btn-danger mt-1"
-                      >
+                      <button onClick={handleCancelEditFimage} className="mt-1">
                         <i className="fe fe-x"></i>
                       </button>
-                      <button
-                        type="submit"
-                        className="btn btn-success ms-1 mt-1"
-                      >
+                      <button type="submit" className="ms-1 mt-1">
                         <i className="fe fe-check text-primary"></i>
                       </button>
                     </form>
@@ -310,11 +289,11 @@ export default function PropertyImages({ loading }) {
                       <br />
                       <button
                         onClick={handleCancelEditFimage}
-                        className="btn btn-danger me-1 mt-1"
+                        className="me-1 mt-1"
                       >
                         <i className="fe fe-x"></i>
                       </button>
-                      <button type="submit" className="btn btn-success mt-1">
+                      <button type="submit" className="mt-1">
                         <i className="fe fe-check"></i>
                       </button>
                     </form>
@@ -323,12 +302,9 @@ export default function PropertyImages({ loading }) {
                   <>
                     <>
                       <div>
-                        <div className="d-flex justify-content-between">
+                        <div className="d-flex gap-2">
                           <strong>Featured Image</strong>
-                          <button
-                            onClick={() => handleEditFimage()}
-                            className="btn btn-primary"
-                          >
+                          <button onClick={() => handleEditFimage()}>
                             <i className="fe fe-edit"></i>
                           </button>
                         </div>

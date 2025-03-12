@@ -1,370 +1,370 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { Card, Row, Col } from "react-bootstrap";
-import { Link, useParams } from "react-router-dom";
+import { Card, Row, Col, Form } from "react-bootstrap";
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { API } from "../../../../context/Api";
 import { toast } from "react-toastify";
 import Businesshours from "./Businesshours";
+import { useParams } from "react-router-dom";
+
+const categorySchema = Yup.object().shape({
+  category: Yup.string().required("Category is required"),
+});
+
+const propertyTypeSchema = Yup.object().shape({
+  propertyType: Yup.string().required("Property type is required"),
+});
+
+const statusSchema = Yup.object().shape({
+  status: Yup.string().required("Status is required"),
+});
+
+const establishmentYearSchema = Yup.object().shape({
+  establishmentYear: Yup.number()
+    .required("Establishment year is required")
+    .integer("Must be a whole number")
+    .min(1800, "Year must be after 1800")
+    .max(new Date().getFullYear(), "Year cannot be in the future")
+    .test(
+      "len",
+      "Must be exactly 4 digits",
+      (val) => val?.toString().length === 4
+    ),
+});
 
 export default function OtherDetails() {
   const { objectId } = useParams();
   const [status, setStatus] = useState([]);
   const [category, setCategory] = useState([]);
-  const [property, setProperty] = useState("");
+  const [property, setProperty] = useState({
+    property_name: "",
+    uniqueId: "",
+    category: "",
+    status: "",
+    est_year: "",
+    property_type: "",
+  });
+
+  const [showCategoryInput, setShowCategoryInput] = useState(false);
+  const [showStatusInput, setShowStatusInput] = useState(false);
+  const [showEstYearInput, setShowEstYearInput] = useState(false);
+  const [showPropertyTypeInput, setShowPropertyTypeInput] = useState(false);
 
   const getProperty = useCallback(async () => {
-    await API.get(`/property/${objectId}`).then(({ data }) => {
+    try {
+      const { data } = await API.get(`/property/${objectId}`);
       setProperty(data);
-      setActiveCategory(data?.category);
-      setEstablishmentYear(data?.est_year);
-      setActiveStatus(data?.status);
-      setPropertyType(data?.property_type);
-    });
+    } catch (error) {
+      toast.error("Failed to fetch property details");
+    }
   }, [objectId]);
 
   const getCategory = useCallback(async () => {
-    API.get(`/category`).then(({ data }) => {
-      setCategory(data);
-      const mainCategory = data.filter((item) => item.status === "Active");
-      if (mainCategory) {
-        setCategory(mainCategory);
-      }
-    });
+    try {
+      const { data } = await API.get("/category");
+      const activeCategories = data.filter((item) => item.status === "Active");
+      setCategory(activeCategories);
+    } catch (error) {
+      toast.error("Failed to fetch categories");
+    }
   }, []);
 
   const getStatus = useCallback(async () => {
-    await API.get(`/status`).then(({ data }) => {
-      setStatus(data);
-      const mainStatus = data.filter((item) => item.name === "Property");
-      if (mainStatus) {
-        setStatus(mainStatus);
-      }
-    });
+    try {
+      const { data } = await API.get("/status");
+      const propertyStatus = data.filter((item) => item.name === "Property");
+      setStatus(propertyStatus);
+    } catch (error) {
+      toast.error("Failed to fetch status options");
+    }
   }, []);
 
   useEffect(() => {
     getProperty();
-  }, [getProperty]);
-
-  useEffect(() => {
     getCategory();
     getStatus();
-  }, [getCategory, getStatus]);
+  }, [getProperty, getCategory, getStatus]);
 
-  const [showCategoryInInput, setShowCategoryInInput] = useState(false);
-  const [showStatusInInput, setShowStatusInInput] = useState(false);
-  const [showEstDateInInput, setShowEstDateInInput] = useState(false);
-  const [showPropertyType, setShowPropertyType] = useState(false);
+  // Formik setup for each field
+  const categoryFormik = useFormik({
+    initialValues: { category: property.category || "" },
+    validationSchema: categorySchema,
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        await API.patch(`/property/${objectId}`, {
+          property_name: property.property_name,
+          property_id: property.uniqueId,
+          category: values.category,
+        });
+        toast.success("Category updated successfully");
+        setShowCategoryInput(false);
+        getProperty();
+      } catch (error) {
+        toast.error("Failed to update category");
+      }
+    },
+  });
 
-  const handleEditCategory = () => {
-    setShowCategoryInInput(true);
-  };
-  const handleCancelEditCategory = () => {
-    setShowCategoryInInput(false);
-  };
-  const handleEditPropertyType = () => {
-    setShowPropertyType(true);
-  };
-  const handleCancelEditPropertyType = () => {
-    setShowPropertyType(false);
-  };
-  const handleEditStatus = () => {
-    setShowStatusInInput(true);
-  };
-  const handleCancelEditStatus = () => {
-    setShowStatusInInput(false);
-  };
-  const handleEditEstDate = () => {
-    setShowEstDateInInput(true);
-  };
-  const handleCancelEditEstDate = () => {
-    setShowEstDateInInput(false);
-  };
+  const propertyTypeFormik = useFormik({
+    initialValues: { propertyType: property.property_type || "" },
+    validationSchema: propertyTypeSchema,
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        await API.patch(`/property/${objectId}`, {
+          property_name: property.property_name,
+          property_id: property.uniqueId,
+          property_type: values.propertyType,
+        });
+        toast.success("Property type updated successfully");
+        setShowPropertyTypeInput(false);
+        getProperty();
+      } catch (error) {
+        toast.error("Failed to update property type");
+      }
+    },
+  });
 
-  const initialValues = {
-    property_name: property.property_name || "",
-    property_id: property.uniqueId || "",
-  };
+  const statusFormik = useFormik({
+    initialValues: { status: property.status || "" },
+    validationSchema: statusSchema,
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        await API.patch(`/property/${objectId}`, {
+          property_name: property.property_name,
+          property_id: property.uniqueId,
+          status: values.status,
+        });
+        toast.success("Status updated successfully");
+        setShowStatusInput(false);
+        getProperty();
+      } catch (error) {
+        toast.error("Failed to update status");
+      }
+    },
+  });
 
-  const [activeCategory, setActiveCategory] = useState("");
-  const [activeStatus, setActiveStatus] = useState("");
-  const [establishmentYear, setEstablishmentYear] = useState("");
-  const [propertyType, setPropertyType] = useState("");
-  const [error, setError] = useState("");
-  const handleCateogory = async (e) => {
-    e.preventDefault();
-    let data = {};
-
-    if (!/^\d+$/.test(establishmentYear)) {
-      setError("Establishment year must contain only numbers.");
-      return;
-    }
-    if (String(establishmentYear).length !== 4) {
-      setError("Establishment year must be exactly 4 digits.");
-      return;
-    }
-
-    data = {
-      ...initialValues,
-      category: activeCategory,
-      status: activeStatus,
-      est_year: establishmentYear,
-      property_type: propertyType,
-    };
-
-    try {
-      const response = await API.patch(`/property/${objectId}`, data);
-      toast.success(response.data.message);
-      setActiveCategory("");
-      await getProperty();
-      handleCancelEditCategory();
-      handleCancelEditPropertyType();
-      handleCancelEditEstDate();
-      handleCancelEditStatus();
-    } catch (error) {
-      toast.error(error.response.data.error);
-    }
-  };
+  const establishmentYearFormik = useFormik({
+    initialValues: { establishmentYear: property.est_year || "" },
+    validationSchema: establishmentYearSchema,
+    enableReinitialize: true,
+    onSubmit: async (values) => {
+      try {
+        await API.patch(`/property/${objectId}`, {
+          property_name: property.property_name,
+          property_id: property.uniqueId,
+          est_year: values.establishmentYear,
+        });
+        toast.success("Establishment year updated successfully");
+        setShowEstYearInput(false);
+        getProperty();
+      } catch (error) {
+        toast.error("Failed to update establishment year");
+      }
+    },
+  });
 
   return (
-    <>
-      <div className="tab-pane profiletab show">
-        <div id="profile-log-switch">
-          <Card>
-            <Card.Header>
-              <h5>
-                <strong>Other Details</strong>
-              </h5>
-            </Card.Header>
-            <Card.Body>
-              <Row>
-                <Col md={6} className="mb-3">
-                  <strong>Category :</strong>
-                  {property.category && showCategoryInInput ? (
-                    <>
-                      <form onSubmit={handleCateogory} className="d-flex">
-                        <div className="input-group">
-                          <select
-                            name="category"
-                            id="category"
-                            className="form-control"
-                            value={activeCategory}
-                            onChange={(e) => setActiveCategory(e.target.value)}
-                          >
-                            <option value="">--Select Category--</option>
-                            {category.map((item, key) => (
-                              <option key={key} value={item.category_name}>
-                                {item.category_name}
-                              </option>
-                            ))}
-                          </select>
-                          <button type="submit" className="btn btn-success">
-                            <i className="fe fe-check"></i>
-                          </button>
-                          <button
-                            onClick={handleCancelEditCategory}
-                            className="btn btn-danger"
-                          >
-                            <i className="fe fe-x"></i>
-                          </button>
-                        </div>
-                      </form>
-                      {category.length === 0 && (
-                        <Row>
-                          <Col className="d-flex pt-3">
-                            <div>
-                              <p className="text-danger">
-                                No categories available. Please add a category
-                                to continue.
-                              </p>
-                            </div>
-                            <div className="ms-auto">
-                              <Link
-                                to={`/dashboard/category/add`}
-                                className="btn btn-primary"
-                              >
-                                Add Category
-                              </Link>
-                            </div>
-                          </Col>
-                        </Row>
-                      )}
-                    </>
-                  ) : (
-                    <>
-                      <>
-                        <div className="d-flex justify-content-between align-items-center">
-                          {property.category}
-                          <button
-                            onClick={() => handleEditCategory()}
-                            className="btn btn-primary"
-                          >
-                            <i className="fe fe-edit"></i>
-                          </button>
-                        </div>
-                      </>
-                    </>
-                  )}
-                </Col>
-                <Col md={6} className="mb-3">
-                  <strong>Property Type :</strong>
-                  {property.property_type && showPropertyType ? (
-                    <>
-                      <form onSubmit={handleCateogory} className="d-flex">
-                        <div className="input-group">
-                          <select
-                            name="category"
-                            id="category"
-                            className="form-control"
-                            value={propertyType}
-                            onChange={(e) => setPropertyType(e.target.value)}
-                          >
-                            <option value="">--Select Type--</option>
-                            <option value="Goverment">Goverment</option>
-                            <option value="Semigoverment">Semigoverment</option>
-                            <option value="private">private</option>
-                            <option value="Organization">Organization</option>
-                          </select>
-                          <button type="submit" className="btn btn-success">
-                            <i className="fe fe-check"></i>
-                          </button>
-                          <button
-                            onClick={handleCancelEditPropertyType}
-                            className="btn btn-danger"
-                          >
-                            <i className="fe fe-x"></i>
-                          </button>
-                        </div>
-                      </form>
-                    </>
-                  ) : (
-                    <>
-                      <>
-                        <div className="d-flex justify-content-between align-items-center">
-                          {property.property_type}
-                          <button
-                            onClick={() => handleEditPropertyType()}
-                            className="btn btn-primary"
-                          >
-                            <i className="fe fe-edit"></i>
-                          </button>
-                        </div>
-                      </>
-                    </>
-                  )}
-                </Col>
-                <Col md={6} className="mb-3">
-                  <strong>Status :</strong>
-                  {property.status && showStatusInInput ? (
-                    <>
-                      <form onSubmit={handleCateogory} className="d-flex">
-                        <select
-                          name="status"
-                          id="status"
-                          className="form-control"
-                          value={activeStatus}
-                          onChange={(e) => setActiveStatus(e.target.value)}
-                        >
-                          <option value="">--Select Status--</option>
-                          {status.map((item, key) => (
-                            <option key={key} value={item.parent_status}>
-                              {item.parent_status}
-                            </option>
-                          ))}
-                        </select>
-                        <span
-                          onClick={handleCancelEditStatus}
-                          className="mx-3 py-2"
-                        >
-                          <i className="fe fe-x"></i>
-                        </span>
-                        <button type="submit" className="btn">
-                          <i className="fe fe-check text-primary"></i>
-                        </button>
-                      </form>
-                    </>
-                  ) : (
-                    <>
-                      <>
-                        <br />
-                        {property.status}
-                        <span
-                          onClick={() => handleEditStatus()}
-                          className="mx-2"
-                        >
-                          <i className="fe fe-edit"></i>
-                        </span>
-                      </>
-                    </>
-                  )}
-                </Col>
-                <Col md={6}>
-                  <strong>Established Year :</strong>
-                  {!property.est_year ? (
-                    <>
-                      <form onSubmit={handleCateogory} className="d-flex">
-                        <input
-                          type="number"
-                          name="est_year"
-                          className="form-control"
-                          placeholder="Enter established year..."
-                          onChange={(e) => {
-                            setEstablishmentYear(e.target.value);
-                            setError("");
-                          }}
-                        />
-                        <button type="submit" className="btn">
-                          <i className="fe fe-check text-primary"></i>
-                        </button>
-                      </form>
-                      <span className="text-danger">{error}</span>
-                    </>
-                  ) : showEstDateInInput ? (
-                    <>
-                      <form onSubmit={handleCateogory} className="d-flex">
-                        <input
-                          type="number"
-                          name="est_year"
-                          className="form-control"
-                          placeholder="Enter established year..."
-                          value={establishmentYear}
-                          onChange={(e) => {
-                            setEstablishmentYear(e.target.value);
-                            setError("");
-                          }}
-                        />
-                        <span
-                          onClick={handleCancelEditEstDate}
-                          className="mx-3 py-2"
-                        >
-                          <i className="fe fe-x"></i>
-                        </span>
-                        <button type="submit" className="btn">
-                          <i className="fe fe-check text-primary"></i>
-                        </button>
-                      </form>
-                      <span className="text-danger">{error}</span>
-                    </>
-                  ) : (
-                    <>
-                      <>
-                        <br />
-                        {property.est_year}
-                        <span
-                          onClick={() => handleEditEstDate()}
-                          className="mx-2"
-                        >
-                          <i className="fe fe-edit"></i>
-                        </span>
-                      </>
-                    </>
-                  )}
-                </Col>
-              </Row>
-            </Card.Body>
-          </Card>
-          <Businesshours property={property} />
-        </div>
+    <div className="tab-pane profiletab show">
+      <div id="profile-log-switch">
+        <Card>
+          <Card.Header>
+            <h5>
+              <strong>Other Details</strong>
+            </h5>
+          </Card.Header>
+          <Card.Body>
+            <Row>
+              <Col md={6} className="mb-3">
+                <strong>Category:</strong>
+                {showCategoryInput ? (
+                  <Form
+                    onSubmit={categoryFormik.handleSubmit}
+                    className="d-flex mt-2"
+                  >
+                    <div className="w-100">
+                      <Form.Select
+                        name="category"
+                        value={categoryFormik.values.category}
+                        onChange={categoryFormik.handleChange}
+                        onBlur={categoryFormik.handleBlur}
+                        isInvalid={
+                          categoryFormik.touched.category &&
+                          !!categoryFormik.errors.category
+                        }
+                      >
+                        <option value="">--Select Category--</option>
+                        {category.map((item, index) => (
+                          <option key={index} value={item.category_name}>
+                            {item.category_name}
+                          </option>
+                        ))}
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {categoryFormik.errors.category}
+                      </Form.Control.Feedback>
+                    </div>
+                    <button>
+                      <i className="fe fe-check"></i>
+                    </button>
+                    <button onClick={() => setShowCategoryInput(false)}>
+                      <i className="fe fe-x"></i>
+                    </button>
+                  </Form>
+                ) : (
+                  <div className="d-flex align-items-center gap-2 mt-1">
+                    <span>{property.category || "Not set"}</span>
+                    <button onClick={() => setShowCategoryInput(true)}>
+                      <i className="fe fe-edit"></i>
+                    </button>
+                  </div>
+                )}
+              </Col>
+
+              <Col md={6} className="mb-3">
+                <strong>Property Type:</strong>
+                {showPropertyTypeInput ? (
+                  <Form
+                    onSubmit={propertyTypeFormik.handleSubmit}
+                    className="d-flex mt-2"
+                  >
+                    <div className="w-100">
+                      <Form.Select
+                        name="propertyType"
+                        value={propertyTypeFormik.values.propertyType}
+                        onChange={propertyTypeFormik.handleChange}
+                        onBlur={propertyTypeFormik.handleBlur}
+                        isInvalid={
+                          propertyTypeFormik.touched.propertyType &&
+                          !!propertyTypeFormik.errors.propertyType
+                        }
+                      >
+                        <option value="">--Select Type--</option>
+                        <option value="Government">Government</option>
+                        <option value="Semigovernment">Semigovernment</option>
+                        <option value="Private">Private</option>
+                        <option value="Organization">Organization</option>
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {propertyTypeFormik.errors.propertyType}
+                      </Form.Control.Feedback>
+                    </div>
+                    <button>
+                      <i className="fe fe-check"></i>
+                    </button>
+                    <button onClick={() => setShowPropertyTypeInput(false)}>
+                      <i className="fe fe-x"></i>
+                    </button>
+                  </Form>
+                ) : (
+                  <div className="d-flex align-items-center gap-2 mt-1">
+                    <span>{property.property_type || "Not set"}</span>
+                    <button
+                      className="text-primary p-0"
+                      onClick={() => setShowPropertyTypeInput(true)}
+                    >
+                      <i className="fe fe-edit"></i>
+                    </button>
+                  </div>
+                )}
+              </Col>
+
+              <Col md={6} className="mb-3">
+                <strong>Status:</strong>
+                {showStatusInput ? (
+                  <Form
+                    onSubmit={statusFormik.handleSubmit}
+                    className="d-flex mt-2"
+                  >
+                    <div className="w-100">
+                      <Form.Select
+                        name="status"
+                        value={statusFormik.values.status}
+                        onChange={statusFormik.handleChange}
+                        onBlur={statusFormik.handleBlur}
+                        isInvalid={
+                          statusFormik.touched.status &&
+                          !!statusFormik.errors.status
+                        }
+                      >
+                        <option value="">--Select Status--</option>
+                        {status.map((item, index) => (
+                          <option key={index} value={item.parent_status}>
+                            {item.parent_status}
+                          </option>
+                        ))}
+                      </Form.Select>
+                      <Form.Control.Feedback type="invalid">
+                        {statusFormik.errors.status}
+                      </Form.Control.Feedback>
+                    </div>
+                    <button>
+                      <i className="fe fe-check"></i>
+                    </button>
+                    <button onClick={() => setShowStatusInput(false)}>
+                      <i className="fe fe-x"></i>
+                    </button>
+                  </Form>
+                ) : (
+                  <div className="d-flex align-items-center gap-2 mt-1">
+                    <span>{property.status || "Not set"}</span>
+                    <button
+                      className="text-primary p-0"
+                      onClick={() => setShowStatusInput(true)}
+                    >
+                      <i className="fe fe-edit"></i>
+                    </button>
+                  </div>
+                )}
+              </Col>
+
+              <Col md={6}>
+                <strong>Establishment Year:</strong>
+                {showEstYearInput ? (
+                  <Form
+                    onSubmit={establishmentYearFormik.handleSubmit}
+                    className="d-flex mt-2"
+                  >
+                    <div className="w-100">
+                      <Form.Control
+                        type="number"
+                        name="establishmentYear"
+                        placeholder="Enter establishment year..."
+                        value={establishmentYearFormik.values.establishmentYear}
+                        onChange={establishmentYearFormik.handleChange}
+                        onBlur={establishmentYearFormik.handleBlur}
+                        isInvalid={
+                          establishmentYearFormik.touched.establishmentYear &&
+                          !!establishmentYearFormik.errors.establishmentYear
+                        }
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {establishmentYearFormik.errors.establishmentYear}
+                      </Form.Control.Feedback>
+                    </div>
+                    <button>
+                      <i className="fe fe-check"></i>
+                    </button>
+                    <button onClick={() => setShowEstYearInput(false)}>
+                      <i className="fe fe-x"></i>
+                    </button>
+                  </Form>
+                ) : (
+                  <div className="d-flex align-items-center gap-2 mt-1">
+                    <span>{property.est_year || "Not set"}</span>
+                    <button onClick={() => setShowEstYearInput(true)}>
+                      <i className="fe fe-edit"></i>
+                    </button>
+                  </div>
+                )}
+              </Col>
+            </Row>
+          </Card.Body>
+        </Card>
+        <Businesshours property={property} />
       </div>
-    </>
+    </div>
   );
 }

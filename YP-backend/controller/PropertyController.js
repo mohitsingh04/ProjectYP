@@ -219,29 +219,54 @@ export const updateProperty = async (req, res) => {
   }
 };
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 export const deleteProperty = async (req, res) => {
   try {
     const objectId = req.params.objectId;
     const property = await Property.findOne({ _id: objectId });
-    if (property) {
-      await Property.findOneAndDelete({ _id: objectId });
-      await Teachers.deleteMany({ property_id: property.uniqueId });
-      await Gallery.deleteMany({ propertyId: property.uniqueId });
-      await Review.deleteMany({ property_id: property.uniqueId });
-      await PropertyCourse.deleteMany({ property_id: property.uniqueId });
-      await Seo.deleteMany({ property_id: property.uniqueId });
-      await Faqs.deleteMany({ property_id: property.uniqueId });
-      await Achievements.deleteMany({ property_id: property.uniqueId });
-      await BusinessHour.deleteMany({ property_id: property.uniqueId });
-      await Enquiry.deleteMany({ property_id: property.uniqueId });
-      await ArchiveEnquiry.deleteMany({ property_id: property.uniqueId });
-      await Amenities.deleteMany({ propertyId: property.uniqueId });
 
-      res.send({ message: "Property Deleted." });
+    if (!property) {
+      return res.status(404).send({ error: "Property not found." });
     }
+
+    const uniqueId = property.uniqueId;
+    const propertyFolder = path.join(__dirname, `../media/${uniqueId}`);
+
+    await Property.findOneAndDelete({ _id: objectId });
+    await Teachers.deleteMany({ property_id: uniqueId });
+    await Gallery.deleteMany({ propertyId: uniqueId });
+    await Review.deleteMany({ property_id: uniqueId });
+    await PropertyCourse.deleteMany({ property_id: uniqueId });
+    await Seo.deleteMany({ property_id: uniqueId });
+    await Faqs.deleteMany({ property_id: uniqueId });
+    await Achievements.deleteMany({ property_id: uniqueId });
+    await BusinessHour.deleteMany({ property_id: uniqueId });
+    await Enquiry.deleteMany({ property_id: uniqueId });
+    await ArchiveEnquiry.deleteMany({ property_id: uniqueId });
+    await Amenities.deleteMany({ propertyId: uniqueId });
+
+    try {
+      const folderExists = await fs
+        .stat(propertyFolder)
+        .then(() => true)
+        .catch(() => false);
+
+      if (folderExists) {
+        await fs.rm(propertyFolder, { recursive: true, force: true });
+        console.log(`✅ Folder deleted: ${propertyFolder}`);
+      } else {
+        console.warn(`⚠️ Folder does not exist: ${propertyFolder}`);
+      }
+    } catch (err) {
+      console.error(`❌ Error deleting folder ${propertyFolder}:`, err.message);
+    }
+
+    res.send({ message: "Property and associated data deleted successfully." });
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error." });
+    console.error(err.message);
+    return res.status(500).send({ error: "Internal Server Error." });
   }
 };
 

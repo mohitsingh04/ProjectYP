@@ -161,7 +161,7 @@ export default function UserList() {
               <button
                 data-bs-toggle="tooltip"
                 title="View"
-                className="btn btn-primary me-1"
+                className=" me-1"
                 onClick={() => viewUser(row._id)}
               >
                 <i className="fe fe-eye"></i>
@@ -171,7 +171,7 @@ export default function UserList() {
               <button
                 data-bs-toggle="tooltip"
                 title="Edit"
-                className="btn btn-success me-1"
+                className="me-1"
                 onClick={() => editUser(row._id)}
               >
                 <i className="fe fe-edit"></i>
@@ -181,7 +181,7 @@ export default function UserList() {
               <button
                 data-bs-toggle="tooltip"
                 title="Delete"
-                className="btn btn-danger"
+                className=""
                 onClick={() => deleteUser(row._id)}
               >
                 <i className="fe fe-trash-2"></i>

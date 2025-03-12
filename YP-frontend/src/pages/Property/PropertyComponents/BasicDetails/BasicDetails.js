@@ -275,7 +275,7 @@ export default function BasicDetails() {
                                 onSubmit={formik.handleSubmit}
                                 className="d-flex"
                               >
-                                <div className="input-group">
+                                <div className="">
                                   <input
                                     type="tel"
                                     name="property_alt_mobile_no"
@@ -285,10 +285,7 @@ export default function BasicDetails() {
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
                                   />
-                                  <button
-                                    type="submit"
-                                    className="btn btn-primary"
-                                  >
+                                  <button type="submit">
                                     <i className="fe fe-check"></i>
                                   </button>
                                   {formik.errors.property_alt_mobile_no &&
@@ -351,13 +348,13 @@ export default function BasicDetails() {
                   {!loading ? (
                     <>
                       <div className="media-heading">
-                        <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-flex align-items-center">
                           <strong>Description</strong>
                           {!showDescriptionInInput && (
                             <div>
                               <button
                                 onClick={() => handleEditDescription()}
-                                className="btn btn-primary ms-auto"
+                                className="ms-auto"
                               >
                                 <i className="fe fe-edit"></i>
                               </button>
@@ -391,15 +388,12 @@ export default function BasicDetails() {
                               }}
                               initialValue={property.property_description}
                             />
-                            <button
-                              type="submit"
-                              className="btn btn-success mt-1"
-                            >
+                            <button type="submit" className="mt-1">
                               <i className="fe fe-check"></i>
                             </button>
                             <button
                               onClick={handleCancelEditDescription}
-                              className="mx-3 py-2 btn btn-danger mt-1"
+                              className="mx-3 py-2 mt-1"
                             >
                               <i className="fe fe-x"></i>
                             </button>
