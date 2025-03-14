@@ -1715,11 +1715,11 @@ html.menu-opened body {
 
 .home-slide {
   position: relative;
-  background-image: url(../img/banner.png);
+  background-image: url(/img/banner.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
-  min-height: 1000px;
+  min-height: 100vh;
 }
 .section-header.section-head-one .sub-title {
   color: #777777;
@@ -1741,15 +1741,14 @@ html.menu-opened body {
 .home-slide-text h1 {
   font-weight: 700;
   font-size: 48px;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
   line-height: 1.2;
-  max-width: 500px;
 }
 .home-slide-text p {
   font-weight: 500;
   font-size: 18px;
   color: #685f78;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
 }
 .home-slide-text h1 span {
   color: #6255a4;
@@ -2184,7 +2183,7 @@ html.menu-opened body {
 }
 .new-course {
   padding: 80px 0px 56px;
-  background-image: url(../img/banner.png);
+  background-image: url(/img/banner.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -2193,7 +2192,7 @@ html.menu-opened body {
 .new-course:before {
   content: "";
   position: absolute;
-  background-image: url(../img/course-bg.png);
+  background-image: url(/img/course-bg.png);
   width: 100%;
   height: 100%;
   top: 0;
@@ -2421,7 +2420,7 @@ html.menu-opened body {
 }
 .trend-course {
   padding: 80px 0px;
-  background-image: url(../img/bg-banner.png);
+  background-image: url(/img/bg-banner.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -2580,7 +2579,7 @@ html.menu-opened body {
 }
 .share-knowledge {
   padding: 60px 0px;
-  background-image: url(../img/bg-banner-01.png);
+  background-image: url(/img/bg-banner-01.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -2612,7 +2611,7 @@ html.menu-opened body {
 }
 .latest-blog {
   padding: 80px 0px 63px;
-  background-image: url(../img/bg-banner-02.png);
+  background-image: url(/img/bg-banner-02.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -2691,7 +2690,7 @@ html.menu-opened body {
 }
 .user-love {
   padding: 80px 0px;
-  background-image: url(../img/user-love.jpg);
+  background-image: url(/img/user-love.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -2702,7 +2701,7 @@ html.menu-opened body {
   color: #fff;
 }
 .become-instructors {
-  padding: 327px 0px 100px;
+  padding: 250px 0px 100px;
 }
 .student-mentor {
   background: #ffdeda;
@@ -2927,7 +2926,7 @@ html.menu-opened body {
 }
 .home-two-slide {
   position: relative;
-  background-image: url(../img/bg/home-main.png);
+  background-image: url(/img/bg/home-main.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -3536,7 +3535,7 @@ html.menu-opened body {
 }
 .growup-section {
   padding: 80px 0 0px;
-  background-image: url(../img/bg/bg-3.png);
+  background-image: url(/img/bg/bg-3.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -3740,7 +3739,7 @@ html.menu-opened body {
   margin-left: -3rem;
 }
 .home-two .testimonial-sec {
-  background-image: url(../img/bg/map.png);
+  background-image: url(/img/bg/map.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -4109,7 +4108,7 @@ html.menu-opened body {
 .knowledge-sec .featured-img-1 {
   width: 100%;
   float: left;
-  background-image: url(../img/joing-us.png);
+  background-image: url(/img/joing-us.png);
   height: 777px;
   background-size: cover;
   background-position: center center;
@@ -5012,7 +5011,7 @@ html.menu-opened body {
   display: flex;
   flex-wrap: wrap;
   border: 0;
-  background-image: url(../img/icon-three/building.svg);
+  background-image: url(/img/icon-three/building.svg);
   background-repeat: no-repeat;
   background-position: left 0 center;
   padding-left: 40px;
@@ -5042,7 +5041,7 @@ html.menu-opened body {
 }
 .home-three-slide {
   position: relative;
-  background-image: url(../img/slider/home-three-banner.jpg);
+  background-image: url(/img/slider/home-three-banner.jpg);
   background-repeat: no-repeat;
   background-position: right;
   background-size: cover;
@@ -5130,7 +5129,7 @@ html.menu-opened body {
 .home-three header input[type="search"] {
   padding: 10px 10px 10px 31px;
   width: 0;
-  background: url(../img/icon-three/search-icon.svg) no-repeat 9px center;
+  background: url(/img/icon-three/search-icon.svg) no-repeat 9px center;
   border: transparent;
   -webkit-border-radius: 10em;
   -moz-border-radius: 10em;
@@ -6588,7 +6587,7 @@ body.home-three :-ms-input-placeholder {
 }
 .testimonial-three {
   padding: 60px 0 60px;
-  background: url(../img/bg/map.png), #071136;
+  background: url(/img/bg/map.png), #071136;
   background-repeat: no-repeat;
   background-position: top;
   background-size: cover;
@@ -6609,7 +6608,7 @@ body.home-three :-ms-input-placeholder {
 .box-form-newsletter form .input-newsletter {
   width: 70%;
   border: 0;
-  background-image: url(../img/icon-three/email.svg);
+  background-image: url(/img/icon-three/email.svg);
   background-repeat: no-repeat;
   background-position: left 17px center;
   padding: 10px 10px 10px 50px;
@@ -6797,7 +6796,7 @@ textarea:focus {
 .footer-three {
   padding: 60px 0 60px;
   background: #071136;
-  background-image: url(../img/bg/bg-footer.jpg);
+  background-image: url(/img/bg/bg-footer.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -7149,7 +7148,7 @@ textarea:focus {
 
 .banner-section-four {
   position: relative;
-  background-image: url(../img/banner-background-img-1.png);
+  background-image: url(/img/banner-background-img-1.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -7831,8 +7830,8 @@ textarea:focus {
 
 .testimonial {
   padding: 80px 0;
-  background-image: url(../img/testimonial-background-img-1.png),
-    url(../img/testimonial-background-img-2.png);
+  background-image: url(/img/testimonial-background-img-1.png),
+    url(/img/testimonial-background-img-2.png);
   background-repeat: no-repeat;
   background-position: left 10% top 40%, right 10% bottom 30%;
 }
@@ -8127,7 +8126,7 @@ textarea:focus {
 .footer-four {
   background: #f3f2f7;
   padding: 50px 0;
-  background-image: url(../img/footer-background-img.png);
+  background-image: url(/img/footer-background-img.png);
   background-repeat: no-repeat;
   background-position: right bottom;
 }
@@ -9911,7 +9910,7 @@ textarea:focus {
 
 .banner-sections-six {
   position: relative;
-  background-image: url(../img/home-six-banner.jpg);
+  background-image: url(/img/home-six-banner.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -9927,7 +9926,7 @@ textarea:focus {
 .home-six header input[type="search"] {
   padding: 10px 10px 10px 30px;
   width: 0;
-  background: url(../img/icon/home-search-six.svg) no-repeat 9px center;
+  background: url(/img/icon/home-search-six.svg) no-repeat 9px center;
   border: transparent;
   -webkit-border-radius: 10em;
   -moz-border-radius: 10em;
@@ -11513,7 +11512,7 @@ textarea:focus {
 -----------------------*/
 
 .login-bg {
-  background-image: url("../img/login-bg.png");
+  background-image: url("/img/login-bg.png");
   background-size: cover;
   top: 0;
   left: 0;
@@ -12948,7 +12947,7 @@ input[type="password"]::-ms-clear {
 }
 .inner-banner {
   padding: 45px 0;
-  background: url("../img/inner-banner.jpg");
+  background: url("/img/inner-banner.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   position: relative;
@@ -13251,7 +13250,7 @@ input[type="password"]::-ms-clear {
 }
 .support-sec {
   padding: 100px 0;
-  background: url("../img/support-bg.png");
+  background: url("/img/support-bg.png");
   background-size: cover;
 }
 .support-card {
@@ -13291,7 +13290,7 @@ input[type="password"]::-ms-clear {
 .page-banner {
   padding: 88px 0;
   text-align: center;
-  background: url("../img/ban-bg.png") #1565c0;
+  background: url("/img/ban-bg.png") #1565c0;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -13641,7 +13640,7 @@ input[type="password"]::-ms-clear {
 .page-banner.instructor-bg-blk {
   padding: 32px 0;
   text-align: center;
-  background: url(../img/instructor/instructor-bg-banner.png) #1565c0;
+  background: url(/img/instructor/instructor-bg-banner.png) #1565c0;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -14231,7 +14230,7 @@ input[type="password"]::-ms-clear {
 .page-banner.student-bg-blk {
   padding: 14px 0;
   text-align: center;
-  background: url(../img/students/student-bg-banner.png) #ffb54a;
+  background: url(/img/students/student-bg-banner.png) #ffb54a;
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -15353,7 +15352,7 @@ input[type="password"]::-ms-clear {
 
 .breadcrumb-bar.breadcrumb-bar-info {
   padding: 120px 0 40px;
-  background: url("../img/bg/breadcrumb-bar.png");
+  background: url("/img/bg/breadcrumb-bar.png");
   background-repeat: no-repeat;
   background-size: cover;
 }
@@ -15403,7 +15402,7 @@ input[type="password"]::-ms-clear {
   left: 0;
   width: 100%;
   height: 100px;
-  background: url("../img/bg/profile-bg.jpg");
+  background: url("/img/bg/profile-bg.jpg");
   border-radius: 5px 4px 0 0;
 }
 .dash-info {
@@ -15607,7 +15606,7 @@ input[type="password"]::-ms-clear {
   align-items: center;
   color: #1f1f1f;
   display: flex;
-  background-image: url(../img/error-bg1.png);
+  background-image: url(/img/error-bg1.png);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
@@ -30173,3 +30172,4 @@ background: transparent;
   box-shadow: none;
   border-bottom: 2px solid #ccc !important;
 } 
+

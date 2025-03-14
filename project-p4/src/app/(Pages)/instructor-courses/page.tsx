@@ -1,10 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import user from "../../../img/user/user1.jpg";
-import course from "../../../img/course/course-01.jpg";
-import book from "../../../img/icon/icon-01.svg";
-import clock from "../../../img/icon/icon-02.svg";
-import Image from "next/image";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 export default function InstructorCourse() {
   const [activeTab, setActiveTab] = useState("Publish");
@@ -50,7 +46,11 @@ export default function InstructorCourse() {
         <div className="product">
           <div className="product-img">
             <a href="course-details.html">
-              <Image className="img-fluid" alt="Img" src={course} />
+              <img
+                className="img-fluid"
+                alt="Img"
+                src="/img/course/course-01.jpg"
+              />
             </a>
             <div className="price">
               <h3>
@@ -66,20 +66,22 @@ export default function InstructorCourse() {
             </h3>
             <div className="course-info d-flex align-items-center">
               <div className="rating-img d-flex align-items-center">
-                <Image src={book} alt="Img" />
+                <img src="/img/icon/icon-01.svg" alt="Img" />
                 <p>12+ Lesson</p>
               </div>
               <div className="course-view d-flex align-items-center">
-                <Image src={clock} alt="Img" />
+                <img src="/img/icon/icon-02.svg" alt="Img" />
                 <p>70hr 30min</p>
               </div>
             </div>
             <div className="course-edit-btn d-flex align-items-center justify-content-between">
               <a href="#">
-                <i className="fa fa-edit me-2"></i>Edit
+                <FaEdit />
+                Edit
               </a>
               <a href="#">
-                <i className="fa fa-trash me-2"></i>Delete
+                <FaTrash />
+                Delete
               </a>
             </div>
           </div>
@@ -120,7 +122,7 @@ export default function InstructorCourse() {
                   <div className="profile-bg">
                     <div className="profile-img">
                       <a href="instructor-profile.html">
-                        <Image src={user} alt="Img" />
+                        <img src="/img/user/user1.jp" alt="Img" />
                       </a>
                     </div>
                   </div>

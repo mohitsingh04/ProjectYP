@@ -52,20 +52,19 @@ export default function TopCategories() {
       <div className="container">
         <div className="section-header aos" data-aos="fade-up">
           <div className="section-sub-head">
-            <span>Favourite Course</span>
-            <h2>Top Category</h2>
+            {/* <span>Favourite Course</span> */}
+            <h2>Top Courses</h2>
           </div>
           <div className="all-btn all-category d-flex align-items-center">
-            <a href="job-category.html" className="btn btn-primary">
+            {/* <a href="job-category.html" className="btn btn-primary">
               All Categories
-            </a>
+            </a> */}
           </div>
         </div>
         <div className="section-text aos" data-aos="fade-up">
           <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Eget aenean
-            accumsan bibendum gravida maecenas augue elementum et neque.
-            Suspendisse imperdiet.
+            Find courses designed for all levels, from beginners to advanced
+            practitioners.
           </p>
         </div>
         <OwlCarousel {...(options as any)} className="owl-theme">

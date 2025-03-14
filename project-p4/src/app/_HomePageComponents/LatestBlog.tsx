@@ -24,9 +24,9 @@ export default function LatestBlog() {
     },
   };
   return (
-    <section className="section latest-blog">
+    <section className="section latest-blog become-instructors">
       <div className="container">
-        <div className="section-header aos" data-aos="fade-up">
+        {/* <div className="section-header aos" data-aos="fade-up">
           <div className="section-sub-head feature-head text-center mb-0">
             <h2>Latest Blogs</h2>
             <div className="section-text aos" data-aos="fade-up">
@@ -71,8 +71,8 @@ export default function LatestBlog() {
                 </div>
               ))}
           </OwlCarousel>
-        </div>
-        <div className="enroll-group aos" data-aos="fade-up">
+        </div> */}
+        {/* <div className="enroll-group aos" data-aos="fade-up">
           <div className="row ">
             <div className="col-lg-4 col-md-6">
               <div className="total-course d-flex align-items-center">
@@ -165,7 +165,7 @@ export default function LatestBlog() {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

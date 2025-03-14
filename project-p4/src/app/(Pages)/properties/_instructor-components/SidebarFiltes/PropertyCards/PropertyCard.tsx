@@ -1,4 +1,4 @@
-import axios from "axios";
+import API from "@/service/API/API";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaRegHeart, FaStar } from "react-icons/fa";
@@ -24,8 +24,8 @@ export default function PropertyCard({ property }: { property: Property }) {
 
     const getCourses = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:5000/property/property-course/${property.uniqueId}`
+        const { data } = await API.get(
+          `/property/property-course/${property.uniqueId}`
         );
         setCoursesLength(data.length);
       } catch (error) {
@@ -35,9 +35,7 @@ export default function PropertyCard({ property }: { property: Property }) {
 
     const getReviews = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:5000/review/property/${property.uniqueId}`
-        );
+        const { data } = await API.get(`/review/property/${property.uniqueId}`);
 
         const totalRating = data.reduce(
           (sum: number, review: { rating?: number }) =>

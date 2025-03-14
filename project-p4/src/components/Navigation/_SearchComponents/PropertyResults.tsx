@@ -3,10 +3,25 @@ import React from "react";
 import { ListGroup } from "react-bootstrap";
 import { FaPeopleRoof } from "react-icons/fa6";
 
-export default function PropertyResults({ Results, handleClose }) {
+interface PropertyItem {
+  uniqueId: string;
+  property_name: string;
+  property_city: string;
+  property_state: string;
+  property_logo?: string[];
+}
+
+interface PropertyResultsProps {
+  Results: PropertyItem[];
+  handleClose: () => void;
+}
+
+export default function PropertyResults({
+  Results,
+  handleClose,
+}: PropertyResultsProps) {
   return (
-    <div className="">
-      {/* <h3 className="fw-bold text-dark">Property Results</h3> */}
+    <div>
       <ListGroup>
         {Results.map((item, index) => (
           <ListGroup.Item

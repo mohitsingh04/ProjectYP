@@ -4,42 +4,63 @@ import PropertyResults from "./_SearchComponents/PropertyResults";
 import CourseResults from "./_SearchComponents/CourseResults";
 import { useRouter } from "next/navigation";
 import { FaX } from "react-icons/fa6";
-import axios from "axios";
+import API from "@/service/API/API";
 
-export default function SearchModal({ show, setShow }) {
+interface SearchModalProps {
+  show: boolean;
+  setShow: (show: boolean) => void;
+}
+
+interface Property {
+  uniqueId: string;
+  property_name: string;
+  property_city: string;
+  property_state: string;
+  category: string;
+  status: string;
+}
+
+interface Course {
+  uniqueId: string;
+  course_name: string;
+  course_short_name: string;
+  status: string;
+}
+
+export default function SearchModal({ show, setShow }: SearchModalProps) {
   const [search, setSearch] = useState("");
-  const [propertyResults, setPropertyResults] = useState([]);
-  const [courseResults, setCourseResults] = useState([]);
-  const [properties, setProperties] = useState([]);
-  const [courses, setCourses] = useState([]);
+  const [propertyResults, setPropertyResults] = useState<Property[]>([]);
+  const [courseResults, setCourseResults] = useState<Course[]>([]);
+  const [properties, setProperties] = useState<Property[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const router = useRouter();
 
-  const trendingSearches = [
-    "Luxury Apartments",
-    "Beachfront Villas",
-    "Online Marketing Course",
-    "Data Science Bootcamp",
-    "Downtown Offices",
-    "Cybersecurity Training",
-  ];
+  const trendingSearches = [""];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const propertyRes = await axios("http://localhost:5000/property");
-        const propertyData = propertyRes.data;
-        setProperties(propertyData.filter((item) => item.status === "Active"));
-
-        const courseRes = await axios("http://localhost:5000/course");
-        const courseData = courseRes.data;
-
-        const uniqueCourses = Array.from(
-          new Set(courseData.map((course) => course.course_name))
-        ).map((name) =>
-          courseData.find((course) => course.course_name === name)
+        const propertyRes = await API.get("/property");
+        const propertyData: Property[] = propertyRes.data;
+        setProperties(
+          propertyData.filter((item: Property) => item.status === "Active")
         );
 
-        setCourses(uniqueCourses.filter((item) => item.status === "Active"));
+        const courseRes = await API.get("/course");
+        const courseData: Course[] = courseRes.data;
+
+        const uniqueCourses: Course[] = Array.from(
+          new Set(courseData.map((course: Course) => course.course_name))
+        ).map(
+          (name) =>
+            courseData.find(
+              (course: Course) => course.course_name === name
+            ) as Course
+        );
+
+        setCourses(
+          uniqueCourses.filter((item: Course) => item.status === "Active")
+        );
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -54,7 +75,7 @@ export default function SearchModal({ show, setShow }) {
     setShow(false);
   };
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     let query = e.target.value.replace(/\s+/g, " ");
     if (query.startsWith(" ")) query = query.trim();
     setSearch(query);
@@ -62,17 +83,17 @@ export default function SearchModal({ show, setShow }) {
     if (query.length >= 3) {
       setPropertyResults(
         properties.filter(
-          (item) =>
-            item?.property_name?.toLowerCase().includes(query.toLowerCase()) ||
-            item?.property_city?.toLowerCase().includes(query.toLowerCase()) ||
-            item?.property_state?.toLowerCase().includes(query.toLowerCase()) ||
-            item?.category?.toLowerCase().includes(query.toLowerCase())
+          (item: Property) =>
+            item.property_name.toLowerCase().includes(query.toLowerCase()) ||
+            item.property_city.toLowerCase().includes(query.toLowerCase()) ||
+            item.property_state.toLowerCase().includes(query.toLowerCase()) ||
+            item.category.toLowerCase().includes(query.toLowerCase())
         )
       );
 
       setCourseResults(
         courses.filter(
-          (item) =>
+          (item: Course) =>
             item.course_name.toLowerCase().includes(query.toLowerCase()) ||
             item.course_short_name.toLowerCase().includes(query.toLowerCase())
         )
@@ -83,7 +104,7 @@ export default function SearchModal({ show, setShow }) {
     }
   };
 
-  const handleKeyDown = (e) => {
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && search.length >= 3) {
       router.push(`/search/${search}`);
       handleClose();

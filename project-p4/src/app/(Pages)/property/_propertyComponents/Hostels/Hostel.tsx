@@ -1,4 +1,5 @@
 interface Property {
+  uniqueId: string;
   property_logo?: string[];
   property_name?: string;
   property_address?: string;
@@ -7,7 +8,7 @@ interface Property {
   property_state?: string;
   featured_image?: string;
   property_hostel_type: string[];
-  description: string;
+  property_hostel_description: string;
 }
 
 interface PropertyBannerProps {

@@ -1,16 +1,26 @@
 import React, { useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-export default function StatesCard({
+interface Property {
+  property_state?: string;
+}
+
+interface StatesCardProps {
+  filteredProperty: Property[];
+  property: Property[];
+  selectedState: string[];
+  setSelectedState: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const StatesCard: React.FC<StatesCardProps> = ({
   filteredProperty,
   property,
   selectedState,
   setSelectedState,
-}) {
-  const [searchQuery, setSearchQuery] = useState("");
+}) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // Create a state map to store unique states (excluding empty names)
-  const stateMap = {};
+  const stateMap: Record<string, string> = {};
   property.forEach((item) => {
     const stateName = item?.property_state?.trim();
     if (stateName) {
@@ -21,27 +31,27 @@ export default function StatesCard({
     }
   });
 
-  // Count occurrences of states in filteredProperty
-  const stateCounts = filteredProperty.reduce((acc, item) => {
-    const stateName = item?.property_state?.trim();
-    if (stateName) {
-      const stateLower = stateName.toLowerCase();
-      acc[stateLower] = (acc[stateLower] || 0) + 1;
-    }
-    return acc;
-  }, {});
+  const stateCounts: Record<string, number> = filteredProperty.reduce(
+    (acc, item) => {
+      const stateName = item?.property_state?.trim();
+      if (stateName) {
+        const stateLower = stateName.toLowerCase();
+        acc[stateLower] = (acc[stateLower] || 0) + 1;
+      }
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
-  // Sort states by count (descending) and remove empty ones
   const sortedStates = Object.keys(stateCounts)
-    .filter((state) => stateCounts[state] > 0 && stateMap[state]) // Exclude empty states
+    .filter((state) => stateCounts[state] > 0 && stateMap[state])
     .sort((a, b) => stateCounts[b] - stateCounts[a]);
 
-  // Apply search filter
   const filteredStates = sortedStates.filter((state) =>
     state.includes(searchQuery.toLowerCase())
   );
 
-  const handleStateChange = (e) => {
+  const handleStateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     setSelectedState((prev) =>
       checked
@@ -83,7 +93,7 @@ export default function StatesCard({
                       type="checkbox"
                       name="state_filter"
                       value={state}
-                      checked={selectedState?.includes(state)}
+                      checked={selectedState.includes(state)}
                       onChange={handleStateChange}
                     />
                     <span className="checkmark"></span> {stateMap[state]} (
@@ -99,4 +109,6 @@ export default function StatesCard({
       </div>
     </div>
   );
-}
+};
+
+export default StatesCard;

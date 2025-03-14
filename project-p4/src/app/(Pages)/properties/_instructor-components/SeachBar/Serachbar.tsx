@@ -2,13 +2,21 @@ import React from "react";
 import { FaList } from "react-icons/fa";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 
-export default function Serachbar({
+type SearchbarProps = {
+  itemsPerPage: number;
+  currentPage: number;
+  filteredProperty: any[];
+  searchQuery: string;
+  setSearchQuery: (query: string) => void;
+};
+
+const Searchbar: React.FC<SearchbarProps> = ({
   itemsPerPage,
   currentPage,
   filteredProperty,
   searchQuery,
   setSearchQuery,
-}) {
+}) => {
   return (
     <div className="row">
       <div className="col-lg-6">
@@ -30,7 +38,7 @@ export default function Serachbar({
       <div className="col-lg-6">
         <div className="show-filter add-course-info">
           <form action="#">
-            <div className="row gx-2 align-items-center">
+            <div className="row gx-2 align-items-center flex-row-reverse">
               <div className="col-md-6 col-item">
                 <div className="search-group">
                   <FaMagnifyingGlass className="icon" />
@@ -48,7 +56,7 @@ export default function Serachbar({
                   />
                 </div>
               </div>
-              <div className="col-md-6 col-item">
+              {/* <div className="col-md-6 col-item">
                 <div className="input-block select-form mb-0">
                   <select className="form-select select" name="sellist1">
                     <option>Newly published</option>
@@ -57,11 +65,13 @@ export default function Serachbar({
                     <option>Node.js</option>
                   </select>
                 </div>
-              </div>
+              </div> */}
             </div>
           </form>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default Searchbar;

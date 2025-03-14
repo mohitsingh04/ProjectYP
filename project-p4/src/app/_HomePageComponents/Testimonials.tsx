@@ -3,15 +3,43 @@ import React from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
 export default function Testimonials() {
+  const test = [
+    {
+      image: "/img/user/user.jpg",
+      name: "Aarav Sharma",
+      designation: "Yoga Practitioner",
+      text: "Signing up for this yoga academy was the best decision I ever made! The classes are well-organized, and the instructors provide amazing guidance. My flexibility, strength, and mindfulness have all improved significantly. Highly recommend!",
+    },
+    {
+      image: "/img/user/user2.jpg",
+      name: "Meera Patel",
+      designation: "Certified Yoga Instructor",
+      text: "The Yoga Alliance-approved training exceeded my expectations. The teachers are highly knowledgeable, compassionate, and truly care about every student's journey. I now feel confident in my practice and have even started teaching!",
+    },
+    {
+      image: "/img/user/user3.jpg",
+      name: "Rohan Verma",
+      designation: "Wellness Coach",
+      text: "I joined the online yoga courses to reduce stress and anxiety, and I couldn't be more satisfied! The breathing and meditation techniques have helped me find inner peace and balance in my life.",
+    },
+    {
+      image: "/img/user/user4.jpg",
+      name: "Sanya Kapoor",
+      designation: "Fitness Enthusiast",
+      text: "The best part of these courses is the flexibility! I could learn at my own pace with expert guidance. Whether you're a beginner or an advanced yogi, this platform is perfect for deepening your yoga practice.",
+    },
+  ];
+
   return (
     <>
       <section className="section user-love">
         <div className="container">
           <div className="section-header white-header aos" data-aos="fade-up">
             <div className="section-sub-head feature-head text-center">
-              <span>Check out these real reviews</span>
-              <h2>Users-love-us Don't take it from us.</h2>
+              <span></span>
+              <h2>Hear our user experience</h2>
             </div>
           </div>
         </div>
@@ -24,110 +52,36 @@ export default function Testimonials() {
               <img src="/img/qute.png" alt="Img" />
             </div>
             <Slider>
-              <div className="d-flex justify-content-center">
-                <div className="testimonial-all d-flex justify-content-center">
-                  <div className="testimonial-two-head text-center align-items-center d-flex">
-                    <div className="testimonial-four-saying ">
-                      <div className="testi-right">
-                        <img src="/img/qute-01.png" alt="Img" />
-                      </div>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                        when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book.
-                      </p>
-                      <div className="four-testimonial-founder">
-                        <div className="fount-about-img">
-                          <a href="instructor-profile.html">
+              {test.map((item, index) => (
+                <div className="d-flex justify-content-center" key={index}>
+                  <div className="testimonial-all d-flex justify-content-center">
+                    <div className="testimonial-two-head text-center align-items-center d-flex">
+                      <div className="testimonial-four-saying ">
+                        <div className="testi-right">
+                          <img src="/img/qute-01.png" alt="Img" />
+                        </div>
+                        <p>{item?.text}</p>
+                        <div className="four-testimonial-founder">
+                          <div className="fount-about-img">
                             <img
-                              src="/img/user/user.jpg"
+                              src={item?.image}
                               alt="Img"
                               className="img-fluid"
                             />
-                          </a>
+                          </div>
+                          <h3>{item?.name}</h3>
+                          <span>{item?.designation}</span>
                         </div>
-                        <h3>
-                          <a href="instructor-profile.html">Daziy Millar</a>
-                        </h3>
-                        <span>Founder of Awesomeux Technology</span>
                       </div>
                     </div>
                   </div>
                 </div>
-              </div>
-              <div className="d-flex justify-content-center">
-                <div className="testimonial-all d-flex justify-content-center">
-                  <div className="testimonial-two-head text-center align-items-center d-flex">
-                    <div className="testimonial-four-saying ">
-                      <div className="testi-right">
-                        <img src="/img/qute-01.png" alt="Img" />
-                      </div>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                        when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book.
-                      </p>
-                      <div className="four-testimonial-founder">
-                        <div className="fount-about-img">
-                          <a href="instructor-profile.html">
-                            <img
-                              src="/img/user/user2.jpg"
-                              alt="Img"
-                              className="img-fluid"
-                            />
-                          </a>
-                        </div>
-                        <h3>
-                          <a href="instructor-profile.html">john smith</a>
-                        </h3>
-                        <span>Founder of Awesomeux Technology</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="d-flex justify-content-center">
-                <div className="testimonial-all d-flex justify-content-center">
-                  <div className="testimonial-two-head text-center align-items-center d-flex">
-                    <div className="testimonial-four-saying ">
-                      <div className="testi-right">
-                        <img src="/img/qute-01.png" alt="Img" />
-                      </div>
-                      <p>
-                        Lorem Ipsum is simply dummy text of the printing and
-                        typesetting industry. Lorem Ipsum has been the
-                        industry's standard dummy text ever since the 1500s,
-                        when an unknown printer took a galley of type and
-                        scrambled it to make a type specimen book.
-                      </p>
-                      <div className="four-testimonial-founder">
-                        <div className="fount-about-img">
-                          <a href="instructor-profile.html">
-                            <img
-                              src="/img/user/user3.jpg"
-                              alt="Img"
-                              className="img-fluid"
-                            />
-                          </a>
-                        </div>
-                        <h3>
-                          <a href="instructor-profile.html">David Lee</a>
-                        </h3>
-                        <span>Founder of Awesomeux Technology</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+              ))}
             </Slider>
           </div>
         </div>
       </section>
-      <section className="section become-instructors aos" data-aos="fade-up">
+      {/* <section className="section become-instructors aos" data-aos="fade-up">
         <div className="container">
           <div className="row">
             <div className="col-lg-6 col-md-6 d-flex">
@@ -180,7 +134,7 @@ export default function Testimonials() {
             </div>
           </div>
         </div>
-      </section>
+      </section> */}
     </>
   );
 }

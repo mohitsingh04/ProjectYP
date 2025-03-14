@@ -1,11 +1,7 @@
 "use client";
 import React from "react";
-import Image from "next/image";
-import logo from "../../img/logo.svg";
-import icon19 from "../../img/icon/icon-19.svg";
-import icon20 from "../../img/icon/icon-20.svg";
-import icon21 from "../../img/icon/icon-21.svg";
 import Link from "next/link";
+import { FaFacebook, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -13,62 +9,71 @@ export default function Footer() {
       <div className="footer-top aos" data-aos="fade-up">
         <div className="container">
           <div className="row">
-            <div className="col-lg-4 col-md-6">
-              <div className="footer-widget footer-about">
+            <div className="col-lg-4 col-md-6 align-content-center">
+              <div className="footer-widget footer-about text-center">
                 <div className="footer-logo">
-                  <Image src={logo} className="img-fluid" alt="Logo" />
+                  <img
+                    src={"/Images/logo.png"}
+                    className="img-fluid"
+                    alt="Logo"
+                  />
                 </div>
-                <div className="footer-about-content">
+                <div>
                   <p>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut
-                    consequat mauris Lorem ipsum dolor sit amet, consectetur
-                    adipiscing elit. Ut consequat mauris
+                    Stay connected with us for expert-led yoga courses that
+                    nurture your body, mind, and soul.
                   </p>
+                </div>
+                <div>
+                  <FaFacebook size={24} className="me-3 text-info" />
+                  <FaInstagram size={24} className="me-3 text-primary" />
+                  <FaTwitter size={24} className="me-3 text-dark" />
+                  <FaYoutube size={24} className="me-3 text-danger" />
                 </div>
               </div>
             </div>
 
-            <div className="col-lg-2 col-md-6">
+            <div className="col-lg-2 col-6">
               <div className="footer-widget footer-menu">
-                <h2 className="footer-title">For Instructor</h2>
+                <h2 className="footer-title">Quick Links</h2>
                 <ul>
                   <li>
-                    <a href="instructor-profile.html">Profile</a>
+                    <Link href="/">Home</Link>
                   </li>
                   <li>
-                    <a href="login.html">Login</a>
+                    <Link href="/properties">Properties</Link>
                   </li>
                   <li>
-                    <a href="register.html">Register</a>
+                    <Link href="/">About Us</Link>
                   </li>
                   <li>
-                    <a href="instructor-list.html">Instructor</a>
+                    <Link href="/">Courses</Link>
                   </li>
                   <li>
-                    <a href="instructor-dashboard.html"> Dashboard</a>
+                    <Link href="/">Blog</Link>
                   </li>
                 </ul>
               </div>
             </div>
 
-            <div className="col-lg-2 col-md-6">
+            <div className="col-lg-2 col-6">
               <div className="footer-widget footer-menu">
-                <h2 className="footer-title">For Student</h2>
+                <h2 className="footer-title">Useful Links</h2>
                 <ul>
                   <li>
-                    <a href="student-profile.html">Profile</a>
+                    <Link href="/terms-and-conditions">Terms & Conditions</Link>
                   </li>
                   <li>
-                    <a href="login.html">Login</a>
+                    <Link href="/privacy-policy">Privacy Policy</Link>
                   </li>
                   <li>
-                    <a href="register.html">Register</a>
+                    <Link href="/">Disclaimers</Link>
                   </li>
                   <li>
-                    <a href="students-list.html">Student</a>
+                    <Link href="/">Faqs</Link>
                   </li>
                   <li>
-                    <a href="student-dashboard.html"> Dashboard</a>
+                    <Link href="/">Contact</Link>
                   </li>
                 </ul>
               </div>
@@ -90,25 +95,30 @@ export default function Footer() {
                 </div>
                 <div className="footer-contact-info">
                   <div className="footer-address">
-                    <Image src={icon20} alt="Img" className="img-fluid" />
-                    <p>
-                      3556 Beech Street, San Francisco,
-                      <br /> California, CA 94108{" "}
-                    </p>
+                    <img
+                      src={"/img/icon/icon-20.svg"}
+                      alt="Img"
+                      className="img-fluid"
+                    />
+                    <p>Rishikesh, Dehradun</p>
                   </div>
                   <p>
-                    <Image src={icon19} alt="Img" className="img-fluid" />
-                    <a
-                      href="https://dreamslms.dreamstechnologies.com/cdn-cgi/l/email-protection"
-                      className="__cf_email__"
-                      data-cfemail="5b3f293e3a36283736281b3e233a362b373e75383436"
-                    >
-                      [email&#160;protected]
+                    <img
+                      src={"/img/icon/icon-19.svg"}
+                      alt="Img"
+                      className="img-fluid"
+                    />
+                    <a href="mail:yogprerna@gmail.com" className="__cf_email__">
+                      yogprerna@gmail.com
                     </a>
                   </p>
                   <p className="mb-0">
-                    <Image src={icon21} alt="Img" className="img-fluid" />
-                    +19 123-456-7890
+                    <img
+                      src={"/img/icon/icon-21.svg"}
+                      alt="Img"
+                      className="img-fluid"
+                    />
+                    +91 9027028142
                   </p>
                 </div>
               </div>
@@ -120,22 +130,12 @@ export default function Footer() {
         <div className="container">
           <div className="copyright">
             <div className="row">
-              <div className="col-md-6">
-                <div className="privacy-policy">
-                  <ul>
-                    <li>
-                      <Link href="/terms-and-conditions">Terms</Link>
-                    </li>
-                    <li>
-                      <Link href="/privacy-policy">Privacy</Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+              <div className="col-md-6"></div>
               <div className="col-md-6">
                 <div className="copyright-text">
                   <p className="mb-0">
-                    &copy; 2024 DreamsLMS. All rights reserved.
+                    &copy; {new Date().getFullYear()} Yogprerna. All rights
+                    reserved.
                   </p>
                 </div>
               </div>

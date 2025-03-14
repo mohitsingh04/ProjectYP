@@ -1,10 +1,10 @@
-import axios from "axios";
+import API from "@/service/API/API";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { FaRegHeart, FaStar } from "react-icons/fa";
 
 interface Property {
-  uniqueId: number;
+  uniqueId: string;
   property_name: string;
   category?: string;
   featured_image?: string[];
@@ -24,8 +24,8 @@ export default function PropertyCard({ property }: { property: Property }) {
 
     const getCourses = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:5000/property/property-course/${property.uniqueId}`
+        const { data } = await API.get(
+          `/property/property-course/${property.uniqueId}`
         );
         setCoursesLength(data.length);
       } catch (error) {
@@ -35,9 +35,7 @@ export default function PropertyCard({ property }: { property: Property }) {
 
     const getReviews = async () => {
       try {
-        const { data } = await axios.get(
-          `http://localhost:5000/review/property/${property.uniqueId}`
-        );
+        const { data } = await API.get(`/review/property/${property.uniqueId}`);
 
         const totalRating = data.reduce(
           (sum: number, review: { rating?: number }) =>
@@ -68,7 +66,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             src={
               property?.featured_image?.[0]
                 ? `${process.env.NEXT_PUBLIC_API_URL}${property.featured_image[0]}`
-                : "/img/course/course-01.jpg"
+                : "/Images/PropertyBanner.png"
             }
             alt={property?.property_name || "Property Image"}
             style={{ aspectRatio: "1/1", objectFit: "cover" }}
@@ -81,7 +79,7 @@ export default function PropertyCard({ property }: { property: Property }) {
               src={
                 property?.property_logo?.[0]
                   ? `${process.env.NEXT_PUBLIC_API_URL}${property.property_logo[0]}`
-                  : "/img/course/course-01.jpg"
+                  : "/Images/PropertyBanner.png"
               }
               alt={property?.property_name || "Property Image"}
               width={"50px"}
@@ -94,10 +92,14 @@ export default function PropertyCard({ property }: { property: Property }) {
                   href={`/property/${
                     property.uniqueId
                   }/${property?.property_name
-                    .replace(/\s+/g, "-")
-                    .toLowerCase()}/${property?.property_city
-                    .replace(/\s+/g, "-")
-                    .toLowerCase()}`}
+                    ?.replace(/\s+/g, "-")
+                    .toLowerCase()}/${
+                    property?.property_city
+                      ? property.property_city
+                          .replace(/\s+/g, "-")
+                          .toLowerCase()
+                      : "unknown"
+                  }`}
                 >
                   {property?.property_name}
                 </Link>

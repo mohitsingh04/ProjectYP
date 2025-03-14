@@ -1,25 +1,13 @@
-"use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { FaArrowRight } from "react-icons/fa";
+import CountUp from "react-countup";
 
-export default function Banner({ setShow }) {
-  const [num, setNum] = useState(0);
+interface BannerProps {
+  setShow: (value: boolean) => void;
+}
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNum((prevNum) => {
-        if (prevNum >= 1000) {
-          clearInterval(interval);
-          return 1000;
-        }
-        return prevNum + 1;
-      });
-    }, 0);
-
-    return () => clearInterval(interval);
-  }, []);
-
+export default function Banner({ setShow }: BannerProps) {
   return (
     <section className="home-slide d-flex align-items-center">
       <div className="container">
@@ -27,9 +15,12 @@ export default function Banner({ setShow }) {
           <div className="col-md-7">
             <div className="home-slide-face aos" data-aos="fade-up">
               <div className="home-slide-text ">
-                <h5>The Leader in Online Learning</h5>
-                <h1>Engaging & Accessible Online Courses For All</h1>
-                <p>Own your future learning new skills online</p>
+                <h5 className="mt-5">The Leader in Yoga Learning</h5>
+                <h1>Your Journey to Wellness Begins Here!</h1>
+                <p>
+                  Discover the transformative power of yoga with our expertly
+                  designed courses.
+                </p>
               </div>
               <div className="banner-content">
                 <form className="form">
@@ -65,24 +56,16 @@ export default function Banner({ setShow }) {
                   </div>
                 </form>
               </div>
-              <div className="trust-user">
-                <p>
-                  Trusted by over 15K Users <br />
-                  worldwide since 2024
-                </p>
+              <div className="trust-user mb-5">
+                <p>Trusted by over 15K Users worldwide since 2024</p>
                 <div className="trust-rating d-flex align-items-center">
                   <div className="rate-head">
                     <h2>
-                      <span>{num}</span>+
+                      <span>
+                        <CountUp end={1000} />
+                      </span>
+                      +
                     </h2>
-                  </div>
-                  <div className="rating d-flex align-items-center">
-                    <h2 className="d-inline-block average-rating">4.4</h2>
-                    {/* <i className="fas fa-star star filled"></i>
-                    <i className="fas fa-star star filled"></i>
-                    <i className="fas fa-star star filled"></i>
-                    <i className="fas fa-star star filled"></i>
-                    <i className="fas fa-star star filled"></i> */}
                   </div>
                 </div>
               </div>
@@ -90,7 +73,7 @@ export default function Banner({ setShow }) {
           </div>
           <div className="col-md-5 d-flex align-items-center">
             <div className="girl-slide-img aos" data-aos="fade-up">
-              <img src="/img/object.png" alt="Img" />
+              <img src="/images/mainBanner.png" alt="Img" />
             </div>
           </div>
         </div>

@@ -1,43 +1,51 @@
 import React, { useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-export default function CityCard({
+interface Property {
+  property_city?: string;
+}
+
+interface CityCardProps {
+  filteredProperty: Property[];
+  property: Property[];
+  selectedCity: string[];
+  setSelectedCity: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const CityCard: React.FC<CityCardProps> = ({
   filteredProperty,
   property,
   selectedCity,
   setSelectedCity,
-}) {
-  const [searchQuery, setSearchQuery] = useState("");
+}) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  // Create a mapping of lowercase cities to their original form
-  const cityMap = property.reduce((acc, item) => {
-    const city = item?.property_city?.trim(); // Trim to avoid accidental spaces
-    if (city) acc[city.toLowerCase()] = city; // Only add if city is not empty
+  const cityMap: Record<string, string> = property.reduce((acc, item) => {
+    const city = item?.property_city?.trim();
+    if (city) acc[city.toLowerCase()] = city;
     return acc;
-  }, {});
+  }, {} as Record<string, string>);
 
-  // Get unique cities (lowercase for comparison)
-  const uniqueCities = [...new Set(Object.keys(cityMap))];
+  const uniqueCities: string[] = [...new Set(Object.keys(cityMap))];
 
-  // Count occurrences of each city (using lowercase keys)
-  const cityCounts = filteredProperty.reduce((acc, item) => {
-    const cityLower = item?.property_city?.trim().toLowerCase();
-    if (cityLower) acc[cityLower] = (acc[cityLower] || 0) + 1;
-    return acc;
-  }, {});
+  const cityCounts: Record<string, number> = filteredProperty.reduce(
+    (acc, item) => {
+      const cityLower = item?.property_city?.trim().toLowerCase();
+      if (cityLower) acc[cityLower] = (acc[cityLower] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
-  // Sort cities based on frequency and exclude empty city names
-  const sortedCities = uniqueCities
-    .filter((city) => cityCounts[city] > 0 && city !== "") // Exclude empty city names
+  const sortedCities: string[] = uniqueCities
+    .filter((city) => cityCounts[city] > 0 && city !== "")
     .sort((a, b) => (cityCounts[b] || 0) - (cityCounts[a] || 0));
 
-  // Filter cities based on search query
-  const filteredCities = sortedCities.filter((city) =>
+  const filteredCities: string[] = sortedCities.filter((city) =>
     city.includes(searchQuery.toLowerCase())
   );
 
-  // Handle checkbox change
-  const handleCityChange = (e) => {
+  const handleCityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     setSelectedCity((prev) =>
       checked
@@ -78,11 +86,11 @@ export default function CityCard({
                       type="checkbox"
                       name="city_filter"
                       value={city}
-                      checked={selectedCity?.includes(city)}
+                      checked={selectedCity.includes(city)}
                       onChange={handleCityChange}
                     />
                     <span className="checkmark"></span> {cityMap[city]} (
-                    {cityCounts[city]}) {/* Display original form */}
+                    {cityCounts[city]})
                   </label>
                 </div>
               ))
@@ -94,4 +102,6 @@ export default function CityCard({
       </div>
     </div>
   );
-}
+};
+
+export default CityCard;

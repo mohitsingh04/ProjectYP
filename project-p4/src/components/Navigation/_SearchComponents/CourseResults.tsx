@@ -3,10 +3,24 @@ import React from "react";
 import { ListGroup } from "react-bootstrap";
 import { FaDatabase } from "react-icons/fa";
 
-export default function CourseResults({ Results, handleClose }) {
+interface Course {
+  uniqueId: string;
+  course_name: string;
+  course_short_name?: string;
+  image?: string[];
+}
+
+interface CourseResultsProps {
+  Results: Course[];
+  handleClose: () => void;
+}
+
+export default function CourseResults({
+  Results,
+  handleClose,
+}: CourseResultsProps) {
   return (
-    <div className="">
-      {/* <h3 className="fw-bold text-dark">Course Results</h3> */}
+    <div>
       <ListGroup>
         {Results.map((item, index) => (
           <ListGroup.Item
@@ -15,7 +29,7 @@ export default function CourseResults({ Results, handleClose }) {
             style={{ fontSize: "18px" }}
           >
             <Link
-              href={`/course/${item?.uniqueId}/${item?.course_name
+              href={`/course/${item.uniqueId}/${item.course_name
                 .replace(/\s+/g, "-")
                 .toLowerCase()}`}
               onClick={handleClose}
@@ -24,18 +38,21 @@ export default function CourseResults({ Results, handleClose }) {
                 <div className="d-flex">
                   <img
                     src={
-                      item?.image?.[0]
-                        ? `${process.env.NEXT_PUBLIC_API_URL}${item?.image?.[0]}`
+                      item.image?.[0]
+                        ? `${process.env.NEXT_PUBLIC_API_URL}${item.image[0]}`
                         : "/img/course/course-01.jpg"
                     }
                     className="me-2 rounded"
                     width={"50px"}
                     style={{ aspectRatio: "4/4", objectFit: "cover" }}
-                    alt=""
+                    alt={item.course_name}
                   />
                   <div>
                     <p className="m-0">
-                      {item.course_name}{item.course_short_name?(` - [${item?.course_short_name}]`):""}
+                      {item.course_name}
+                      {item.course_short_name
+                        ? ` - [${item.course_short_name}]`
+                        : ""}
                     </p>
                     <span className="text-muted">(Course)</span>
                   </div>

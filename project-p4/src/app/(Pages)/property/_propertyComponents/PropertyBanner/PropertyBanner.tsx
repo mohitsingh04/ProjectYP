@@ -1,7 +1,9 @@
-import Link from "next/link";
+import API from "@/service/API/API";
+import { useCallback, useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 
 interface Property {
+  uniqueId: string;
   property_logo?: string[];
   property_name?: string;
   property_address?: string;
@@ -11,16 +13,48 @@ interface Property {
   featured_image?: string;
 }
 
-interface PropertyBannerProps {
-  property: Property | null;
+interface Review {
+  rating: number;
 }
 
-export default function PropertyBanner({ property }: PropertyBannerProps) {
+interface PropertyBannerProps {
+  property: Property | null;
+  reviews: Review[];
+}
+
+export default function PropertyBanner({
+  property,
+  reviews,
+}: PropertyBannerProps) {
+  const [propertyCourses, setPropertyCourses] = useState([]);
+
+  const getPropertyCourses = useCallback(async () => {
+    try {
+      const response = await API.get(
+        `/property/property-course/${property?.uniqueId}`
+      );
+      setPropertyCourses(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [property]);
+
+  useEffect(() => {
+    getPropertyCourses();
+  }, [getPropertyCourses]);
+
+  const totalReviews = reviews.length;
+  const averageRating =
+    totalReviews > 0
+      ? reviews.reduce((sum, review) => sum + review.rating, 0) / totalReviews
+      : 0;
+  const roundedRating = Math.round(averageRating);
+
   const style = {
     backgroundImage: `url(${
       property?.featured_image?.[0]
         ? process.env.NEXT_PUBLIC_API_URL + property?.featured_image?.[0]
-        : "/img/blog/blog-04.jpg"
+        : "/Images/PropertyBanner.png"
     })`,
     backgroundRepeat: "no-repeat",
     backgroundPosition: "center",
@@ -40,14 +74,13 @@ export default function PropertyBanner({ property }: PropertyBannerProps) {
                       src={
                         property?.property_logo?.[0]
                           ? `${process.env.NEXT_PUBLIC_API_URL}${property?.property_logo?.[0]}`
-                          : "/img/profiles/avatar-01.jpg"
+                          : "/Images/PropertyBanner.png"
                       }
                       alt="img"
                       className="img-fluid"
                     />
                   </div>
                 </div>
-                {/* <span className="web-badge mb-3">WEB DEVELOPMENT</span> */}
               </div>
               <div className="align-content-center">
                 <h2>{property?.property_name || "No Name"}</h2>
@@ -59,28 +92,25 @@ export default function PropertyBanner({ property }: PropertyBannerProps) {
                 </p>
               </div>
             </div>
-            <div className="rating mb-2">
-              <FaStar className="star filled" />
-              <FaStar className="star filled" />
-              <FaStar className="star filled" />
-              <FaStar className="star filled" />
-              <FaStar className="star" />
-              <span className="d-inline-block average-rating">
-                <span>4.5</span> (15)
-              </span>
-            </div>
-            <div className="course-info d-flex align-items-center border-bottom-0 m-0 p-0">
-              <div className="cou-info">
-                <img src="/img/icon/icon-01.svg" alt="Img" />
-                <p>12+ Lesson</p>
+            {/* Dynamic Rating */}
+            <div className="d-flex">
+              <div className="course-info d-flex align-items-center border-bottom-0 m-0 p-0">
+                <div className="cou-info text-nowrap">
+                  <img src="/img/icon/icon-01.svg" alt="Img" />
+                  <p>{propertyCourses?.length || 0}+ Lesson</p>
+                </div>
               </div>
-              <div className="cou-info">
-                <img src="/img/icon/timer-icon.svg" alt="Img" />
-                <p>9hr 30min</p>
-              </div>
-              <div className="cou-info">
-                <img src="/img/icon/people.svg" alt="Img" />
-                <p>32 students enrolled</p>
+              <div className="rating align-content-center">
+                {[...Array(5)].map((_, index) => (
+                  <FaStar
+                    key={index}
+                    className={`star ${index < roundedRating ? "filled" : ""}`}
+                  />
+                ))}
+                <span className="d-inline-block average-rating">
+                  <span className="text-white ms-2">{roundedRating}</span> (
+                  {totalReviews})
+                </span>
               </div>
             </div>
           </div>

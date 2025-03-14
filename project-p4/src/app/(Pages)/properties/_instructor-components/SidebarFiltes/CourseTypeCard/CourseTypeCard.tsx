@@ -1,25 +1,42 @@
 import React, { useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-export default function CourseTypeCard({
+interface Course {
+  course_type: string;
+  property_id: number;
+}
+
+interface Property {
+  uniqueId: number;
+}
+
+interface CourseTypeCardProps {
+  selectedType: string[];
+  setSelectedType: React.Dispatch<React.SetStateAction<any[]>>;
+  properties: Property[];
+  courses: Course[];
+  allCourses: Course[];
+}
+
+const CourseTypeCard: React.FC<CourseTypeCardProps> = ({
   selectedType = [],
   setSelectedType,
   properties = [],
   courses = [],
-  allCourses,
-}) {
-  const [searchQuery, setSearchQuery] = useState("");
+  allCourses = [],
+}) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const types = [...new Set(allCourses.map((item) => item.course_type))];
-  const typeCounts = types.reduce((acc, type) => {
+  const typeCounts: Record<string, number> = types.reduce((acc, type) => {
     acc[type.toLowerCase()] = 0;
     return acc;
-  }, {});
+  }, {} as Record<string, number>);
 
   courses.forEach((course) => {
     const lowerCaseType = course.course_type.toLowerCase();
     const isMatchingProperty = properties.some(
-      (property) => property.uniqueId === course.property_id
+      (property) => Number(property.uniqueId) === course.property_id
     );
 
     if (isMatchingProperty && typeCounts.hasOwnProperty(lowerCaseType)) {
@@ -27,7 +44,7 @@ export default function CourseTypeCard({
     }
   });
 
-  const handleTypeChange = (type) => {
+  const handleTypeChange = (type: string) => {
     const lowerCaseType = type.toLowerCase();
     setSelectedType((prev) =>
       prev.includes(lowerCaseType)
@@ -87,4 +104,6 @@ export default function CourseTypeCard({
       </div>
     </div>
   );
-}
+};
+
+export default CourseTypeCard;

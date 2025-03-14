@@ -1,10 +1,51 @@
+"use client";
+import API from "@/service/API/API";
+import { useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 
-interface BusinessHoursProps {
-  bussinessHours: Record<string, { open?: string; close?: string }> | null;
+interface BusinessHours {
+  open: string;
+  close: string;
 }
 
-export default function BusinessHours({ bussinessHours }: BusinessHoursProps) {
+interface BusinessHoursData {
+  monday?: BusinessHours;
+  tuesday?: BusinessHours;
+  wednesday?: BusinessHours;
+  thursday?: BusinessHours;
+  friday?: BusinessHours;
+  saturday?: BusinessHours;
+  sunday?: BusinessHours;
+}
+
+interface Property {
+  uniqueId: string;
+}
+
+export default function BusinessHours({
+  property,
+}: {
+  property: Property | null;
+}) {
+  const [bussinessHours, setBussinessHours] = useState<BusinessHoursData>({});
+
+  const getBussinessHours = async () => {
+    try {
+      const response = await API.get<BusinessHoursData>(
+        `/business-hours/${property?.uniqueId}`
+      );
+      setBussinessHours(response.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (property) {
+      getBussinessHours();
+    }
+  }, [property]);
+
   const formatTime = (time: string) => {
     const [hourStr, minuteStr] = time.split(":");
     let hour = parseInt(hourStr, 10);
@@ -18,7 +59,7 @@ export default function BusinessHours({ bussinessHours }: BusinessHoursProps) {
   return (
     <div className="card">
       <div className="card-body">
-        <h5 className="subs-title">Bussinesshours</h5>
+        <h5 className="subs-title">Business Hours</h5>
         {bussinessHours && Object.keys(bussinessHours).length > 0 ? (
           <div className="p-0">
             <Table responsive className="text-center">
@@ -45,7 +86,7 @@ export default function BusinessHours({ bussinessHours }: BusinessHoursProps) {
                   .map(([day, time]) => (
                     <tr key={day}>
                       <td>{day.charAt(0).toUpperCase() + day.slice(1)}</td>
-                      {time?.open && time?.close ? (
+                      {time && "open" in time && "close" in time ? (
                         <>
                           <td>{formatTime(time.open)}</td>
                           <td>{formatTime(time.close)}</td>

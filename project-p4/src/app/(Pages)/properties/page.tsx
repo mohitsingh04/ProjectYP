@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from "react";
 import BreadCrumbs from "./_instructor-components/BreadCrumbs";
 import { FaFilter } from "react-icons/fa";
-import axios from "axios";
 import PropertyCard from "./_instructor-components/SidebarFiltes/PropertyCards/PropertyCard";
 import Pagination from "./_instructor-components/Pagination/Pagination";
 import Serachbar from "./_instructor-components/SeachBar/Serachbar";
@@ -14,30 +13,59 @@ import { useRouter } from "next/navigation";
 import LevelCard from "./_instructor-components/SidebarFiltes/LevelCard/LevelCard";
 import FilterTags from "./_instructor-components/SidebarFiltes/FilterTags/FilterTags";
 import CourseTypeCard from "./_instructor-components/SidebarFiltes/CourseTypeCard/CourseTypeCard";
+import API from "@/service/API/API";
+
+interface Property {
+  property_name: string;
+  category: string;
+  property_state: string;
+  property_city: string;
+  uniqueId: number;
+  status: string;
+}
+interface Course {
+  course_name: string;
+  course_level: string;
+  course_type: string;
+  property_id: number;
+  status: string;
+}
+
+interface Filters {
+  searchQuery?: string;
+  selectedCategory: string[];
+  selectedState: string[];
+  selectedCity: string[];
+  selectedCourses: Set<string>;
+  selectedLevel: string[];
+  selectedType: string[];
+}
 
 export default function InstructorList() {
-  const [property, setProperty] = useState([]);
-  const [filteredProperty, setFilteredProperty] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [property, setProperty] = useState<Property[]>([]);
+  const [filteredProperty, setFilteredProperty] = useState<Property[]>([]);
+  const [searchQuery, setSearchQuery] = useState<any>("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedState, setSelectedState] = useState([]);
-  const [selectedCity, setSelectedCity] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState([]);
-  const [categoryData, setCategoryData] = useState([]);
-  const [stateData, setStateData] = useState([]);
-  const [cityData, setCityData] = useState([]);
-  const [selectedCourses, setSelectedCourses] = useState(new Set());
+  const [selectedState, setSelectedState] = useState<any[]>([]);
+  const [selectedCity, setSelectedCity] = useState<any[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<any[]>([]);
+  const [categoryData, setCategoryData] = useState<Property[]>([]);
+  const [stateData, setStateData] = useState<Property[]>([]);
+  const [cityData, setCityData] = useState<Property[]>([]);
+  const [selectedCourses, setSelectedCourses] = useState<Set<any>>(new Set());
   const itemsPerPage = 10;
-  const [courses, setCourses] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
-  const [selectedLevel, setSelectedLevel] = useState([]);
-  const [selectedType, setSelectedType] = useState([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
+  const [selectedLevel, setSelectedLevel] = useState<any[]>([]);
+  const [selectedType, setSelectedType] = useState<any[]>([]);
 
   const getCourses = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/property-course");
+      const response = await API.get("/property-course");
       const data = response.data;
-      const activeCourses = data.filter((course) => course.status === "Active");
+      const activeCourses = data.filter(
+        (course: { status: string }) => course.status === "Active"
+      );
       setCourses(activeCourses);
       setFilteredCourses(activeCourses);
     } catch (error) {
@@ -54,14 +82,16 @@ export default function InstructorList() {
     if (selectedLevel.length > 0) {
       filtered = courses.filter((item) =>
         selectedLevel.some(
-          (level) => level.toLowerCase() === item.course_level.toLowerCase()
+          (level: string) =>
+            level.toLowerCase() === item.course_level.toLowerCase()
         )
       );
     }
     if (selectedType.length > 0) {
       filtered = courses.filter((item) =>
         selectedType.some(
-          (type) => type.toLowerCase() === item.course_type.toLowerCase()
+          (type: string) =>
+            type.toLowerCase() === item.course_type.toLowerCase()
         )
       );
     }
@@ -71,15 +101,23 @@ export default function InstructorList() {
 
   const getProperty = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/property`);
+      const response = await API.get(`/property`);
       const data = response.data;
       setProperty(
         data?.filter((item: { status: string }) => item.status === "Active")
       );
-      setFilteredProperty(data.filter((item) => item.status === "Active"));
-      setCategoryData(data.filter((item) => item.status === "Active"));
-      setCityData(data.filter((item) => item.status === "Active"));
-      setStateData(data.filter((item) => item.status === "Active"));
+      setFilteredProperty(
+        data.filter((item: { status: string }) => item.status === "Active")
+      );
+      setCategoryData(
+        data.filter((item: { status: string }) => item.status === "Active")
+      );
+      setCityData(
+        data.filter((item: { status: string }) => item.status === "Active")
+      );
+      setStateData(
+        data.filter((item: { status: string }) => item.status === "Active")
+      );
     } catch (error) {
       console.log(error);
     }
@@ -90,7 +128,7 @@ export default function InstructorList() {
   }, []);
   const router = useRouter();
 
-  const updateQueryParams = (newFilters) => {
+  const updateQueryParams = (newFilters: Filters) => {
     const params = new URLSearchParams();
     if (newFilters.searchQuery)
       params.set("search", newFilters.searchQuery.toLowerCase());
@@ -151,101 +189,98 @@ export default function InstructorList() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const search = params.get("search")
-      ? params.get("search").toLowerCase()
-      : "";
-    const category = params.get("category")
-      ? params.get("category").toLowerCase().split(",")
-      : [];
-    const state = params.get("state")
-      ? params.get("state").toLowerCase().split(",")
-      : [];
-    const city = params.get("city")
-      ? params.get("city").toLowerCase().split(",")
-      : [];
-    const course = params.get("courses")
-      ? new Set(params.get("courses").toLowerCase().split(","))
-      : new Set();
-    const level = params.get("level")
-      ? params.get("level").toLowerCase().split(",")
-      : [];
-    const type = params.get("type")
-      ? params.get("type").toLowerCase().split(",")
-      : [];
-    setSearchQuery(search);
-    setSelectedCategory(category);
-    setSelectedState(state);
-    setSelectedCity(city);
-    setSelectedCourses(course);
-    setSelectedLevel(level);
-    setSelectedType(type);
+
+    const getParamArray = (key: string) =>
+      params.get(key) ? params.get(key)!.toLowerCase().split(",") : [];
+
+    const getParamSet = (key: string) =>
+      params.get(key)
+        ? new Set(params.get(key)!.toLowerCase().split(","))
+        : new Set();
+
+    setSearchQuery(params.get("search")?.toLowerCase() || "");
+    setSelectedCategory(getParamArray("category"));
+    setSelectedState(getParamArray("state"));
+    setSelectedCity(getParamArray("city"));
+    setSelectedCourses(getParamSet("courses"));
+    setSelectedLevel(getParamArray("level"));
+    setSelectedType(getParamArray("type"));
   }, []);
 
   useEffect(() => {
-    let filtered = property.filter((item) => {
-      const matchesSearch = searchQuery
-        ? item.property_name.toLowerCase().includes(searchQuery.toLowerCase())
-        : true;
-
-      const matchesCategory =
-        selectedCategory.length > 0
-          ? selectedCategory.some(
-              (category) =>
-                category.toLowerCase() === item.category.toLowerCase()
-            )
+    let filtered = property.filter(
+      (item: {
+        property_name: string;
+        category: string;
+        property_city: string;
+        uniqueId: number;
+        property_state: string;
+      }) => {
+        const matchesSearch = searchQuery
+          ? item.property_name.toLowerCase().includes(searchQuery.toLowerCase())
           : true;
 
-      const matchesState =
-        selectedState.length > 0
-          ? selectedState.some(
-              (state) =>
-                state.toLowerCase() === item.property_state.toLowerCase()
-            )
-          : true;
+        const matchesCategory =
+          selectedCategory.length > 0
+            ? selectedCategory.some(
+                (category) =>
+                  category.toLowerCase() === item.category.toLowerCase()
+              )
+            : true;
 
-      const matchesCity =
-        selectedCity.length > 0
-          ? selectedCity.some(
-              (city) => city.toLowerCase() === item.property_city.toLowerCase()
-            )
-          : true;
+        const matchesState =
+          selectedState.length > 0
+            ? selectedState.some(
+                (state) =>
+                  state.toLowerCase() === item.property_state.toLowerCase()
+              )
+            : true;
 
-      const matchesCourses =
-        selectedCourses.size > 0
-          ? courses.some(
-              (course) =>
-                selectedCourses.has(course.course_name.toLowerCase()) &&
-                course.property_id === item.uniqueId
-            )
-          : true;
+        const matchesCity =
+          selectedCity.length > 0
+            ? selectedCity.some(
+                (city) =>
+                  city.toLowerCase() === item.property_city.toLowerCase()
+              )
+            : true;
 
-      const matchesLevel =
-        selectedLevel.length > 0
-          ? courses.some(
-              (course) =>
-                selectedLevel.includes(course.course_level?.toLowerCase()) &&
-                course.property_id === item.uniqueId
-            )
-          : true;
-      const matchesTypes =
-        selectedType.length > 0
-          ? courses.some(
-              (course) =>
-                selectedType.includes(course.course_type?.toLowerCase()) &&
-                course.property_id === item.uniqueId
-            )
-          : true;
+        const matchesCourses =
+          selectedCourses.size > 0
+            ? courses.some(
+                (course: { property_id: any; course_name: string }) =>
+                  selectedCourses.has(course.course_name.toLowerCase()) &&
+                  course.property_id === item.uniqueId
+              )
+            : true;
 
-      return (
-        matchesSearch &&
-        matchesCategory &&
-        matchesState &&
-        matchesCity &&
-        matchesCourses &&
-        matchesLevel &&
-        matchesTypes
-      );
-    });
+        const matchesLevel =
+          selectedLevel.length > 0
+            ? courses.some(
+                (course: { property_id: any; course_level: string }) =>
+                  selectedLevel.includes(course.course_level?.toLowerCase()) &&
+                  course.property_id === item.uniqueId
+              )
+            : true;
+        const matchesTypes =
+          selectedType.length > 0
+            ? courses.some(
+                (course: { property_id: any; course_type: string }) =>
+                  selectedType.includes(course.course_type?.toLowerCase()) &&
+                  course.property_id === item.uniqueId
+              )
+            : true;
+
+        return (
+          matchesSearch &&
+          matchesCategory &&
+          matchesState &&
+          matchesCity &&
+          matchesCourses &&
+          matchesLevel &&
+          matchesTypes
+        );
+      }
+    );
 
     setFilteredProperty(filtered);
     setCurrentPage(1);
@@ -264,14 +299,14 @@ export default function InstructorList() {
   useEffect(() => {
     let filtered = property;
     if (selectedState.length > 0) {
-      filtered = filtered.filter((item) =>
+      filtered = filtered.filter((item: { property_state: string }) =>
         selectedState.some(
           (state) => state.toLowerCase() === item.property_state.toLowerCase()
         )
       );
     }
     if (selectedCity.length > 0) {
-      filtered = filtered.filter((item) =>
+      filtered = filtered.filter((item: { property_city: string }) =>
         selectedCity.some(
           (city) => city.toLowerCase() === item.property_city.toLowerCase()
         )
@@ -282,14 +317,14 @@ export default function InstructorList() {
   useEffect(() => {
     let filtered = property;
     if (selectedCategory.length > 0) {
-      filtered = filtered.filter((item) =>
+      filtered = filtered.filter((item: { category: string }) =>
         selectedCategory.some(
           (category) => category.toLowerCase() === item.category.toLowerCase()
         )
       );
     }
     if (selectedCity.length > 0) {
-      filtered = filtered.filter((item) =>
+      filtered = filtered.filter((item: { property_city: string }) =>
         selectedCity.some(
           (city) => city.toLowerCase() === item.property_city.toLowerCase()
         )
@@ -301,14 +336,14 @@ export default function InstructorList() {
   useEffect(() => {
     let filtered = property;
     if (selectedState.length > 0) {
-      filtered = filtered.filter((item) =>
+      filtered = filtered.filter((item: { property_state: string }) =>
         selectedState.some(
           (state) => state.toLowerCase() === item.property_state.toLowerCase()
         )
       );
     }
     if (selectedCategory.length > 0) {
-      filtered = filtered.filter((item) =>
+      filtered = filtered.filter((item: { category: string }) =>
         selectedCategory.some(
           (category) => category.toLowerCase() === item.category.toLowerCase()
         )
@@ -324,7 +359,7 @@ export default function InstructorList() {
     currentPage * itemsPerPage
   );
 
-  const changePage = (newPage) => {
+  const changePage = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
@@ -388,12 +423,11 @@ export default function InstructorList() {
                     setSelectedCourses={setSelectedCourses}
                     setFilteredProperty={setFilteredProperty}
                     courses={filteredCourses}
-                    allCourses={courses}
                   />
                   <LevelCard
                     properties={filteredProperty}
                     courses={filteredCourses}
-                    SelectedLevel={selectedLevel}
+                    selectedLevel={selectedLevel}
                     setSelectedLevel={setSelectedLevel}
                   />
                   <CourseTypeCard

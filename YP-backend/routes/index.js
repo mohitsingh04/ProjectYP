@@ -102,6 +102,7 @@ import {
   getPropertyCourse,
   getPropertyCourseById,
   getPropertyCourseByPropertyId,
+  getPropertyCourseByUniqueId,
   updatePropertyCourse,
 } from "../controller/PropertyCourseController.js";
 import {
@@ -278,6 +279,7 @@ router.get("/property-course", getPropertyCourse);
 router.post("/property-course", courseUpload, addPropertyCourse);
 router.patch("/property-course/:objectId", courseUpload, updatePropertyCourse);
 router.get("/property-course/:objectId", getPropertyCourseById);
+router.get("/property-course/uniqueId/:uniqueId", getPropertyCourseByUniqueId);
 router.get(
   "/property/property-course/:propertyId",
   getPropertyCourseByPropertyId

@@ -1,21 +1,30 @@
 import React from "react";
 import { FaAngleLeft, FaAngleRight } from "react-icons/fa";
 
-export default function SearchPagination({
+interface SearchPaginationProps {
+  currentPage: number;
+  changePage: (page: number) => void;
+  totalPages: number;
+}
+
+const SearchPagination: React.FC<SearchPaginationProps> = ({
   currentPage,
   changePage,
   totalPages,
-}) {
+}) => {
   return (
     <div className="row">
       <div className="col-md-12">
         <ul className="pagination lms-page lms-pagination flex-wrap gap-1">
-          {currentPage !== 1 && (
-            <li className={`page-item ${currentPage === 1 ? "disabled" : ""}`}>
+          {currentPage > 1 && (
+            <li className="page-item">
               <a
                 className="page-link"
                 href="#"
-                onClick={() => changePage(currentPage - 1)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  changePage(currentPage - 1);
+                }}
               >
                 <FaAngleLeft />
               </a>
@@ -31,22 +40,24 @@ export default function SearchPagination({
               <a
                 className="page-link"
                 href="#"
-                onClick={() => changePage(index + 1)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  changePage(index + 1);
+                }}
               >
                 {index + 1}
               </a>
             </li>
           ))}
-          {totalPages > 1 && (
-            <li
-              className={`page-item ${
-                currentPage === totalPages ? "disabled" : ""
-              }`}
-            >
+          {currentPage < totalPages && (
+            <li className="page-item">
               <a
                 className="page-link"
                 href="#"
-                onClick={() => changePage(currentPage + 1)}
+                onClick={(e) => {
+                  e.preventDefault();
+                  changePage(currentPage + 1);
+                }}
               >
                 <FaAngleRight />
               </a>
@@ -56,4 +67,6 @@ export default function SearchPagination({
       </div>
     </div>
   );
-}
+};
+
+export default SearchPagination;

@@ -2,21 +2,41 @@
 import React, { useEffect, useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-export default function CourseCard({
+// Define type for a course
+interface Course {
+  course_name: string;
+  property_id: number;
+}
+
+// Define type for a property
+interface Property {
+  uniqueId: number;
+}
+
+// Define props type for the component
+interface CourseCardProps {
+  properties: Property[];
+  selectedCourses: Set<any>;
+  setSelectedCourses: React.Dispatch<React.SetStateAction<Set<any>>>;
+  courses: Course[];
+  setFilteredProperty: React.Dispatch<any>;
+}
+
+const CourseCard: React.FC<CourseCardProps> = ({
   properties,
   selectedCourses,
   setSelectedCourses,
   courses,
-}) {
-  const [courseCounts, setCourseCounts] = useState({});
-  const [searchQuery, setSearchQuery] = useState("");
+}) => {
+  const [courseCounts, setCourseCounts] = useState<Record<string, number>>({});
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   useEffect(() => {
     if (courses.length > 0 && properties.length > 0) {
-      const counts = {};
+      const counts: Record<string, number> = {};
       courses.forEach((course) => {
         const count = properties.filter(
-          (property) => property.uniqueId === course.property_id
+          (property) => property.uniqueId === Number(course.property_id)
         ).length;
 
         counts[course.course_name] = count;
@@ -25,7 +45,7 @@ export default function CourseCard({
     }
   }, [courses, properties]);
 
-  const handleCourseSelection = (course) => {
+  const handleCourseSelection = (course: string) => {
     const lowerCaseCourse = course.toLowerCase();
     setSelectedCourses((prevSelected) => {
       const updatedSelection = new Set(prevSelected);
@@ -89,4 +109,6 @@ export default function CourseCard({
       </div>
     </div>
   );
-}
+};
+
+export default CourseCard;

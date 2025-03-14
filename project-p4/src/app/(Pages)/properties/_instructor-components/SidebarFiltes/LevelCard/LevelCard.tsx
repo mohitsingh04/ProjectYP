@@ -1,19 +1,35 @@
 import React, { useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-export default function LevelCard({
-  SelectedLevel = [],
+interface Course {
+  property_id: number;
+  course_level: string;
+}
+
+interface Property {
+  uniqueId: number;
+}
+
+interface LevelCardProps {
+  selectedLevel: string[];
+  setSelectedLevel: React.Dispatch<React.SetStateAction<string[]>>;
+  properties: Property[];
+  courses: Course[];
+}
+
+const LevelCard: React.FC<LevelCardProps> = ({
+  selectedLevel = [],
   setSelectedLevel,
   properties = [],
   courses = [],
-}) {
-  const [searchQuery, setSearchQuery] = useState("");
+}) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const levels = ["Beginner", "Intermediate", "Advanced"];
 
-  const levelCounts = levels.reduce((acc, level) => {
+  const levelCounts = levels.reduce<Record<string, number>>((acc, level) => {
     const lowerCaseLevel = level.toLowerCase();
-    const uniquePropertyIds = new Set();
+    const uniquePropertyIds = new Set<number>();
 
     const count = courses.filter((course) => {
       const isMatchingLevel =
@@ -37,7 +53,7 @@ export default function LevelCard({
     return acc;
   }, {});
 
-  const handleLevelChange = (level) => {
+  const handleLevelChange = (level: string) => {
     const lowerCaseLevel = level.toLowerCase();
     setSelectedLevel((prev) =>
       prev.includes(lowerCaseLevel)
@@ -78,7 +94,7 @@ export default function LevelCard({
                       type="checkbox"
                       name="state_filter"
                       value={level}
-                      checked={SelectedLevel.includes(level)}
+                      checked={selectedLevel.includes(level)}
                       onChange={() => handleLevelChange(level)}
                     />
                     <span className="checkmark"></span>{" "}
@@ -95,4 +111,6 @@ export default function LevelCard({
       </div>
     </div>
   );
-}
+};
+
+export default LevelCard;

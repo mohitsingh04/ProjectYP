@@ -2,7 +2,21 @@ import Link from "next/link";
 import React from "react";
 import { FaRegHeart } from "react-icons/fa";
 
-export default function CourseSearchCard({ course }) {
+interface Course {
+  uniqueId: string;
+  course_name: string;
+  course_short_name: string;
+  course_type: string;
+  course_level: string;
+  duration: string;
+  image?: string[];
+}
+
+interface CourseSearchCardProps {
+  course: Course;
+}
+
+export default function CourseSearchCard({ course }: CourseSearchCardProps) {
   return (
     <div className="col-lg-12 d-flex">
       <div className="instructor-list flex-fill">
@@ -11,9 +25,9 @@ export default function CourseSearchCard({ course }) {
             src={
               course?.image?.[0]
                 ? `${process.env.NEXT_PUBLIC_API_URL}${course.image[0]}`
-                : "/img/course/course-01.jpg"
+                : "/Images/CourseBanner.jpg"
             }
-            alt={course?.course_name || "course Image"}
+            alt={course?.course_name || "Course Image"}
             style={{ aspectRatio: "1/1", objectFit: "cover" }}
             className="img-fluid"
           />

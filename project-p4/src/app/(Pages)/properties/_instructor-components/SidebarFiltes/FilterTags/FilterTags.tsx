@@ -1,7 +1,20 @@
 import React from "react";
 import { FaX } from "react-icons/fa6";
 
-export default function FilterTags({
+interface FilterTagsProps {
+  selectedCategory: string[];
+  selectedCity: string[];
+  selectedState: string[];
+  selectedCourses: Set<string>;
+  selectedLevel: string[];
+  setSelectedCategory: React.Dispatch<React.SetStateAction<string[]>>;
+  setSelectedCity: React.Dispatch<React.SetStateAction<string[]>>;
+  setSelectedState: React.Dispatch<React.SetStateAction<string[]>>;
+  setSelectedCourses: React.Dispatch<React.SetStateAction<Set<string>>>;
+  setSelectedLevel: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const FilterTags: React.FC<FilterTagsProps> = ({
   selectedCategory,
   selectedCity,
   selectedState,
@@ -9,10 +22,10 @@ export default function FilterTags({
   selectedLevel,
   setSelectedCategory,
   setSelectedCity,
+  setSelectedState,
   setSelectedCourses,
   setSelectedLevel,
-  setSelectedState,
-}) {
+}) => {
   const tagStyle =
     "d-flex align-items-center bg-white text-dark rounded px-3 py-1 border";
   const closeBtnStyle =
@@ -96,4 +109,6 @@ export default function FilterTags({
       ))}
     </div>
   );
-}
+};
+
+export default FilterTags;

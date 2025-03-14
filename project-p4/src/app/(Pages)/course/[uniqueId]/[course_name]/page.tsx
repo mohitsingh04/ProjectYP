@@ -1,14 +1,26 @@
 "use client";
-import axios from "axios";
+import API from "@/service/API/API";
 import Link from "next/link";
 import { notFound, useParams } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
 import { Table } from "react-bootstrap";
 
+interface Course {
+  course_name?: string;
+  course_level?: string;
+  duration?: string;
+  course_type?: string;
+  course_short_name?: string;
+  description?: string;
+  image?: string[];
+  uniqueId?: string;
+}
+
 export default function page() {
-  const [courese, setCourse] = useState("");
+  const [courese, setCourse] = useState<Course | null>({});
+
+  const [allCourses, setAllCourses] = useState<Course[]>([]);
   const { uniqueId, course_name } = useParams();
-  const [allCourses, setAllCourses] = useState([]);
 
   const name = course_name.replace(/-/g, " ");
   useEffect(() => {
@@ -21,9 +33,7 @@ export default function page() {
   }, [courese?.course_name]);
 
   const getCourse = async () => {
-    const response = await axios.get(
-      `http://localhost:5000/course-detail/${uniqueId}`
-    );
+    const response = await API.get(`/course-detail/${uniqueId}`);
     setCourse(response.data);
   };
   useEffect(() => {
@@ -32,12 +42,13 @@ export default function page() {
 
   const getAllCourse = useCallback(async () => {
     try {
-      const response = await axios.get("http://localhost:5000/course");
+      const response = await API.get("/course");
       let all = response.data;
 
       if (courese) {
-        // Fix the typo here
-        all = all.filter((item) => item.uniqueId !== courese.uniqueId);
+        all = all.filter(
+          (item: { uniqueId: string }) => item.uniqueId !== courese.uniqueId
+        );
       }
 
       const randomCourses = all.sort(() => 0.5 - Math.random()).slice(0, 5);
@@ -84,23 +95,21 @@ export default function page() {
               <div className="col-lg-9 col-md-12">
                 <div className="blog">
                   <div className="blog-image">
-                    <a href="blog-details.html">
-                      <img
-                        className="img-fluid"
-                        src={
-                          courese?.image?.[0]
-                            ? `${process.env.NEXT_PUBLIC_API_URL}${
-                                courese?.image?.[0] || ""
-                              }`
-                            : "/img/blog-banner.jpg"
-                        }
-                        style={{
-                          maxHeight: "200px",
-                          objectFit: "cover",
-                        }}
-                        alt="Post Image"
-                      />
-                    </a>
+                    <img
+                      className="img-fluid"
+                      src={
+                        courese?.image?.[0]
+                          ? `${process.env.NEXT_PUBLIC_API_URL}${
+                              courese?.image?.[0] || ""
+                            }`
+                          : "/Images/CourseBanner.webp"
+                      }
+                      style={{
+                        maxHeight: "250px",
+                        objectFit: "cover",
+                      }}
+                      alt="Post Image"
+                    />
                   </div>
                   <div className="blog-info clearfix">
                     <div className="post-left">
@@ -164,7 +173,7 @@ export default function page() {
                                   src={
                                     suggestion?.image?.[0]
                                       ? `${process.env.NEXT_PUBLIC_API_URL}${suggestion?.image?.[0]}`
-                                      : "/img/video.jpg"
+                                      : "/Images/CourseBanner.webp"
                                   }
                                   width={50}
                                   style={{
@@ -176,7 +185,11 @@ export default function page() {
                                 />
                                 <div className="ps-3">
                                   <Link
-                                    href={`/course/${suggestion?.uniqueId}`}
+                                    href={`/course/${
+                                      suggestion?.uniqueId
+                                    }/${suggestion?.course_name
+                                      .replace(/\s+/g, "-")
+                                      .toLowerCase()}`}
                                     style={{ textWrap: "wrap" }}
                                   >
                                     {suggestion?.course_name}

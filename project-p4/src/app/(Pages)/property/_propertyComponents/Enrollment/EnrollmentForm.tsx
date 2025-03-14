@@ -3,10 +3,18 @@ import React from "react";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useParams } from "next/navigation";
-import axios from "axios";
 import { toast } from "react-toastify";
+import API from "@/service/API/API";
 
-export default function EnrollmentForm({ property }) {
+interface Property {
+  property_name?: string;
+}
+
+interface EnrollmentFormProps {
+  property?: Property | null;
+}
+
+export default function EnrollmentForm({ property }: EnrollmentFormProps) {
   const { uniqueId } = useParams();
   const formik = useFormik({
     initialValues: {
@@ -44,14 +52,11 @@ export default function EnrollmentForm({ property }) {
     }),
     onSubmit: async (values) => {
       try {
-        const response = await axios.post(
-          "http://localhost:5000/add/enquiry",
-          values
-        );
+        const response = await API.post("/add/enquiry", values);
         toast.success(response.data.message);
         formik.resetForm();
       } catch (error) {
-        toast.error(error.response.data.error);
+        toast.error((error as any).response.data.error);
       }
     },
     enableReinitialize: true,

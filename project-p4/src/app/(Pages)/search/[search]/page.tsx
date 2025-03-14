@@ -4,21 +4,41 @@ import PropertyCard from "../_searchcomponents/PropertyCard";
 import { useParams } from "next/navigation";
 import SearchPagination from "../_searchcomponents/searchPagination";
 import CourseSearchCard from "../_searchcomponents/CourseSearchCard";
-import axios from "axios";
 import Link from "next/link";
+import API from "@/service/API/API";
+
+interface Property {
+  uniqueId: string;
+  property_name: string;
+  property_city: string;
+  property_state: string;
+  category: string;
+  status: string;
+}
+
+interface Course {
+  uniqueId: string;
+  course_name: string;
+  course_short_name: string;
+  status: string;
+  course_type: string;
+  course_level: string;
+  duration: string;
+}
 
 export default function Page() {
   const itemsPerPage = 5;
-  const [currentPage, setCurrentPage] = useState(1);
-  const { search } = useParams();
-  const [property, setProperty] = useState([]);
-  const [filteredProperties, setFilteredProperties] = useState([]);
-  const [course, setCourse] = useState([]);
-  const [filteredCourses, setFilteredCourses] = useState([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const { search: rawSearch } = useParams();
+  const search = Array.isArray(rawSearch) ? rawSearch[0] : rawSearch || "";
+  const [property, setProperty] = useState<Property[]>([]);
+  const [filteredProperties, setFilteredProperties] = useState<Property[]>([]);
+  const [course, setCourse] = useState<Course[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
 
   const getProperty = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/property`);
+      const response = await API.get<Property[]>("/property");
       const data = response.data;
       setProperty(data.filter((item) => item.status === "Active"));
     } catch (error) {
@@ -28,7 +48,7 @@ export default function Page() {
 
   const getCourse = async () => {
     try {
-      const response = await axios.get(`http://localhost:5000/course`);
+      const response = await API.get<Course[]>("/course");
       const data = response.data;
       setCourse(data.filter((item) => item.status === "Active"));
     } catch (error) {
@@ -46,12 +66,10 @@ export default function Page() {
       setFilteredProperties(
         property.filter(
           (item) =>
-            item?.property_name?.toLowerCase().includes(search.toLowerCase()) ||
-            item?.property_city?.toLowerCase().includes(search.toLowerCase()) ||
-            item?.property_state
-              ?.toLowerCase()
-              .includes(search.toLowerCase()) ||
-            item?.category?.toLowerCase().includes(search.toLowerCase())
+            item.property_name.toLowerCase().includes(search.toLowerCase()) ||
+            item.property_city.toLowerCase().includes(search.toLowerCase()) ||
+            item.property_state.toLowerCase().includes(search.toLowerCase()) ||
+            item.category.toLowerCase().includes(search.toLowerCase())
         )
       );
       setFilteredCourses(
@@ -71,16 +89,18 @@ export default function Page() {
   const totalPages = Math.ceil(
     Math.max(filteredProperties.length, filteredCourses.length) / itemsPerPage
   );
+
   const paginatedProperties = filteredProperties.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
+
   const paginatedCourses = filteredCourses.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
 
-  const changePage = (newPage) => {
+  const changePage = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
     }
