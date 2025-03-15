@@ -33,12 +33,11 @@ export const UserFolderCleaners = async () => {
 
         if (!profileImages.has(filePath)) {
           await fs.unlink(path.join(userMediaFolder, file));
-          console.log(`Deleted: ${filePath}`);
         }
       })
     );
   } catch (error) {
-    console.error("Error during cleanup:", error.message);
+    console.error("Error during cleanup");
   }
 };
 
@@ -65,12 +64,11 @@ export const courseFolderCleaners = async () => {
 
         if (!courseImages.has(filePath)) {
           await fs.unlink(path.join(courseMediaFolder, file));
-          console.log(`Deleted: ${filePath}`);
         }
       })
     );
   } catch (error) {
-    console.error("Error during cleanup:", error.message);
+    console.error("Error during cleanup:");
   }
 };
 
@@ -103,12 +101,11 @@ export const categoryFolderCleaners = async () => {
 
         if (!categoryImages.has(filePath)) {
           await fs.unlink(path.join(categoryMediaFolder, file));
-          console.log(`Deleted: ${filePath}`);
         }
       })
     );
   } catch (error) {
-    console.error("Error during cleanup:", error.message);
+    console.error("Error during cleanup:");
   }
 };
 
@@ -145,18 +142,15 @@ export const propertyMainFolderCleaners = async () => {
 
             if (!validImages.has(filePath)) {
               await fs.unlink(path.join(propertyFolder, file));
-              console.log(`Deleted: ${filePath}`);
             }
           })
         );
       } catch (error) {
-        console.warn(
-          `Skipping cleanup for property ID ${uniqueId}: ${error.message}`
-        );
+        console.warn(`Skipping cleanup for property`);
       }
     }
   } catch (error) {
-    console.error("Error during property folder cleanup:", error.message);
+    console.error("Error during property folder cleanup");
   }
 };
 
@@ -182,18 +176,15 @@ export const propertyGalleryFolderCleaners = async () => {
 
             if (!validImages.has(filePath)) {
               await fs.unlink(path.join(galleryFolder, file));
-              console.log(`Deleted: ${filePath}`);
             }
           })
         );
       } catch (error) {
-        console.warn(
-          `Skipping gallery cleanup for property ID ${uniqueId}: ${error.message}`
-        );
+        console.warn(`Skipping gallery cleanup for property`);
       }
     }
   } catch (error) {
-    console.error("Error during property gallery cleanup:", error.message);
+    console.error("Error during property gallery cleanup");
   }
 };
 
@@ -219,18 +210,15 @@ export const propertyAchievementsFolderCleaners = async () => {
 
             if (!validImages.has(filePath)) {
               await fs.unlink(path.join(achievementsFolder, file));
-              console.log(`Deleted: ${filePath}`);
             }
           })
         );
       } catch (error) {
-        console.warn(
-          `Skipping achievements cleanup for property ID ${uniqueId}: ${error.message}`
-        );
+        console.warn(`Skipping achievements cleanup for property`);
       }
     }
   } catch (error) {
-    console.error("Error during achievements cleanup:", error.message);
+    console.error("Error during achievements cleanup");
   }
 };
 
@@ -242,9 +230,7 @@ export const teacherProfileFolderCleaners = async () => {
       const { property_id, profile } = teacher;
 
       if (!property_id) {
-        console.warn(
-          `Skipping teacher with missing property_id: ${teacher._id}`
-        );
+        console.warn(`Skipping teacher `);
         continue;
       }
 
@@ -264,17 +250,14 @@ export const teacherProfileFolderCleaners = async () => {
 
             if (!validImages.has(filePath)) {
               await fs.unlink(path.join(teacherFolder, file));
-              console.log(`Deleted: ${filePath}`);
             }
           })
         );
       } catch (error) {
-        console.warn(
-          `Skipping teacher profile cleanup for property ID ${property_id}: ${error.message}`
-        );
+        console.warn(`Skipping teacher profile cleanup for property`);
       }
     }
   } catch (error) {
-    console.error("Error during teacher profile cleanup:", error.message);
+    console.error("Error during teacher profile cleanup");
   }
 };

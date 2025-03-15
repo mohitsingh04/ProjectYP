@@ -107,11 +107,11 @@ export const PropertyImageMover = async (req, res) => {
           );
         }
       } catch (error) {
-        console.error(`Error moving files for ${item.uniqueId}:`, error);
+        console.error(`Error moving files`);
       }
     }
   } catch (error) {
-    console.error("Error in PropertyImageMover:", error);
+    console.error("Error in PropertyImageMover");
   }
 };
 
@@ -175,11 +175,13 @@ export const TeacherImageMover = async (req, res) => {
             );
           }
         } catch (error) {
-          console.error(`Error moving files for ${teacher.uniqueId}:`, error);
+          console.error(`Error moving files`);
         }
       });
     }
-  } catch (error) {}
+  } catch (error) {
+    console.log("Internal Server Error")
+  }
 };
 export const GalleryImageMover = async (req, res) => {
   try {
@@ -219,8 +221,6 @@ export const GalleryImageMover = async (req, res) => {
           movedImages.push(i);
         });
 
-        // console.log(movedImages);
-
         // Update the gallery only if all images are moved
         if (movedImages.length === info.gallery.length) {
           await Gallery.findOneAndUpdate(
@@ -232,7 +232,7 @@ export const GalleryImageMover = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("Error moving gallery images:", error);
+    console.error("Error moving gallery images");
   }
 };
 
@@ -268,8 +268,6 @@ export const AchievementImageMover = async (req, res) => {
           }
 
           if (await fileExists(AchievementImagePath)) {
-            console.log("Moving file:", AchievementImagePath);
-
             await fs.rename(
               AchievementImagePath,
               path.join(destinationDir, profile)
@@ -293,7 +291,7 @@ export const AchievementImageMover = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error("Error moving achievement images:", error);
+    console.error("Error moving achievement images");
   }
 };
 export const CourseImageMover = async (req, res) => {
@@ -333,7 +331,7 @@ export const CourseImageMover = async (req, res) => {
       }
     }
   } catch (error) {
-    console.error(error);
+    console.error("Internal Error");
   }
 };
 
@@ -402,7 +400,7 @@ export const CategoryImageMover = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    console.error("Internal Error");
   }
 };
 
@@ -443,6 +441,6 @@ export const UserImageMover = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error);
+    console.error("Internal Error");
   }
 };

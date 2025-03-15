@@ -23,7 +23,7 @@ export default function ViewUser() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [mainUser]);
 
@@ -69,7 +69,7 @@ export default function ViewUser() {
         }
       })
       .catch((error) => {
-        console.log(error.message);
+        console.error(error?.message);
       });
   };
 
@@ -156,7 +156,7 @@ export default function ViewUser() {
                             <img
                               src={
                                 user?.profile?.[0]
-                                  ? `http://localhost:5000/${user?.profile?.[0]}`
+                                  ? `${process.env.REACT_APP_BACKEND_URL}/${user?.profile?.[0]}`
                                   : require("../../Images/DefaultProfile.jpg")
                               }
                               alt="profile-user"

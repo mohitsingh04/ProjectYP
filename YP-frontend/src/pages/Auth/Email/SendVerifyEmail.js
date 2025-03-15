@@ -32,7 +32,6 @@ export default function SendVerifyEmail() {
       setIsRunning(true);
     } catch (error) {
       toast.error(error.response.data.error);
-      console.log(error);
     }
   };
 

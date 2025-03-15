@@ -9,13 +9,13 @@ export default function DataRequest() {
     const getUser = async () => {
       try {
         const response = await API.get("/profile");
-        setUser(response.data.user); // Set user data after fetch
+        setUser(response.data.user);
       } catch (error) {
-        console.error(error);
+        console.error(error?.response?.data?.error);
       }
     };
     getUser();
-  }, []); // Empty dependency array ensures this runs once on mount
+  }, []);
 
   return { User };
 }

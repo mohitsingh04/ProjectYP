@@ -37,7 +37,6 @@ export default function EnquiryTable({
         } catch (error) {
           toast.error(error.response?.data?.error || "An error occurred");
           Swal.fire("Error!", "Failed to delete the record.", "error");
-          console.log(error);
         }
       }
     });

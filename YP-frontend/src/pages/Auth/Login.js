@@ -33,10 +33,10 @@ export default function Login() {
       toast.success(response.data.message);
       window.location.reload();
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setError(error.response.data.error);
-      toast.error(error.response.data.error);
-      if (error.response.data.error === "You are Not Verified.") {
+      toast.error(error?.response?.data?.error);
+      if (error?.response?.data?.error === "You are Not Verified.") {
         navigate(`/verify-email`);
       }
     }

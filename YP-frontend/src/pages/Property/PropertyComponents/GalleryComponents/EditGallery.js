@@ -24,7 +24,7 @@ export default function EditGallery({
       setTitle(response.data.title || "");
       setPropertyId(response.data.propertyId);
     } catch (error) {
-      console.error("Error fetching gallery:", error);
+      console.error(error?.response?.data?.error);
     }
   }, [gallleryId]);
 
@@ -78,8 +78,7 @@ export default function EditGallery({
       window.scrollTo(0, 0);
       window.location.reload();
     } catch (error) {
-      console.error("Error updating gallery:", error);
-      toast.error(error.response.data.error);
+      toast.error(error?.response?.data?.error);
     }
   };
 
@@ -102,7 +101,7 @@ export default function EditGallery({
       return (
         <Col key={index} lg={3} md={3} sm={6} className="col-12">
           <img
-            src={`http://localhost:5000/${img}`}
+            src={`${process.env.REACT_APP_BACKEND_URL}/${img}`}
             alt={img}
             style={{ aspectRatio: "2/2", objectFit: "cover" }}
           />
@@ -158,7 +157,9 @@ export default function EditGallery({
           newImages.map((item, index) => (
             <div key={index} className="col-md-3 p-0 px-1 position-relative">
               <img
-                src={item.preview || `http://localhost:5000/${item}`}
+                src={
+                  item.preview || `${process.env.REACT_APP_BACKEND_URL}/${item}`
+                }
                 alt="Preview"
                 className="img-fluid w-100 h-100"
                 style={{ aspectRatio: "2/2", objectFit: "cover" }}

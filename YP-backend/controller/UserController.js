@@ -10,7 +10,6 @@ export const getUser = async (req, res) => {
     const user = await User.find();
     return res.status(200).json(user);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -69,7 +68,6 @@ export const updateUser = async (req, res) => {
       return res.status(200).json({ message: "User Updated Successfully" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.status(500).send({ error: "Internal Server Error." });
   }
 };
@@ -84,14 +82,12 @@ export const deleteUser = async (req, res) => {
           return res.send({ message: "User Deleted." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.send({ error: "User not found." });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -102,7 +98,6 @@ export const getUserById = async (req, res) => {
     const user = await User.findOne({ _id: objectId });
     return res.status(200).json(user);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -131,14 +126,12 @@ export const deleteUserProfile = async (req, res) => {
           }
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.send({ error: "User not found." });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };

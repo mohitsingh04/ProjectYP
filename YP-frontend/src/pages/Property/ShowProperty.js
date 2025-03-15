@@ -47,7 +47,7 @@ export default function ShowProperty() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [mainUser?.User?._id]);
 
@@ -70,7 +70,6 @@ export default function ShowProperty() {
       setLoading(false);
     } catch (err) {
       toast.error(err.message);
-      console.log(err.message);
     }
   }, [objectId]);
 
@@ -107,7 +106,7 @@ export default function ShowProperty() {
         }
       })
       .catch((error) => {
-        console.log(error.message);
+        console.error(error?.message);
       });
   };
 
@@ -175,7 +174,7 @@ export default function ShowProperty() {
                             src={
                               !icon
                                 ? defaultLogo
-                                : `http://localhost:5000/${icon}`
+                                : `${process.env.REACT_APP_BACKEND_URL}/${icon}`
                             }
                             width={120}
                             height={120}

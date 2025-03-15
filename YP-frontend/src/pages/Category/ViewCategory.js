@@ -27,7 +27,7 @@ export default function ViewCategory() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [mainUser]);
 
@@ -79,7 +79,7 @@ export default function ViewCategory() {
         }
       })
       .catch((error) => {
-        console.log(error.message);
+        console.error(error?.message);
       });
   };
 
@@ -165,7 +165,7 @@ export default function ViewCategory() {
                           src={
                             !categoryIcon
                               ? defaultIcon
-                              : `http://localhost:5000/${categoryIcon}`
+                              : `${process.env.REACT_APP_BACKEND_URL}/${categoryIcon}`
                           }
                           width={100}
                           style={{ margin: "165px 26px" }}
@@ -175,7 +175,7 @@ export default function ViewCategory() {
                           src={
                             !featureImage
                               ? defaultFeature
-                              : `http://localhost:5000/${featureImage}`
+                              : `${process.env.REACT_APP_BACKEND_URL}/${featureImage}`
                           }
                           width={200}
                         />

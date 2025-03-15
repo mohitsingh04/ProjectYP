@@ -32,7 +32,7 @@ dotenv.config();
 app.use(cookieParser());
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: [process.env.FRONTEND_URL, process.env.FRONTEND_DASHBOARD_URL],
     credentials: true,
   })
 );
@@ -75,5 +75,5 @@ mongoose
   });
 
 app.listen(process.env.PORT, () => {
-  console.log(`Server is running on http://localhost:${process.env.PORT}`);
+  console.log(`Server is running on PORT ${process.env.PORT}`);
 });

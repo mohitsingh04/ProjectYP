@@ -16,7 +16,7 @@ export default function ProtectedRoutes({ children }) {
       const response = await API.get("/get-token");
       setToken(response.data.token);
     } catch (error) {
-      console.error(error);
+      console.error(error?.response?.data?.error);
     } finally {
       setLoading(false);
     }

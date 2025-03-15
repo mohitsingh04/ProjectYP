@@ -28,7 +28,7 @@ export default function Amenities() {
       );
       setAmenities(filteredAmenities);
     } catch (error) {
-      console.log(error.message);
+      console.error(error?.response?.data?.error);
     }
   }, [property]);
 
@@ -43,8 +43,6 @@ export default function Amenities() {
   const handleShowAmenitiesPage = () => {
     setToggleAmenitiesPage(true);
   };
-
-  // console.log(amenities[0]?.selectedAmenities[0]);
 
   return (
     <Fragment>

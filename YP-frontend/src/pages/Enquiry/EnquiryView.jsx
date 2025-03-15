@@ -13,7 +13,7 @@ export default function EnquiryView() {
       const response = await API.get(`/enquiry/${objectId}`);
       setEnquiry(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [objectId]);
   useEffect(() => {

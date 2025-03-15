@@ -9,7 +9,7 @@ export default function ArchiveView({ isViewing, setIsViewing }) {
       const response = await API.get(`/archive/enquiry/${isViewing}`);
       setEnquiry(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [isViewing]);
 

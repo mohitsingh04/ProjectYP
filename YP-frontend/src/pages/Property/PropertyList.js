@@ -63,7 +63,7 @@ export default function PropertyList() {
         }
       })
       .catch((error) => {
-        console.log(error.message);
+        console.error(error?.message);
       });
   };
 
@@ -74,7 +74,7 @@ export default function PropertyList() {
         return (
           <img
             key={img}
-            src={`http://localhost:5000/${img}`}
+            src={`${process.env.REACT_APP_BACKEND_URL}/${img}`}
             width={53}
             alt=""
           />
@@ -83,7 +83,7 @@ export default function PropertyList() {
         return (
           <img
             key={img}
-            src={`http://localhost:5000/images/${img}`}
+            src={`${process.env.REACT_APP_BACKEND_URL}/images/${img}`}
             width={53}
             alt=""
           />

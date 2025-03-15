@@ -308,7 +308,7 @@ export default function EditTeacher() {
                             previewProfile
                               ? previewProfile
                               : teacher?.profile?.[0]
-                              ? `http://localhost:5000/${teacher?.profile?.[0]}`
+                              ? `${process.env.REACT_APP_BACKEND_URL}/${teacher?.profile?.[0]}`
                               : defaultProfile
                           }
                           width="100"

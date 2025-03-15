@@ -48,7 +48,6 @@ export const processImage = async (req, res, next) => {
     }
     next();
   } catch (error) {
-    console.error("Sharp processing error:", error);
     return res.status(500).json({ error: "Image processing failed" });
   }
 };

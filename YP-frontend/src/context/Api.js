@@ -1,9 +1,8 @@
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
-// export const accessToken = localStorage.getItem("accessToken");
 export const API = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: process.env.REACT_APP_BACKEND_URL,
   headers: {
     withCredentials: true,
   },

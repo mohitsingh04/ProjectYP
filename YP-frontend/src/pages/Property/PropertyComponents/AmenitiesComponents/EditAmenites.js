@@ -78,7 +78,7 @@ export default function EditAmenities({ property }) {
           });
         }
       } catch (error) {
-        console.log(error.message);
+        console.error(error?.message);
       }
     };
 

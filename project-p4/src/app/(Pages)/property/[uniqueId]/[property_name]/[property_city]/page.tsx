@@ -62,7 +62,7 @@ export default function CourseDetails() {
       const response = await API.get(`/property/uniqueId/${uniqueId}`);
       setProperty(response.data);
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 
@@ -89,7 +89,7 @@ export default function CourseDetails() {
     setReviews(response.data);
     try {
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 

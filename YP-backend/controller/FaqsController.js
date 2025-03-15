@@ -5,7 +5,6 @@ export const getFaq = async (req, res) => {
     const faqs = await Faqs.find();
     return res.status(200).json(faqs);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -16,7 +15,6 @@ export const getFaqById = async (req, res) => {
     const faqs = await Faqs.findOne({ _id: objectId });
     return res.status(200).json(faqs);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -24,7 +22,6 @@ export const getFaqById = async (req, res) => {
 export const getFaqByPropertyId = async (req, res) => {
   try {
     const { propertyId } = req.params;
-    console.log(req.params);
     const faqs = await Faqs.find({ property_id: propertyId });
     return res.status(200).json(faqs);
   } catch (error) {
@@ -60,7 +57,6 @@ export const addFaq = async (req, res) => {
       return res.send({ error: "This question is alredy exist!" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -87,7 +83,6 @@ export const updateFaq = async (req, res) => {
       return res.send({ error: "Faq not found." });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -102,14 +97,12 @@ export const deleteFaq = async (req, res) => {
           return res.send({ message: "Deleted." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error!" });
         });
     } else {
       return res.send({ error: "Faq not found!" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };

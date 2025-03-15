@@ -9,7 +9,7 @@ export default function ViewEnquiry({ isViewing, setIsViewing }) {
       const response = await API.get(`/enquiry/${isViewing}`);
       setEnquiry(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [isViewing]);
 

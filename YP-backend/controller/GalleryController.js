@@ -5,7 +5,6 @@ export const getGallery = async (req, res) => {
     const gallery = await Gallery.find();
     return res.status(200).json(gallery);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -16,7 +15,6 @@ export const getGalleryById = async (req, res) => {
     const gallery = await Gallery.findOne({ uniqueId: uniqueId });
     return res.status(200).json(gallery);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -26,7 +24,6 @@ export const getGalleryByPropertyId = async (req, res) => {
     const gallery = await Gallery.find({ propertyId: propertyId });
     return res.status(200).json(gallery);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -142,7 +139,6 @@ export const updateGallery = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ error: error.message });
   }
 };
@@ -157,14 +153,12 @@ export const deleteGallery = async (req, res) => {
           return res.send({ message: "Gallery Deleted." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.send({ error: "Gallery not found!" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };

@@ -5,8 +5,7 @@ export const getCategory = async (req, res) => {
     let category = await Category.find();
     return res.status(200).json(category);
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error." });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -16,8 +15,7 @@ export const getCategoryById = async (req, res) => {
     const category = await Category.findOne({ _id: objectId });
     return res.status(200).json(category);
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error." });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -53,8 +51,7 @@ export const addCategory = async (req, res) => {
       return res.send({ error: "This category is already exist." });
     }
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error." });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -110,12 +107,10 @@ export const updateCategory = async (req, res) => {
         return res.send({ message: "Category updated." });
       })
       .catch((err) => {
-        console.log(err.message);
         return res.send({ error: "Internal Server Error." });
       });
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error." });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -129,14 +124,12 @@ export const deleteCategory = async (req, res) => {
           return res.send({ message: "Category Deleted." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.send({ error: "Category not found." });
     }
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error." });
+    return res.send({ error: "Internal Server Error" });
   }
 };

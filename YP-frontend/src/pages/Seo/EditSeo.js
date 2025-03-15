@@ -45,7 +45,6 @@ export default function EditSeo() {
   const onSubmit = async (values, { resetForm }) => {
     try {
       values = { ...values, description: description || seo.description };
-      console.log(values);
       API.patch(`/seo/${objectId}`, values).then((response) => {
         if (response.data.message) {
           toast.success(response.data.message);

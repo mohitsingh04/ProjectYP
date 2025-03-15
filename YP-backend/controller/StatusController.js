@@ -5,7 +5,6 @@ export const getStatus = async (req, res) => {
     let status = await Status.find();
     return res.status(200).json(status);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error" });
   }
 };
@@ -33,7 +32,6 @@ export const addStatus = async (req, res) => {
       return res.send({ error: "This status is already exist." });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error" });
   }
 };
@@ -69,7 +67,6 @@ export const updateStatus = async (req, res) => {
       return res.send({ error: "Status not found." });
     }
   } catch (err) {
-    console.error(err.message);
     return res.send({ error: "Internal Server Error" });
   }
 };
@@ -80,7 +77,6 @@ export const deleteStatus = async (req, res) => {
     await Status.findOneAndDelete({ _id: objectId });
     return res.send({ message: "Status deleted." });
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error" });
   }
 };
@@ -91,7 +87,6 @@ export const getStatusById = async (req, res) => {
     const status = await Status.findOne({ _id: objectId });
     return res.status(200).json(status);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error" });
   }
 };

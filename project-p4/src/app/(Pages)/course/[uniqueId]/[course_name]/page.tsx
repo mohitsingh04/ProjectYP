@@ -22,7 +22,8 @@ export default function page() {
   const [allCourses, setAllCourses] = useState<Course[]>([]);
   const { uniqueId, course_name } = useParams();
 
-  const name = course_name.replace(/-/g, " ");
+  const name =
+    typeof course_name === "string" ? course_name.replace(/-/g, " ") : "";
   useEffect(() => {
     if (courese?.course_name) {
       const formattedName = courese.course_name.toLowerCase();
@@ -55,7 +56,7 @@ export default function page() {
 
       setAllCourses(randomCourses);
     } catch (error) {
-      console.log("Error fetching courses:", error);
+      console.error((error as any)?.response?.data?.message);
     }
   }, [courese]);
 
@@ -188,8 +189,8 @@ export default function page() {
                                     href={`/course/${
                                       suggestion?.uniqueId
                                     }/${suggestion?.course_name
-                                      .replace(/\s+/g, "-")
-                                      .toLowerCase()}`}
+                                      ?.replace(/\s+/g, "-")
+                                      ?.toLowerCase()}`}
                                     style={{ textWrap: "wrap" }}
                                   >
                                     {suggestion?.course_name}

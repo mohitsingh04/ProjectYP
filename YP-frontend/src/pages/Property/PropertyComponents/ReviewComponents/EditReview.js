@@ -55,7 +55,6 @@ const EditReview = (props) => {
       toast.success(response.data.message);
       props.setIsUpdating(null);
     } catch (error) {
-      console.log(error);
       toast.error(error.response.data.error);
     }
   };

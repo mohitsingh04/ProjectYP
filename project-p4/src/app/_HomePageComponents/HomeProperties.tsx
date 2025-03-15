@@ -46,7 +46,7 @@ export default function HomeProperties() {
 
       setProperty(updatedProperties);
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   }, []);
 

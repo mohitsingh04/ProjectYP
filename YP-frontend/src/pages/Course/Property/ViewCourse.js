@@ -43,7 +43,7 @@ export default function ViewPropertyCourse() {
         }
       });
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   };
 
@@ -126,7 +126,7 @@ export default function ViewPropertyCourse() {
                       <img
                         src={
                           course?.image?.[0]
-                            ? `http://localhost:5000/${course?.image?.[0]}`
+                            ? `${process.env.REACT_APP_BACKEND_URL}/${course?.image?.[0]}`
                             : require(`../../../Images/defaultcourse.webp`)
                         }
                         alt={course.course_name}

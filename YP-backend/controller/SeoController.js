@@ -5,7 +5,6 @@ export const getSeo = async (req, res) => {
     const seo = await Seo.find();
     return res.status(200).json(seo);
   } catch (error) {
-    console.log(error.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -16,7 +15,6 @@ export const getSeoById = async (req, res) => {
     const seo = await Seo.findOne({ _id: objectId });
     return res.status(200).json(seo);
   } catch (error) {
-    console.log(error.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -69,7 +67,6 @@ export const addSeo = async (req, res) => {
       return res.send({ error: "This seo title is alredy exist!" });
     }
   } catch (error) {
-    console.log(error.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -111,11 +108,9 @@ export const updateSeo = async (req, res) => {
         return res.send({ message: "Seo updated." });
       })
       .catch((err) => {
-        console.log(err.message);
         return res.send({ error: "Internal Server Error." });
       });
   } catch (error) {
-    console.log(error.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -127,18 +122,15 @@ export const deleteSeo = async (req, res) => {
     if (seo) {
       await Seo.findOneAndDelete({ _id: objectId })
         .then((result) => {
-          console.log(result);
           return res.send({ message: "Seo Deleted." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.send({ error: "Seo not found." });
     }
   } catch (error) {
-    console.log(error.message);
     return res.send({ error: "Internal server error!" });
   }
 };

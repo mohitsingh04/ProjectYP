@@ -52,16 +52,16 @@ export default function Register() {
 
   const onSubmit = async (values) => {
     try {
-      API.post("/register", values).then((response) => {
-        if (response.data.message) {
-          toast.success(response.data.message);
-          navigate(`/send/verify-email/success/${values.email}`);
-        } else {
-          setError(response.data.error);
-        }
-      });
+      const response = await API.post("/register", values);
+
+      if (response.data.message) {
+        toast.success(response.data.message);
+        navigate(`/send/verify-email/success/${values.email}`);
+      } else {
+        setError(response.data.error);
+      }
     } catch (err) {
-      toast.success(err.message);
+      toast.error(err.message);
     }
   };
 

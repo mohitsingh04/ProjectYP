@@ -27,7 +27,7 @@ export default function EditStatus() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [mainUser?.User?._id]);
 
@@ -50,7 +50,7 @@ export default function EditStatus() {
       );
       setAllStatus(uniqueStatus);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   };
 

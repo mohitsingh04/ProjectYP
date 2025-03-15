@@ -29,7 +29,7 @@ export default function PropertyCard({ property }: { property: Property }) {
         );
         setCoursesLength(data.length);
       } catch (error) {
-        console.error("Error fetching courses:", error);
+        console.error((error as any)?.message);
       }
     };
 
@@ -46,7 +46,7 @@ export default function PropertyCard({ property }: { property: Property }) {
         setRatingLength(data.length);
         setRating(totalRating);
       } catch (error) {
-        console.error("Error fetching reviews:", error);
+        console.error((error as any)?.message);
       }
     };
 

@@ -47,7 +47,7 @@ export default function Teachers({ property }: TeachersProps) {
       );
       setTeachers(response.data);
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 

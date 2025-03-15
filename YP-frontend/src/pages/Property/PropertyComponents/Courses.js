@@ -135,8 +135,7 @@ export default function Courses() {
       selectedCourse("");
       formik.resetForm();
     } catch (err) {
-      toast.error(err.response.data.error);
-      console.log(err);
+      toast.error(err?.response?.data?.error);
     }
   };
 
@@ -178,7 +177,7 @@ export default function Courses() {
         }
       });
     } catch (error) {
-      console.log(error);
+      console.error(error?.message);
     }
   };
 

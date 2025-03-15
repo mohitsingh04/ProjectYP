@@ -18,7 +18,7 @@ const ExpireVerification = async (req, res) => {
             { new: true }
           );
           if (expireToken) {
-            console.log(user.uniqueId + " Verify Token has been Expired");
+            console.log(" Verify Token has been Expired");
           }
         }
       }

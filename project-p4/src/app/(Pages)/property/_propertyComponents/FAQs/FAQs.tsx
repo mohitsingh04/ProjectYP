@@ -19,7 +19,7 @@ export default function FAQs({ property }: FAQsProps) {
       const response = await API.get(`/property/faq/${property?.uniqueId}`);
       setFaqs(response.data);
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.response?.data?.message);
     }
   };
 

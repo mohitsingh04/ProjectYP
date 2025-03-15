@@ -68,7 +68,7 @@ export default function Profile() {
                               src={
                                 !user?.profile?.[0]
                                   ? require("../../Images/DefaultProfile.jpg")
-                                  : `http://localhost:5000/${profileImg}`
+                                  : `${process.env.REACT_APP_BACKEND_URL}/${profileImg}`
                               }
                               alt="profile-user"
                               width={128}

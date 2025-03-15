@@ -21,7 +21,7 @@ export default function ArchiveEnquiry() {
       setEnquiries(response.data);
       setLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, []);
 
@@ -48,7 +48,7 @@ export default function ArchiveEnquiry() {
         } catch (error) {
           toast.error(error.response?.data?.error || "An error occurred");
           Swal.fire("Error!", "Failed to delete the record.", "error");
-          console.log(error);
+          console.error(error?.response?.data?.error);
         }
       }
     });

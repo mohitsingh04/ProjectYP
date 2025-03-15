@@ -64,7 +64,7 @@ export default function CourseList() {
         }
       })
       .catch((error) => {
-        console.log(error.message);
+        console.error(error?.message);
       });
   };
 
@@ -85,7 +85,7 @@ export default function CourseList() {
             src={
               !row?.image?.[0]
                 ? defaultCourse
-                : `http://localhost:5000/${row?.image?.[0]}`
+                : `${process.env.REACT_APP_BACKEND_URL}/${row?.image?.[0]}`
             }
             width={53}
             alt={!row?.image?.[0] ? defaultCourse : row?.image?.[0]}

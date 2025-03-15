@@ -35,7 +35,7 @@ export default function Gallery({ property }: GalleryProps) {
         );
         setGallery(response.data);
       } catch (error) {
-        console.error("Error fetching gallery:", error);
+        console.error((error as any)?.message);
       }
     };
 

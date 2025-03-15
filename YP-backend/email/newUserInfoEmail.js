@@ -1,13 +1,13 @@
 import nodemailer from "nodemailer";
 
-var transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
+const transporter = nodemailer.createTransport({
+  service: "gmail",
   auth: {
-    user: "5832f6caafc9bd",
-    pass: "1ec06c5bff684d",
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
+
 const newUserInfoEmail = async ({ email, password }) => {
   try {
     const mailOptions = {
@@ -28,7 +28,7 @@ const newUserInfoEmail = async ({ email, password }) => {
 
     return "mail send";
   } catch (error) {
-    console.log(error);
+    console.log("Internal Error");
   }
 };
 export default newUserInfoEmail;

@@ -28,7 +28,7 @@ export default function CategorySuggestions() {
 
       setAllProperties(randomProperties);
     } catch (error) {
-      console.error("Error fetching properties:", error);
+      console.error((error as any)?.message);
     }
   }, []);
 

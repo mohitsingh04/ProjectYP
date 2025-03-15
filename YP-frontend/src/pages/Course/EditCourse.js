@@ -32,7 +32,7 @@ export default function EditCourse() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [mainUser]);
 
@@ -68,7 +68,7 @@ export default function EditCourse() {
           setStatus(mainStatus);
         }
       } catch (error) {
-        console.error(error);
+        console.error(error?.response?.data?.error);
       }
     };
 
@@ -451,7 +451,7 @@ export default function EditCourse() {
                               ? previewImage
                               : !courseImage
                               ? defaultCourse
-                              : `http://localhost:5000/${courseImage}`
+                              : `${process.env.REACT_APP_BACKEND_URL}/${courseImage}`
                           }
                           className="mt-1"
                           width="100"

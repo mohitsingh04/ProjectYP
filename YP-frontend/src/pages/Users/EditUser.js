@@ -30,7 +30,7 @@ export default function EditUser() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [mainUser]);
 
@@ -135,7 +135,6 @@ export default function EditUser() {
         navigate("/dashboard/user");
       } else if (response.data.error) {
         toast.error(response.data.error);
-        console.log(formik.errors);
       }
     });
   };

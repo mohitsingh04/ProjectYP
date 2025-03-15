@@ -61,7 +61,6 @@ export default function Seo() {
         property_id: property.uniqueId,
         property_name: property.property_name,
       };
-      console.log(values);
       API.post(`/seo`, values).then((response) => {
         if (response.data.message) {
           toast.success(response.data.message);

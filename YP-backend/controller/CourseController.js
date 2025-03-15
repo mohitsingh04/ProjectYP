@@ -5,7 +5,6 @@ export const getCourse = async (req, res) => {
     const course = await Course.find();
     return res.status(200).json(course);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -16,7 +15,6 @@ export const getCourseById = async (req, res) => {
     const course = await Course.findOne({ _id: objectId });
     return res.status(200).json(course);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -26,7 +24,6 @@ export const getCourseByUniqueId = async (req, res) => {
     const course = await Course.findOne({ uniqueId: uniqueId });
     return res.status(200).json(course);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -79,7 +76,6 @@ export const addCourse = async (req, res) => {
       return res.send({ error: "This course is already exist." });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error!" });
   }
 };
@@ -130,12 +126,10 @@ export const updateCourse = async (req, res) => {
           return res.send({ message: "Course updated." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -150,14 +144,12 @@ export const deleteCourse = async (req, res) => {
           return res.send({ message: "Course Deleted." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.send({ error: "Course not found!" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal server error!" });
   }
 };

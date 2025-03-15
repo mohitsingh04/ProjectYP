@@ -107,12 +107,10 @@ export default function EditProfile() {
     });
     try {
       const response = await API.patch(`/user/${User?._id}`, formData);
-      console.log(response, User._id);
       toast.success(response.data.message);
       navigate(`/dashboard/my-profile`);
     } catch (err) {
-      console.log(err);
-      toast.error(err.message);
+      toast.error(err?.message);
     }
   };
 
@@ -221,7 +219,7 @@ export default function EditProfile() {
                             ? previewProfile
                             : !user?.profile?.[0]
                             ? require("../../Images/DefaultProfile.jpg")
-                            : `http://localhost:5000/${profileImg}`
+                            : `${process.env.REACT_APP_BACKEND_URL}/${profileImg}`
                         }
                         className="rounded-circle avatar-lg me-2"
                         alt="avatar"

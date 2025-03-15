@@ -5,7 +5,6 @@ export const getTeacher = async (req, res) => {
     const teachers = await Teachers.find();
     return res.status(200).json(teachers);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -16,7 +15,6 @@ export const getTeacherById = async (req, res) => {
     const teachers = await Teachers.findOne({ _id: objectId });
     return res.status(200).json(teachers);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -27,7 +25,6 @@ export const getTeacherByPropertyId = async (req, res) => {
     const teachers = await Teachers.find({ property_id: propertyId });
     return res.status(200).json(teachers);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -64,7 +61,6 @@ export const addTeacher = async (req, res) => {
       return res.send({ message: "Teacher added." });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -97,12 +93,10 @@ export const updateTeacher = async (req, res) => {
           return res.send({ message: "Teacher updated." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal server error!" });
   }
 };
@@ -117,14 +111,12 @@ export const deleteTeacher = async (req, res) => {
           return res.send({ message: "Teacher Deleted." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.send({ error: "Teacher not found!" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal server error!" });
   }
 };

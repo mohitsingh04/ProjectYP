@@ -49,13 +49,12 @@ export const addAmenities = async (req, res) => {
 
     await amenities.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       message: "Amenities added successfully",
       data: amenities,
     });
   } catch (error) {
-    console.error("Error creating amenities:", error);
-    res.status(500).json({
+    return res.status(500).json({
       error: "Failed to create amenities",
       details: error.message,
     });
@@ -92,6 +91,9 @@ export const updateAmenities = async (req, res) => {
       .status(200)
       .json({ message: "Updated successfully.", updatedAmenities });
   } catch (error) {
-    console.error(error);
+    return res.status(500).json({
+      error: "Failed to create amenities",
+      details: error.message,
+    });
   }
 };

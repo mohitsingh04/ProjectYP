@@ -62,7 +62,7 @@ export default function SearchModal({ show, setShow }: SearchModalProps) {
           uniqueCourses.filter((item: Course) => item.status === "Active")
         );
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error((error as any)?.message);
       }
     };
     fetchData();

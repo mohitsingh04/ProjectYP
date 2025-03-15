@@ -56,7 +56,7 @@ export default function EnrollmentForm({ property }: EnrollmentFormProps) {
         toast.success(response.data.message);
         formik.resetForm();
       } catch (error) {
-        toast.error((error as any).response.data.error);
+        toast.error((error as any)?.response.data.error);
       }
     },
     enableReinitialize: true,

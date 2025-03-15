@@ -36,7 +36,7 @@ export default function EditCategory() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [User]);
 
@@ -317,7 +317,7 @@ export default function EditCategory() {
                               previewIcon
                                 ? previewIcon
                                 : categoryIcon
-                                ? `http://localhost:5000/${categoryIcon}`
+                                ? `${process.env.REACT_APP_BACKEND_URL}/${categoryIcon}`
                                 : defaultIcon
                             }
                             alt=""
@@ -357,7 +357,7 @@ export default function EditCategory() {
                               previewFeaturedImage
                                 ? previewFeaturedImage
                                 : featureImage
-                                ? `http://localhost:5000/${featureImage}`
+                                ? `${process.env.REACT_APP_BACKEND_URL}/${featureImage}`
                                 : defaultFeature
                             }
                             alt=""

@@ -95,8 +95,6 @@ export default function AddAmenities({ getAmenities }) {
           selectedAmenities: formatAmenitiesForSubmission(),
         };
 
-        console.log(values);
-
         const response = await API.post("/amenities", payload);
 
         if (response.status === 200) {

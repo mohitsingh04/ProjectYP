@@ -1,10 +1,8 @@
 import User from "../models/Users.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
-import crypto from "crypto";
 import sendResetEmail from "../email/resetPasswordEmail.js";
 import sendEmailVerification from "../email/emailVerification.js";
-import Permissions from "../models/Permissions.js";
 
 const Salt = 10;
 
@@ -39,7 +37,6 @@ export const login = async (req, res) => {
       .status(200)
       .json({ message: "Logged in successfully.", accessToken, user });
   } catch (err) {
-    console.log(err.message);
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
@@ -99,7 +96,6 @@ export const register = async (req, res) => {
 
     return res.send({ message: "Registered Successfully, You can login now." });
   } catch (err) {
-    console.error(err.message);
     return res.send({ error: "Internal Server Error" });
   }
 };
@@ -118,7 +114,7 @@ export const userData = async (req, res) => {
     const userData = await User.findOne({ uniqueId: userId });
     return userData;
   } catch (err) {
-    console.log(err);
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -167,7 +163,6 @@ export const changePassword = async (req, res) => {
       return res.send({ error: "Current password does not match" });
     }
   } catch (error) {
-    console.error(error);
     return res.send({ error: "Internal Server Error" });
   }
 };
@@ -193,8 +188,7 @@ export const forgotPassword = async (req, res) => {
 
     sendResetEmail(email, token, res);
   } catch (error) {
-    console.error(error.message);
-    res.send({ error: "Internal Server Error" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -210,8 +204,7 @@ export const forgotPassword = async (req, res) => {
 
 //         res.render('/reset-password', { token });
 //     } catch (error) {
-//         console.error(error);
-//         res.send({ error: 'Internal Server Error' });
+//        return res.send({ error: "Internal Server Error" });
 //     }
 // };
 
@@ -232,8 +225,7 @@ export const getResetToken = async (req, res) => {
 
     res.status(200).send({ message: "Valid token", token });
   } catch (error) {
-    console.error(error);
-    res.status(500).send({ error: "Internal Server Error" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -265,8 +257,7 @@ export const postResetToken = async (req, res) => {
       return res.send({ error: "Passwords do not match." });
     }
   } catch (error) {
-    console.error(error);
-    res.send({ error: "Internal Server Error" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -287,8 +278,7 @@ export const verifyEmail = async (req, res) => {
 
     return res.status(200).json({ message: "Mail Send Successfully" });
   } catch (error) {
-    console.error(error.message);
-    res.send({ error: "Internal Server Error" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -313,8 +303,7 @@ export const getEmailVerification = async (req, res) => {
       return res.send({ message: "Email verified successfully." });
     }
   } catch (error) {
-    console.error(error);
-    res.send({ error: error });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 

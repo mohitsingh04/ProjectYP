@@ -28,7 +28,7 @@ export default function Achievements({ property }: AchievementsProps) {
       const response = await API.get(`/achievements/${property?.uniqueId}`);
       setAchievements(response.data);
     } catch (error) {
-      console.error("Error fetching achievements:", error);
+      console.error((error as any)?.message);
     }
   };
 

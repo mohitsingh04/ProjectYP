@@ -16,8 +16,6 @@ export default function VerificationEmail() {
       setLoading(true);
       try {
         const response = await API.get(`/verify-email/${token}`);
-
-        console.log(response);
         if (response.data.message) {
           Swal.fire({
             title: "Verified!",
@@ -28,8 +26,7 @@ export default function VerificationEmail() {
             navigate("/login");
           });
         } else {
-          console.log(response);
-          toast.error(response.data.error);
+          toast.error(response?.data?.error);
         }
       } catch (error) {
         toast.error("Something went wrong.");
@@ -39,7 +36,7 @@ export default function VerificationEmail() {
     };
 
     verifyEmail();
-  }, [token,navigate]);
+  }, [token, navigate]);
 
   return (
     <div className="login-img">

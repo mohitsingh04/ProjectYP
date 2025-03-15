@@ -49,7 +49,6 @@ export default function CreateUser() {
       formik.resetForm();
       navigate("/dashboard/user");
     } catch (error) {
-      console.log(error);
       setError(error.response.data.error);
       toast.error(error.response.data.error);
     }

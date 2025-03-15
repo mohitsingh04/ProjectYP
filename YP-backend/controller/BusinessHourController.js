@@ -6,7 +6,6 @@ export const getBusinessHours = async (req, res) => {
     const businessHours = await BusinessHour.find();
     return res.status(200).json(businessHours);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error" });
   }
 };
@@ -65,7 +64,6 @@ export const addBusinessHours = async (req, res) => {
       .status(201)
       .json({ message: "Buisness Hours Added Successfully" });
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error" });
   }
 };

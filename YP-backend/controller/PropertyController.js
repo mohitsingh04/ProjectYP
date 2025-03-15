@@ -19,7 +19,6 @@ export const getProperty = async (req, res) => {
     const property = await Property.find();
     return res.status(200).json(property);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -30,7 +29,6 @@ export const getPropertyByUniqueId = async (req, res) => {
     const property = await Property.findOne({ uniqueId: uniqueId });
     return res.status(200).json(property);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -41,7 +39,6 @@ export const getPropertyById = async (req, res) => {
     const property = await Property.findOne({ _id: objectId });
     return res.status(200).json(property);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -52,7 +49,6 @@ export const getPropertyBySlug = async (req, res) => {
     const property = await Property.findOne({ property_slug: property_slug });
     return res.status(200).json(property);
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -97,12 +93,9 @@ export const addProperty = async (req, res) => {
     const folderPath = path.join(__dirname, `../media/${x}`);
     try {
       await fs.promises.access(folderPath, fs.constants.F_OK);
-      console.log(`Folder ${x} exists.`);
     } catch (err) {
-      console.log(`Folder ${x} does not exist.`);
       fs.mkdir(folderPath, { recursive: true }, (err) => {
         if (err) throw err;
-        console.log("Folder created successfully");
       });
 
       const allSubFolders = ["main", "teachers", "gallery", "achievements"];
@@ -110,7 +103,6 @@ export const addProperty = async (req, res) => {
         const subFolder = path.join(folderPath, item);
         fs.mkdir(subFolder, { recursive: true }, (err) => {
           if (err) throw err;
-          console.log("Folder created successfully");
         });
       });
     }
@@ -136,7 +128,6 @@ export const addProperty = async (req, res) => {
       return res.send({ error: "This Property is already exist!" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -207,14 +198,12 @@ export const updateProperty = async (req, res) => {
           return res.send({ message: "Property updated." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.status(400).json({ error: "Property not found!" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };
@@ -255,17 +244,14 @@ export const deleteProperty = async (req, res) => {
 
       if (folderExists) {
         await fs.rm(propertyFolder, { recursive: true, force: true });
-        console.log(`✅ Folder deleted: ${propertyFolder}`);
       } else {
-        console.warn(`⚠️ Folder does not exist: ${propertyFolder}`);
       }
     } catch (err) {
-      console.error(`❌ Error deleting folder ${propertyFolder}:`, err.message);
+      console.log("Internal Server Error");
     }
 
     res.send({ message: "Property and associated data deleted successfully." });
   } catch (err) {
-    console.error(err.message);
     return res.status(500).send({ error: "Internal Server Error." });
   }
 };
@@ -295,8 +281,6 @@ export const updatePropertyImages = async (req, res) => {
       ? req?.files["featured_image"]?.[0]?.originalFilename
       : property?.featured_image[1];
 
-    console.log(propertyIcon, orignal_property_logo);
-
     if (property) {
       await Property.findOneAndUpdate(
         { _id: objectId },
@@ -311,14 +295,12 @@ export const updatePropertyImages = async (req, res) => {
           return res.send({ message: "Image updated." });
         })
         .catch((err) => {
-          console.log(err.message);
           return res.send({ error: "Internal Server Error." });
         });
     } else {
       return res.send({ error: "Property not found!" });
     }
   } catch (err) {
-    console.log(err.message);
     return res.send({ error: "Internal Server Error." });
   }
 };

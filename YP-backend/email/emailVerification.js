@@ -5,20 +5,11 @@ import User from "../models/Users.js";
 
 dotenv.config();
 
-// const transporter = nodemailer.createTransport({
-//   service: "gmail",
-//   auth: {
-//     user: process.env.EMAIL,
-//     pass: process.env.EMAIL_PASSWORD,
-//   },
-// });
-
-var transporter = nodemailer.createTransport({
-  host: "sandbox.smtp.mailtrap.io",
-  port: 2525,
+const transporter = nodemailer.createTransport({
+  service: "gmail",
   auth: {
-    user: "5832f6caafc9bd",
-    pass: "1ec06c5bff684d",
+    user: process.env.EMAIL,
+    pass: process.env.EMAIL_PASSWORD,
   },
 });
 
@@ -38,18 +29,16 @@ const sendEmailVerification = async ({ uniqueId, email, emailType }) => {
     );
 
     const mailOptions = {
-      from: "your_email@gmail.com",
+      from: process.env.EMAIL,
       to: email,
       subject: "Email Verification",
-      html: `Click the following link to verify your email: <a href="http://localhost:3001/verify-user/${token}" target="_blank">Verify</a>`,
+      html: `Click the following link to verify your email: <a href="${process.env.FRONTEND_DASHBOARD_URL}/verify-user/${token}" target="_blank">Verify</a>`,
     };
 
     if (saveVerifyToken) {
       transporter.sendMail(mailOptions, (error, info) => {
         if (error) {
-          console.error(error);
         } else {
-          console.log("Email sent: " + info.response);
           return res
             .status(200)
             .json({ message: "Verification email sent. Check your email." });
@@ -57,7 +46,7 @@ const sendEmailVerification = async ({ uniqueId, email, emailType }) => {
       });
     }
   } catch (err) {
-    console.error(err.message);
+    console.error("Internal Error in mail");
   }
 };
 

@@ -64,7 +64,6 @@ export default function AddGallery({ getGallery, property }) {
 
       window.location.reload();
     } catch (error) {
-      console.log(error);
       if (error.response) {
         toast.error(error.response.data.error || "An error occurred!");
       } else {

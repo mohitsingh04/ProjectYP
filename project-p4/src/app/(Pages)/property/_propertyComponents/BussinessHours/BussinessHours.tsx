@@ -36,7 +36,7 @@ export default function BusinessHours({
       );
       setBussinessHours(response.data);
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 

@@ -13,7 +13,7 @@ export default function ArchiveEnquiryView() {
       const response = await API.get(`/archive/enquiry/${objectId}`);
       setEnquiry(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [objectId]);
   useEffect(() => {

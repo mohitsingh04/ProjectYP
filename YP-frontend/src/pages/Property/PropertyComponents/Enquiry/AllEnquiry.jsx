@@ -22,7 +22,7 @@ export default function AllEnquiry() {
       const response = await API.get(`/property/${objectId}`);
       setProperty(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [objectId]);
 
@@ -41,7 +41,7 @@ export default function AllEnquiry() {
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [property]);
   const getArchiveEnquiry = useCallback(async () => {
@@ -55,7 +55,7 @@ export default function AllEnquiry() {
         setLoading(false);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [property]);
 

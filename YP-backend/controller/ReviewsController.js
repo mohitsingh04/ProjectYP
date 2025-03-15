@@ -5,8 +5,7 @@ export const getReview = async (req, res) => {
     const review = await Review.find();
     return res.status(200).json(review);
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error!" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -16,8 +15,7 @@ export const getReviewById = async (req, res) => {
     const review = await Review.findOne({ uniqueId: uniqueId });
     return res.status(200).json(review);
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error!" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -56,8 +54,7 @@ export const addReview = async (req, res) => {
       return res.send({ message: "Review added." });
     }
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error!" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -84,8 +81,7 @@ export const updateReview = async (req, res) => {
       return res.send({ error: "Review not found." });
     }
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error!" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -95,8 +91,7 @@ export const deleteReview = async (req, res) => {
     await Review.findOneAndDelete({ uniqueId: uniqueId });
     return res.send({ message: "Review deleted." });
   } catch (err) {
-    console.log(err.message);
-    return res.send({ error: "Internal Server Error!" });
+    return res.send({ error: "Internal Server Error" });
   }
 };
 

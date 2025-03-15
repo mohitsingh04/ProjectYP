@@ -28,7 +28,7 @@ export default function Courses({ property }: { property: Property | null }) {
       );
       setCourses(response.data);
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 

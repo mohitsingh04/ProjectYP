@@ -18,7 +18,7 @@ export function Header() {
           setUser(data.user);
         }, []);
       } catch (err) {
-        console.log(err.message);
+        console.error(err.message);
       }
     };
     const getProperty = async () => {
@@ -28,7 +28,7 @@ export function Header() {
           setFilterData(data);
         });
       } catch (err) {
-        console.log(err.message);
+        console.error(err.message);
       }
     };
     getProfile();
@@ -42,7 +42,6 @@ export function Header() {
     setFilterData(result);
   }, [search, property]);
 
-  //full screen
   function Fullscreen() {
     if (
       (document.fullScreenElement && document.fullScreenElement === null) ||
@@ -341,7 +340,7 @@ export function Header() {
                           />
                         ) : (
                           <img
-                            src={`http://localhost:5000/${user.profile[0]}`}
+                            src={`${process.env.REACT_APP_BACKEND_URL}/${user.profile[0]}`}
                             alt="profile-user"
                             className="avatar  profile-user brround cover-image"
                           />

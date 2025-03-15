@@ -33,11 +33,13 @@ const TeacherFolderCleaner = async () => {
           const filePath = path.join(unKnownFiles, file);
 
           await fs.unlink(filePath);
-          console.log(`Deleting Uploaded File: ${filePath}`);
+          console.log(`Deleting Uploaded File`);
         }
       }
     });
-  } catch (error) {}
+  } catch (error) {
+    console.log("Internal Server Error");
+  }
 };
 
 export default TeacherFolderCleaner;

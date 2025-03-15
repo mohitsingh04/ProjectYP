@@ -122,7 +122,7 @@ export default function PropertyImages({ loading }) {
                       <img
                         src={
                           !previewLogo
-                            ? `http://localhost:5000/${LogoImage}`
+                            ? `${process.env.REACT_APP_BACKEND_URL}/${LogoImage}`
                             : previewLogo
                         }
                         width={100}
@@ -165,7 +165,7 @@ export default function PropertyImages({ loading }) {
                           previewLogo
                             ? previewLogo
                             : LogoImage
-                            ? `http://localhost:5000/${LogoImage}`
+                            ? `${process.env.REACT_APP_BACKEND_URL}/${LogoImage}`
                             : defaultLogo
                         }
                         width={100}
@@ -194,7 +194,7 @@ export default function PropertyImages({ loading }) {
                       <img
                         src={
                           LogoImage
-                            ? `http://localhost:5000/${LogoImage}`
+                            ? `${process.env.REACT_APP_BACKEND_URL}/${LogoImage}`
                             : defaultLogo
                         }
                         width={100}
@@ -235,7 +235,7 @@ export default function PropertyImages({ loading }) {
                         src={
                           previewFeaturedImage
                             ? previewFeaturedImage
-                            : `http://localhost:5000/${featureImage}`
+                            : `${process.env.REACT_APP_BACKEND_URL}/${featureImage}`
                         }
                         width={350}
                         className="mt-1"
@@ -279,7 +279,7 @@ export default function PropertyImages({ loading }) {
                           previewFeaturedImage
                             ? previewFeaturedImage
                             : featureImage
-                            ? `http://localhost:5000/${featureImage}`
+                            ? `${process.env.REACT_APP_BACKEND_URL}/${featureImage}`
                             : defaultFeature
                         }
                         width={350}
@@ -311,7 +311,7 @@ export default function PropertyImages({ loading }) {
                         <img
                           src={
                             featureImage
-                              ? `http://localhost:5000/${featureImage}`
+                              ? `${process.env.REACT_APP_BACKEND_URL}/${featureImage}`
                               : defaultFeature
                           }
                           width={350}

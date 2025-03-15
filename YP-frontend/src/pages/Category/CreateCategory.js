@@ -26,7 +26,7 @@ export default function CreateCategory() {
       const response = await API.get(`/user/${mainUser.User._id}`);
       setAuthUser(response.data);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     } finally {
       setAuthLoading(false);
     }

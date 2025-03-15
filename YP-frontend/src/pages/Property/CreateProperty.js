@@ -27,7 +27,7 @@ export default function CreateProperty() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [User]);
 

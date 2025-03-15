@@ -57,7 +57,7 @@ export default function page() {
 
       setAllCourses(randomCourses);
     } catch (error) {
-      console.log("Error fetching courses:", error);
+      console.error((error as any)?.message);
     }
   }, [courese]);
 

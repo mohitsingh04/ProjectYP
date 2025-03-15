@@ -32,7 +32,7 @@ export default function Amenities({ property }: AmenitiesProps) {
       );
       setAmenities(response.data);
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 

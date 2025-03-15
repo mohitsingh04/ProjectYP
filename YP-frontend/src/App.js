@@ -95,8 +95,9 @@ function Root() {
           {/* <Route path="/property/:uniqueId" element={<ViewProperty />} /> */}
 
           <Route path="/" element={<Home />} />
-          <Route path="/dashboard" element={<App />}>
+          <Route path="/" element={<App />}>
             <Route index element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>}/>
+            <Route path="/dashboard" element={<ProtectedRoutes><Dashboard /></ProtectedRoutes>}/>
             
             <Route path={`/dashboard/my-profile`} element={<ProtectedRoutes><Profile /></ProtectedRoutes>} />
             <Route path={`/dashboard/edit/my-profile`}element={<ProtectedRoutes><EditProfile /></ProtectedRoutes>}/>

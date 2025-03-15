@@ -42,7 +42,7 @@ export default function Page() {
       const data = response.data;
       setProperty(data.filter((item) => item.status === "Active"));
     } catch (error) {
-      console.error(error);
+      console.error((error as any)?.message);
     }
   };
 
@@ -52,7 +52,7 @@ export default function Page() {
       const data = response.data;
       setCourse(data.filter((item) => item.status === "Active"));
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 

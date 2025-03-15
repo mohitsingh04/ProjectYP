@@ -32,7 +32,7 @@ export default function Gallery() {
       );
       setGallery(filteredGallery);
     } catch (error) {
-      console.error("Error fetching gallery:", error);
+      console.error(error?.response?.data?.error);
     }
   }, [property]);
 
@@ -67,7 +67,7 @@ export default function Gallery() {
         }
       });
     } catch (error) {
-      console.log(error);
+      console.error(error?.message);
     }
   };
 
@@ -79,7 +79,7 @@ export default function Gallery() {
         <Col key={index} lg={3} md={3} sm={6} className="col-12">
           <Link to="#" className="glightbox card">
             <img
-              src={`http://localhost:5000/${img}`}
+              src={`${process.env.REACT_APP_BACKEND_URL}/${img}`}
               alt={img}
               style={{ aspectRatio: "2/2", objectFit: "cover" }}
             />

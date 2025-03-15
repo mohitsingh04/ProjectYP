@@ -16,10 +16,9 @@ export default function Hostel() {
     API.get(`/property/${objectId}`)
       .then(({ data }) => {
         setProperty(data);
-        console.log(data);
       })
       .catch((error) => {
-        console.log(error);
+        console.error(error?.response?.data?.error);
       });
   }, [objectId]);
   useEffect(() => {

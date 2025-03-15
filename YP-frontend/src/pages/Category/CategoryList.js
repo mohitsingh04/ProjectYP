@@ -67,7 +67,7 @@ export default function CategoryList() {
         }
       })
       .catch((error) => {
-        console.log(error.message);
+        console.error(error?.message);
       });
   };
 
@@ -88,7 +88,7 @@ export default function CategoryList() {
             src={
               !row?.category_icon?.[0]
                 ? defaultIcon
-                : `http://localhost:5000/${row?.category_icon?.[0]}`
+                : `${process.env.REACT_APP_BACKEND_URL}/${row?.category_icon?.[0]}`
             }
             width={53}
             alt=""

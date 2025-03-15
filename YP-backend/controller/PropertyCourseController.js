@@ -5,8 +5,7 @@ export const getPropertyCourse = async (req, res) => {
     const propertyCourse = await PropertyCourse.find();
     return res.status(200).json(propertyCourse);
   } catch (err) {
-    res.send({ error: "Internal Server Error!" });
-    console.log(err.message);
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -16,8 +15,7 @@ export const getPropertyCourseById = async (req, res) => {
     const propertyCourse = await PropertyCourse.findOne({ _id: objectId });
     return res.status(200).json(propertyCourse);
   } catch (err) {
-    res.send({ error: "Internal Server Error!" });
-    console.log(err.message);
+    return res.send({ error: "Internal Server Error" });
   }
 };
 export const getPropertyCourseByUniqueId = async (req, res) => {
@@ -26,8 +24,7 @@ export const getPropertyCourseByUniqueId = async (req, res) => {
     const propertyCourse = await PropertyCourse.findOne({ uniqueId: uniqueId });
     return res.status(200).json(propertyCourse);
   } catch (err) {
-    res.send({ error: "Internal Server Error!" });
-    console.log(err.message);
+    return res.send({ error: "Internal Server Error" });
   }
 };
 export const getPropertyCourseByPropertyId = async (req, res) => {
@@ -38,8 +35,7 @@ export const getPropertyCourseByPropertyId = async (req, res) => {
     });
     return res.status(200).json(propertyCourse);
   } catch (err) {
-    res.send({ error: "Internal Server Error!" });
-    console.log(err.message);
+    return res.send({ error: "Internal Server Error" });
   }
 };
 
@@ -80,7 +76,6 @@ export const updatePropertyCourse = async (req, res) => {
       return res.status(200).send({ message: "Course updated." });
     });
   } catch (err) {
-    console.log(err.message);
     return res.status(500).send({ error: err.message });
   }
 };

@@ -43,7 +43,7 @@ export default function ViewTeacher() {
         }
       });
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   };
 
@@ -111,7 +111,7 @@ export default function ViewTeacher() {
                               src={
                                 !teacher?.profile?.[0]
                                   ? defaultProfile
-                                  : `http://localhost:5000/${teacher?.profile?.[0]}`
+                                  : `${process.env.REACT_APP_BACKEND_URL}/${teacher?.profile?.[0]}`
                               }
                               width={128}
                               height={128}

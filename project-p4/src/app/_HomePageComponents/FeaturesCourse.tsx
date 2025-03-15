@@ -25,7 +25,7 @@ export default function FeaturesCourse() {
       const response = await API.get("/course");
       setCourses(shuffleArray(response.data).slice(0, 6));
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 

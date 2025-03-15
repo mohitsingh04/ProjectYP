@@ -69,7 +69,7 @@ export default function InstructorList() {
       setCourses(activeCourses);
       setFilteredCourses(activeCourses);
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 
@@ -119,7 +119,7 @@ export default function InstructorList() {
         data.filter((item: { status: string }) => item.status === "Active")
       );
     } catch (error) {
-      console.log(error);
+      console.error((error as any)?.message);
     }
   };
 

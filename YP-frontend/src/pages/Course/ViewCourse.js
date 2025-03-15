@@ -25,7 +25,7 @@ export default function ViewCourse() {
       setAuthUser(response.data);
       setAuthLoading(false);
     } catch (error) {
-      console.log(error);
+      console.error(error?.response?.data?.error);
     }
   }, [mainUser]);
 
@@ -73,7 +73,7 @@ export default function ViewCourse() {
         }
       })
       .catch((error) => {
-        console.log(error.message);
+        console.error(error?.message);
       });
   };
 
@@ -161,7 +161,7 @@ export default function ViewCourse() {
                         <img
                           src={
                             courseImage
-                              ? `http://localhost:5000/${courseImage}`
+                              ? `${process.env.REACT_APP_BACKEND_URL}/${courseImage}`
                               : defaultCourse
                           }
                           className="w-100 img-fluid"
