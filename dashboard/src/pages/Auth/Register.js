@@ -12,6 +12,7 @@ export default function Register() {
   const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [sending, setSending] = useState(false);
 
   const initialValues = {
     name: "",
@@ -51,10 +52,12 @@ export default function Register() {
   });
 
   const onSubmit = async (values) => {
+    setSending(true);
     try {
       const response = await API.post("/register", values);
 
       if (response.data.message) {
+        setSending(false);
         toast.success(response.data.message);
         navigate(`/send/verify-email/success/${values.email}`);
       } else {
@@ -239,9 +242,12 @@ export default function Register() {
                   <div className="container-login100-form-btn">
                     <button
                       type="submit"
-                      className="login100-form-btn btn-primary"
+                      className={`login100-form-btn btn-primary ${
+                        sending && "opacity-75"
+                      }`}
+                      disabled={sending}
                     >
-                      Register
+                      {!sending ? "Register" : "Verifing..."}
                     </button>
                   </div>
                   <div className="text-center pt-3">
