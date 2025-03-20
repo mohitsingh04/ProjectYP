@@ -5,7 +5,7 @@ import { FaFilter } from "react-icons/fa";
 import PropertyCard from "./_instructor-components/SidebarFiltes/PropertyCards/PropertyCard";
 import Pagination from "./_instructor-components/Pagination/Pagination";
 import Serachbar from "./_instructor-components/SeachBar/Serachbar";
-import CategoryCard from "./_instructor-components/SidebarFiltes/CategoryCard/CategoryCard";
+// import CategoryCard from "./_instructor-components/SidebarFiltes/CategoryCard/CategoryCard";
 import StatesCard from "./_instructor-components/SidebarFiltes/StatesCard/StatesCard";
 import CityCard from "./_instructor-components/SidebarFiltes/CityCard/CityCard";
 import CourseCard from "./_instructor-components/SidebarFiltes/CourseCard/CourseCard";

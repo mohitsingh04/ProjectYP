@@ -1,24 +1,38 @@
 import React, { useState } from "react";
 import { FaAngleDown } from "react-icons/fa";
 
-export default function CategoryCard({
+interface Property {
+  category: string;
+}
+
+interface CategoryCardProps {
+  filteredProperty: Property[];
+  property: Property[];
+  selectedCategory: string[];
+  setSelectedCategory: React.Dispatch<React.SetStateAction<string[]>>;
+}
+
+const CategoryCard: React.FC<CategoryCardProps> = ({
   filteredProperty,
   property,
   selectedCategory,
   setSelectedCategory,
-}) {
-  const [searchQuery, setSearchQuery] = useState("");
+}) => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
-  const categoryMap = property.reduce((acc, item) => {
+  const categoryMap: Record<string, string> = property.reduce((acc, item) => {
     acc[item.category.toLowerCase()] = item.category;
     return acc;
-  }, {});
+  }, {} as Record<string, string>);
 
-  const categoryCounts = filteredProperty.reduce((acc, item) => {
-    const categoryLower = item.category.toLowerCase();
-    acc[categoryLower] = (acc[categoryLower] || 0) + 1;
-    return acc;
-  }, {});
+  const categoryCounts: Record<string, number> = filteredProperty.reduce(
+    (acc, item) => {
+      const categoryLower = item.category.toLowerCase();
+      acc[categoryLower] = (acc[categoryLower] || 0) + 1;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 
   const sortedCategories = Object.keys(categoryCounts)
     .filter((category) => categoryCounts[category] > 0) // Exclude categories with count 0
@@ -28,7 +42,7 @@ export default function CategoryCard({
     category.includes(searchQuery.toLowerCase())
   );
 
-  const handleCategoryChange = (e) => {
+  const handleCategoryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = e.target;
     setSelectedCategory((prev) =>
       checked
@@ -86,4 +100,6 @@ export default function CategoryCard({
       </div>
     </div>
   );
-}
+};
+
+export default CategoryCard;
