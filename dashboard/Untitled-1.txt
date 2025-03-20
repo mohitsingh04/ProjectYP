@@ -1,4 +1,0 @@
- <option value="Diploma">Diploma</option>
-                        <option value="Certificate">Certificate</option>
-                        <option value="Degree">Degree</option>
-                        <option value="Bachlore">Bachlore</option>
