@@ -37,7 +37,7 @@ export const UserFolderCleaners = async () => {
       })
     );
   } catch (error) {
-    console.error("Error during cleanup");
+    console.error("Error during cleanup User");
   }
 };
 
