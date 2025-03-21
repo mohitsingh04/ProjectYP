@@ -89,7 +89,7 @@ export const addProperty = async (req, res) => {
       property_name: property_name,
     });
 
-    const x = property ? property.uniqueId + 1 : 100000;
+    const x = property ? property.uniqueId + 1 :100000;
     const folderPath = path.join(__dirname, `../media/${x}`);
     try {
       await fs.promises.access(folderPath, fs.constants.F_OK);
