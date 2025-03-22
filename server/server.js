@@ -27,16 +27,10 @@ import {
 } from "./helper/FolderCleaners/FolderCleaners.js";
 
 const app = express();
-dotenv.config();
-
+app.use(cors());
 app.use(cookieParser());
-app.use(
-  cors({
-    origin: [process.env.FRONTEND_URL, process.env.FRONTEND_DASHBOARD_URL],
-    credentials: true,
-  })
-);
-app.use("/api/",router);
+dotenv.config();
+app.use("/api/", router);
 app.use(morgan("common"));
 app.use(helmet());
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
