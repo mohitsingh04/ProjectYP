@@ -1,3 +1,5 @@
+import { courseFolderCleaners } from "../helper/FolderCleaners/FolderCleaners.js";
+import { CourseImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
 import Course from "../models/Courses.js";
 
 export const getCourse = async (req, res) => {
@@ -69,7 +71,11 @@ export const addCourse = async (req, res) => {
         course_slug: courseSlug,
         certification_type,
       });
+
       if (await newCourse.save()) {
+        await CourseImageMover();
+        await courseFolderCleaners();
+
         res.send({ message: "Course added." });
       }
     } else {
@@ -122,7 +128,9 @@ export const updateCourse = async (req, res) => {
           },
         }
       )
-        .then((result) => {
+        .then(async (result) => {
+          await CourseImageMover();
+          await courseFolderCleaners();
           return res.send({ message: "Course updated." });
         })
         .catch((err) => {
@@ -140,7 +148,9 @@ export const deleteCourse = async (req, res) => {
     const course = await Course.findOne({ _id: uniqueId });
     if (course) {
       await Course.findOneAndDelete({ _id: uniqueId })
-        .then((result) => {
+        .then(async (result) => {
+          await CourseImageMover();
+          await courseFolderCleaners();
           return res.send({ message: "Course Deleted." });
         })
         .catch((err) => {

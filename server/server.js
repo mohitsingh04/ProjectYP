@@ -6,26 +6,7 @@ import morgan from "morgan";
 import helmet from "helmet";
 import router from "./routes/index.js";
 import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
-import {
-  AchievementImageMover,
-  CategoryImageMover,
-  CourseImageMover,
-  GalleryImageMover,
-  PropertyImageMover,
-  TeacherImageMover,
-  UserImageMover,
-} from "./helper/FolderCleaners/PropertyImageMover.js";
 import cookieParser from "cookie-parser";
-import {
-  categoryFolderCleaners,
-  courseFolderCleaners,
-  propertyAchievementsFolderCleaners,
-  propertyGalleryFolderCleaners,
-  propertyMainFolderCleaners,
-  teacherProfileFolderCleaners,
-  UserFolderCleaners,
-} from "./helper/FolderCleaners/FolderCleaners.js";
-
 const app = express();
 app.use(
   cors({
@@ -46,23 +27,6 @@ app.use("/media", express.static("media"));
 setInterval(() => {
   ExpireVerification();
 }, 1);
-
-setInterval(() => {
-  PropertyImageMover();
-  TeacherImageMover();
-  GalleryImageMover();
-  AchievementImageMover();
-  CourseImageMover();
-  CategoryImageMover();
-  UserImageMover();
-  UserFolderCleaners();
-  courseFolderCleaners();
-  categoryFolderCleaners();
-  propertyMainFolderCleaners();
-  propertyGalleryFolderCleaners();
-  propertyAchievementsFolderCleaners();
-  teacherProfileFolderCleaners();
-}, 2000);
 
 mongoose
   .connect(process.env.MONGODB_URL)

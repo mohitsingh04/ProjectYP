@@ -108,6 +108,7 @@ export default function Teachers() {
             setShowTeacherForm(true);
             getTeachers();
             setPreviewProfile("");
+            window.location.reload();
           } else if (response.data.error) {
             toast.error(response.data.message);
           }

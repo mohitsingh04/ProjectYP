@@ -4,6 +4,8 @@ import path from "path";
 import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
 import newUserInfoEmail from "../email/newUserInfoEmail.js";
+import { UserImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
+import { UserFolderCleaners } from "../helper/FolderCleaners/FolderCleaners.js";
 
 export const getUser = async (req, res) => {
   try {
@@ -63,6 +65,9 @@ export const updateUser = async (req, res) => {
       },
       { new: true }
     );
+
+    await UserImageMover();
+    await UserFolderCleaners();
 
     if (updateUser) {
       return res.status(200).json({ message: "User Updated Successfully" });
@@ -194,6 +199,9 @@ export const addNewUser = async (req, res) => {
     });
 
     const savedUser = await newUser.save();
+
+    await UserImageMover();
+    await UserFolderCleaners();
 
     if (savedUser) {
       await newUserInfoEmail({ email, password });
