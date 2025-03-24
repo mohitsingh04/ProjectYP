@@ -37,7 +37,7 @@ import ViewTeacher from "./pages/Teachers/ViewTeacher";
 import EditFaqs from "./pages/Faqs/EditFaqs";
 // import Loader from "./components/Loader/Loader";
 import VerifyEmail from "./pages/Auth/Email/VerifyEmail";
-import EmailVerified from "./pages/Auth/Email/EmailVerified";
+// import EmailVerified from "./pages/Auth/Email/EmailVerified";
 import EditSeo from "./pages/Seo/EditSeo";
 import Home from "./Frontend/Home/Home";
 // import FrontPropertyList from "./Frontend/Property/PropertyList";

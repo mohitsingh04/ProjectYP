@@ -96,6 +96,7 @@ export default function AddCourse() {
         toast.error(response.data.error);
       }
     } catch (err) {
+      console.log(err)
       toast.error(err.message);
     }
   };

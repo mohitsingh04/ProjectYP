@@ -242,7 +242,14 @@ export default function Seo() {
                 </>
               ) : (
                 <>
-                  <form onSubmit={handleSubmit}>
+                  <form
+                    onSubmit={handleSubmit}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                      }
+                    }}
+                  >
                     <Row>
                       <Col md={6}>
                         <div className="mb-3">
