@@ -1,0 +1,11 @@
+{
+  "/(Pages)/property-course/[uniqueId]/[course_name]/page": "/property-course/[uniqueId]/[course_name]",
+  "/(Pages)/search/[search]/page": "/search/[search]",
+  "/(Pages)/properties/page": "/properties",
+  "/(Pages)/privacy-policy/page": "/privacy-policy",
+  "/(Pages)/property/[uniqueId]/[property_name]/[property_city]/page": "/property/[uniqueId]/[property_name]/[property_city]",
+  "/(Pages)/course/[uniqueId]/[course_name]/page": "/course/[uniqueId]/[course_name]",
+  "/(Pages)/terms-and-conditions/page": "/terms-and-conditions",
+  "/_not-found/page": "/_not-found",
+  "/page": "/"
+}
