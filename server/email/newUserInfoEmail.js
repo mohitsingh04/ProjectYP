@@ -1,7 +1,12 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: process.env.EMAIL_HOST,
+  port: process.env.EMAIL_PORT,
+  secure: true,
   auth: {
     user: process.env.EMAIL,
     pass: process.env.EMAIL_PASSWORD,
@@ -11,7 +16,7 @@ const transporter = nodemailer.createTransport({
 const newUserInfoEmail = async ({ email, password }) => {
   try {
     const mailOptions = {
-      from: "ms6498289@gmail.com",
+      from: process.env.EMAIL,
       to: email,
       subject: "Welcome! Here is your login password",
       html: `<p>Dear User,</p>
@@ -28,7 +33,7 @@ const newUserInfoEmail = async ({ email, password }) => {
 
     return "mail send";
   } catch (error) {
-    console.log("Internal Error");
+    console.log("Internal Error in new user");
   }
 };
 export default newUserInfoEmail;

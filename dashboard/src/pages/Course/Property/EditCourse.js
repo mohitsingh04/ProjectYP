@@ -62,6 +62,7 @@ export default function EditPropertyCourse() {
     durationType: durationType || "",
     course_level: propertyCourse?.course_level || "",
     course_price: propertyCourse?.price || "",
+    price_rupee: propertyCourse?.price_rupee || "",
   };
 
   const validationSchema = Yup.object({
@@ -77,6 +78,9 @@ export default function EditPropertyCourse() {
     course_price: Yup.string()
       .required("Course price is required.")
       .min(0, "Course Price cannot be negative."),
+    price_rupee: Yup.string()
+      .required("Course price is required.")
+      .min(0, "Course Price cannot be negative."),
   });
 
   const onSubmit = async (values) => {
@@ -87,6 +91,7 @@ export default function EditPropertyCourse() {
         course_short_name: values.shortName,
         duration: `${values.courseDuration} ${values.durationType}`,
         price: values.course_price,
+        price_rupee: values.price_rupee,
         course_level: values.course_level,
         description: description,
       };
@@ -263,7 +268,7 @@ export default function EditPropertyCourse() {
                               onBlur={formik.handleBlur}
                             >
                               <option value="">--Duration Type--</option>
-                              {["Days", "Weeks", "Month", "Year"].map(
+                              {["Hours", "Days", "Weeks", "Month", "Year"].map(
                                 (duration, index) => (
                                   <option
                                     key={index}
@@ -324,21 +329,50 @@ export default function EditPropertyCourse() {
                       <Col md={6}>
                         <div className="mb-3">
                           <label htmlFor="coursePrice">Course Price</label>
-                          <input
-                            type="number"
-                            id="coursePrice"
-                            className="form-control"
-                            name="course_price"
-                            min={0}
-                            placeholder="Enter Amount ₹"
-                            value={formik.values.course_price}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                          />
+                          <div className="d-flex">
+                            <div class="input-group mb-3">
+                              <span class="input-group-text" id="basic-addon1">
+                                $
+                              </span>
+                              <input
+                                type="number"
+                                id="coursePrice"
+                                className="form-control"
+                                name="course_price"
+                                min={1}
+                                placeholder="Enter Amount ₹"
+                                value={formik.values.course_price}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                              />
+                            </div>
+                            <div class="input-group mb-3 ms-3">
+                              <span class="input-group-text" id="basic-addon1">
+                                ₹
+                              </span>
+                              <input
+                                type="number"
+                                class="form-control"
+                                name="price_rupee"
+                                placeholder="Price in Rupees"
+                                value={formik.values.price_rupee}
+                                onChange={formik.handleChange}
+                                onBlur={formik.handleBlur}
+                              />
+                            </div>
+                          </div>
                           {formik.errors.course_price &&
                           formik.touched.course_price ? (
                             <span className="text-danger">
                               {formik.errors.course_price}
+                            </span>
+                          ) : (
+                            <span />
+                          )}
+                          {formik.errors.price_rupee &&
+                          formik.touched.price_rupee ? (
+                            <span className="text-danger">
+                              {formik.errors.price_rupee}
                             </span>
                           ) : (
                             <span />

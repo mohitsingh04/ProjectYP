@@ -27,6 +27,7 @@ export const getPropertyCourseByUniqueId = async (req, res) => {
     return res.send({ error: "Internal Server Error" });
   }
 };
+
 export const getPropertyCourseByPropertyId = async (req, res) => {
   try {
     const propertyId = req.params.propertyId;
@@ -50,6 +51,7 @@ export const updatePropertyCourse = async (req, res) => {
       course_level,
       duration,
       description,
+      price_rupee,
     } = req.body;
 
     const existCourse = await PropertyCourse.findOne({
@@ -70,6 +72,7 @@ export const updatePropertyCourse = async (req, res) => {
           course_level,
           duration,
           description,
+          price_rupee,
         },
       }
     ).then((result) => {
@@ -95,6 +98,7 @@ export const addPropertyCourse = async (req, res) => {
       property_id,
       description,
       property_name,
+      price_rupee,
     } = req.body;
 
     const kebabCase = property_name?.replace(/ /g, "-").toLowerCase();
@@ -114,12 +118,13 @@ export const addPropertyCourse = async (req, res) => {
         course_name,
         course_type,
         course_short_name,
-        price,
+        price: price,
         course_level,
         duration,
         course_id,
         property_id,
         description,
+        price_rupee: price_rupee,
         property_name: kebabCase,
       });
       if (await newCourse.save()) {

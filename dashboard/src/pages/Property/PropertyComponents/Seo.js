@@ -40,7 +40,6 @@ export default function Seo() {
 
   const initialValues = {
     title: "",
-    meta_tags: "",
     slug: "",
     primary_focus_keyword: "",
     json_schema: "",
@@ -171,14 +170,6 @@ export default function Seo() {
                       </tr>
                       <tr>
                         <td>
-                          <strong>Meta Tags: </strong>
-                          {seo[0].meta_tags.map((item, index) => (
-                            <span key={index}>{item.value}, </span>
-                          ))}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
                           <strong>Json Schema: </strong>
                           {seo[0].json_schema}
                         </td>
@@ -266,33 +257,6 @@ export default function Seo() {
                           />
                           {errors.title && touched.title ? (
                             <span className="text-danger">{errors.title}</span>
-                          ) : (
-                            <span />
-                          )}
-                        </div>
-                      </Col>
-                      <Col md={6}>
-                        <div className="mb-3">
-                          <Form.Label htmlFor="metaTag">Meta Tags</Form.Label>
-                          <Dropdown
-                            options={[]}
-                            values={[]}
-                            id="metaTag"
-                            create={true}
-                            placeholder="Meta Tags...    "
-                            searchable={true}
-                            dropdownHandle={false}
-                            multi={true}
-                            value={values.meta_tags}
-                            onChange={(value) =>
-                              setFieldValue("meta_tags", value)
-                            }
-                            onBlur={handleBlur}
-                          />
-                          {errors.meta_tags && touched.meta_tags ? (
-                            <span className="text-danger">
-                              {errors.meta_tags}
-                            </span>
                           ) : (
                             <span />
                           )}

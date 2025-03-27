@@ -22,6 +22,9 @@ const PropertyCourseSchema = new mongoose.Schema({
   price: {
     type: String,
   },
+  price_rupee: {
+    type: String,
+  },
   course_level: {
     type: String,
   },

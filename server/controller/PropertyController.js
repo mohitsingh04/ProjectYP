@@ -162,6 +162,7 @@ export const updateProperty = async (req, res) => {
       status,
       property_courses,
       property_type,
+      website,
     } = req.body;
 
     if (property_name) {
@@ -195,6 +196,7 @@ export const updateProperty = async (req, res) => {
             status,
             property_courses,
             property_type,
+            website,
           },
         }
       )

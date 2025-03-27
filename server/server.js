@@ -26,7 +26,7 @@ app.use("/media", express.static("media"));
 
 setInterval(() => {
   ExpireVerification();
-}, 1);
+}, 10000);
 
 mongoose
   .connect(process.env.MONGODB_URL)

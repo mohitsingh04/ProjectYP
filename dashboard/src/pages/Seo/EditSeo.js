@@ -30,7 +30,6 @@ export default function EditSeo() {
 
   const initialValues = {
     title: seo.title || "",
-    meta_tags: seo.meta_tags || [],
     slug: seo.slug || "",
     primary_focus_keyword: seo.primary_focus_keyword || "",
     json_schema: seo.json_schema || "",
@@ -144,28 +143,6 @@ export default function EditSeo() {
                       />
                       {errors.title && touched.title ? (
                         <span className="text-danger">{errors.title}</span>
-                      ) : (
-                        <span />
-                      )}
-                    </div>
-                  </Col>
-                  <Col md={6}>
-                    <div className="mb-3">
-                      <Form.Label>Meta Tags</Form.Label>
-                      <Dropdown
-                        options={[]}
-                        create={true}
-                        placeholder="Meta Tags ...    "
-                        searchable={true}
-                        dropdownHandle={false}
-                        multi={true}
-                        values={values.meta_tags}
-                        value={values.meta_tags}
-                        onChange={(value) => setFieldValue("meta_tags", value)}
-                        onBlur={handleBlur}
-                      />
-                      {errors.meta_tags && touched.meta_tags ? (
-                        <span className="text-danger">{errors.meta_tags}</span>
                       ) : (
                         <span />
                       )}

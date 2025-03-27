@@ -92,6 +92,9 @@ const PropertySchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  website: {
+    type: String,
+  },
 });
 
 const Property = mongoose.model("Property", PropertySchema);

@@ -180,7 +180,7 @@ export const TeacherImageMover = async (req, res) => {
       });
     }
   } catch (error) {
-    console.log("Internal Server Error")
+    console.log("Internal Server Error");
   }
 };
 export const GalleryImageMover = async (req, res) => {

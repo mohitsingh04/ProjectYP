@@ -19,6 +19,7 @@ export default function BasicDetails() {
   const [isNameUpdating, setIsNameUpdating] = useState(false);
   const [isEmailUpdating, setIsEmailUpdating] = useState(false);
   const [isPhoneUpdating, setIsPhoneUpdating] = useState(false);
+  const [isWebSiteUpdating, setIsWebSiteUpdating] = useState(false);
 
   const getProperty = useCallback(() => {
     API.get(`/property/${objectId}`).then(({ data }) => {
@@ -72,6 +73,7 @@ export default function BasicDetails() {
     property_mobile_no: property.property_mobile_no || "",
     property_alt_mobile_no: property.property_alt_mobile_no || "",
     property_description: property.property_description || "",
+    website: property.website || "",
   };
 
   const onSubmit = async (values) => {
@@ -212,6 +214,81 @@ export default function BasicDetails() {
                               </div>
                             </>
                           )
+                        ) : (
+                          <Skeleton height={25} width={150} className="my-2" />
+                        )}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        {!loading ? (
+                          <>
+                            <strong>Website :</strong>
+                            {!property.property_alt_mobile_no ? (
+                              <form
+                                onSubmit={formik.handleSubmit}
+                                className="d-flex"
+                              >
+                                <div className="">
+                                  <input
+                                    type="web"
+                                    name="website"
+                                    className="form-control"
+                                    placeholder="Enter Website"
+                                    value={formik.values.website}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                  />
+                                  <button type="submit">
+                                    <i className="fe fe-check"></i>
+                                  </button>
+                                  {formik.errors.website &&
+                                    formik.touched.website && (
+                                      <p className="text-danger">
+                                        {formik.errors.website}
+                                      </p>
+                                    )}
+                                </div>
+                              </form>
+                            ) : isWebSiteUpdating ? (
+                              <div>
+                                <form onSubmit={formik.handleSubmit}>
+                                  <input
+                                    type="tel"
+                                    placeholder="Enter New Email"
+                                    className="form-control"
+                                    name="website"
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    value={formik.values.website}
+                                  />
+                                  <button>
+                                    <i className="fe fe-check"></i>
+                                  </button>
+                                  <span
+                                    onClick={() => setIsAltPhoneUpdating(false)}
+                                  >
+                                    <i className="fe fe-x"></i>
+                                  </span>
+                                  {formik.errors.website &&
+                                    formik.touched.website && (
+                                      <p className="text-danger">
+                                        {formik.errors.website}
+                                      </p>
+                                    )}
+                                </form>
+                              </div>
+                            ) : (
+                              <div>
+                                {property.website}
+                                <button
+                                  onClick={() => setIsWebSiteUpdating(true)}
+                                >
+                                  <i className="fe fe-edit"></i>
+                                </button>
+                              </div>
+                            )}
+                          </>
                         ) : (
                           <Skeleton height={25} width={150} className="my-2" />
                         )}
