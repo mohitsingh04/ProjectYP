@@ -24,7 +24,7 @@ export default function CourseSearchCard({ course }: CourseSearchCardProps) {
           <img
             src={
               course?.image?.[0]
-                ? `${process.env.NEXT_PUBLIC_API_URL}/${course.image[0]}`
+                ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${course.image[0]}`
                 : "/Images/CourseBanner.jpg"
             }
             alt={course?.course_name || "Course Image"}

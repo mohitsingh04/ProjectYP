@@ -101,7 +101,7 @@ export default function page() {
                       className="img-fluid"
                       src={
                         courese?.image?.[0]
-                          ? `${process.env.NEXT_PUBLIC_API_URL}/${
+                          ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${
                               courese?.image?.[0] || ""
                             }`
                           : "/Images/CourseBanner.webp"
@@ -174,7 +174,7 @@ export default function page() {
                                 <img
                                   src={
                                     suggestion?.image?.[0]
-                                      ? `${process.env.NEXT_PUBLIC_API_URL}/${suggestion?.image?.[0]}`
+                                      ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${suggestion?.image?.[0]}`
                                       : "/Images/CourseBanner.webp"
                                   }
                                   width={50}

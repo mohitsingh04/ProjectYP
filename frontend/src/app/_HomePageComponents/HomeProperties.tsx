@@ -93,7 +93,7 @@ export default function HomeProperties() {
                         alt={item?.property_name}
                         src={
                           item?.featured_image?.[0]
-                            ? `${process.env.NEXT_PUBLIC_API_URL}/${item?.featured_image?.[0]}`
+                            ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${item?.featured_image?.[0]}`
                             : "/Images/PropertyBanner.png"
                         }
                         style={{ aspectRatio: "4/2", objectFit: "cover" }}
@@ -107,7 +107,7 @@ export default function HomeProperties() {
                             alt={item?.property_name}
                             src={
                               item?.property_logo?.[0]
-                                ? `${process.env.NEXT_PUBLIC_API_URL}/${item?.property_logo?.[0]}`
+                                ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${item?.property_logo?.[0]}`
                                 : "/Images/PropertyBanner.png"
                             }
                             style={{ aspectRatio: "4/2", objectFit: "cover" }}

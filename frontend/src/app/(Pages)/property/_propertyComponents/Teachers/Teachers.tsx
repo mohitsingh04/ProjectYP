@@ -71,7 +71,7 @@ export default function Teachers({ property }: TeachersProps) {
                   style={{ aspectRatio: "3/3", objectFit: "cover" }}
                   src={
                     teacher.profile?.[0]
-                      ? `${process.env.NEXT_PUBLIC_API_URL}/${teacher.profile[0]}`
+                      ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${teacher.profile[0]}`
                       : "/img/user/user1.jpg"
                   }
                 />

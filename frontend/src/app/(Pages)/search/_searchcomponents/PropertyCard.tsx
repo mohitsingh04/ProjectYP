@@ -65,7 +65,7 @@ export default function PropertyCard({ property }: { property: Property }) {
           <img
             src={
               property?.featured_image?.[0]
-                ? `${process.env.NEXT_PUBLIC_API_URL}/${property.featured_image[0]}`
+                ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${property.featured_image[0]}`
                 : "/Images/PropertyBanner.png"
             }
             alt={property?.property_name || "Property Image"}
@@ -78,7 +78,7 @@ export default function PropertyCard({ property }: { property: Property }) {
             <img
               src={
                 property?.property_logo?.[0]
-                  ? `${process.env.NEXT_PUBLIC_API_URL}/${property.property_logo[0]}`
+                  ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${property.property_logo[0]}`
                   : "/Images/PropertyBanner.png"
               }
               alt={property?.property_name || "Property Image"}

@@ -39,7 +39,7 @@ export default function CourseResults({
                   <img
                     src={
                       item.image?.[0]
-                        ? `${process.env.NEXT_PUBLIC_API_URL}/${item.image[0]}`
+                        ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${item.image[0]}`
                         : "/img/course/course-01.jpg"
                     }
                     className="me-2 rounded"

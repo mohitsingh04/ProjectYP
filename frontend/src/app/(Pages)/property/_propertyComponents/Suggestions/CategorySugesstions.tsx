@@ -50,7 +50,7 @@ export default function CategorySuggestions() {
                       <img
                         src={
                           property?.property_logo?.[0]
-                            ? `${process.env.NEXT_PUBLIC_API_URL}/${property.property_logo[0]}`
+                            ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${property.property_logo[0]}`
                             : "/Images/PropertyBanner.png"
                         }
                         width={50}

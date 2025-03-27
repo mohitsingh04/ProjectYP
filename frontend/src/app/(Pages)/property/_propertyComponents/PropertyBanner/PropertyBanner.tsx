@@ -53,7 +53,7 @@ export default function PropertyBanner({
   const style = {
     backgroundImage: `url(${
       property?.featured_image?.[0]
-        ? process.env.NEXT_PUBLIC_API_URL + property?.featured_image?.[0]
+        ? process.env.NEXT_PUBLIC_MEDIA_URL + property?.featured_image?.[0]
         : "/Images/PropertyBanner.png"
     })`,
     backgroundRepeat: "no-repeat",
@@ -73,7 +73,7 @@ export default function PropertyBanner({
                     <img
                       src={
                         property?.property_logo?.[0]
-                          ? `${process.env.NEXT_PUBLIC_API_URL}/${property?.property_logo?.[0]}`
+                          ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${property?.property_logo?.[0]}`
                           : "/Images/PropertyBanner.png"
                       }
                       alt="img"

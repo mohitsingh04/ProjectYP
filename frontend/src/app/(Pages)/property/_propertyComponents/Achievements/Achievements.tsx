@@ -42,7 +42,7 @@ export default function Achievements({ property }: AchievementsProps) {
     achievements?.achievements
       ?.filter((img: string) => img.toLowerCase().endsWith(".webp"))
       ?.map((img: string) => ({
-        src: `${process.env.NEXT_PUBLIC_API_URL}/${img}`,
+        src: `${process.env.NEXT_PUBLIC_MEDIA_URL}/${img}`,
       })) || [];
 
   return (

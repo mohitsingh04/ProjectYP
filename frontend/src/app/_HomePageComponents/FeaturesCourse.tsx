@@ -61,7 +61,7 @@ export default function FeaturesCourse() {
                         alt="Course"
                         src={
                           course?.image?.[0]
-                            ? `${process.env.NEXT_PUBLIC_API_URL}/${course?.image?.[0]}`
+                            ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${course?.image?.[0]}`
                             : "/Images/CourseBanner.webp"
                         }
                       />

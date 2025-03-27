@@ -42,7 +42,7 @@ export default function PropertyResults({
                   <img
                     src={
                       item?.property_logo?.[0]
-                        ? `${process.env.NEXT_PUBLIC_API_URL}/${item?.property_logo?.[0]}`
+                        ? `${process.env.NEXT_PUBLIC_MEDIA_URL}/${item?.property_logo?.[0]}`
                         : "/img/course/course-01.jpg"
                     }
                     className="me-2 rounded"
