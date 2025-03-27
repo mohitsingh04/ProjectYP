@@ -165,7 +165,7 @@ export default function ViewCategory() {
                           src={
                             !categoryIcon
                               ? defaultIcon
-                              : `${process.env.REACT_APP_BACKEND_URL}/${categoryIcon}`
+                              : `${process.env.REACT_APP_MEDIA_URL}/${categoryIcon}`
                           }
                           width={100}
                           style={{ margin: "165px 26px" }}
@@ -175,7 +175,7 @@ export default function ViewCategory() {
                           src={
                             !featureImage
                               ? defaultFeature
-                              : `${process.env.REACT_APP_BACKEND_URL}/${featureImage}`
+                              : `${process.env.REACT_APP_MEDIA_URL}/${featureImage}`
                           }
                           width={200}
                         />

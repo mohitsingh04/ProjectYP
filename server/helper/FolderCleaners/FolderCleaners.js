@@ -23,7 +23,7 @@ export const UserFolderCleaners = async () => {
       }
     });
 
-    const userMediaFolder = path.join(__dirname, "../../media/users");
+    const userMediaFolder = path.join(__dirname, "../../../media/users");
 
     const filesInFolder = await fs.readdir(userMediaFolder);
 
@@ -54,7 +54,7 @@ export const courseFolderCleaners = async () => {
       }
     });
 
-    const courseMediaFolder = path.join(__dirname, "../../media/course");
+    const courseMediaFolder = path.join(__dirname, "../../../media/course");
 
     const filesInFolder = await fs.readdir(courseMediaFolder);
 
@@ -91,7 +91,7 @@ export const categoryFolderCleaners = async () => {
       }
     });
 
-    const categoryMediaFolder = path.join(__dirname, "../../media/category");
+    const categoryMediaFolder = path.join(__dirname, "../../../media/category");
 
     const filesInFolder = await fs.readdir(categoryMediaFolder);
 
@@ -117,7 +117,7 @@ export const propertyMainFolderCleaners = async () => {
       const uniqueId = property.uniqueId;
       const propertyFolder = path.join(
         __dirname,
-        `../../media/${uniqueId}/main`
+        `../../../media/${uniqueId}/main`
       );
 
       try {
@@ -162,7 +162,7 @@ export const propertyGalleryFolderCleaners = async () => {
       const uniqueId = gallery.uniqueId;
       const galleryFolder = path.join(
         __dirname,
-        `../../media/${uniqueId}/gallery`
+        `../../../media/${uniqueId}/gallery`
       );
 
       try {
@@ -196,7 +196,7 @@ export const propertyAchievementsFolderCleaners = async () => {
       const uniqueId = achievement.uniqueId;
       const achievementsFolder = path.join(
         __dirname,
-        `../../media/${uniqueId}/achievements`
+        `../../../media/${uniqueId}/achievements`
       );
 
       try {
@@ -236,7 +236,7 @@ export const teacherProfileFolderCleaners = async () => {
 
       const teacherFolder = path.join(
         __dirname,
-        `../../media/${property_id}/teachers`
+        `../../../media/${property_id}/teachers`
       );
 
       try {

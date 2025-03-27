@@ -161,7 +161,7 @@ export default function ViewCourse() {
                         <img
                           src={
                             courseImage
-                              ? `${process.env.REACT_APP_BACKEND_URL}/${courseImage}`
+                              ? `${process.env.REACT_APP_MEDIA_URL}/${courseImage}`
                               : defaultCourse
                           }
                           className="w-100 img-fluid"

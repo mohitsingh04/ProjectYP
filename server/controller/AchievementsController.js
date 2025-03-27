@@ -1,4 +1,3 @@
-import { propertyAchievementsFolderCleaners } from "../helper/FolderCleaners/FolderCleaners.js";
 import { AchievementImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
 import Achievements from "../models/Achievements.js";
 
@@ -29,7 +28,6 @@ export const addAchievements = async (req, res) => {
       );
       if (updateAchievements) {
         await AchievementImageMover();
-        await propertyAchievementsFolderCleaners();
         return res
           .status(200)
           .json({ message: "Achievement Added Successfully" });
@@ -49,7 +47,6 @@ export const addAchievements = async (req, res) => {
 
     if (savedUser) {
       await AchievementImageMover();
-      await propertyAchievementsFolderCleaners();
       return res
         .status(200)
         .json({ message: "Achievement saved Successfully" });

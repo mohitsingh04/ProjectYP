@@ -451,7 +451,7 @@ export default function EditCourse() {
                               ? previewImage
                               : !courseImage
                               ? defaultCourse
-                              : `${process.env.REACT_APP_BACKEND_URL}/${courseImage}`
+                              : `${process.env.REACT_APP_MEDIA_URL}/${courseImage}`
                           }
                           className="mt-1"
                           width="100"

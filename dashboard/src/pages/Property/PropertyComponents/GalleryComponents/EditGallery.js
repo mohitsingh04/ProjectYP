@@ -101,7 +101,7 @@ export default function EditGallery({
       return (
         <Col key={index} lg={3} md={3} sm={6} className="col-12">
           <img
-            src={`${process.env.REACT_APP_BACKEND_URL}/${img}`}
+            src={`${process.env.REACT_APP_MEDIA_URL}/${img}`}
             alt={img}
             style={{ aspectRatio: "2/2", objectFit: "cover" }}
           />
@@ -158,7 +158,7 @@ export default function EditGallery({
             <div key={index} className="col-md-3 p-0 px-1 position-relative">
               <img
                 src={
-                  item.preview || `${process.env.REACT_APP_BACKEND_URL}/${item}`
+                  item.preview || `${process.env.REACT_APP_MEDIA_URL}/${item}`
                 }
                 alt="Preview"
                 className="img-fluid w-100 h-100"

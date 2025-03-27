@@ -156,7 +156,7 @@ export default function ViewUser() {
                             <img
                               src={
                                 user?.profile?.[0]
-                                  ? `${process.env.REACT_APP_BACKEND_URL}/${user?.profile?.[0]}`
+                                  ? `${process.env.REACT_APP_MEDIA_URL}/${user?.profile?.[0]}`
                                   : require("../../Images/DefaultProfile.jpg")
                               }
                               alt="profile-user"

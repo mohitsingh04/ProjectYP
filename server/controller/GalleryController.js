@@ -1,4 +1,3 @@
-import { propertyGalleryFolderCleaners } from "../helper/FolderCleaners/FolderCleaners.js";
 import { GalleryImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
 import Gallery from "../models/Gallery.js";
 
@@ -76,7 +75,6 @@ export const addGallery = async (req, res) => {
     const savedGallery = await newGallery.save();
 
     await GalleryImageMover();
-    await propertyGalleryFolderCleaners();
     return res.json({ message: "Added Successfully.", savedGallery });
   } catch (error) {
     return res.json({ error: error.message });
@@ -140,7 +138,6 @@ export const updateGallery = async (req, res) => {
 
     if (updateGallery) {
       await GalleryImageMover();
-      await propertyGalleryFolderCleaners();
       return res.status(200).json({
         message: "Gallery updated successfully.",
       });
@@ -158,7 +155,6 @@ export const deleteGallery = async (req, res) => {
       await Gallery.findOneAndDelete({ uniqueId: uniqueId })
         .then(async (result) => {
           await GalleryImageMover();
-          await propertyGalleryFolderCleaners();
           return res.send({ message: "Gallery Deleted." });
         })
         .catch((err) => {

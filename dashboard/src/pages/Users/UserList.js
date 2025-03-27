@@ -89,7 +89,7 @@ export default function UserList() {
             key={row._id}
             src={
               row?.profile?.[0]
-                ? `${process.env.REACT_APP_BACKEND_URL}/${row.profile[0]}`
+                ? `${process.env.REACT_APP_MEDIA_URL}/${row.profile[0]}`
                 : defaultProfile
             }
             className="rounded-circle"

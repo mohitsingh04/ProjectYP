@@ -168,7 +168,7 @@ export default function Teachers() {
           <img src={defaultProfile} width={53} alt={row.profile} />
         ) : (
           <img
-            src={`${process.env.REACT_APP_BACKEND_URL}/${row.profile[0]}`}
+            src={`${process.env.REACT_APP_MEDIA_URL}/${row.profile[0]}`}
             width={53}
             alt={row.profile}
           />

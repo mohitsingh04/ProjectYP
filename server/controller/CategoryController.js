@@ -1,4 +1,3 @@
-import { categoryFolderCleaners } from "../helper/FolderCleaners/FolderCleaners.js";
 import { CategoryImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
 import Category from "../models/Category.js";
 
@@ -48,7 +47,6 @@ export const addCategory = async (req, res) => {
       });
       if (await newCategory.save()) {
         await CategoryImageMover();
-        await categoryFolderCleaners();
         return res.send({ message: "Category added." });
       }
     } else {
@@ -109,7 +107,6 @@ export const updateCategory = async (req, res) => {
     )
       .then(async (result) => {
         await CategoryImageMover();
-        await categoryFolderCleaners();
         return res.send({ message: "Category updated." });
       })
       .catch((err) => {
@@ -128,7 +125,6 @@ export const deleteCategory = async (req, res) => {
       await Category.findOneAndDelete({ _id: objectId })
         .then(async (result) => {
           await CategoryImageMover();
-          await categoryFolderCleaners();
           return res.send({ message: "Category Deleted." });
         })
         .catch((err) => {

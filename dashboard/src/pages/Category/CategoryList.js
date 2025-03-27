@@ -88,7 +88,7 @@ export default function CategoryList() {
             src={
               !row?.category_icon?.[0]
                 ? defaultIcon
-                : `${process.env.REACT_APP_BACKEND_URL}/${row?.category_icon?.[0]}`
+                : `${process.env.REACT_APP_MEDIA_URL}/${row?.category_icon?.[0]}`
             }
             width={53}
             alt=""

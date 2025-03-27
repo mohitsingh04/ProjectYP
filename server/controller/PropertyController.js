@@ -1,4 +1,3 @@
-import { propertyMainFolderCleaners } from "../helper/FolderCleaners/FolderCleaners.js";
 import { PropertyImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
 import Achievements from "../models/Achievements.js";
 import Amenities from "../models/Ameniteis.js";
@@ -125,7 +124,6 @@ export const addProperty = async (req, res) => {
       });
       if (await newProperty.save()) {
         await PropertyImageMover();
-        await propertyMainFolderCleaners();
         return res.send({ message: "Property added." });
       }
     } else {
@@ -202,7 +200,6 @@ export const updateProperty = async (req, res) => {
       )
         .then(async (result) => {
           await PropertyImageMover();
-          await propertyMainFolderCleaners();
           return res.send({ message: "Property updated." });
         })
         .catch((err) => {
@@ -258,7 +255,6 @@ export const deleteProperty = async (req, res) => {
       console.log("Internal Server Error");
     }
     await PropertyImageMover();
-    await propertyMainFolderCleaners();
 
     res.send({ message: "Property and associated data deleted successfully." });
   } catch (err) {
@@ -303,7 +299,6 @@ export const updatePropertyImages = async (req, res) => {
       )
         .then(async (result) => {
           await PropertyImageMover();
-          await propertyMainFolderCleaners();
           return res.send({ message: "Image updated." });
         })
         .catch((err) => {

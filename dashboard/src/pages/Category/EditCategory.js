@@ -317,7 +317,7 @@ export default function EditCategory() {
                               previewIcon
                                 ? previewIcon
                                 : categoryIcon
-                                ? `${process.env.REACT_APP_BACKEND_URL}/${categoryIcon}`
+                                ? `${process.env.REACT_APP_MEDIA_URL}/${categoryIcon}`
                                 : defaultIcon
                             }
                             alt=""
@@ -357,7 +357,7 @@ export default function EditCategory() {
                               previewFeaturedImage
                                 ? previewFeaturedImage
                                 : featureImage
-                                ? `${process.env.REACT_APP_BACKEND_URL}/${featureImage}`
+                                ? `${process.env.REACT_APP_MEDIA_URL}/${featureImage}`
                                 : defaultFeature
                             }
                             alt=""

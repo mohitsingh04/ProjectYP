@@ -85,7 +85,7 @@ export default function CourseList() {
             src={
               !row?.image?.[0]
                 ? defaultCourse
-                : `${process.env.REACT_APP_BACKEND_URL}/${row?.image?.[0]}`
+                : `${process.env.REACT_APP_MEDIA_URL}/${row?.image?.[0]}`
             }
             width={53}
             alt={!row?.image?.[0] ? defaultCourse : row?.image?.[0]}

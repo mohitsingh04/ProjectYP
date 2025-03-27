@@ -79,7 +79,7 @@ export default function Gallery() {
         <Col key={index} lg={3} md={3} sm={6} className="col-12">
           <Link to="#" className="glightbox card">
             <img
-              src={`${process.env.REACT_APP_BACKEND_URL}/${img}`}
+              src={`${process.env.REACT_APP_MEDIA_URL}/${img}`}
               alt={img}
               style={{ aspectRatio: "2/2", objectFit: "cover" }}
             />

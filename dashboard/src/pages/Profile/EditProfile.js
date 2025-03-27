@@ -219,7 +219,7 @@ export default function EditProfile() {
                             ? previewProfile
                             : !user?.profile?.[0]
                             ? require("../../Images/DefaultProfile.jpg")
-                            : `${process.env.REACT_APP_BACKEND_URL}/${profileImg}`
+                            : `${process.env.REACT_APP_MEDIA_URL}/${profileImg}`
                         }
                         className="rounded-circle avatar-lg me-2"
                         alt="avatar"

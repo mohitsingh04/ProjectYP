@@ -74,7 +74,7 @@ export default function PropertyList() {
         return (
           <img
             key={img}
-            src={`${process.env.REACT_APP_BACKEND_URL}/${img}`}
+            src={`${process.env.REACT_APP_MEDIA_URL}/${img}`}
             width={53}
             alt=""
           />
@@ -83,7 +83,7 @@ export default function PropertyList() {
         return (
           <img
             key={img}
-            src={`${process.env.REACT_APP_BACKEND_URL}/images/${img}`}
+            src={`${process.env.REACT_APP_MEDIA_URL}/images/${img}`}
             width={53}
             alt=""
           />

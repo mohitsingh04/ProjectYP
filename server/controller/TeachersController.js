@@ -1,4 +1,3 @@
-import { teacherProfileFolderCleaners } from "../helper/FolderCleaners/FolderCleaners.js";
 import { TeacherImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
 import Teachers from "../models/Teachers.js";
 
@@ -61,7 +60,6 @@ export const addTeacher = async (req, res) => {
     });
     if (await newTeacher.save()) {
       await TeacherImageMover();
-      await teacherProfileFolderCleaners();
       return res.send({ message: "Teacher added." });
     }
   } catch (err) {
@@ -95,7 +93,6 @@ export const updateTeacher = async (req, res) => {
       )
         .then(async (result) => {
           await TeacherImageMover();
-          await teacherProfileFolderCleaners();
           return res.send({ message: "Teacher updated." });
         })
         .catch((err) => {
@@ -115,7 +112,6 @@ export const deleteTeacher = async (req, res) => {
       await Teachers.findOneAndDelete({ _id: objectId })
         .then(async (result) => {
           await TeacherImageMover();
-          await teacherProfileFolderCleaners();
           return res.send({ message: "Teacher Deleted." });
         })
         .catch((err) => {

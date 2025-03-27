@@ -174,7 +174,7 @@ export default function ShowProperty() {
                             src={
                               !icon
                                 ? defaultLogo
-                                : `${process.env.REACT_APP_BACKEND_URL}/${icon}`
+                                : `${process.env.REACT_APP_MEDIA_URL}/${icon}`
                             }
                             width={120}
                             height={120}

@@ -126,7 +126,7 @@ export default function ViewPropertyCourse() {
                       <img
                         src={
                           course?.image?.[0]
-                            ? `${process.env.REACT_APP_BACKEND_URL}/${course?.image?.[0]}`
+                            ? `${process.env.REACT_APP_MEDIA_URL}/${course?.image?.[0]}`
                             : require(`../../../Images/defaultcourse.webp`)
                         }
                         alt={course.course_name}

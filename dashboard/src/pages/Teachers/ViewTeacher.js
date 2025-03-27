@@ -111,7 +111,7 @@ export default function ViewTeacher() {
                               src={
                                 !teacher?.profile?.[0]
                                   ? defaultProfile
-                                  : `${process.env.REACT_APP_BACKEND_URL}/${teacher?.profile?.[0]}`
+                                  : `${process.env.REACT_APP_MEDIA_URL}/${teacher?.profile?.[0]}`
                               }
                               width={128}
                               height={128}

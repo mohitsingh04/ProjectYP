@@ -224,7 +224,7 @@ export default function Search() {
                       <div className="product-image6 ">
                         <Link to={`/dashboard/view/property/${items.uniqueId}`}>
                           <img
-                            src={`${process.env.REACT_APP_BACKEND_URL}/images/${items.logo}`}
+                            src={`${process.env.REACT_APP_MEDIA_URL}/images/${items.logo}`}
                             className="img-fluid"
                             alt=""
                           />

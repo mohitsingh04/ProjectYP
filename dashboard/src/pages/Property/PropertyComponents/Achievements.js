@@ -93,7 +93,7 @@ export default function Achievements() {
       return (
         <Col key={index} lg={3} md={3} sm={6} className="col-12">
           <img
-            src={`${process.env.REACT_APP_BACKEND_URL}/${img}`}
+            src={`${process.env.REACT_APP_MEDIA_URL}/${img}`}
             alt={img}
             style={{ aspectRatio: "2/2", objectFit: "cover" }}
           />
@@ -110,7 +110,7 @@ export default function Achievements() {
       return (
         <Col key={index} lg={3} md={3} sm={6} className="col-12">
           <img
-            src={`${process.env.REACT_APP_BACKEND_URL}/${img}`}
+            src={`${process.env.REACT_APP_MEDIA_URL}/${img}`}
             alt={img}
             style={{ aspectRatio: "2/2", objectFit: "cover" }}
           />
@@ -176,7 +176,7 @@ export default function Achievements() {
                         <img
                           src={
                             image.preview ||
-                            `${process.env.REACT_APP_BACKEND_URL}/${image}`
+                            `${process.env.REACT_APP_MEDIA_URL}/${image}`
                           }
                           alt={image.preview}
                           className="img-fluid"
