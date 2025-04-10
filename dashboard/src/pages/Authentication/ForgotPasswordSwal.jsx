@@ -57,7 +57,8 @@ export default function ForgotpasswordSwal() {
         <Fragment>
           <div className="col-login mx-auto text-center">
             <img
-              src={ALLImages("logo2")}
+              src={ALLImages("ypLogoBig")}
+              width={`200px`}
               className="header-brand-img"
               alt="Logo"
             />

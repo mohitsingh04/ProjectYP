@@ -71,7 +71,12 @@ const Register = () => {
     <Fragment>
       <div className="col-login mx-auto mt-7">
         <div className="text-center">
-          <img src={ALLImages("logo2")} className="header-brand-img" alt="" />
+          <img
+            src={ALLImages("ypLogoBig")}
+            width={`200px`}
+            className="header-brand-img"
+            alt=""
+          />
         </div>
       </div>
       <div className="container-login100">

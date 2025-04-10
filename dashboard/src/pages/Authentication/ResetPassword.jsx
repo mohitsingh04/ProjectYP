@@ -68,7 +68,12 @@ export default function ResetPassword() {
   return (
     <Fragment>
       <div className="col-login mx-auto text-center">
-        <img src={ALLImages("logo2")} className="header-brand-img" alt="Logo" />
+        <img
+          src={ALLImages("ypLogoBig")}
+          width={`200px`}
+          className="header-brand-img"
+          alt="Logo"
+        />
       </div>
       <div className="container-login100">
         <Card className="wrap-login100 p-0">

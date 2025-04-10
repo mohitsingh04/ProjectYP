@@ -80,7 +80,8 @@ export default function VerifyEmailSwal() {
           <div className="col-login mx-auto">
             <div className="text-center">
               <img
-                src={ALLImages("logo2")}
+                src={ALLImages("ypLogoBig")}
+                width={`200px`}
                 className="header-brand-img"
                 alt="Logo"
               />

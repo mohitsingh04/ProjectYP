@@ -41,8 +41,9 @@ const Forgotpassword = () => {
       <div className="col-login mx-auto mt-7">
         <div className="text-center">
           <img
-            src={ALLImages("logo2")}
-            className="header-brand-img"
+            src={ALLImages("ypLogoBig")}
+            className="header-brand-img "
+            width={`200px`}
             alt="Logo"
           />
         </div>
