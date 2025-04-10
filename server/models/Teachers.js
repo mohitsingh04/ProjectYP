@@ -23,14 +23,8 @@ const TeachersSchema = new mongoose.Schema({
   profile: {
     type: Array,
   },
-  property_name: {
-    type: String,
-  },
   property_id: {
     type: Number,
-  },
-  teacherSlug: {
-    type: String,
   },
   status: {
     type: String,

@@ -10,32 +10,18 @@ const SeoSchema = new mongoose.Schema({
   slug: {
     type: String,
   },
-  meta_tags: {
-    type: Array,
-  },
-  description: {
-    type: String,
-  },
   primary_focus_keyword: {
     type: Array,
   },
   json_schema: {
     type: String,
   },
-  course_id: {
-    type: String,
-  },
-  course_name: {
+  meta_description: {
     type: String,
   },
   property_id: {
     type: String,
-  },
-  property_name: {
-    type: String,
-  },
-  seoSlug: {
-    type: String,
+    required: true,
   },
   status: {
     type: String,

@@ -16,7 +16,7 @@ const UserSchema = new mongoose.Schema({
     type: String,
   },
   mobile_no: {
-    type: Number,
+    type: String,
   },
   address: {
     type: String,
@@ -44,6 +44,9 @@ const UserSchema = new mongoose.Schema({
   resetToken: {
     type: String,
     default: null,
+  },
+  resetTokenExpiry: {
+    type: Date,
   },
   verified: {
     type: Boolean,

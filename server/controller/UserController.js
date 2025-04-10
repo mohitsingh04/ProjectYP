@@ -1,23 +1,66 @@
 import User from "../models/Users.js";
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
 import bcrypt from "bcrypt";
-import newUserInfoEmail from "../email/newUserInfoEmail.js";
-import { UserImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
+import { newUserInfoEmail } from "../email/allEmail.js";
 
 export const getUser = async (req, res) => {
   try {
-    const user = await User.find();
-    return res.status(200).json(user);
-  } catch (err) {
-    return res.send({ error: "Internal Server Error." });
+    const users = await User.find();
+
+    if (!users.length) {
+      return res.status(404).json({ message: "No users found." });
+    }
+
+    return res.status(200).json(users);
+  } catch (error) {
+    console.error("Error fetching users:", error);
+    return res.status(500).json({ error: "Internal Server Error." });
   }
 };
 
+export const deleteUser = async (req, res) => {
+  try {
+    const { objectId } = req.params;
+
+    const user = await User.findById(objectId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    await User.findByIdAndDelete(objectId);
+    return res.status(200).json({ message: "User deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    return res.status(500).json({ error: "Internal Server Error." });
+  }
+};
+
+export const getUserById = async (req, res) => {
+  try {
+    const { objectId } = req.params;
+
+    if (!objectId.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({ error: "Invalid user ID format." });
+    }
+
+    const user = await User.findById(objectId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    return res.status(200).json(user);
+  } catch (err) {
+    console.error("Error fetching user:", err);
+    return res.status(500).json({ error: "Internal Server Error." });
+  }
+};
 export const updateUser = async (req, res) => {
   try {
     const { objectId } = req.params;
+
+    if (!objectId) {
+      return res.status(400).json({ message: "User ID is required." });
+    }
 
     const {
       name,
@@ -32,26 +75,29 @@ export const updateUser = async (req, res) => {
       permission,
     } = req.body;
 
-    const user = await User.findOne({ _id: objectId });
-
-    let profileFile = req?.files?.profile?.[0]?.path;
-
-    let profileOriginal = req?.files?.profile?.[0]?.originalPath;
-
-    if (!profileFile) {
-      profileFile = user?.profile?.[0];
-    }
-    if (!profileOriginal) {
-      profileOriginal = user?.profile?.[1];
+    const user = await User.findById(objectId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found." });
     }
 
-    await User.findOneAndUpdate(
-      { _id: objectId },
+    // Prepend '+' only if mobile_no is present and doesn't already start with '+'
+    let updatedMobileNo = mobile_no || user.mobile_no;
+    if (mobile_no && !mobile_no.startsWith("+")) {
+      updatedMobileNo = `+${mobile_no}`;
+    }
+
+    const profileFile =
+      req?.files?.profile?.[0]?.webpFilename || user?.profile?.[0];
+    const profileOriginal =
+      req?.files?.profile?.[0]?.filename || user?.profile?.[1];
+
+    await User.findByIdAndUpdate(
+      objectId,
       {
         $set: {
           name,
           email,
-          mobile_no,
+          mobile_no: updatedMobileNo,
           pincode,
           address,
           city,
@@ -62,83 +108,92 @@ export const updateUser = async (req, res) => {
           permissions: permission,
         },
       },
-      { new: true }
+      { new: true, runValidators: true }
     );
 
-    await UserImageMover();
-
-    if (updateUser) {
-      return res.status(200).json({ message: "User Updated Successfully" });
-    }
-  } catch (err) {
-    return res.status(500).send({ error: "Internal Server Error." });
+    return res.status(200).json({ message: "User updated successfully" });
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-export const deleteUser = async (req, res) => {
+export const addNewUser = async (req, res) => {
   try {
-    const objectId = req.params.objectId;
-    const user = await User.findOne({ _id: objectId });
-    if (user) {
-      await User.findOneAndDelete({ _id: objectId })
-        .then((result) => {
-          return res.send({ message: "User Deleted." });
-        })
-        .catch((err) => {
-          return res.send({ error: "Internal Server Error." });
-        });
-    } else {
-      return res.send({ error: "User not found." });
-    }
-  } catch (err) {
-    return res.send({ error: "Internal Server Error." });
-  }
-};
+    const { name, email, mobile_no, role, permission } = req.body;
 
-export const getUserById = async (req, res) => {
-  try {
-    const objectId = req.params.objectId;
-    const user = await User.findOne({ _id: objectId });
-    return res.status(200).json(user);
-  } catch (err) {
-    return res.send({ error: "Internal Server Error." });
+    const existingUser = await User.findOne({
+      $or: [{ email }, { mobile_no }],
+    });
+
+    if (existingUser) {
+      return res.status(400).json({
+        error:
+          existingUser.email === email
+            ? "This email already exists."
+            : "This mobile number already exists.",
+      });
+    }
+
+    const password = String(Math.floor(100000 + Math.random() * 899999));
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    const uniqueId = (await User.countDocuments()) + 1;
+
+    const newUser = new User({
+      uniqueId,
+      name,
+      email,
+      mobile_no,
+      role,
+      password: hashedPassword,
+      permissions: permission,
+    });
+
+    const savedUser = await newUser.save();
+
+    if (savedUser) {
+      await newUserInfoEmail({ email, password });
+    }
+
+    return res.status(201).json({ message: "User added successfully" });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 export const deleteUserProfile = async (req, res) => {
   try {
-    const __filename = fileURLToPath(import.meta.url);
-    const __dirname = path.dirname(__filename);
+    const { objectId } = req.params;
 
-    const uniqueId = req.params.uniqueId;
-    const user = await User.findOne({ uniqueId: uniqueId });
-    if (user) {
-      await User.findOne({ uniqueId: uniqueId })
-        .then((result) => {
-          if (user.profile) {
-            const delFile = path.join(__dirname, "../images");
-            const DelFilePath = path.join(delFile, user.profile);
-            fs.unlink(DelFilePath, (err) => {
-              if (err) {
-                throw err;
-              }
-            });
-            return res.send({ message: "Profile Deleted." });
-          } else {
-            return res.send({ error: "No profile to delete." });
-          }
-        })
-        .catch((err) => {
-          return res.send({ error: "Internal Server Error." });
-        });
-    } else {
-      return res.send({ error: "User not found." });
+    if (!objectId) {
+      return res.status(400).json({ error: "Object ID is required." });
     }
-  } catch (err) {
-    return res.send({ error: "Internal Server Error." });
+
+    const user = await User.findById(objectId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      objectId,
+      { $unset: { profile: "" } },
+      { new: true }
+    );
+
+    if (!updatedUser) {
+      return res.status(500).json({ error: "Failed to update user profile." });
+    }
+
+    return res.status(200).json({ message: "Profile removed successfully." });
+  } catch (error) {
+    console.error("Error:", error);
+    return res.status(500).json({ error: "Internal Server Error." });
   }
 };
 
+//? check Above
 // export const UpdateUserProfile = async (req, res) => {
 //   try {
 //     const { uniqueId } = req.params;
@@ -165,47 +220,3 @@ export const deleteUserProfile = async (req, res) => {
 //     return res.status(500).json({ error: error.message });
 //   }
 // };
-
-export const addNewUser = async (req, res) => {
-  try {
-    const { name, email, mobile_no, role, permission } = req.body;
-    const existEmail = await User.findOne({ email: email });
-    const existMobile = await User.findOne({ mobile_no: mobile_no });
-    if (existEmail) {
-      return res.status(400).json({ error: "This email is already exist." });
-    }
-    if (existMobile) {
-      return res
-        .status(400)
-        .json({ error: "This mobile number is already exist." });
-    }
-
-    const password = Math.floor(Math.random() * 899999 + 100000);
-
-    const hash = bcrypt.hashSync(String(password), 10);
-
-    const user = await User.findOne().sort({ _id: -1 }).limit(1);
-    const x = user ? user.uniqueId + 1 : 1;
-    const newUser = User({
-      uniqueId: x,
-      name,
-      email,
-      mobile_no,
-      role,
-      password: hash,
-      permissions: permission,
-    });
-
-    const savedUser = await newUser.save();
-
-    await UserImageMover();
-
-    if (savedUser) {
-      await newUserInfoEmail({ email, password });
-    }
-
-    return res.status(200).json({ message: "User Add Successfully" });
-  } catch (error) {
-    return res.status(500).json({ error: error.message });
-  }
-};

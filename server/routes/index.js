@@ -1,6 +1,12 @@
 import express from "express";
 import bodyParser from "body-parser";
-import { processImage, storage, upload } from "../multer/index.js";
+import {
+  categoryUploadMulter,
+  courseUploadMulter,
+  processImage,
+  upload,
+  userUpload,
+} from "../multer/index.js";
 import {
   changePassword,
   forgotPassword,
@@ -82,10 +88,12 @@ import {
 } from "../controller/CourseController.js";
 import {
   addGallery,
+  addNewGalleryImages,
   deleteGallery,
   getGallery,
   getGalleryById,
   getGalleryByPropertyId,
+  removeGalleryImages,
   updateGallery,
 } from "../controller/GalleryController.js";
 import {
@@ -93,6 +101,7 @@ import {
   deleteSeo,
   getSeo,
   getSeoById,
+  getSeoByPropertyId,
   updateSeo,
 } from "../controller/SeoController.js";
 import { addSearch, getSearch } from "../controller/SearchController.js";
@@ -110,15 +119,20 @@ import {
   changePropertyCategory,
   getBusinessHours,
   getBusinessHoursByPropertyId,
+  updateBusinessHours,
 } from "../controller/BusinessHourController.js";
-import { getState } from "../controller/StateController.js";
-import { getCity } from "../controller/CityController.js";
-import { getCountry } from "../controller/CountryController.js";
 import {
   addAchievements,
+  addNewAchievement,
   getAchievementsByPropertyId,
+  removeAchievement,
 } from "../controller/AchievementsController.js";
-import { getPermissions } from "../controller/PermissionsControllers.js";
+import {
+  getCity,
+  getCountry,
+  getPermissions,
+  getState,
+} from "../controller/ExtraControllers.js";
 import {
   addAmenities,
   getAmenities,
@@ -127,7 +141,9 @@ import {
 } from "../controller/AmenitesController.js";
 import {
   addEnquiry,
+  archiveStatus,
   deleteArchiveEnquiry,
+  enquiryStatus,
   getAllArchiveEnquiry,
   getAllEnquiry,
   getArchiveEnquiryByObjectId,
@@ -136,60 +152,70 @@ import {
   getEnquiryByPropertyId,
   softDeleteEnquiry,
 } from "../controller/EnqiryControllers.js";
+import {
+  getLocation,
+  UpdateLocation,
+} from "../controller/LocationController.js";
+import {
+  AddHostel,
+  addHostelImages,
+  EditHostel,
+  getHostelByPropertyId,
+  removeHostelImages,
+} from "../controller/HostelController.js";
 
 const router = express.Router();
 router.use(bodyParser.json());
 router.use(bodyParser.urlencoded({ extended: true }));
 
-// Auth Routes//
+//? Auth Routes//
 router.post("/register", register);
 router.post("/login", login);
-router.post("/change-password", changePassword);
+router.post("/verify-email/:email", verifyEmail);
+router.get("/verify-email/:token", getEmailVerification);
 router.post("/forgot-password", forgotPassword);
 router.get("/reset/:token", getResetToken);
 router.post("/reset", postResetToken);
-router.post("/verify-email", verifyEmail);
-router.get("/verify-email/:token", getEmailVerification);
-router.get("/get-token", getToken);
-router.get("/logout", logout);
-
-// Profile Route
 router.get("/profile", profile);
+router.get("/logout", logout);
+router.post("/change-password", changePassword);
+router.get("/get-token", getToken);
 
-// User Route
-const profileUpload = upload.fields([{ name: "profile", maxCount: 1 }]);
-router.get("/users", getUser);
+//?Extra Routes
+router.get("/permissions", getPermissions);
+router.get("/cities", getCity);
+router.get("/states", getState);
+router.get("/countries", getCountry);
+
+//?User Routes
+const profileUpload = userUpload.fields([{ name: "profile", maxCount: 1 }]);
 router.patch("/user/:objectId", profileUpload, processImage, updateUser);
-// router.patch(
-//   "/user/profile/:objectId",
-//   profileUpload,
-//   processImage,
-//   UpdateUserProfile
-// );
+router.get("/users", getUser);
+router.get("/user/:objectId", getUserById);
 router.post("/user/new", addNewUser);
 router.delete("/user/:objectId", deleteUser);
-router.delete("/user/profile/:uniqueId", deleteUserProfile);
-router.get("/user/:objectId", getUserById);
-router.get("/permissions", getPermissions);
+router.delete("/user/profile/:objectId", deleteUserProfile);
 
-// Status Route
+// ?Status Route
 router.get("/status", getStatus);
+router.get("/status/:objectId", getStatusById);
 router.post("/status", addStatus);
 router.patch("/status/:objectId", updateStatus);
 router.delete("/status/:objectId", deleteStatus);
-router.get("/status/:objectId", getStatusById);
 
-// Course Route
-const courseUpload = upload.fields([{ name: "image", maxCount: 1 }]);
+// ?Course Route
+const courseUpload = courseUploadMulter.fields([
+  { name: "image", maxCount: 1 },
+]);
 router.get("/course", getCourse);
 router.post("/course", courseUpload, processImage, addCourse);
-router.patch("/course/:uniqueId", courseUpload, processImage, updateCourse);
-router.delete("/course/:uniqueId", deleteCourse);
+router.patch("/course/:objectId", courseUpload, processImage, updateCourse);
+router.delete("/course/:objectId", deleteCourse);
 router.get("/course/:objectId", getCourseById);
 router.get("/course-detail/:uniqueId", getCourseByUniqueId);
 
-// Category Route
-const categoryUpload = upload.fields([
+// ?Category Route
+const categoryUpload = categoryUploadMulter.fields([
   { name: "category_icon", maxCount: 1 },
   { name: "featured_image", maxCount: 1 },
 ]);
@@ -204,14 +230,30 @@ router.patch(
 router.delete("/category/:objectId", deleteCategory);
 router.get("/category/:objectId", getCategoryById);
 
-// Property Route
+//?Enquiry Route
+router.get("/enquiry", getAllEnquiry);
+router.delete("/enquiry/soft/:objectId", softDeleteEnquiry);
+router.get("/enquiry/:objectId", getEnquiryByObjectId);
+router.patch("/enquiry/status/:objectId", enquiryStatus);
+router.get("/enquiry/archive/all", getAllArchiveEnquiry);
+router.delete("/enquiry/archive/:objectId", deleteArchiveEnquiry);
+router.patch("/enquiry/archive/status/:objectId", archiveStatus);
+router.post("/add/enquiry", addEnquiry);
+router.get("/enquiry/archive/:objectId", getArchiveEnquiryByObjectId);
+router.get("/property/enquiry/:property_id", getEnquiryByPropertyId);
+router.get(
+  "/property/archive/enquiry/:property_id",
+  getArchiveEnquiryByPropertyId
+);
+
+//? Property Route
 const propertyUpload = upload.fields([
   { name: "property_logo", maxCount: 1 },
   { name: "featured_image", maxCount: 1 },
 ]);
 router.get("/property", getProperty);
-router.get("/property/uniqueId/:uniqueId", getPropertyByUniqueId);
 router.post("/property", propertyUpload, processImage, addProperty);
+
 router.patch(
   "/property/:objectId",
   propertyUpload,
@@ -225,19 +267,37 @@ router.patch(
   updatePropertyImages
 );
 router.delete("/property/:objectId", deleteProperty);
+router.get("/property/uniqueId/:uniqueId", getPropertyByUniqueId);
 router.get("/property/:objectId", getPropertyById);
 router.get("/property/:property_slug", getPropertyBySlug);
 
-// Teacher Route
+//? Location Route
+router.patch("/property/location/:property_id", UpdateLocation);
+router.get("/property/location/:property_id", getLocation);
+
+//? Teacher Route
 const teacherProfile = upload.fields([{ name: "profile", maxCount: 1 }]);
 router.get("/teacher", getTeacher);
 router.post("/teacher", teacherProfile, processImage, addTeacher);
 router.patch("/teacher/:objectId", teacherProfile, processImage, updateTeacher);
 router.delete("/teacher/:objectId", deleteTeacher);
 router.get("/teacher/:objectId", getTeacherById);
-router.get("/property/teacher/:propertyId", getTeacherByPropertyId);
+router.get("/teacher/property/:propertyId", getTeacherByPropertyId);
 
-// Review Route
+//? Hostel Route
+const hostelUpload = upload.fields([{ name: "images", maxCount: 8 }]);
+router.post("/hostel", AddHostel);
+router.get("/hostel/:property_id", getHostelByPropertyId);
+router.patch("/hostel/:uniqueId", EditHostel);
+router.patch(
+  "/hostel/images/:uniqueId",
+  hostelUpload,
+  processImage,
+  addHostelImages
+);
+router.post(`/hostel/images/remove/:uniqueId`, removeHostelImages);
+
+//? Review Route
 router.get("/review", getReview);
 router.post("/review", addReview);
 router.patch("/review/:uniqueId", updateReview);
@@ -245,7 +305,7 @@ router.delete("/review/:uniqueId", deleteReview);
 router.get("/review/:uniqueId", getReviewById);
 router.get("/review/property/:property_id", getReviewByPropertyId);
 
-// Gallery Route
+//? Gallery Route
 const gallery = upload.fields([{ name: "gallery", maxCount: 8 }]);
 const galleryUpdate = upload.fields([{ name: "newImages", maxCount: 8 }]);
 router.get("/gallery", getGallery);
@@ -254,29 +314,37 @@ router.patch("/gallery/:uniqueId", galleryUpdate, processImage, updateGallery);
 router.delete("/gallery/:uniqueId", deleteGallery);
 router.get("/gallery/:uniqueId", getGalleryById);
 router.get("/property/gallery/:propertyId", getGalleryByPropertyId);
+router.post(
+  "/gallery/add/:uniqueId",
+  gallery,
+  processImage,
+  addNewGalleryImages
+);
+router.post("/gallery/remove/:uniqueId", removeGalleryImages);
 
-// Faqs Route
+//? Faqs Route
 router.get("/faqs", getFaq);
 router.post("/faqs", addFaq);
-router.patch("/faqs/:objectId", updateFaq);
+router.patch("/faqs/:uniqueId", updateFaq);
 router.delete("/faqs/:uniqueId", deleteFaq);
-router.get("/faqs/:objectId", getFaqById);
+router.get("/faqs/:uniqueId", getFaqById);
 router.get("/property/faq/:propertyId", getFaqByPropertyId);
 
-// Seo Route
+//? Seo Route
 router.get("/seo", getSeo);
 router.post("/seo", addSeo);
 router.patch("/seo/:objectId", updateSeo);
 router.delete("/seo/:objectId", deleteSeo);
 router.get("/seo/:objectId", getSeoById);
+router.get("/seo/property/:property_id", getSeoByPropertyId);
 
 // Search
 router.get("/search", getSearch);
 router.post("/search", addSearch);
 
-// Property Course
+//? Property Course
 router.get("/property-course", getPropertyCourse);
-router.post("/property-course", courseUpload, addPropertyCourse);
+router.post("/property-course", addPropertyCourse);
 router.patch("/property-course/:objectId", courseUpload, updatePropertyCourse);
 router.get("/property-course/:objectId", getPropertyCourseById);
 router.get("/property-course/uniqueId/:uniqueId", getPropertyCourseByUniqueId);
@@ -286,41 +354,29 @@ router.get(
 );
 router.delete("/property-course/:objectId", deletePropertyCourse);
 
-// Business Hours
+//! Business Hours
 router.get("/business-hours", getBusinessHours);
 router.get("/business-hours/:property_id", getBusinessHoursByPropertyId);
 router.post("/business-hours", addBusinessHours);
 router.patch("/business-hours/category", changePropertyCategory);
+router.patch("/business-hours/:uniqueId", updateBusinessHours);
 
-// Country
-router.get("/countries", getCountry);
-
-// Statee
-router.get("/states", getState);
-
-// City
-router.get("/cities", getCity);
-
-//achievements
-const achievements = upload.fields([{ name: "achievements", maxCount: 4 }]);
+//?achievements
+const achievements = upload.fields([{ name: "achievements", maxCount: 8 }]);
 router.post("/achievements", achievements, processImage, addAchievements);
+router.post(
+  "/achievements/add/:property_id",
+  achievements,
+  processImage,
+  addNewAchievement
+);
+router.post("/achievements/remove/:property_id", removeAchievement);
 router.get("/achievements/:property_id", getAchievementsByPropertyId);
 
+//? amenties
 router.post("/amenities", addAmenities);
 router.get("/amenities", getAmenities);
 router.get("/property/amenities/:propertyId", getAmenitiesByPropertyId);
 router.put("/amenities/:uniqueId", updateAmenities);
 
-router.post("/add/enquiry", addEnquiry);
-router.get("/archive/enquiry", getAllArchiveEnquiry);
-router.get("/enquiry", getAllEnquiry);
-router.get("/property/enquiry/:property_id", getEnquiryByPropertyId);
-router.get(
-  "/property/archive/enquiry/:property_id",
-  getArchiveEnquiryByPropertyId
-);
-router.get("/enquiry/:objectId", getEnquiryByObjectId);
-router.get("/archive/enquiry/:objectId", getArchiveEnquiryByObjectId);
-router.delete("/enquiry/soft/:objectId", softDeleteEnquiry);
-router.delete("/archive/enquiry/:objectId", deleteArchiveEnquiry);
 export default router;

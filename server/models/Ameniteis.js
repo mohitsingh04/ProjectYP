@@ -6,7 +6,7 @@ const AmenitiesSchema = new mongoose.Schema(
       type: Number,
     },
     propertyId: {
-      type: Number,
+      type: String,
       required: [true, "Property ID is required"],
     },
     selectedAmenities: {

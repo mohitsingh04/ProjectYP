@@ -1,136 +1,145 @@
 import Seo from "../models/Seo.js";
+export const addSeo = async (req, res) => {
+  try {
+    const {
+      title,
+      slug,
+      meta_description,
+      primary_focus_keyword,
+      json_schema,
+      property_id,
+    } = req.body;
+
+    if (primary_focus_keyword.length > 2) {
+      return res
+        .status(400)
+        .json({ error: "You can add a maximum of 3 focus keywords." });
+    }
+
+    const existSeo = await Seo.findOne({ title, property_id });
+    if (existSeo) {
+      return res.status(400).json({ error: "This SEO title already exists!" });
+    }
+
+    const lastSeo = await Seo.findOne().sort({ _id: -1 }).limit(1);
+    const uniqueId = lastSeo ? lastSeo.uniqueId + 1 : 1;
+
+    const newSeo = new Seo({
+      uniqueId,
+      title,
+      slug,
+      meta_description,
+      primary_focus_keyword,
+      json_schema,
+      property_id,
+    });
+
+    await newSeo.save();
+    return res.status(201).json({ message: "SEO added successfully." });
+  } catch (error) {
+    console.error("Error adding SEO:", error);
+    return res.status(500).json({ error: "Internal server error!" });
+  }
+};
+
+export const updateSeo = async (req, res) => {
+  try {
+    const { objectId } = req.params;
+    const {
+      title,
+      slug,
+      meta_description,
+      primary_focus_keyword,
+      json_schema,
+      status,
+    } = req.body;
+
+    const existSeo = await Seo.findById(objectId);
+    if (!existSeo) {
+      return res.status(404).json({ error: "SEO record not found." });
+    }
+
+    if (primary_focus_keyword.length > 2) {
+      return res
+        .status(400)
+        .json({ error: "You can add a maximum of 3 focus keywords." });
+    }
+
+    await Seo.findByIdAndUpdate(
+      objectId,
+      {
+        title,
+        slug,
+        meta_description,
+        primary_focus_keyword,
+        json_schema,
+        status,
+      },
+      { new: true }
+    );
+
+    return res.status(200).json({ message: "SEO updated successfully." });
+  } catch (error) {
+    console.error("Error updating SEO:", error);
+    return res.status(500).json({ error: "Internal Server Error." });
+  }
+};
 
 export const getSeo = async (req, res) => {
   try {
     const seo = await Seo.find();
     return res.status(200).json(seo);
   } catch (error) {
-    return res.send({ error: "Internal server error!" });
+    console.error("Error fetching SEO data:", error);
+    return res.status(500).json({ error: "Internal server error!" });
   }
 };
 
 export const getSeoById = async (req, res) => {
   try {
-    const objectId = req.params.objectId;
-    const seo = await Seo.findOne({ _id: objectId });
+    const { objectId } = req.params;
+    const seo = await Seo.findById(objectId);
+
+    if (!seo) {
+      return res.status(404).json({ error: "SEO record not found!" });
+    }
+
     return res.status(200).json(seo);
   } catch (error) {
-    return res.send({ error: "Internal server error!" });
+    console.error("Error fetching SEO by ID:", error);
+    return res.status(500).json({ error: "Internal server error!" });
   }
 };
 
-export const addSeo = async (req, res) => {
+export const getSeoByPropertyId = async (req, res) => {
   try {
-    const {
-      title,
-      slug,
-      meta_tags,
-      description,
-      primary_focus_keyword,
-      json_schema,
-      course_id,
-      course_name,
-      property_id,
-      property_name,
-    } = req.body;
-    const seoSlug = title?.replace(/ /g, "-")?.toLowerCase();
-    const courseKebabCase = course_name?.replace(/ /g, "-")?.toLowerCase();
-    const propertyKebabCase = property_name?.replace(/ /g, "-")?.toLowerCase();
+    const { property_id } = req.params;
+    const seo = await Seo.findOne({ property_id });
 
-    const mainSlug = slug.toLowerCase().replace(/\s+/g, "-");
-
-    const seo = await Seo.findOne().sort({ _id: -1 }).limit(1);
-    const x = seo ? seo.uniqueId + 1 : 1;
-    const existSeo = await Seo.findOne({
-      title: title,
-      property_id: property_id,
-    });
-    if (!existSeo) {
-      const newSeo = new Seo({
-        uniqueId: x,
-        title,
-        slug: mainSlug,
-        meta_tags,
-        description,
-        primary_focus_keyword,
-        json_schema,
-        course_id,
-        course_name: courseKebabCase,
-        property_id,
-        property_name: propertyKebabCase,
-        seoSlug: seoSlug,
-      });
-      if (await newSeo.save()) {
-        return res.send({ message: "Seo Added." });
-      }
-    } else {
-      return res.send({ error: "This seo title is alredy exist!" });
+    if (!seo) {
+      return res.status(404).json({ error: "SEO record not found!" });
     }
+
+    return res.status(200).json(seo);
   } catch (error) {
-    return res.send({ error: "Internal server error!" });
-  }
-};
-
-export const updateSeo = async (req, res) => {
-  try {
-    const objectId = req.params.objectId;
-    const {
-      title,
-      slug,
-      meta_tags,
-      description,
-      primary_focus_keyword,
-      json_schema,
-      status,
-    } = req.body;
-
-    const existSeo = await Seo.findOne({ _id: objectId });
-
-    const mainSlug = slug
-      ? slug.toLowerCase().replace(/\s+/g, "-")
-      : existSeo?.slug;
-
-    await Seo.findOneAndUpdate(
-      { _id: objectId },
-      {
-        $set: {
-          title,
-          slug: mainSlug,
-          meta_tags,
-          description,
-          primary_focus_keyword,
-          json_schema,
-          status,
-        },
-      }
-    )
-      .then((result) => {
-        return res.send({ message: "Seo updated." });
-      })
-      .catch((err) => {
-        return res.send({ error: "Internal Server Error." });
-      });
-  } catch (error) {
-    return res.send({ error: "Internal server error!" });
+    console.error("Error fetching SEO by Property ID:", error);
+    return res.status(500).json({ error: "Internal server error!" });
   }
 };
 
 export const deleteSeo = async (req, res) => {
   try {
-    const objectId = req.params.objectId;
-    const seo = await Seo.findOne({ _id: objectId });
-    if (seo) {
-      await Seo.findOneAndDelete({ _id: objectId })
-        .then((result) => {
-          return res.send({ message: "Seo Deleted." });
-        })
-        .catch((err) => {
-          return res.send({ error: "Internal Server Error." });
-        });
-    } else {
-      return res.send({ error: "Seo not found." });
+    const { objectId } = req.params;
+    const seo = await Seo.findById(objectId);
+
+    if (!seo) {
+      return res.status(404).json({ error: "SEO entry not found." });
     }
+
+    await Seo.findByIdAndDelete(objectId);
+    return res.status(200).json({ message: "SEO entry deleted successfully." });
   } catch (error) {
-    return res.send({ error: "Internal server error!" });
+    console.error("Error deleting SEO entry:", error);
+    return res.status(500).json({ error: "Internal server error." });
   }
 };

@@ -8,15 +8,17 @@ import router from "./routes/index.js";
 import ExpireVerification from "./helper/ExpireVerification/ExpireVerification.js";
 import cookieParser from "cookie-parser";
 
+dotenv.config();
+
 const app = express();
+
+app.use(cookieParser());
 app.use(
   cors({
     origin: [process.env.FRONTEND_URL, process.env.FRONTEND_DASHBOARD_URL],
     credentials: true,
   })
 );
-app.use(cookieParser());
-dotenv.config();
 app.use("/api/", router);
 app.use(morgan("common"));
 app.use(helmet());
@@ -27,7 +29,7 @@ app.use("/media", express.static("media"));
 
 setInterval(() => {
   ExpireVerification();
-}, 10000);
+}, 1);
 
 mongoose
   .connect(process.env.MONGODB_URL)

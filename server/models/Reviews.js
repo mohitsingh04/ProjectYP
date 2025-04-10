@@ -7,9 +7,6 @@ const ReviewSchema = new mongoose.Schema({
   uniqueId: {
     type: Number,
   },
-  property_name: {
-    type: String,
-  },
   property_id: {
     type: Number,
   },
@@ -21,7 +18,7 @@ const ReviewSchema = new mongoose.Schema({
     type: String,
   },
   phone_number: {
-    type: Number,
+    type: String,
   },
   gender: {
     type: String,

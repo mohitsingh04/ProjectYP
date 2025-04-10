@@ -1,5 +1,6 @@
 import { GalleryImageMover } from "../helper/FolderCleaners/PropertyImageMover.js";
 import Gallery from "../models/Gallery.js";
+import path from "path";
 
 export const getGallery = async (req, res) => {
   try {
@@ -28,56 +29,191 @@ export const getGalleryByPropertyId = async (req, res) => {
     return res.send({ error: "Internal Server Error!" });
   }
 };
-
 export const addGallery = async (req, res) => {
   try {
     const { propertyId, title } = req.body;
     const gallery = [];
 
-    if (req?.files?.gallery && req.files.gallery.length > 4) {
+    const maxImages = 8;
+
+    if (!req?.files?.gallery || req.files.gallery.length === 0) {
+      return res.status(400).json({ error: "No images provided." });
+    }
+
+    if (req.files.gallery.length > maxImages) {
       return res
         .status(400)
-        .json({ error: "You Cannot Add More than 4 Images at Once." });
+        .json({ error: `You can upload a maximum of ${maxImages} images.` });
     }
 
-    if (req?.files?.gallery && req.files.gallery.length > 0) {
-      for (let i = 0; i < req.files.gallery.length; i++) {
-        gallery.push(req.files.gallery[i]?.path);
+    req.files.gallery.forEach((file) => {
+      if (file?.webpFilename) gallery.push(file.webpFilename);
+      if (file?.originalFilename && file.originalFilename !== file.path) {
+        gallery.push(file.originalFilename);
       }
-      for (let j = 0; j < req.files.gallery.length; j++) {
-        gallery.push(req.files.gallery[j]?.originalPath);
-      }
-    }
+    });
 
     const existGallery = await Gallery.findOne({ propertyId, title });
-    if (existGallery) {
-      return res.status(400).json({ error: "Gallery is already exist." });
-    }
 
     const lastGallery = await Gallery.findOne().sort({ _id: -1 }).limit(1);
-    const x = lastGallery ? lastGallery.uniqueId + 1 : 1;
-
-    // const user = await User.findOne({ _id: userId }).select("-password");
-    // if (!user) {
-    //   return res.status(404).json({ error: "User not found" });
-    // }
-
-    // const userUniqueId = user.uniqueId;
+    const uniqueId = lastGallery ? lastGallery.uniqueId + 1 : 1;
 
     const newGallery = new Gallery({
-      uniqueId: x,
-      //   userId: userUniqueId,
+      uniqueId,
       propertyId,
       title,
       gallery,
     });
 
     const savedGallery = await newGallery.save();
-
-    await GalleryImageMover();
-    return res.json({ message: "Added Successfully.", savedGallery });
+    await GalleryImageMover(req, res, propertyId);
+    return res.status(201).json({
+      message: "Gallery added successfully.",
+      savedGallery,
+    });
   } catch (error) {
-    return res.json({ error: error.message });
+    console.error("Error adding gallery:", error);
+    return res.status(500).json({ error: "Server error. Please try again." });
+  }
+};
+
+export const addNewGalleryImages = async (req, res) => {
+  try {
+    const { uniqueId } = req.params;
+
+    let newGalleryImages = [];
+
+    if (req?.files?.gallery && req.files.gallery.length > 0) {
+      for (const file of req.files.gallery) {
+        if (file?.filename && file?.webpFilename) {
+          newGalleryImages.push(file.filename);
+          newGalleryImages.push(file.webpFilename);
+        } else {
+          console.warn("Skipping incomplete gallery file pair:", file);
+        }
+      }
+
+      if (newGalleryImages.length % 2 !== 0) {
+        return res.status(400).json({
+          message:
+            "Uneven number of original and webp images detected in gallery.",
+        });
+      }
+    }
+
+    if (newGalleryImages.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "No valid gallery images provided." });
+    }
+
+    const existingGallery = await Gallery.findOne({ uniqueId });
+
+    if (!existingGallery) {
+      return res.status(404).json({
+        message:
+          "Gallery not found for this property. Use the 'createGallery' controller to initialize.",
+      });
+    }
+
+    const currentCount = existingGallery.gallery.length;
+    const totalCount = currentCount + newGalleryImages.length;
+
+    if (totalCount > 16) {
+      return res.status(400).json({
+        message: `Cannot add more than 8 gallery image pairs. You already have ${
+          currentCount / 2
+        } pairs.`,
+      });
+    }
+
+    existingGallery.gallery.push(...newGalleryImages);
+
+    const updatedGallery = await existingGallery.save();
+
+    await GalleryImageMover(req, res, existingGallery.propertyId);
+
+    return res.status(200).json({
+      message: "New gallery images added successfully",
+      data: updatedGallery,
+    });
+  } catch (error) {
+    console.error("Gallery update error:", error);
+    return res.status(500).json({ error: error.message });
+  }
+};
+
+export const removeGalleryImages = async (req, res) => {
+  try {
+    const { uniqueId } = req.params;
+    const { webpPaths } = req.body;
+
+    console.log(webpPaths);
+
+    if (!Array.isArray(webpPaths) || webpPaths.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or empty image path array." });
+    }
+
+    const galleryDoc = await Gallery.findOne({ uniqueId });
+    if (!galleryDoc) {
+      return res
+        .status(404)
+        .json({ message: "No gallery found for this uniqueId." });
+    }
+
+    const pathsToRemove = new Set();
+
+    for (const webpPath of webpPaths) {
+      pathsToRemove.add(webpPath);
+
+      const webpFileName = path.basename(webpPath);
+      const folderPath = path.dirname(webpPath);
+
+      const match = webpFileName.match(/^img-\d+-(.+)-compressed\.webp$/);
+      if (!match) {
+        console.warn(`Filename pattern not matched for: ${webpFileName}`);
+        continue;
+      }
+
+      const fileKey = match[1];
+
+      const originalPath = galleryDoc.gallery.find((p) => {
+        const filename = path.basename(p);
+        const dir = path.dirname(p);
+        const origMatch = filename.match(/^img-\d+-(.+)\.[a-zA-Z0-9]+$/);
+
+        return (
+          dir === folderPath &&
+          origMatch &&
+          origMatch[1] === fileKey &&
+          !filename.endsWith(".webp")
+        );
+      });
+
+      if (originalPath) {
+        pathsToRemove.add(originalPath);
+        console.log(`Found original for ${webpFileName}: ${originalPath}`);
+      } else {
+        console.warn(`Original file not found for key: ${fileKey}`);
+      }
+    }
+
+    const updatedGallery = galleryDoc.gallery.filter(
+      (img) => !pathsToRemove.has(img)
+    );
+
+    galleryDoc.gallery = updatedGallery;
+    await galleryDoc.save();
+
+    return res.status(200).json({
+      message: "Selected gallery image references removed from database.",
+      data: galleryDoc,
+    });
+  } catch (error) {
+    console.error("Error removing gallery images:", error);
+    return res.status(500).json({ message: error.message });
   }
 };
 
@@ -137,7 +273,6 @@ export const updateGallery = async (req, res) => {
     );
 
     if (updateGallery) {
-      await GalleryImageMover();
       return res.status(200).json({
         message: "Gallery updated successfully.",
       });
@@ -153,8 +288,7 @@ export const deleteGallery = async (req, res) => {
     const images = await Gallery.findOne({ uniqueId: uniqueId });
     if (images) {
       await Gallery.findOneAndDelete({ uniqueId: uniqueId })
-        .then(async (result) => {
-          await GalleryImageMover();
+        .then((result) => {
           return res.send({ message: "Gallery Deleted." });
         })
         .catch((err) => {

@@ -1,219 +1,170 @@
-.page {
-	display: -ms-flexbox;
-	display: flex;
-	-ms-flex-direction: column;
-	flex-direction: column;
-	-ms-flex-pack: center;
-	justify-content: center;
-	min-height: 100vh;
-}
-body.fixed-header .page {
-	padding-top: 4.5rem;
-}
-@media (min-width: 1600px) {
-	body.aside-opened .page {
-		margin-right: 22rem;
-	}
-}
-.page-main {
-	-ms-flex: 1 1 auto;
-	flex: 1 1 auto;
-}
-.page-content {
-	margin: .75rem 0;
-}
-@media (min-width: 768px) {
-	.page-content {
-		margin: 1.5rem 0;
-	}
-}
-.example .pagination {
-	margin-bottom: 0;
-}
-.pagination {
-	display: -ms-flexbox;
-	display: flex;
-	padding-left: 0;
-	list-style: none;
-	border-radius: 3px;
-}
 .page-link {
-	position: relative;
-	display: block;
-	padding: 0.5rem 0.75rem;
-	margin-left: -1px;
-	line-height: 1.25;
-	background-color: $white;
-	border: 1px solid $border;
-	color: $default-color;
-	&:hover {
-		z-index: 2;
-		text-decoration: none;
-		background-color: rgba(70, 127, 207, 0.06);
-	}
-	&:focus {
-		z-index: 2;
-		outline: 0;
-		box-shadow: none;
-	}
-	&:not(:disabled):not(.disabled) {
-		cursor: pointer;
-	}
+    color: $default-text-color;
+    background-color: $custom-white;
+    border: 1px solid $default-border;
+    &:focus {
+        box-shadow: none;
+        background-color: $light;
+    }
+    &:hover {
+        color: $primary;
+        background-color: $light;
+        border-color: $default-border;
+    }
 }
-.page-item {
-	&:first-child .page-link {
-		margin-left: 0;
-		border-top-left-radius: 3px;
-		border-bottom-left-radius: 3px;
-	}
-	&:last-child .page-link {
-		border-top-right-radius: 3px;
-		border-bottom-right-radius: 3px;
-	}
-	&.active .page-link {
-		z-index: 1;
-		color: $white;
-	}
-	&.disabled .page-link {
-		color: #ced4da;
-		pointer-events: none;
-		cursor: auto;
-		background-color: $white;
-		border-color: $border;
-	}
+.page-item.active .page-link {
+    color: $white;
+    background-color: $primary;
+    border-color: $primary;
 }
-.pagination-lg {
-	.page-link {
-		padding: 0.75rem 1.5rem;
-		font-size: 1.125rem;
-		line-height: 1.5;
-	}
-	.page-item {
-		&:first-child .page-link {
-			border-top-left-radius: 3px;
-			border-bottom-left-radius: 3px;
-		}
-		&:last-child .page-link {
-			border-top-right-radius: 3px;
-			border-bottom-right-radius: 3px;
-		}
-	}
+.disabled>.page-link, .page-link.disabled {
+    color: $default-text-color;
+    background-color: $custom-white;
+    border-color: $default-border;
+    opacity: 0.7;
 }
-.pagination-sm {
-	.page-link {
-		padding: 0.25rem 0.5rem;
-		font-size: 0.875rem;
-		line-height: 1.5;
-	}
-	.page-item {
-		&:first-child .page-link {
-			border-top-left-radius: 3px;
-			border-bottom-left-radius: 3px;
-		}
-		&:last-child .page-link {
-			border-top-right-radius: 3px;
-			border-bottom-right-radius: 3px;
-		}
-	}
+[dir=rtl] .pagination .page-link .bi.bi-caret-left::before {
+    content: "\f234";
 }
-.page-header {
-	display: -ms-flexbox;
-	display: flex;
-	-ms-flex-align: center;
-	align-items: center;
-	margin:  1.5rem 0rem 1.5rem;
-	-ms-flex-wrap: wrap;
-	justify-content: space-between;
-	padding: 0;
-	/* border-radius: 7px; */
-	position: relative;
-	min-height: 50px;
-	border: 1px solid transparent;
-	border-radius: 5px;
+[dir=rtl] .pagination .page-link .bi.bi-caret-right::before {
+    content: "\f230";
 }
-.page-title {
-	margin: 0;
-	font-size: 20px;
-	font-weight: 600;
-	position: relative;
-	margin-bottom: 0.2rem;
+
+/* Start:: pagination-style-1 */
+.pagination-style-1 .pagination {
+    .page-item {
+        margin: 0 0.25rem;
+        .page-link {
+            border: 0;
+            border-radius: $default-radius;
+            font-size: 0.8125rem;
+            i {
+                font-weight: 600;
+            }
+        }
+        &.active {
+            .page-link {
+                border-radius: $default-radius;
+                background-color: $primary;
+                color: $white;
+            }
+            &:hover {
+                .page-link {
+                    border-radius: $default-radius;
+                    background-color: $primary;
+                    color: $white;
+                }
+            } 
+        }
+        &:hover {
+            .page-link {
+                background-color: $light;
+                color: $default-text-color;
+            }
+        }
+    }
 }
-.page-title-icon {
-	color: #9aa0ac;
-	font-size: 1.25rem;
+/* End:: pagination-style-1 */
+
+/* Start:: pagination-style-2 */
+.pagination-style-2 .pagination {
+    border-radius: $default-radius;
+    .page-item {
+        margin: 0 0.25rem;
+        .page-link {
+            border: 0 !important;
+            font-size: 0.8125rem;
+        }
+        &.active {
+            .page-link {
+                background-color: $custom-white;
+                color: $primary;
+                position: relative;
+                font-weight: bold;
+                &:before {
+                    position: absolute;
+                    content: "";
+                    inset-block-end: 0;
+                    inset-inline-start: 0;
+                    width: 100%;
+                    height: 0.1rem;
+                    background-color: $primary;
+                }
+            }
+        }
+        &:hover {
+            .page-link {
+                background-color: transparent;
+            }
+        }
+    }
 }
-.page-subtitle {
-	font-size: 0.8125rem;
-	color: #c0a0f1;
-	margin-left: 2rem;
-	position: relative;
-	a {
-		color: inherit;
-	}
+/* End:: pagination-style-2 */
+
+/* Start:: pagination-sytle-3 */
+.pagination-style-3 .pagination {
+    border-radius: 50px;
+    padding: 0.25rem;
+    align-items: center;
+    .page-item {
+        margin: 0 0.25rem;
+        .page-link {
+            border: 0;
+            border-radius: 50px;
+            font-size: 0.8125rem;
+            i {
+                font-weight: 600;
+            }
+        }
+        &.active {
+            .page-link {
+                background-color: $primary;
+                color: $white;
+            }
+            &:hover {
+                .page-link {
+                    background-color: $primary;
+                }
+            }
+        }
+        &:hover {
+            .page-link {
+                background-color: $light;
+            }
+        }
+    }
 }
-.page-options {
-	margin-left: auto;
+/* End:: pagination-sytle-3 */
+
+/* Start:: pagination-style-4 */
+.pagination-style-4 .pagination {
+    .page-item {
+        .page-link {
+            border: 0 !important;
+            font-size: 0.8125rem;
+            border-radius: $default-radius;
+            i {
+                font-weight: 600;
+            }
+        }
+        &.active {
+            .page-link {
+                border: 0;
+                border-radius: $default-radius;
+                background-color: $primary;
+                color: $white;
+            }
+            &:hover {
+                .page-link {
+                    background-color: $primary;
+                }
+            }
+        }
+        &:hover {
+            .page-link {
+                background-color: transparent;
+            }
+        }
+    }
 }
-.page-header .breadcrumb {
-	font-size: 12px;
-	padding-left: 0 !important;
-}
-.page-breadcrumb {
-	-ms-flex-preferred-size: 100%;
-	flex-basis: 100%;
-	background: none;
-	padding: 0;
-	margin: 1rem 0 0;
-	font-size: 0.875rem;
-}
-.page-description {
-	margin: .25rem 0 0;
-	color: #6e7687;
-	a {
-		color: inherit;
-	}
-}
-.page-single {
-	-ms-flex: 1 1 auto;
-	flex: 1 1 auto;
-	display: -ms-flexbox;
-	-ms-flex-align: center;
-	align-items: center;
-	-ms-flex-pack: center;
-	justify-content: center;
-}
-@media (min-width: 768px) {
-	.page-breadcrumb {
-		margin: -.5rem 0 0;
-	}
-}
-.page-breadcrumb .breadcrumb-item {
-	color: #9aa0ac;
-	&.active {
-		color: #6e7687;
-	}
-}
-.pagination-simple .page-item {
-	.page-link {
-		background: none;
-		border: none;
-	}
-	&.active .page-link {
-		color: #495057;
-		font-weight: 700;
-	}
-}
-.pagination-pager {
-	.page-prev {
-		margin-right: auto;
-	}
-	.page-next {
-		margin-left: auto;
-	}
-}
-.page-total-text {
-	margin-right: 1rem;
-	-ms-flex-item-align: center;
-	align-self: center;
-	color: #6e7687;
-}
+/* End:: pagination-style-4 */

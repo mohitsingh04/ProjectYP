@@ -3,59 +3,85 @@ import Amenities from "../models/Ameniteis.js";
 export const getAmenities = async (req, res) => {
   try {
     const amenities = await Amenities.find();
-    return res.json(amenities);
+
+    if (!amenities || amenities.length === 0) {
+      return res.status(404).json({ message: "No amenities found." });
+    }
+
+    return res.status(200).json(amenities);
   } catch (error) {
-    return res.json({ error: error.message });
+    console.error("Error fetching amenities:", error);
+    return res.status(500).json({ error: "Internal Server Error." });
   }
 };
+
 export const getAmenitiesByPropertyId = async (req, res) => {
   try {
     const { propertyId } = req.params;
-    const amenities = await Amenities.findOne({ propertyId: propertyId });
-    return res.json(amenities);
+
+    if (!propertyId) {
+      return res.status(400).json({ error: "Property ID is required." });
+    }
+
+    const amenities = await Amenities.findOne({ propertyId });
+
+    if (!amenities) {
+      return res
+        .status(404)
+        .json({ message: "No amenities found for this property." });
+    }
+
+    return res.status(200).json(amenities);
   } catch (error) {
-    return res.json({ error: error.message });
+    console.error("Error fetching amenities by propertyId:", error);
+    return res.status(500).json({ error: "Internal Server Error." });
   }
 };
 
 export const addAmenities = async (req, res) => {
   try {
     const { propertyId, selectedAmenities } = req.body;
+
     if (!propertyId) {
-      return res.status(400).json({ error: "Property ID is required" });
+      return res.status(400).json({ error: "Property ID is required." });
     }
 
-    if (!selectedAmenities || Object.keys(selectedAmenities).length === 0) {
+    if (
+      !selectedAmenities ||
+      typeof selectedAmenities !== "object" ||
+      Object.keys(selectedAmenities).length === 0
+    ) {
       return res
         .status(400)
-        .json({ error: "At least one amenity must be selected" });
+        .json({ error: "At least one amenity must be selected." });
     }
 
-    const existingAmenities = await Amenities.findOne({ propertyId });
-    if (existingAmenities) {
+    const amenitiesExists = await Amenities.findOne({ propertyId });
+    if (amenitiesExists) {
       return res
-        .status(400)
-        .json({ error: "Amenities already exist for this property" });
+        .status(409)
+        .json({ error: "Amenities already exist for this property." });
     }
 
-    const lastAmenities = await Amenities.findOne().sort({ _id: -1 }).limit(1);
-    const x = lastAmenities ? lastAmenities.uniqueId + 1 : 1;
+    const lastAmenity = await Amenities.findOne().sort({ uniqueId: -1 });
+    const nextUniqueId = lastAmenity ? lastAmenity.uniqueId + 1 : 1;
 
-    const amenities = new Amenities({
-      uniqueId: x,
+    const newAmenities = new Amenities({
+      uniqueId: nextUniqueId,
       propertyId,
       selectedAmenities,
     });
 
-    await amenities.save();
+    await newAmenities.save();
 
-    return res.status(200).json({
-      message: "Amenities added successfully",
-      data: amenities,
+    return res.status(201).json({
+      message: "Amenities added successfully.",
+      data: newAmenities,
     });
   } catch (error) {
+    console.error("Error adding amenities:", error);
     return res.status(500).json({
-      error: "Failed to create amenities",
+      error: "Failed to add amenities.",
       details: error.message,
     });
   }

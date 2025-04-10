@@ -42,6 +42,6 @@ const ArchiveEnquiryModel = mongoose.Schema(
   { timestamps: true }
 );
 
-const ArchiveEnquiry = mongoose.model("archiveEnquiry", ArchiveEnquiryModel);
+const ArchiveEnquiry = mongoose.model("archive-enquiries", ArchiveEnquiryModel);
 
 export default ArchiveEnquiry;

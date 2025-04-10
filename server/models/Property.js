@@ -29,46 +29,8 @@ const PropertySchema = new mongoose.Schema({
   featured_image: {
     type: Array,
   },
-  property_address: {
-    type: String,
-  },
-  property_pincode: {
-    type: String,
-  },
-  property_city: {
-    type: String,
-  },
-  property_state: {
-    type: String,
-  },
-  property_country: {
-    type: String,
-    default: "India",
-  },
-  property_seo_title: {
-    type: String,
-  },
-  property_seo_slug: {
-    type: String,
-  },
-  property_seo_meta_tags: {
-    type: String,
-  },
-  property_seo_description: {
-    type: String,
-  },
   property_description: {
     type: String,
-    // required: true,
-  },
-  property_hostel_type: {
-    type: Array,
-  },
-  property_hostel_description: {
-    type: String,
-  },
-  property_courses: {
-    type: Array,
   },
   est_year: {
     type: Number,
@@ -88,12 +50,12 @@ const PropertySchema = new mongoose.Schema({
   property_type: {
     type: String,
   },
+  property_website: {
+    type: String,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
-  },
-  website: {
-    type: String,
   },
 });
 

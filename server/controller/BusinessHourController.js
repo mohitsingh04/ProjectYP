@@ -9,12 +9,12 @@ export const getBusinessHours = async (req, res) => {
     return res.send({ error: "Internal Server Error" });
   }
 };
-
+// Add New Business Hours
 export const addBusinessHours = async (req, res) => {
   try {
     const {
       property_id,
-      property_name,
+      userId,
       monday,
       tuesday,
       wednesday,
@@ -27,30 +27,14 @@ export const addBusinessHours = async (req, res) => {
     const isProperty = await BusinessHour.findOne({ property_id: property_id });
 
     if (isProperty) {
-      const updateBussinessHour = await BusinessHour.findOneAndUpdate(
-        { property_id: property_id },
-        {
-          $set: {
-            monday,
-            tuesday,
-            wednesday,
-            thursday,
-            friday,
-            saturday,
-            sunday,
-          },
-        },
-        { new: true }
-      );
-      return res.status(200).json({
-        message: "Buisness Hours Updated Successfully",
-        updateBussinessHour,
-      });
+      return res
+        .status(400)
+        .json({ message: "Business hours already exist for this property" });
     }
 
     const businessHours = new BusinessHour({
       property_id,
-      property_name,
+      userId,
       monday,
       tuesday,
       wednesday,
@@ -59,12 +43,49 @@ export const addBusinessHours = async (req, res) => {
       saturday,
       sunday,
     });
+
     await businessHours.save();
     return res
       .status(201)
-      .json({ message: "Buisness Hours Added Successfully" });
+      .json({ message: "Business Hours Added Successfully", businessHours });
   } catch (err) {
-    return res.send({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+export const updateBusinessHours = async (req, res) => {
+  try {
+    const { uniqueId } = req.params;
+    const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } =
+      req.body;
+
+    const updatedHours = await BusinessHour.findOneAndUpdate(
+      { property_id: uniqueId },
+      {
+        $set: {
+          monday,
+          tuesday,
+          wednesday,
+          thursday,
+          friday,
+          saturday,
+          sunday,
+        },
+      },
+      { new: true }
+    );
+
+    if (!updatedHours) {
+      return res
+        .status(404)
+        .json({ message: "Business hours not found for this ID" });
+    }
+
+    return res.status(200).json({
+      message: "Business Hours Updated Successfully",
+      updatedHours,
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
